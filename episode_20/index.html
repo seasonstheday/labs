@@ -1,0 +1,571 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Spider Lab</title>
+<meta name="description" content="Three small games from the Backyard Library house-spider episode, drawn in the episode's own style: get the spider out of the bathtub, climb it yourself by balancing his grip, then run your own spider census with a flashlight.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --brown: #6e4a28; --muted: #8b6d4b; --card: #fbf3df;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f;
+    --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --brown: #d9c39a; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  }
+  :root[data-theme="dark"] { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --brown: #d9c39a; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding-inline: 14px; padding-block: 14px 40px; overflow-x: hidden; }
+  main { max-width: 980px; margin: 0 auto; position: relative; }
+  .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
+  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .mote { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: .25; animation: drift linear infinite; }
+  @keyframes drift { from { transform: translateY(100vh) translateX(0); } to { transform: translateY(-10vh) translateX(40px); } }
+  main > * { position: relative; z-index: 1; }
+
+  /* ───────── screens ───────── */
+  [hidden] { display: none !important; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); border: 4px solid #3a2c20; }
+  .stage.wide { aspect-ratio: 21 / 9; }
+  .stage > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(40,25,10,.35) 100%); pointer-events: none; }
+  .sprite { position: absolute; transform-origin: 50% 90%; will-change: transform; }
+  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .topbar .spacer { flex: 1; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+
+  /* ───────── title ───────── */
+  #title .stage { aspect-ratio: 16 / 8; }
+  .hero-title { position: absolute; left: 4%; top: 7%; color: #fff; font-size: clamp(38px, 8vw, 92px); line-height: .95; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.35); letter-spacing: .01em; animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  .hero-sub { position: absolute; left: 4.5%; top: 44%; color: #fff; font-size: clamp(16px, 2.6vw, 26px); text-shadow: 0 2px 0 #3a2c20, 0 6px 14px rgba(0,0,0,.4); max-width: 46%; }
+  .hero-btns { position: absolute; left: 4%; bottom: 7%; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stickers { position: absolute; right: 3%; top: 5%; display: flex; gap: 8px; }
+  .stickers img { height: 72px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .stickers img.locked { filter: grayscale(1) opacity(.35); animation: none; }
+
+  /* ───────── buttons ───────── */
+  .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn:active, .btn.down { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); color: var(--ink); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.small { font-size: 16px; padding: 8px 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+  .btn:focus-visible { outline: 3px solid var(--water); outline-offset: 3px; }
+  .btn img { height: 34px; width: 34px; object-fit: contain; }
+  .btn small { font: 400 13px/1 "Patrick Hand", cursive; opacity: .8; }
+
+  /* ───────── game 1 ───────── */
+  #spider { left: 30%; top: 56%; width: 11%; transition: left 1.1s ease-in-out, top 1.1s ease-in-out; filter: drop-shadow(0 6px 4px rgba(0,0,0,.25)); }
+  .item { position: absolute; left: 55%; top: 20%; width: 14%; transform: translate(-50%, 0) rotate(0deg); transform-origin: 50% 50%; opacity: 0; transition: transform .9s cubic-bezier(.2,1.2,.4,1), opacity .4s, left .9s, top .9s; filter: drop-shadow(0 8px 6px rgba(0,0,0,.3)); }
+  .item.in { opacity: 1; }
+  .bubble { position: absolute; background: var(--card); color: var(--ink); border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 14px; font: 400 clamp(14px, 2.2vw, 22px)/1.25 "Patrick Hand", cursive; max-width: 46%; box-shadow: var(--shadow); animation: pop .35s cubic-bezier(.2,1.5,.4,1) both; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; border: 10px solid transparent; border-left-color: #3a2c20; }
+  #bubble1, #bubble3 { left: 9%; top: 5%; max-width: 44%; }
+  .guide { position: absolute; right: 1%; bottom: -3%; height: 70%; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); transition: transform .3s, opacity .4s; }
+  .pop-text { position: absolute; font-size: clamp(26px, 5vw, 56px); color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; animation: punch .9s cubic-bezier(.2,1.6,.4,1) both; z-index: 5; }
+  .pop-text.bad { color: var(--red); text-shadow: 0 3px 0 #fff, 0 8px 16px rgba(0,0,0,.35); }
+  @keyframes punch { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes shake { 0%, 100% { transform: translate(0); } 20% { transform: translate(-8px, 3px); } 40% { transform: translate(7px, -3px); } 60% { transform: translate(-5px, 2px); } 80% { transform: translate(4px, -2px); } }
+  .shake { animation: shake .45s linear; }
+  .wobble { animation: wob .5s ease-in-out infinite; } @keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .shelf { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .shelf .btn { flex: 1 1 140px; justify-content: flex-start; }
+  .shelf .btn.done-ok { background: var(--green); color: #fff; } .shelf .btn.done-bad { background: var(--paper-2); }
+  .meter { position: absolute; left: 2%; top: 8%; width: 5%; height: 60%; border: 3px solid #3a2c20; border-radius: 10px; background: rgba(255,255,255,.55); overflow: hidden; }
+  .meter .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--red); transition: height .6s cubic-bezier(.2,1.2,.4,1); }
+  .meter .fill.ok { background: var(--green); }
+  .meter .mark { position: absolute; left: -30%; right: -30%; bottom: 30%; border-top: 3px dashed var(--red); }
+  .meter-label { position: absolute; left: 1%; top: 70%; width: 7%; text-align: center; font-size: clamp(10px, 1.6vw, 16px); line-height: 1.1; color: #3a2c20; text-shadow: 0 1px 0 #fff; }
+  .hud { position: absolute; left: 50%; top: 3%; transform: translateX(-50%); display: flex; gap: 6px; }
+  .hud .star { width: clamp(22px, 4vw, 40px); height: clamp(22px, 4vw, 40px); border-radius: 50%; background: var(--card); border: 3px solid #3a2c20; display: grid; place-items: center; font-size: clamp(12px, 2.2vw, 22px); }
+  .hud .star.on { background: var(--gold); animation: pop .4s cubic-bezier(.2,1.6,.4,1) both; }
+
+  /* ───────── game 3: climb it yourself ───────── */
+  #bg3 { transition: transform 1.1s cubic-bezier(.4,0,.2,1), filter 1.1s; transform-origin: 42% 72%; }
+  #bg3.zoomed { transform: scale(2.8); filter: blur(3px) brightness(.7); }
+  #spider3 { left: 30%; top: 56%; width: 11%; transition: left 1.1s ease-in-out, top 1.1s ease-in-out, opacity .4s; filter: drop-shadow(0 6px 4px rgba(0,0,0,.25)); }
+  .fadeout { opacity: 0 !important; pointer-events: none; }
+  #pov { position: absolute; inset: 0; overflow: hidden; touch-action: none; user-select: none; cursor: ew-resize; opacity: 0; transition: opacity .5s; pointer-events: none; }
+  #pov.on { opacity: 1; pointer-events: auto; }
+  .climbwall { position: absolute; left: 31%; width: 38%; height: 400%; top: -300%; will-change: transform; }
+  .ramp { position: absolute; left: 0; right: 0; top: 11%; bottom: 0; border-left: 5px solid #3a2c20; border-right: 5px solid #3a2c20; box-shadow: inset 0 0 60px rgba(0,0,0,.16); }
+  .ramp.tub { background: linear-gradient(90deg, #e9e4d6, #fffdf6 45%, #efece2); }
+  .ramp.towel { background-color: #efe5cf; background-image: radial-gradient(circle, #fbf4e4 0 5px, transparent 5.5px), radial-gradient(circle, #d8c7a6 0 4px, transparent 4.5px); background-size: 22px 22px, 22px 22px; background-position: 0 0, 11px 11px; }
+  .ramp.glass { background: linear-gradient(100deg, #cfe6f4, #a7cde6 35%, #eaf5fc 55%, #b3d6ec 75%, #d8ecf7); }
+  .ramp.spoon { background: repeating-linear-gradient(92deg, #c69660 0 7px, #a9773f 7px 10px, #d4a66e 10px 16px); }
+  .ramp.ruler { background-color: #4f86d6; background-image: repeating-linear-gradient(0deg, #fff 0 3px, transparent 3px 28px); background-size: 22% 100%; background-repeat: no-repeat; background-position: 100% 0; }
+  .ramp.shoelace { background-color: #7a4e2a; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.2) 0 9px, transparent 9px 18px), repeating-linear-gradient(-45deg, rgba(0,0,0,.22) 0 9px, transparent 9px 18px); }
+  .ramp.newspaper { background-color: #dedad0; background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 2px, transparent 2px 7px), linear-gradient(115deg, transparent 40%, rgba(0,0,0,.14) 41%, transparent 43%), linear-gradient(60deg, transparent 60%, rgba(0,0,0,.12) 61%, transparent 64%), linear-gradient(160deg, transparent 20%, rgba(255,255,255,.6) 21%, transparent 24%); }
+  .rimcap { position: absolute; left: -12%; right: -12%; top: 9.4%; height: 2.2%; background: #fffdf6; border: 5px solid #3a2c20; border-radius: 60px; box-shadow: 0 10px 20px rgba(0,0,0,.25); }
+  .floorcap { position: absolute; left: -12%; right: -12%; bottom: 0; height: 2.5%; background: #e6e1d2; border-top: 5px solid #3a2c20; }
+  #povspider { position: absolute; left: 50%; top: 46%; width: 15%; transform: translate(-50%, 0); filter: drop-shadow(0 8px 6px rgba(0,0,0,.35)); transition: top .8s; }
+  #povspider.climbing { animation: crawl .35s ease-in-out infinite; }
+  @keyframes crawl { 0%, 100% { transform: translate(-50%, 0) rotate(-3deg); } 50% { transform: translate(-50%, -3%) rotate(3deg); } }
+  #povspider.slipping { animation: slipshake .3s linear infinite; }
+  @keyframes slipshake { 0%, 100% { transform: translate(-50%, 0); } 25% { transform: translate(-56%, 2%); } 75% { transform: translate(-44%, -1%); } }
+  .dial { position: absolute; left: 50%; top: 5%; width: 32%; aspect-ratio: 2 / 1; transform: translateX(-50%); border-radius: 999px 999px 0 0; border: 4px solid #3a2c20; border-bottom-width: 6px; overflow: visible; --band: 25deg; background: conic-gradient(from 270deg at 50% 100%, #cb382e 0deg, #cb382e calc(90deg - var(--band)), #4f8a5b calc(90deg - var(--band)), #4f8a5b calc(90deg + var(--band)), #cb382e calc(90deg + var(--band)), #cb382e 180deg, transparent 180deg); box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+  .dial::before { content: ""; position: absolute; inset: 14% 14% 0; border-radius: 999px 999px 0 0; background: rgba(251,243,223,.94); }
+  .needle { position: absolute; left: 50%; bottom: 0; width: 4%; height: 94%; margin-left: -2%; background: #3a2c20; border-radius: 6px 6px 0 0; transform-origin: 50% 100%; transform: rotate(0deg); }
+  .pin { position: absolute; left: 50%; bottom: -9%; width: 14%; aspect-ratio: 1; transform: translateX(-50%); background: var(--gold); border: 4px solid #3a2c20; border-radius: 50%; }
+  .dial .lbl { position: absolute; left: 50%; top: 48%; transform: translateX(-50%); font: 400 clamp(10px, 1.6vw, 15px)/1 "Patrick Hand", cursive; color: #3a2c20; white-space: nowrap; }
+  .vbar { position: absolute; top: 8%; width: 6%; height: 70%; border: 4px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.7); overflow: hidden; }
+  .vbar.hm { left: 3%; } .vbar.tm { right: 3%; }
+  .vbar .f { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--green); }
+  .vbar.tm .f { top: 0; bottom: auto; height: 100%; background: var(--gold); }
+  .vlbl { position: absolute; top: 80%; width: 12%; text-align: center; font: 700 clamp(11px, 2vw, 18px)/1.1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
+  .vlbl.hm { left: 0; } .vlbl.tm { right: 0; }
+  .povmsg { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); font-size: clamp(40px, 9vw, 110px); color: #fff; text-shadow: 0 5px 0 #3a2c20, 0 12px 24px rgba(0,0,0,.45); pointer-events: none; animation: punch .5s cubic-bezier(.2,1.6,.4,1) both; z-index: 5; }
+  .povhint { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); background: rgba(58,44,32,.85); color: #fff; padding: 8px 14px; border-radius: 12px; font: 400 clamp(13px, 2vw, 19px)/1.2 "Patrick Hand", cursive; white-space: nowrap; pointer-events: none; }
+  .results { position: absolute; inset: 6%; background: var(--card); border: 4px solid #3a2c20; border-radius: 18px; padding: 18px 22px; box-shadow: var(--shadow); animation: bounceIn .6s cubic-bezier(.2,1.4,.4,1) both; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; overflow: auto; z-index: 6; }
+  .results h3 { margin: 0 0 6px; font: 700 clamp(20px, 4vw, 34px)/1.1 "Fredoka", Arial, sans-serif; }
+  .results p { margin: 4px 0; font-size: clamp(13px, 2vw, 18px); }
+  .results img { height: clamp(80px, 18vw, 170px); filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); animation: pop .6s .3s cubic-bezier(.2,1.6,.4,1) both; }
+
+  /* ───────── game 2 ───────── */
+  .doors { position: absolute; left: 0; right: 0; bottom: 6%; display: flex; justify-content: space-around; padding: 0 2%; }
+  .door { width: 7.5%; aspect-ratio: 1; border-radius: 50%; border: 3px solid #3a2c20; background: var(--card); font: 700 clamp(12px, 2.4vw, 24px)/1 "Fredoka", Arial, sans-serif; color: var(--ink); cursor: pointer; box-shadow: 0 4px 0 #3a2c20; display: grid; place-items: center; transition: transform .1s; }
+  .door.next { background: var(--gold); color: #3a2c20; animation: pulse 1.2s ease-in-out infinite; } .door.done { background: var(--green); color: #fff; } .door:disabled { cursor: default; opacity: .7; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+  #house { touch-action: none; user-select: none; } #house.searching { cursor: none; }
+  #house .results { cursor: auto; } #house .nextroom, #house .results .btn { cursor: pointer; }
+  #fog { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity .9s; z-index: 1; }
+  #fog.clear { opacity: 0; }
+  .beam { position: absolute; width: 30%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 2; background: radial-gradient(circle, rgba(255,232,170,.30) 0 28%, rgba(255,232,170,.10) 52%, transparent 68%); }
+  .rspider { position: absolute; width: 13%; transform: translate(-50%, -50%); filter: drop-shadow(0 4px 4px rgba(0,0,0,.45)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; z-index: 3; }
+  .pill { position: absolute; top: 3%; font: 700 clamp(12px, 2.2vw, 20px)/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.85); padding: 7px 12px; border-radius: 999px; z-index: 4; pointer-events: none; }
+  .pill.tl { left: 2%; } .pill.tr { right: 2%; }
+  .litbar { position: absolute; left: 2%; right: 2%; bottom: 3%; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(0,0,0,.45); overflow: hidden; z-index: 4; pointer-events: none; }
+  .litbar div { height: 100%; width: 0; background: var(--gold); transition: width .15s; }
+  .roomstamp { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-8deg); font: 400 clamp(20px, 4vw, 40px)/1 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.92); padding: 8px 16px; border: 3px solid #3a2c20; border-radius: 10px; animation: pop .4s both; z-index: 4; pointer-events: none; }
+  .nextroom { position: absolute; right: 2%; bottom: 8%; z-index: 5; animation: pop .4s cubic-bezier(.2,1.6,.4,1) both; }
+  .tally { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { font: 400 19px/1.2 "Patrick Hand", cursive; padding: 6px 12px; border: 2px dashed var(--line); border-radius: 10px; background: var(--card); }
+  .chip b { font: 700 22px/1 "Fredoka", Arial, sans-serif; font-variant-numeric: tabular-nums; }
+  .status { font: 400 22px/1.3 "Patrick Hand", cursive; margin-top: 10px; min-height: 1.4em; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 7; }
+  .confetti i { position: absolute; width: 10px; height: 14px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+  footer { margin-top: 22px; font-size: 14px; color: var(--muted); border-top: 2px solid var(--line); padding-top: 10px; }
+  @media (max-width: 560px) { #title .stage { aspect-ratio: 4 / 3; } #title .stage > img.bg { object-position: 72% 50%; } .hero-title { font-size: 36px; top: 5%; } .hero-btns { flex-direction: column; gap: 6px; bottom: 5%; } .stickers img { height: 44px; } .hero-sub { display: none; } .bubble { max-width: 60%; font-size: 13px; padding: 6px 9px; } .guide { height: 60%; } .btn { font-size: 17px; padding: 10px 13px; } .dial { width: 46%; } .povhint { white-space: normal; width: 80%; text-align: center; } }
+  @media (prefers-reduced-motion: reduce) { .door.next, .wobble, #povspider.climbing { animation: none; } }
+</style>
+
+<div class="motes" id="motes" aria-hidden="true"></div>
+<main>
+  <div class="topbar">
+    <span class="eyebrow">The Backyard Library · Why, Dad? · Episode 20</span>
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="home" type="button" hidden>⌂ Title</button>
+    <button class="btn ghost small" id="mute" type="button" aria-pressed="false">🔔 sound</button>
+  </div>
+
+  <!-- ═══════════ TITLE ═══════════ -->
+  <section class="screen" id="title">
+    <div class="stage">
+      <img class="bg" src="assets/title_key.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="hero-title display">The<br>Spider Lab</div>
+      <div class="hero-sub hand">He did not come up the drain. Can you get him out? Can YOU climb out? Then take the flashlight through ten dark houses and count the spiders.</div>
+      <div class="stickers" id="stickers" aria-label="Badges earned"></div>
+      <div class="hero-btns">
+        <button class="btn" id="play1" type="button">🛁 Out of the tub</button>
+        <button class="btn red" id="play3" type="button">🕹 Climb it yourself</button>
+        <button class="btn teal" id="play2" type="button">🔦 Spider census</button>
+      </div>
+    </div>
+    <p class="status">Three games from the episode <a href="https://www.youtube.com/@thebackyardlibrary">Why Do Spiders Come Inside in the Fall?</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a><br><span id="bestline"></span></p>
+  </section>
+
+  <!-- ═══════════ GAME 1 ═══════════ -->
+  <section class="screen" id="g1" hidden>
+    <div class="stage" id="stage1">
+      <img class="bg" src="assets/bg_tub_side.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="meter" aria-hidden="true"><div class="fill" id="fill"></div><div class="mark"></div></div>
+      <div class="meter-label hand">bumpy<br>↑<br>feet hold<br>↓<br>smooth</div>
+      <div class="hud" id="hud" aria-label="Ladders found"></div>
+      <img id="item" class="item" src="" alt="">
+      <img id="spider" class="sprite" src="assets/spider_idle.png" alt="the spider">
+      <img id="guide1" class="guide" src="assets/mascot_pointing.png" alt="">
+      <div class="bubble" id="bubble1">He is stuck. What should we lean against the side of the tub?</div>
+      <div class="confetti" id="conf1"></div>
+    </div>
+    <div class="shelf" id="shelf" role="group" aria-label="Things to lean against the tub"></div>
+    <div class="status" id="s1"></div>
+    <div class="topbar" style="margin-top:10px"><button class="btn ghost small" id="reset1" type="button">↺ Start again</button><span class="spacer"></span><button class="btn red small" id="to3" type="button">🕹 Now YOU climb →</button><button class="btn teal small" id="to2" type="button" hidden>Next: the spider census →</button></div>
+  </section>
+
+  <!-- ═══════════ GAME 3: CLIMB IT YOURSELF ═══════════ -->
+  <section class="screen" id="g3" hidden>
+    <div class="stage" id="stage3">
+      <img class="bg" id="bg3" src="assets/bg_tub_side.jpg" alt="">
+      <div class="vignette"></div>
+      <img id="item3" class="item" src="" alt="">
+      <img id="spider3" class="sprite" src="assets/spider_idle.png" alt="the spider">
+      <img id="guide3" class="guide" src="assets/mascot_talking.png" alt="">
+      <div class="bubble" id="bubble3">Now YOU are the spider. Pick what to climb. The bare tub is the hardest thing in the house.</div>
+      <div id="pov" aria-label="Climb view">
+        <div class="climbwall" id="wall"><div class="ramp" id="ramp"></div><div class="rimcap"></div><div class="floorcap"></div></div>
+        <img id="povspider" src="assets/spider_climb.png" alt="">
+        <div class="dial" id="dial"><div class="needle" id="needle"></div><div class="pin"></div><div class="lbl">grip</div></div>
+        <div class="vbar hm"><div class="f" id="hfill"></div></div><div class="vlbl hm" id="hlabel">0%</div>
+        <div class="vbar tm"><div class="f" id="tfill"></div></div><div class="vlbl tm" id="tlabel">30s</div>
+        <div class="povhint hand" id="povhint">Keep the needle in the green: move the mouse (or your finger) the OTHER way to push it back.</div>
+        <div class="povmsg display" id="povmsg" hidden></div>
+        <div class="results" id="card3" hidden></div>
+      </div>
+      <div class="confetti" id="conf3"></div>
+    </div>
+    <div class="shelf" id="shelf3" role="group" aria-label="What to climb"></div>
+    <div class="status" id="s3"></div>
+    <div class="topbar" style="margin-top:10px"><button class="btn ghost small" id="quit3" type="button" hidden>↩ Pick something else</button></div>
+  </section>
+
+  <!-- ═══════════ GAME 2 ═══════════ -->
+  <section class="screen" id="g2" hidden>
+    <div class="stage wide" id="street">
+      <img class="bg" src="assets/bg_street.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="bubble" id="bubble2" style="left:3%;top:6%;max-width:40%">You are the scientist. Ten houses, four rooms each, and your flashlight. Open the glowing one.</div>
+      <div class="doors" id="doors"></div>
+    </div>
+    <div class="stage" id="house" hidden>
+      <img class="bg" id="roombg" src="" alt="">
+      <img id="roomspider" class="rspider" src="assets/spider_idle.png" alt="a spider" hidden>
+      <canvas id="fog" width="960" height="540"></canvas>
+      <div class="beam" id="beam" hidden></div>
+      <div class="pill tl" id="roomlbl"></div>
+      <div class="pill tr" id="scorelbl">⭐ 0</div>
+      <div class="litbar"><div id="litfill"></div></div>
+      <div class="roomstamp" id="stamp" hidden>nobody home</div>
+      <button class="btn small nextroom" id="nextroom" type="button" hidden>Next room →</button>
+      <div class="confetti" id="conf2"></div>
+      <div class="results" id="results" hidden></div>
+    </div>
+    <div class="tally">
+      <span class="chip">score <b id="score">0</b></span>
+      <span class="chip">houses with a spider <b id="hc">0</b>/<b id="hs">0</b></span>
+      <span class="chip">bedrooms <b id="bc">0</b>/<b id="bs">0</b></span>
+      <span class="chip">bathrooms <b id="bac">0</b>/<b id="bas">0</b></span>
+    </div>
+    <div class="status" id="s2"></div>
+    <div class="topbar" style="margin-top:10px"><button class="btn small" id="back2" type="button" hidden>← Back to the street</button><button class="btn ghost small" id="reset2" type="button">↺ New street</button></div>
+  </section>
+
+  <footer>Games 1 and 3 use the grip model from the video: a spider's feet hook tiny bumps, and glazed enamel or clean glass has none. The needle in Game 3 is his grip; smoother surfaces knock it about harder and give him a narrower safe band. Game 2 is a flashlight search scored on the real survey, Bertone and others (2016): 50 houses in Raleigh, North Carolina, every one with spiders, about 77% of bedrooms and 68% of bathrooms. House spiders almost never bite people. The one in the tub just wants out.</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const store = { get: (k) => { try { return JSON.parse(localStorage.getItem("spiderlab:" + k)); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem("spiderlab:" + k, JSON.stringify(v)); } catch (e) {} } };
+
+  /* ───────── sound ───────── */
+  let ac = null, muted = false, musicTimer = null;
+  function tone(f0, f1, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || "sine";
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = { tap: () => tone(600, 900, 0.08, "square", 0.035), slip: () => tone(520, 140, 0.4, "sawtooth", 0.05), pop: () => tone(300, 900, 0.12, "triangle", 0.07),
+                none: () => tone(380, 360, 0.18, "sine", 0.03), tick: () => tone(900, 900, 0.05, "square", 0.03), thud: () => tone(160, 60, 0.3, "sine", 0.09),
+                win: () => [0, .12, .24, .4].forEach((d, i) => tone([523, 659, 784, 1047][i], [523, 659, 784, 1047][i] * 1.01, 0.3, "triangle", 0.06, d)) };
+  const TUNE = [262, 330, 392, 330, 440, 392, 330, 294, 262, 330, 392, 523, 440, 392, 330, 294];
+  function music(on) {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!on || muted) return;
+    let i = 0; musicTimer = setInterval(() => { tone(TUNE[i % TUNE.length], TUNE[i % TUNE.length], 0.22, "triangle", 0.018); if (i % 4 === 0) tone(TUNE[i % TUNE.length] / 2, TUNE[i % TUNE.length] / 2, 0.4, "sine", 0.012); i++; }, 300);
+  }
+  let screen = "title";
+  $("mute").addEventListener("click", () => { muted = !muted; $("mute").textContent = muted ? "🔕 sound" : "🔔 sound"; $("mute").setAttribute("aria-pressed", String(muted)); music(screen !== "title"); });
+
+  /* ───────── motes + confetti ───────── */
+  const motes = $("motes");
+  for (let i = 0; i < 18; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = Math.random() * 100 + "%"; m.style.animationDuration = 18 + Math.random() * 20 + "s"; m.style.animationDelay = -Math.random() * 30 + "s"; m.style.transform = `scale(${.5 + Math.random()})`; motes.appendChild(m); }
+  function confetti(host, n) { if (reduce) return; const cols = ["#ecb23c", "#20525c", "#cb382e", "#5c8cbe", "#4f8a5b"]; for (let i = 0; i < n; i++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.top = "-5%"; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * .6 + "s"; p.style.animationDuration = 1.2 + Math.random() + "s"; host.appendChild(p); setTimeout(() => p.remove(), 2600); } }
+  function popText(stage, text, x, y, bad) { const el = document.createElement("div"); el.className = "pop-text display" + (bad ? " bad" : ""); el.textContent = text; el.style.left = x; el.style.top = y; stage.appendChild(el); setTimeout(() => el.remove(), 1400); }
+
+  /* ───────── screens ───────── */
+  function show(id) {
+    if (screen === "g3" && id !== "g3") leaveClimb();
+    screen = id;
+    for (const s of ["title", "g1", "g2", "g3"]) $(s).hidden = (s !== id);
+    $("home").hidden = (id === "title"); music(id !== "title"); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "title") { renderStickers(); bestLine(); }
+  }
+  $("home").addEventListener("click", () => { sfx.tap(); show("title"); });
+  $("play1").addEventListener("click", () => { sfx.tap(); show("g1"); });
+  $("play2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  $("play3").addEventListener("click", () => { sfx.tap(); show("g3"); });
+  function renderStickers() {
+    const got = store.get("badges") || {}; const host = $("stickers"); host.innerHTML = "";
+    for (const [k, src] of [["ladder", "assets/badge_ladder.png"], ["scientist", "assets/badge_scientist.png"]]) { const im = document.createElement("img"); im.src = src; im.alt = got[k] ? k + " badge earned" : k + " badge locked"; if (!got[k]) im.className = "locked"; host.appendChild(im); }
+  }
+  function earn(k) { const got = store.get("badges") || {}; got[k] = true; store.set("badges", got); }
+  function bestLine() {
+    const b = store.get("climb") || {}; const ks = Object.keys(b); if (!ks.length) { $("bestline").textContent = ""; return; }
+    const top = ks.sort((x, y) => b[y] - b[x])[0]; const nm = (SURF.find(s => s.id === top) || {}).name || top;
+    $("bestline").textContent = `🕹 Your best climb so far: ${b[top]}% of the tub on the ${nm.toLowerCase()}` + (b.tub !== undefined ? ` · bare tub: ${b.tub}%` : "");
+  }
+
+  /* ═══════════ GAME 1 ═══════════ */
+  const GRIP = 0.30;
+  const ITEMS = [
+    { id: "towel", name: "Towel", r: 0.90, why: "A towel is thousands of little cloth loops. His feet hook every one. That is the ladder from the video." },
+    { id: "glass", name: "Pane of glass", r: 0.05, why: "Glass is even smoother than the tub. Nothing to hook. He slides straight back." },
+    { id: "spoon", name: "Wooden spoon", r: 0.70, why: "Wood has grain, tiny ridges running along it. Plenty for eight feet to grab." },
+    { id: "ruler", name: "Plastic ruler", r: 0.12, why: "Smooth plastic is nearly as slippery as the tub. He gets a little way up and slips." },
+    { id: "shoelace", name: "Shoelace", r: 0.85, why: "A shoelace is braided thread. Bumps all the way up. A rope works the same way." },
+    { id: "newspaper", name: "Crumpled newspaper", r: 0.55, why: "Paper is rougher than it looks, and crumpling it makes folds to climb. Good enough." },
+  ];
+  const THIN = { ruler: 1, spoon: 1, shoelace: 1 };
+  const g1 = { tried: {}, busy: false, ladders: 0 };
+  const LADDERS = ITEMS.filter(i => i.r >= GRIP).length;
+  const spider = $("spider"), item = $("item"), bubble1 = $("bubble1"), guide1 = $("guide1"), stage1 = $("stage1");
+  const POS = { idle: { left: "30%", top: "56%" }, foot: { left: "50%", top: "57%" }, onItem: { left: "56%", top: "38%" }, rim: { left: "63%", top: "15%" }, out: { left: "66%", top: "5%" } };
+  function place(el, pos) { el.style.left = pos.left; el.style.top = pos.top; }
+  function setSpider(src, pos) { if (src) spider.src = "assets/spider_" + src + ".png"; if (pos) place(spider, pos); }
+  function leanIn(el, id) { el.src = `assets/item_${id}.png`; el.style.transform = "translate(-50%, -120%) rotate(-10deg)"; el.style.left = "55%"; el.style.top = "20%"; el.classList.add("in"); return sleep(60).then(() => { el.style.transform = "translate(-50%, 0) rotate(-46deg)"; el.style.left = "60%"; el.style.top = "33%"; el.style.width = THIN[id] ? "11%" : "19%"; }); }
+  function renderShelf() {
+    const host = $("shelf"); host.innerHTML = "";
+    ITEMS.forEach(it => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost" + (g1.tried[it.id] === true ? " done-ok" : g1.tried[it.id] === false ? " done-bad" : "");
+      b.disabled = g1.busy || g1.tried[it.id] !== undefined;
+      b.innerHTML = `<img src="assets/item_${it.id}.png" alt="">${it.name}${g1.tried[it.id] === true ? " ⭐" : g1.tried[it.id] === false ? " ✖" : ""}`;
+      b.addEventListener("click", () => tryItem(it)); host.appendChild(b);
+    });
+    const hud = $("hud"); hud.innerHTML = ""; for (let i = 0; i < LADDERS; i++) { const s = document.createElement("div"); s.className = "star" + (i < g1.ladders ? " on" : ""); s.textContent = i < g1.ladders ? "⭐" : ""; hud.appendChild(s); }
+    $("to2").hidden = g1.ladders < LADDERS;
+  }
+  function say(el, t) { el.textContent = t; el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+  async function tryItem(it) {
+    if (g1.busy) return; g1.busy = true; renderShelf(); sfx.tap();
+    guide1.src = "assets/mascot_pointing.png";
+    say(bubble1, `Lowering the ${it.name.toLowerCase()}…`);
+    await leanIn(item, it.id);
+    await sleep(950);
+    $("fill").style.height = (it.r * 100) + "%"; $("fill").className = "fill" + (it.r >= GRIP ? " ok" : "");
+    setSpider("idle", POS.foot); await sleep(1150);
+    if (it.r >= GRIP) {
+      say(bubble1, "His feet hook the bumps. Up he goes!"); setSpider("climb", POS.onItem); await sleep(800); setSpider("climb", POS.rim); await sleep(900);
+      setSpider("idle", POS.out); sfx.win(); popText(stage1, "FREE!", "56%", "30%"); confetti($("conf1"), 60); guide1.src = "assets/mascot_amazed.png";
+      g1.tried[it.id] = true; g1.ladders++; await sleep(900);
+    } else {
+      say(bubble1, "Hmm. His feet find nothing to hook…");
+      for (let k = 0; k < 2; k++) {
+        setSpider("climb", { left: "54%", top: "44%" }); await sleep(600);
+        setSpider("slip", POS.foot); spider.classList.add("shake"); sfx.slip(); popText(stage1, "slips!", "40%", "30%", true); await sleep(650); spider.classList.remove("shake");
+      }
+      g1.tried[it.id] = false; guide1.src = "assets/mascot_talking.png"; await sleep(300);
+    }
+    say(bubble1, it.why); $("s1").textContent = it.r >= GRIP ? `⭐ The ${it.name.toLowerCase()} is a ladder.` : `✖ The ${it.name.toLowerCase()} is too smooth.`;
+    item.classList.remove("in"); setSpider("idle", POS.idle); $("fill").style.height = "0";
+    g1.busy = false; renderShelf();
+    if (g1.ladders >= LADDERS) { earn("ladder"); await sleep(400); say(bubble1, `All ${LADDERS} ladders found. You earned the Ladder badge! The secret: bumps his feet can hook.`); guide1.src = "assets/mascot_wave.png"; confetti($("conf1"), 120); sfx.win(); }
+  }
+  $("reset1").addEventListener("click", () => { g1.tried = {}; g1.ladders = 0; g1.busy = false; setSpider("idle", POS.idle); item.classList.remove("in"); guide1.src = "assets/mascot_pointing.png"; say(bubble1, "He is stuck. What should we lean against the side of the tub?"); $("s1").textContent = ""; $("fill").style.height = "0"; renderShelf(); sfx.tap(); });
+  $("to2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  $("to3").addEventListener("click", () => { sfx.tap(); show("g3"); });
+  renderShelf();
+
+  /* ═══════════ GAME 3: CLIMB IT YOURSELF ═══════════ */
+  // The needle is his grip. Off-centre it falls further off-centre (an inverted pendulum), the surface
+  // shoves it about (smooth = harder shoves, narrower safe band), and your mouse pushes it back.
+  // In the band he climbs; out of it he slides; needle to the edge = a fall. Tuned in sim_climb.py.
+  const SURF = [{ id: "tub", name: "Bare tub", r: 0.02, why: "Glazed enamel has nothing to hook. Even a real spider is stuck here, which is exactly why he needs a ladder." }]
+    .concat(ITEMS.map(i => ({ id: i.id, name: i.name, r: i.r, why: i.why })));
+  const CLIMB_T = 30;
+  function climbParams(r) { const tub = r < 0.03; return { g: (0.6 + (1 - r) * 5.4) * (tub ? 1.35 : 1), n: (0.15 + (1 - r) * 2.7) * (tub ? 1.3 : 1), band: tub ? 0.14 : 0.16 + r * 0.30, slip: (3 + (1 - r) * 33) / 100, damp: 1.5 + r * 2, climb: 0.05 + r * 0.03, c: 7, gustRate: 0.2 + (1 - r) * 1.2, gustImp: 0.15 + (1 - r) * 0.7 }; }
+  const g3 = { surf: null, state: "pick", P: null, h: 0, max: 0, th: 0, v: 0, t: 0, input: 0, keys: 0, timer: 0, last: 0, p1: 0, p2: 0, falls: 0 };
+  const pov = $("pov"), wall = $("wall"), ramp = $("ramp"), needle = $("needle"), povspider = $("povspider"), povmsg = $("povmsg"), card3 = $("card3"), bg3 = $("bg3"), item3 = $("item3"), spider3 = $("spider3"), guide3 = $("guide3"), bubble3 = $("bubble3");
+  function renderShelf3() {
+    const host = $("shelf3"); host.innerHTML = ""; const best = store.get("climb") || {};
+    SURF.forEach(s => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.disabled = g3.state !== "pick";
+      b.innerHTML = (s.id === "tub" ? "🛁 " : `<img src="assets/item_${s.id}.png" alt="">`) + s.name + (best[s.id] !== undefined ? ` <small>best ${best[s.id]}%</small>` : "");
+      b.addEventListener("click", () => pickSurf(s)); host.appendChild(b);
+    });
+  }
+  function msg3(text, ms) { povmsg.textContent = text; povmsg.hidden = false; povmsg.style.animation = "none"; void povmsg.offsetWidth; povmsg.style.animation = ""; if (ms) setTimeout(() => { if (povmsg.textContent === text) povmsg.hidden = true; }, ms); }
+  function drawClimb() {
+    needle.style.transform = `rotate(${g3.th * 70}deg)`;
+    wall.style.transform = `translateY(${g3.h * 75}%)`;
+    $("hfill").style.height = (g3.h * 100) + "%"; $("hlabel").textContent = Math.round(g3.h * 100) + "%";
+    const left = Math.max(0, CLIMB_T - g3.t); $("tfill").style.height = (left / CLIMB_T * 100) + "%"; $("tlabel").textContent = Math.ceil(left) + "s";
+  }
+  async function pickSurf(s) {
+    if (g3.state !== "pick") return; g3.state = "zoom"; g3.surf = s; g3.P = climbParams(s.r); renderShelf3(); sfx.tap();
+    $("quit3").hidden = false; $("s3").textContent = s.id === "tub" ? "Nothing to lean. Just the tub. Good luck." : `Leaning the ${s.name.toLowerCase()} in. Get ready…`;
+    say(bubble3, s.id === "tub" ? "The bare enamel. Almost nobody gets up this." : `The ${s.name.toLowerCase()}. ${s.r >= GRIP ? "Bumps to hook, you should be fine." : "Smooth. This will be hard."}`);
+    if (s.id !== "tub") { await leanIn(item3, s.id); await sleep(900); }
+    spider3.src = "assets/spider_idle.png"; place(spider3, POS.foot); await sleep(1100);
+    if (g3.state !== "zoom") return;
+    bg3.classList.add("zoomed"); for (const el of [item3, spider3, guide3, bubble3]) el.classList.add("fadeout");
+    ramp.className = "ramp " + s.id; $("dial").style.setProperty("--band", (g3.P.band * 70) + "deg");
+    g3.h = g3.max = g3.th = g3.v = g3.t = 0; g3.falls = 0; g3.input = 0; g3.p1 = Math.random() * 6.28; g3.p2 = Math.random() * 6.28;
+    card3.hidden = true; povspider.className = ""; povspider.src = "assets/spider_climb.png"; drawClimb();
+    await sleep(700); if (g3.state !== "zoom") return;
+    pov.classList.add("on"); $("s3").textContent = "Keep the needle in the green. He climbs while it is in the band and slides when it is not.";
+    for (const c of ["3", "2", "1"]) { msg3(c, 700); sfx.tick(); await wait(750); if (g3.state !== "zoom") return; }
+    msg3("Climb!", 800); sfx.pop(); g3.state = "play"; g3.last = performance.now(); clearInterval(g3.timer); g3.timer = setInterval(() => loop(performance.now()), 16);
+  }
+  function loop(ts) {
+    if (g3.state !== "play") return;
+    const dt = Math.min(0.05, (ts - g3.last) / 1000); g3.last = ts; g3.t += dt; const P = g3.P;
+    const noise = P.n * (0.6 * Math.sin(1.3 * g3.t + g3.p1) + 0.4 * Math.sin(2.9 * g3.t + g3.p2));
+    if (Math.random() < P.gustRate * dt) g3.v += (Math.random() < 0.5 ? -1 : 1) * P.gustImp;
+    const input = g3.keys || g3.input;
+    g3.v += (P.g * g3.th + noise + P.c * input) * dt; g3.v *= (1 - P.damp * dt); g3.th += g3.v * dt;
+    if (Math.abs(g3.th) >= 1) { g3.th = 0; g3.v = 0; g3.h *= 0.6; g3.falls++; sfx.slip(); msg3("slip!", 600); $("stage3").classList.remove("shake"); void $("stage3").offsetWidth; $("stage3").classList.add("shake"); povspider.className = "slipping"; povspider.src = "assets/spider_slip.png"; }
+    else if (Math.abs(g3.th) <= P.band) { g3.h += P.climb * dt; if (povspider.className !== "climbing") { povspider.className = "climbing"; povspider.src = "assets/spider_climb.png"; } }
+    else { g3.h -= P.slip * dt; if (povspider.className !== "slipping") { povspider.className = "slipping"; povspider.src = "assets/spider_slip.png"; } }
+    g3.h = clamp(g3.h, 0, 1); g3.max = Math.max(g3.max, g3.h); drawClimb();
+    if (g3.h >= 1) return endClimb(true);
+    if (g3.t >= CLIMB_T) return endClimb(false);
+  }
+  function endClimb(won) {
+    g3.state = "done"; clearInterval(g3.timer); povspider.className = ""; povmsg.hidden = true;
+    const s = g3.surf, pct = Math.round(g3.max * 100), best = store.get("climb") || {}; const prev = best[s.id]; const record = prev === undefined || pct > prev;
+    if (record) { best[s.id] = pct; store.set("climb", best); }
+    if (won) { sfx.win(); confetti($("conf3"), 140); msg3("OUT!", 1400); povspider.src = "assets/spider_idle.png"; povspider.style.top = "2%"; } else { sfx.thud(); msg3("Time!", 1200); }
+    setTimeout(() => {
+      if (g3.state !== "done") return;
+      card3.hidden = false; povspider.style.top = "";
+      card3.innerHTML = `<div><h3>${won ? `OUT! The whole tub in ${g3.t.toFixed(1)} s` : `You climbed ${pct}% of the tub`}</h3>` +
+        `<p><b>On the ${s.name.toLowerCase()}.</b> ${record ? "New best!" : `Your best here is ${prev}%.`}${g3.falls ? ` Falls: ${g3.falls}.` : " No falls!"}</p>` +
+        `<p>${s.why}</p>` +
+        `<p><button class="btn small" id="again3" type="button">↺ Again</button> <button class="btn ghost small" id="pick3" type="button">Pick something else</button> <button class="btn ghost small" id="home3" type="button">⌂ Title</button></p></div>` +
+        `<img src="assets/${won ? "spider_idle" : "spider_slip"}.png" alt="">`;
+      $("again3").addEventListener("click", () => { sfx.tap(); const keep = g3.surf; resetClimb(false); pickSurf(keep); });
+      $("pick3").addEventListener("click", () => { sfx.tap(); resetClimb(true); });
+      $("home3").addEventListener("click", () => { sfx.tap(); show("title"); });
+      $("s3").textContent = won ? "He is out. The bumps did it, and so did you." : "Time is up. Smoother means harder, just like the model says.";
+    }, won ? 1500 : 900);
+  }
+  function resetClimb(full) {
+    g3.state = "pick"; clearInterval(g3.timer); pov.classList.remove("on"); card3.hidden = true; povmsg.hidden = true;
+    bg3.classList.remove("zoomed"); for (const el of [item3, spider3, guide3, bubble3]) el.classList.remove("fadeout");
+    item3.classList.remove("in"); spider3.src = "assets/spider_idle.png"; place(spider3, POS.idle); $("quit3").hidden = true;
+    if (full) { say(bubble3, "Pick what to climb. Can you beat your best?"); $("s3").textContent = ""; }
+    renderShelf3();
+  }
+  function leaveClimb() { if (g3.state !== "pick") resetClimb(true); }
+  pov.addEventListener("pointermove", e => { if (g3.state !== "play") return; const r = pov.getBoundingClientRect(); g3.input = clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1, 1); });
+  pov.addEventListener("pointerdown", e => { if (g3.state !== "play") return; const r = pov.getBoundingClientRect(); g3.input = clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1, 1); try { pov.setPointerCapture(e.pointerId); } catch (x) {} });
+  pov.addEventListener("pointerleave", () => { g3.input = 0; });
+  window.addEventListener("keydown", e => { if (g3.state !== "play") return; if (e.key === "ArrowLeft") { g3.keys = -1; e.preventDefault(); } if (e.key === "ArrowRight") { g3.keys = 1; e.preventDefault(); } });
+  window.addEventListener("keyup", e => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") g3.keys = 0; });
+  $("quit3").addEventListener("click", () => { sfx.tap(); resetClimb(true); });
+  renderShelf3();
+
+  /* ═══════════ GAME 2: FLASHLIGHT CENSUS ═══════════ */
+  // The mouse (or a finger) is the flashlight. Each room starts dark under a fog canvas; the beam
+  // erases it (destination-out) and marks a 32x18 grid. The spider pops when the beam reaches his
+  // spot; a room is done when he is found or ~90% of the grid is lit. Points: find = 100 + the
+  // light you did NOT need; a fully-lit empty room = 30 (a real data point for the census).
+  const RATE = { bedroom: 0.77, bathroom: 0.68, kitchen: 0.52, "living room": 0.62 };
+  const ROOMS = [["bedroom", "room_bedroom.jpg"], ["bathroom", "room_bathroom.jpg"], ["kitchen", "room_kitchen.jpg"], ["living room", "room_living.jpg"]];
+  const SPOTS = { bedroom: [[22, 80, "under the bed"], [84, 38, "behind the curtain"], [58, 14, "on top of the bookshelf"], [8, 14, "in the ceiling corner"]],
+                  bathroom: [[10, 58, "behind the bathroom door"], [70, 70, "in the corner of the tub"], [91, 12, "up in the ceiling corner"], [40, 86, "by the bath mat"]],
+                  kitchen: [[88, 56, "behind the fridge"], [28, 84, "under the sink"], [8, 10, "in the ceiling corner"], [60, 20, "on top of the cupboard"]],
+                  "living room": [[88, 64, "in the corner by the sofa"], [56, 88, "under the armchair"], [6, 12, "in the ceiling corner"], [30, 30, "on the bookshelf"]] };
+  const GW = 32, GH = 18, FW = 960, FH = 540, R = 128;
+  const g2 = { seed: 7, houses: [], cur: -1, room: 0, score: 0, lit: null, litCount: 0, done: false };
+  const fog = $("fog"), fctx = fog.getContext("2d"), beam = $("beam"), roombg = $("roombg"), roomspider = $("roomspider");
+  function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function buildStreet() {
+    const r = rng(g2.seed); g2.houses = []; g2.score = 0;
+    for (let i = 0; i < 10; i++) {
+      const rooms = {}, spot = {};
+      ROOMS.forEach(([k]) => { rooms[k] = r() < RATE[k]; spot[k] = SPOTS[k][Math.floor(r() * SPOTS[k].length)]; });
+      if (!Object.values(rooms).some(Boolean)) rooms["living room"] = true;
+      g2.houses.push({ rooms, spot, searched: {} });
+    }
+    g2.cur = -1; g2.room = 0; $("house").hidden = true; $("street").hidden = false; $("results").hidden = true; $("back2").hidden = true;
+    $("bubble2").textContent = "You are the scientist. Ten houses, four rooms each, and your flashlight. Open the glowing one."; $("s2").textContent = ""; renderDoors(); tally();
+  }
+  function houseDone(h) { return ROOMS.every(([k]) => h.searched[k] !== undefined); }
+  function renderDoors() {
+    const host = $("doors"); host.innerHTML = ""; const nextIdx = g2.houses.findIndex(x => !houseDone(x));
+    g2.houses.forEach((h, i) => {
+      const done = houseDone(h), next = i === nextIdx;
+      const b = document.createElement("button"); b.type = "button"; b.className = "door" + (done ? " done" : next ? " next" : ""); b.textContent = done ? "🕷" : String(i + 1); b.disabled = !next; b.setAttribute("aria-label", `House ${i + 1}${done ? ", searched" : ""}`);
+      b.addEventListener("click", () => openHouse(i)); host.appendChild(b);
+    });
+  }
+  function openHouse(i) { sfx.tap(); g2.cur = i; g2.room = 0; $("street").hidden = true; $("house").hidden = false; $("back2").hidden = true; showRoom(); }
+  function showRoom() {
+    const [k, img] = ROOMS[g2.room];
+    g2.done = false; $("house").classList.add("searching"); $("stamp").hidden = true; $("nextroom").hidden = true; $("nextroom").classList.remove("wobble"); roomspider.hidden = true; $("results").hidden = true; beam.hidden = true;
+    roombg.src = "assets/" + img; $("roomlbl").textContent = `House ${g2.cur + 1} · ${k} · ${g2.room + 1}/4`; $("scorelbl").textContent = "⭐ " + g2.score;
+    fctx.globalCompositeOperation = "source-over"; fctx.clearRect(0, 0, FW, FH); fctx.fillStyle = "rgba(18,12,6,.93)"; fctx.fillRect(0, 0, FW, FH); fog.classList.remove("clear");
+    g2.lit = new Uint8Array(GW * GH); g2.litCount = 0; $("litfill").style.width = "0";
+    $("s2").textContent = `House ${g2.cur + 1}, the ${k}. Shine the light around. Leave when the whole room is lit, or sooner if you find him.`;
+  }
+  function shine(e) {
+    if (g2.done || $("house").hidden) return;
+    const r = fog.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    if (x < 0 || x > 1 || y < 0 || y > 1) { beam.hidden = true; return; }
+    beam.hidden = false; beam.style.left = x * 100 + "%"; beam.style.top = y * 100 + "%";
+    const cx = x * FW, cy = y * FH;
+    const g = fctx.createRadialGradient(cx, cy, 0, cx, cy, R); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(0.55, "rgba(0,0,0,.95)"); g.addColorStop(1, "rgba(0,0,0,0)");
+    fctx.globalCompositeOperation = "destination-out"; fctx.fillStyle = g; fctx.beginPath(); fctx.arc(cx, cy, R, 0, 6.2832); fctx.fill();
+    const rr = R * 0.78;
+    for (let gy = 0; gy < GH; gy++) for (let gx = 0; gx < GW; gx++) { const i = gy * GW + gx; if (g2.lit[i]) continue; const px = (gx + 0.5) / GW * FW, py = (gy + 0.5) / GH * FH; if ((px - cx) * (px - cx) + (py - cy) * (py - cy) <= rr * rr) { g2.lit[i] = 1; g2.litCount++; } }
+    const pct = g2.litCount / (GW * GH); $("litfill").style.width = (pct * 100) + "%";
+    const h = g2.houses[g2.cur], k = ROOMS[g2.room][0];
+    if (h.rooms[k]) { const sp = h.spot[k], dx = sp[0] / 100 * FW - cx, dy = sp[1] / 100 * FH - cy; if (dx * dx + dy * dy <= (R * 0.7) * (R * 0.7)) return finishRoom(true, pct); }
+    if (pct >= 0.9) finishRoom(false, pct);
+  }
+  function finishRoom(found, pct) {
+    g2.done = true; $("house").classList.remove("searching"); const h = g2.houses[g2.cur], k = ROOMS[g2.room][0]; h.searched[k] = found; beam.hidden = true;
+    let pts;
+    if (found) {
+      const sp = h.spot[k]; roomspider.hidden = false; roomspider.style.left = sp[0] + "%"; roomspider.style.top = sp[1] + "%";
+      pts = 100 + Math.round((1 - pct) * 100); sfx.pop(); popText($("house"), "found one!", "28%", "26%"); popText($("house"), "+" + pts, sp[0] > 50 ? "18%" : "62%", "50%");
+      $("s2").textContent = `A spider ${sp[2]}! +${pts}. The less light you needed, the more points.`;
+    } else { pts = 30; $("stamp").hidden = false; sfx.none(); $("s2").textContent = `Whole room lit. Nobody home. +${pts}: a careful "none" counts for the census too.`; }
+    g2.score += pts; $("scorelbl").textContent = "⭐ " + g2.score; fog.classList.add("clear"); tally();
+    const last = g2.room >= 3; $("nextroom").textContent = last ? (g2.cur >= 9 ? "See the results →" : "Back to the street →") : "Next room →"; $("nextroom").hidden = false; $("nextroom").classList.add("wobble");
+  }
+  $("house").addEventListener("pointermove", shine);
+  $("house").addEventListener("pointerdown", e => { if (e.target.closest("button")) return; shine(e); });
+  $("house").addEventListener("pointerleave", () => { beam.hidden = true; });
+  $("nextroom").addEventListener("click", () => {
+    sfx.tap();
+    if (g2.room < 3) { g2.room++; showRoom(); return; }
+    if (g2.cur >= 9) return finish();
+    $("house").hidden = true; $("street").hidden = false; renderDoors();
+    const n = g2.houses.findIndex(x => !houseDone(x)); $("bubble2").textContent = n < 0 ? "All ten searched!" : `House ${n + 1} is next. Tap the glowing door.`; $("s2").textContent = `Score so far: ${g2.score}.`;
+  });
+  function tally() {
+    let hs = 0, hc = 0, bs = 0, bc = 0, bas = 0, bac = 0;
+    g2.houses.forEach(h => { const ks = Object.keys(h.searched); if (!ks.length) return; hs++; if (ks.some(k => h.searched[k])) hc++; if (h.searched.bedroom !== undefined) { bs++; if (h.searched.bedroom) bc++; } if (h.searched.bathroom !== undefined) { bas++; if (h.searched.bathroom) bac++; } });
+    for (const [id, v] of Object.entries({ hs, hc, bs, bc, bas, bac, score: g2.score })) $(id).textContent = v;
+    return { hs, hc, bs, bc, bas, bac };
+  }
+  function finish() {
+    const t = tally(); earn("scientist"); sfx.win(); confetti($("conf2"), 140);
+    const bedP = Math.round(100 * t.bc / Math.max(1, t.bs)), bathP = Math.round(100 * t.bac / Math.max(1, t.bas));
+    const prev = (store.get("census") || {}).best; const record = prev === undefined || g2.score > prev; if (record) store.set("census", { best: g2.score });
+    const r = $("results"); r.hidden = false; $("nextroom").hidden = true;
+    r.innerHTML = `<div><h3>Census complete: spiders in ${t.hc} of ${t.hs} houses · ${g2.score} points</h3><p>${record ? "<b>New best score!</b>" : `Your best is ${prev}.`} <b>Your street:</b> ${bedP}% of bedrooms, ${bathP}% of bathrooms.</p><p><b>The real survey, Raleigh 2016:</b> 50 of 50 houses, 77% of bedrooms, 68% of bathrooms.</p><p>Ten houses wobble. Fifty settle down. That is why the scientists kept going. You earned the Scientist badge!</p><p><button class="btn small" id="again2" type="button">↺ Search a new street</button> <button class="btn ghost small" id="home2" type="button">⌂ Title</button></p></div><img src="assets/badge_scientist.png" alt="Spider Scientist badge">`;
+    $("again2").addEventListener("click", () => { g2.seed += 11; buildStreet(); sfx.tap(); }); $("home2").addEventListener("click", () => { sfx.tap(); show("title"); });
+    $("s2").textContent = "Every house had at least one, just like the real survey."; $("back2").hidden = true;
+  }
+  $("back2").addEventListener("click", () => { sfx.tap(); $("house").hidden = true; $("street").hidden = false; $("back2").hidden = true; renderDoors(); });
+  $("reset2").addEventListener("click", () => { g2.seed += 11; buildStreet(); sfx.tap(); });
+  buildStreet();
+  show("title");
+})();
+</script>

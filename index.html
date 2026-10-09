@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why, Dad? Labs</title>
+<meta name="description" content="Free hands-on labs and little games from The Backyard Library, one for each Why, Dad? episode. Nothing to install, nothing to sign up for.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root { --paper: #f1e4c8; --card: #fbf3df; --ink: #3a2c20; --muted: #8b6d4b; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --line: #cdb98f; --shadow: 0 10px 0 -4px rgba(58,44,32,.22), 0 14px 30px rgba(58,44,32,.2); }
+  @media (prefers-color-scheme: dark) { :root { --paper: #1b1611; --card: #272019; --ink: #f1e6cc; --muted: #a8926e; --teal: #6fb1be; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding: 24px 16px 48px; }
+  main { max-width: 880px; margin: 0 auto; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  h1 { font: 700 clamp(40px, 8vw, 72px)/1 "Fredoka", Arial, sans-serif; margin: 6px 0 10px; }
+  .lede { font: 400 clamp(19px, 3vw, 24px)/1.3 "Patrick Hand", cursive; color: var(--muted); margin: 0 0 28px; max-width: 620px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .lab { display: block; color: inherit; text-decoration: none; background: var(--card); border: 4px solid #3a2c20; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); transition: transform .12s; }
+  .lab:hover, .lab:focus-visible { transform: translateY(-4px); outline: none; }
+  .lab .art { aspect-ratio: 16 / 9; background: var(--teal); display: grid; place-items: center; font-size: 64px; overflow: hidden; }
+  .lab .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lab .body { padding: 14px 16px 18px; }
+  .lab .ep { font: 700 11px/1.2 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .lab h2 { font: 700 clamp(22px, 3.4vw, 28px)/1.1 "Fredoka", Arial, sans-serif; margin: 4px 0 6px; }
+  .lab p { margin: 0 0 12px; font-size: 15px; }
+  .btn { display: inline-block; font: 700 17px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 12px; padding: 10px 14px; box-shadow: 0 4px 0 #3a2c20; }
+  footer { margin-top: 36px; border-top: 2px solid var(--line); padding-top: 14px; font-size: 14px; color: var(--muted); }
+  footer a { color: var(--teal); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">The Backyard Library</div>
+  <h1>Why, Dad? Labs</h1>
+  <p class="lede">A little game or model for every episode, so you can try the idea yourself after you watch. Free, nothing to install, nothing to sign up for.</p>
+
+  <div class="grid">
+    <a class="lab" href="episode_20/">
+      <div class="art"><img src="episode_20/assets/title_key.jpg" alt=""></div>
+      <div class="body">
+        <div class="ep">Episode 20 · Spiders in the house</div>
+        <h2>The Spider Lab</h2>
+        <p>Get him out of the tub, climb it yourself by balancing his grip, then take a flashlight through ten dark houses and count the spiders.</p>
+        <span class="btn">Play →</span>
+      </div>
+    </a>
+    <a class="lab" href="episode_19/">
+      <div class="art">⚡</div>
+      <div class="body">
+        <div class="ep">Episode 19 · Where electricity comes from</div>
+        <h2>The Electricity Lab</h2>
+        <p>Push the electrons yourself and see why your electricity is one second old, then climb the voltage staircase from the power plant to your lamp.</p>
+        <span class="btn">Try it →</span>
+      </div>
+    </a>
+  </div>
+
+  <footer>Made for the kids who ask why. New episodes on <a href="https://www.youtube.com/@thebackyardlibrary">The Backyard Library on YouTube</a>. House spiders almost never bite people, and the one in the tub just wants out.</footer>
+</main>
+</body>
+</html>

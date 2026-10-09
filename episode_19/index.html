@@ -1,0 +1,280 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Electricity Lab</title>
+<meta name="description" content="Two hands-on models from the Backyard Library episode on how electricity gets to your house: flip the switch and watch the push, then send power across the country and see what the voltage staircase saves.">
+<style>
+  :root {
+    --paper: #f4e9cd; --paper-2: #ebdcb8; --ink: #4a3421; --brown: #6e4a28; --muted: #8b6d4b;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --blue: #3a6eb4; --line: #cdb98f;
+    --wire: #6e4a28; --glow: rgba(236,178,60,.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #1e1913; --paper-2: #2a231a; --ink: #f1e6cc; --brown: #d9c39a; --muted: #a8926e;
+      --teal: #6fb1be; --gold: #ecb23c; --red: #e25a4f; --blue: #7fa6e0; --line: #4a3f2e;
+      --wire: #d9c39a; --glow: rgba(236,178,60,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1e1913; --paper-2: #2a231a; --ink: #f1e6cc; --brown: #d9c39a; --muted: #a8926e;
+    --teal: #6fb1be; --gold: #ecb23c; --red: #e25a4f; --blue: #7fa6e0; --line: #4a3f2e;
+    --wire: #d9c39a; --glow: rgba(236,178,60,.45);
+  }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.55 Georgia, "Times New Roman", serif; padding-inline: 20px; padding-block: 28px 60px; }
+  main { max-width: 760px; margin: 0 auto; }
+  .eyebrow { font: 700 12px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  h1 { font: 700 clamp(30px, 6vw, 44px)/1.08 Georgia, serif; letter-spacing: -.01em; margin: 10px 0 12px; text-wrap: balance; }
+  h2 { font: 700 clamp(22px, 4.2vw, 28px)/1.15 Georgia, serif; margin: 0 0 6px; text-wrap: balance; }
+  p { max-width: 62ch; margin: 0 0 12px; }
+  a { color: var(--teal); }
+  .lede { font-size: 19px; }
+  .plate { border: 3px solid var(--ink); border-radius: 6px; background: var(--paper); padding: 14px; margin: 26px 0 0; box-shadow: 0 6px 0 -3px var(--paper-2); }
+  .plate .tag { font: 700 11px/1 Arial, Helvetica, sans-serif; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  canvas { width: 100%; max-width: 100%; aspect-ratio: 16 / 7; display: block; border-radius: 4px; background: var(--paper); }
+  .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin-top: 14px; }
+  @media (max-width: 480px) { .controls { grid-template-columns: 1fr; } }
+  label { display: block; font: 700 13px/1.3 Arial, Helvetica, sans-serif; letter-spacing: .04em; color: var(--brown); }
+  label output { float: right; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--teal); margin: 6px 0 0; }
+  button { font: 700 15px/1 Georgia, serif; color: var(--paper); background: var(--teal); border: 0; border-radius: 6px; padding: 12px 18px; cursor: pointer; }
+  button:hover { filter: brightness(1.08); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 14px; }
+  .ro { border-top: 2px solid var(--line); padding-top: 8px; }
+  .ro b { display: block; font: 700 22px/1.1 ui-monospace, "Cascadia Mono", Consolas, monospace; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .ro span { font: 12px/1.35 Arial, Helvetica, sans-serif; color: var(--muted); letter-spacing: .02em; }
+  .note { font-size: 15px; color: var(--brown); margin-top: 12px; }
+  .try { background: var(--paper-2); border-radius: 6px; padding: 14px 16px; margin-top: 26px; }
+  .sources { font-size: 14px; color: var(--muted); margin-top: 28px; border-top: 2px solid var(--line); padding-top: 12px; }
+  .sources li { margin-bottom: 4px; }
+  @media (prefers-reduced-motion: reduce) { .plate { transition: none; } }
+</style>
+
+<main>
+  <div class="eyebrow">The Backyard Library · Why, Dad? · Episode 19</div>
+  <h1>How does electricity get to your house?</h1>
+  <p class="lede">The video says two surprising things: the electricity you are using was made less than a second ago, and the electrons in your lamp have never left the wire. Here are the two models behind those lines. Drag things and see.</p>
+  <p><a href="https://www.youtube.com/watch?v=pBBLg9WbgIg&list=PLB4Jq22tATuE">Watch the episode (2:43)</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a></p>
+
+  <!-- ─────────────── LAB 1: the push, not the package ─────────────── -->
+  <section class="plate" aria-labelledby="l1">
+    <div class="tag">Lab 1</div>
+    <h2 id="l1">Flip the switch: what actually travels?</h2>
+    <p>The wire is full of electrons already. When you flip the switch, a <em>push</em> races from the plant to your lamp at nearly the speed of light. The electrons themselves only wiggle in place. Slow the wiggle down to see it.</p>
+    <canvas id="c1" width="1120" height="490" aria-label="A wire from a power plant to a lamp with a switch. Electrons wiggle in place; a push travels along the wire when the switch is on."></canvas>
+    <div class="controls">
+      <div><button id="sw" type="button">Flip the switch</button></div>
+      <div>
+        <label for="slow">Slow motion <output id="slowOut">60× slower</output></label>
+        <input id="slow" type="range" min="1" max="60" value="60">
+      </div>
+      <div>
+        <label for="miles">Distance to the power plant <output id="milesOut">50 miles</output></label>
+        <input id="miles" type="range" min="5" max="500" value="50" step="5">
+      </div>
+    </div>
+    <div class="readouts">
+      <div class="ro"><b id="arrive">0.00036 s</b><span>for the push to reach your lamp</span></div>
+      <div class="ro"><b id="wig">0.13 µm</b><span>how far each electron wiggles (a bacterium is about 1 µm)</span></div>
+      <div class="ro"><b id="drift">0</b><span>electrons that travelled from the plant to your lamp</span></div>
+    </div>
+    <p class="note">The wiggle on screen is magnified about a million times. In real time it happens 60 times every second, which is why your eye never sees it.</p>
+  </section>
+
+  <!-- ─────────────── LAB 2: up for the trip, down for your house ─────────────── -->
+  <section class="plate" aria-labelledby="l2">
+    <div class="tag">Lab 2</div>
+    <h2 id="l2">Up for the trip, down for your house</h2>
+    <p>A town needs about 100 million watts. Push that through a wire at a low voltage and most of it turns into heat on the way. Step the voltage up for the trip and the same wire barely warms. Try it.</p>
+    <canvas id="c2" width="1120" height="490" aria-label="Four voltage bars: power plant, the long trip, substation, the can on the pole, with a heat gauge showing power lost on the trip."></canvas>
+    <div class="controls">
+      <div>
+        <label for="kv">Voltage for the trip <output id="kvOut">345,000 V</output></label>
+        <input id="kv" type="range" min="0" max="7" value="5" step="1">
+      </div>
+      <div>
+        <label for="trip">Length of the trip <output id="tripOut">100 miles</output></label>
+        <input id="trip" type="range" min="5" max="500" value="100" step="5">
+      </div>
+    </div>
+    <div class="readouts">
+      <div class="ro"><b id="loss">0.8%</b><span>of the town's power lost as heat on the trip</span></div>
+      <div class="ro"><b id="amps">290 A</b><span>current in the wire</span></div>
+      <div class="ro"><b id="verdict">barely warm</b><span>the wire on the trip</span></div>
+    </div>
+    <p class="note">Same wire, same town, same 100 million watts. Only the voltage changes. That is the whole reason the towers are so tall and the gray can on your pole exists: up for the trip, down for your house.</p>
+  </section>
+
+  <div class="try">
+    <strong>Try this at home.</strong> Walk outside and find your own transformer. On a pole it is a gray can; in newer neighborhoods it is a green box on the ground. That is the last step down to 120 volts, and you have walked past it a thousand times.
+  </div>
+
+  <ul class="sources">
+    <li>Electron drift speed in a household wire is roughly 0.05 mm per second at 1 ampere; at 60 Hz the back-and-forth wiggle is about 0.13 micrometers.</li>
+    <li>A signal travels along a power line at roughly 70% of the speed of light.</li>
+    <li>Heat lost in a wire is current squared times resistance; halving the current quarters the loss. Line resistance here is 0.1 ohm per mile, a typical order of magnitude.</li>
+    <li>US transmission voltages: 69, 115, 138, 230, 345, 500 and 765 kV. Distribution 12 kV. House 120 V.</li>
+    <li>These are the same models that drew the diagrams in the video.</li>
+  </ul>
+</main>
+
+<script>
+(function () {
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function fit(c) {
+    const r = Math.min(2, devicePixelRatio || 1), w = c.clientWidth || 800;
+    c.width = Math.round(w * r); c.height = Math.round(w * 7 / 16 * r);
+    const g = c.getContext("2d"); g.setTransform(c.width / 1120, 0, 0, c.width / 1120, 0, 0); return g;
+  }
+
+  /* ───────── LAB 1 model ───────── */
+  const C = 299792;                    // km/s
+  const SIGNAL = 0.7;                  // fraction of c along a line
+  const DRIFT_MM_S = 0.05;             // mm/s at 1 A in a 1.5 mm² wire
+  const HZ = 60;
+  const st1 = { on: false, t0: 0, slow: 60, miles: 50 };
+  const c1 = document.getElementById("c1"); let g1 = fit(c1);
+  const N = 22, X0 = 210, X1 = 900, Y = 250;
+
+  function wiggleUm(hz) { return DRIFT_MM_S / (2 * Math.PI * hz) * 1000; }   // mm → µm
+  function updateReadouts1() {
+    const km = st1.miles * 1.609, s = km / (C * SIGNAL);
+    document.getElementById("arrive").textContent = s.toPrecision(2) + " s";
+    document.getElementById("wig").textContent = wiggleUm(HZ).toFixed(2) + " µm";
+    document.getElementById("drift").textContent = "0";
+    document.getElementById("milesOut").textContent = st1.miles + " miles";
+    document.getElementById("slowOut").textContent = st1.slow + "× slower";
+  }
+
+  function draw1(now) {
+    const g = g1, ink = css("--ink"), wire = css("--wire"), teal = css("--teal"), gold = css("--gold"), paper = css("--paper"), muted = css("--muted"), red = css("--red");
+    g.clearRect(0, 0, 1120, 490);
+    const T_VIS = reduce ? 0 : 1.4;                         // seconds for the visible push to cross
+    const since = (now - st1.t0) / 1000;
+    const prog = st1.on ? Math.min(1, since / (T_VIS || 1e-9)) : 0;
+    const lit = st1.on && prog >= 1;
+
+    // plant
+    g.fillStyle = ink; g.fillRect(60, 170, 110, 120); g.fillStyle = paper;
+    g.font = "700 20px Georgia"; g.textAlign = "center"; g.fillText("plant", 115, 240);
+    g.fillStyle = ink; g.fillRect(85, 120, 18, 50); g.fillRect(120, 135, 18, 35);
+    // wire tube
+    g.lineWidth = 34; g.strokeStyle = wire; g.lineCap = "round";
+    g.beginPath(); g.moveTo(X0 - 40, Y); g.lineTo(X1 + 20, Y); g.stroke();
+    g.lineWidth = 24; g.strokeStyle = paper; g.beginPath(); g.moveTo(X0 - 40, Y); g.lineTo(X1 + 20, Y); g.stroke();
+    // the push
+    if (st1.on) {
+      const px = X0 - 40 + (X1 + 60 - X0) * prog;
+      const grad = g.createLinearGradient(px - 160, 0, px, 0);
+      grad.addColorStop(0, "rgba(236,178,60,0)"); grad.addColorStop(1, gold);
+      g.lineWidth = 24; g.strokeStyle = grad; g.beginPath(); g.moveTo(Math.max(X0 - 40, px - 160), Y); g.lineTo(Math.min(px, X1 + 20), Y); g.stroke();
+      if (!lit) { g.fillStyle = red; g.font = "700 22px Georgia"; g.textAlign = "left"; g.fillText("the push", Math.min(px + 10, 720), Y - 40); }
+    }
+    // electrons: wiggle in place once the push has passed them
+    const hzVis = HZ / st1.slow;
+    const amp = 16;
+    for (let i = 0; i < N; i++) {
+      const bx = X0 + (X1 - X0) * i / (N - 1);
+      const passed = st1.on && (X0 - 40 + (X1 + 60 - X0) * prog) >= bx;
+      const dx = passed && !reduce ? amp * Math.sin(2 * Math.PI * hzVis * since) : 0;
+      g.fillStyle = teal; g.beginPath(); g.arc(bx + dx, Y, 8, 0, Math.PI * 2); g.fill();
+      if (passed && st1.slow < 8 && !reduce) {          // fast wiggle reads as a smear
+        g.globalAlpha = .28; g.fillRect(bx - amp, Y - 8, amp * 2, 16); g.globalAlpha = 1;
+      }
+    }
+    // switch
+    g.strokeStyle = ink; g.lineWidth = 6; g.beginPath(); g.moveTo(760, Y - 40); g.lineTo(760, Y - 100); g.stroke();
+    g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = 4;
+    g.fillRect(730, Y - 150, 60, 50); g.strokeRect(730, Y - 150, 60, 50);
+    g.fillStyle = st1.on ? gold : muted; g.fillRect(745, st1.on ? Y - 140 : Y - 122, 30, 22);
+    g.fillStyle = ink; g.font = "16px Georgia"; g.textAlign = "center"; g.fillText(st1.on ? "ON" : "OFF", 760, Y - 158);
+    // lamp
+    if (lit) { g.fillStyle = css("--glow"); g.beginPath(); g.arc(990, 190, 90, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = ink; g.lineWidth = 5; g.beginPath(); g.moveTo(990, 40); g.lineTo(990, 120); g.stroke();
+    g.fillStyle = lit ? gold : paper; g.beginPath(); g.arc(990, 190, 52, 0, Math.PI * 2); g.fill(); g.stroke();
+    g.fillStyle = ink; g.fillRect(970, 118, 40, 14);
+    g.font = "700 20px Georgia"; g.textAlign = "center"; g.fillStyle = ink; g.fillText("your lamp", 990, 290);
+    // caption line
+    g.fillStyle = muted; g.font = "18px Georgia"; g.textAlign = "center";
+    g.fillText(st1.on ? (lit ? "the electrons wiggle in place · what travelled was the push" : "the push is on its way") : "flip the switch", 560, 400);
+    g.font = "16px Georgia"; g.fillText(st1.miles + " miles of wire, electrons already inside", 560, 430);
+  }
+
+  document.getElementById("sw").addEventListener("click", () => {
+    st1.on = !st1.on; st1.t0 = performance.now();
+    document.getElementById("sw").textContent = st1.on ? "Switch it off" : "Flip the switch";
+  });
+  document.getElementById("slow").addEventListener("input", (e) => { st1.slow = +e.target.value; updateReadouts1(); });
+  document.getElementById("miles").addEventListener("input", (e) => { st1.miles = +e.target.value; updateReadouts1(); });
+
+  /* ───────── LAB 2 model ───────── */
+  const KV = [25, 69, 115, 138, 230, 345, 500, 765];
+  const TOWN_W = 100e6;                // watts
+  const R_MILE = 0.10;                 // ohm per mile
+  const st2 = { kvi: 5, miles: 100 };
+  const c2 = document.getElementById("c2"); let g2 = fit(c2);
+
+  function model2() {
+    const V = KV[st2.kvi] * 1000, R = R_MILE * st2.miles, I = TOWN_W / V;
+    const lossW = I * I * R, pct = lossW / TOWN_W * 100;
+    return { V, I, pct };
+  }
+  function verdict(pct) {
+    if (pct >= 100) return "it melts";
+    if (pct >= 30) return "glowing red";
+    if (pct >= 8) return "hot";
+    if (pct >= 2) return "warm";
+    return "barely warm";
+  }
+  function updateReadouts2() {
+    const m = model2();
+    document.getElementById("kvOut").textContent = m.V.toLocaleString() + " V";
+    document.getElementById("tripOut").textContent = st2.miles + " miles";
+    document.getElementById("loss").textContent = (m.pct >= 100 ? "100%+" : m.pct.toFixed(m.pct < 10 ? 1 : 0) + "%");
+    document.getElementById("amps").textContent = Math.round(m.I).toLocaleString() + " A";
+    document.getElementById("verdict").textContent = verdict(m.pct);
+  }
+
+  function draw2() {
+    const g = g2, ink = css("--ink"), teal = css("--teal"), red = css("--red"), muted = css("--muted"), paper = css("--paper"), gold = css("--gold"), line = css("--line");
+    g.clearRect(0, 0, 1120, 490);
+    const m = model2();
+    const steps = [["power plant", 25000, teal], ["the long trip", m.V, red], ["substation", 12000, teal], ["the can on the pole", 120, teal]];
+    const base = 380, top = 70, maxV = 765000;
+    const x0 = 90, w = 120, gap = 60;
+    g.strokeStyle = line; g.lineWidth = 3; g.beginPath(); g.moveTo(60, base); g.lineTo(800, base); g.stroke();
+    steps.forEach(([name, v, col], i) => {
+      const h = Math.max(6, (base - top) * v / maxV);
+      const x = x0 + i * (w + gap);
+      g.fillStyle = col; g.fillRect(x, base - h, w, h);
+      g.fillStyle = ink; g.font = "700 20px Georgia"; g.textAlign = "center";
+      g.fillText(v.toLocaleString() + " V", x + w / 2, base - h - 12);
+      g.font = "16px Georgia"; g.fillStyle = muted; g.fillText(name, x + w / 2, base + 28);
+    });
+    // heat gauge
+    const gx = 900, gy = 90, gw = 70, gh = 290;
+    g.fillStyle = paper; g.strokeStyle = ink; g.lineWidth = 4; g.fillRect(gx, gy, gw, gh); g.strokeRect(gx, gy, gw, gh);
+    const frac = Math.min(1, m.pct / 100);
+    g.fillStyle = frac >= 1 ? red : (frac > 0.3 ? red : (frac > 0.08 ? gold : teal));
+    g.fillRect(gx + 4, gy + gh - 4 - (gh - 8) * frac, gw - 8, (gh - 8) * frac);
+    g.strokeStyle = red; g.lineWidth = 3; g.setLineDash([8, 6]); g.beginPath(); g.moveTo(gx - 10, gy); g.lineTo(gx + gw + 10, gy); g.stroke(); g.setLineDash([]);
+    g.fillStyle = ink; g.font = "700 20px Georgia"; g.textAlign = "center";
+    g.fillText(m.pct >= 100 ? "100%+" : m.pct.toFixed(m.pct < 10 ? 1 : 0) + "%", gx + gw / 2, gy - 18);
+    g.font = "16px Georgia"; g.fillStyle = muted; g.fillText("lost as heat", gx + gw / 2, base + 28);
+    g.fillStyle = red; g.font = "14px Georgia"; g.textAlign = "right"; g.fillText("melts", gx - 14, gy + 5);
+    g.fillStyle = muted; g.font = "16px Georgia"; g.textAlign = "center";
+    g.fillText("same wire · same 100,000,000 W town · " + st2.miles + " miles", 560, 450);
+  }
+  document.getElementById("kv").addEventListener("input", (e) => { st2.kvi = +e.target.value; updateReadouts2(); draw2(); });
+  document.getElementById("trip").addEventListener("input", (e) => { st2.miles = +e.target.value; updateReadouts2(); draw2(); });
+
+  /* ───────── loop ───────── */
+  function frame(now) { draw1(now); requestAnimationFrame(frame); }
+  addEventListener("resize", () => { g1 = fit(c1); g2 = fit(c2); draw2(); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => draw2());
+  updateReadouts1(); updateReadouts2(); draw2(); requestAnimationFrame(frame);
+})();
+</script>
