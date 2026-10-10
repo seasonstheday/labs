@@ -10,7 +10,7 @@
 <meta name="description" content="Dad stands his ground in the backyard while grumpy Myths march in. Yo-yos, paper airplanes and a magnifying glass pop every wrong idea into a real fact. No dodging. Only wondering.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
 <style>
-  :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
+  :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; margin: 0; }
   body { background: #2b2219; color: var(--ink); font: 17px/1.4 Georgia, "Times New Roman", serif; overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
@@ -19,9 +19,9 @@
   [hidden] { display: none !important; }
 
   /* the game is a fixed 440x760 "phone" that scales to fit */
-  #frame { position: fixed; left: 50%; top: 50%; width: 440px; height: 760px; transform: translate(-50%, -50%) scale(var(--s, 1)); transform-origin: center; background: var(--paper); overflow: hidden; border-radius: 0; }
+  #frame { position: fixed; left: 50%; top: 50%; width: 440px; height: 760px; transform: translate(-50%, -50%) scale(var(--s, 1)); transform-origin: center; background: var(--paper); overflow: hidden; }
   @media (min-aspect-ratio: 440/760) and (min-height: 800px) { #frame { border-radius: 28px; border: 6px solid #3a2c20; box-shadow: 0 30px 60px rgba(0,0,0,.5); } }
-  canvas { position: absolute; inset: 0; width: 440px; height: 760px; display: block; }
+  canvas#c { position: absolute; inset: 0; width: 440px; height: 760px; display: block; }
 
   /* ───────── buttons ───────── */
   .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
@@ -29,6 +29,10 @@
   .btn.ghost { background: var(--card); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.small { font-size: 15px; padding: 8px 12px; border-radius: 11px; box-shadow: 0 4px 0 #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
   .btn.icon { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
+  .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
+  .btn.big-icon small { font-size: 11px; }
+  .pill { font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.88); padding: 9px 12px; border-radius: 999px; border: 3px solid #3a2c20; white-space: nowrap; }
+  .pill.know { background: var(--teal); }
 
   /* ───────── screens ───────── */
   .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
@@ -38,22 +42,55 @@
   #title .cloud::before { content: ""; position: absolute; left: 24px; top: -24px; width: 54px; height: 54px; background: #fff; border: 4px solid #3a2c20; border-bottom: 0; border-radius: 50% 50% 0 0; }
   @keyframes cloud { from { transform: translateX(-160px); } to { transform: translateX(520px); } }
   #title .fence { position: absolute; left: 0; right: 0; top: 46%; height: 50px; background: repeating-linear-gradient(90deg, #d9b878 0 22px, #3a2c20 22px 25px, #c4a263 25px 44px, #3a2c20 44px 47px); border-top: 4px solid #3a2c20; border-bottom: 4px solid #3a2c20; }
-  #title h1 { position: relative; margin: 54px 0 0; font-size: 62px; line-height: .92; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.3); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
-  #title h1 small { display: block; font-size: 28px; color: var(--gold); -webkit-text-stroke: 0; }
-  #title .tag { position: relative; margin: 10px 0 0; font-size: 24px; color: #3a2c20; }
-  #title .dad { position: absolute; left: 50%; top: 37%; height: 290px; transform: translateX(-50%); filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
+  #title h1 { position: relative; margin: 48px 0 0; font-size: 60px; line-height: .92; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.3); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  #title h1 small { display: block; font-size: 26px; color: var(--gold); }
+  #title .tag { position: relative; margin: 8px 0 0; font-size: 22px; color: #3a2c20; }
+  #titleDad { position: absolute; left: 50%; top: 35%; width: 240px; height: 300px; transform: translateX(-50%); filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
   @keyframes idle { 0%, 100% { transform: translateX(-50%) rotate(-1.5deg); } 50% { transform: translateX(-50%) rotate(1.5deg) translateY(-4px); } }
-  #title .menu { position: absolute; left: 0; right: 0; bottom: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  #title .menu .btn { width: 240px; font-size: 24px; }
+  #title .wallet { position: absolute; left: 12px; top: 12px; }
+  #title .side { position: absolute; right: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
+  #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #title .menu .btn.play { width: 240px; font-size: 24px; }
   .stages { display: flex; gap: 8px; margin-bottom: 4px; }
   .stages button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #3a2c20; background: var(--card); font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .stages button.on { background: var(--gold); } .stages button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
   .stages button.done { background: var(--green); color: #fff; }
 
+  /* ───────── list screens (book / shop / closet) ───────── */
+  .list-screen { background: var(--paper); }
+  .list-screen .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
+  .list-screen h2 { margin: 0; flex: 1; font-size: 26px; }
+  .list-screen .list { flex: 1; overflow: auto; padding: 0 14px 20px; display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
+  .list-screen .intro { margin: 0 14px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; color: var(--muted); }
+  .fact { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
+  .fact .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
+  .fact b { font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: block; }
+  .fact s { color: var(--red); font: 400 14px/1.2 "Patrick Hand", cursive; display: block; }
+  .fact p { margin: 4px 0 0; font: 400 16px/1.25 "Patrick Hand", cursive; }
+  .fact.locked { opacity: .5; } .fact.locked p { font-style: italic; }
+  .item { background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
+  .item .top { display: flex; gap: 12px; align-items: center; }
+  .item .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
+  .item b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
+  .item span.d { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .item .top > div:nth-child(2) { flex: 1; }
+  .item.locked .top { opacity: .6; }
+  .ranks { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .rank { display: flex; align-items: center; gap: 8px; font: 400 16px/1.2 "Patrick Hand", cursive; }
+  .rank .nm { width: 86px; }
+  .pips { display: flex; gap: 3px; flex: 1; }
+  .pips i { height: 12px; flex: 1; border: 2px solid #3a2c20; border-radius: 4px; background: rgba(58,44,32,.12); }
+  .pips i.on { background: var(--gold); }
+  .rank .btn { min-width: 86px; }
+  .rank .btn.maxed { background: var(--green); color: #fff; }
+  .closet-preview { display: flex; align-items: center; gap: 12px; padding: 0 14px 10px; }
+  .closet-preview canvas { width: 120px; height: 150px; }
+  .closet-preview .stats { font: 400 16px/1.35 "Patrick Hand", cursive; flex: 1; }
+  .closet-preview .stats b { font: 700 16px/1.35 "Fredoka", Arial, sans-serif; }
+
   /* ───────── HUD ───────── */
   #hud { position: absolute; inset: 0; pointer-events: none; }
   #hud .top { position: absolute; left: 10px; right: 10px; top: 10px; display: flex; align-items: center; gap: 8px; pointer-events: auto; }
-  #hud .pill { font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.88); padding: 9px 12px; border-radius: 999px; border: 3px solid #3a2c20; white-space: nowrap; }
   #hud .pill.name { flex: 1; text-align: center; font-size: 18px; }
   #hud .btn.icon { background: var(--card); }
   #speed.x2 { background: var(--gold); }
@@ -71,13 +108,26 @@
   #patience div { height: 100%; width: 100%; background: linear-gradient(#8fd38a, #4f8a5b); transition: width .2s; }
   #patience.low div { background: linear-gradient(#f3a08f, #cb382e); }
   #patience span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20; }
-  #gear { display: flex; gap: 6px; margin-top: 8px; }
-  #gear .slot { width: 46px; height: 46px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: grid; place-items: center; font-size: 22px; position: relative; }
-  #gear .slot.empty { background: rgba(251,243,223,.35); border-style: dashed; }
+  #gear { display: flex; gap: 6px; margin-top: 8px; pointer-events: auto; }
+  #gear .slot { width: 46px; height: 46px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: grid; place-items: center; font-size: 22px; position: relative; cursor: pointer; }
+  #gear .slot.empty { background: rgba(251,243,223,.35); border-style: dashed; cursor: default; }
+  #gear .slot.passive { border-color: var(--teal); cursor: default; }
   #gear .slot i { position: absolute; right: -6px; bottom: -6px; font: 700 11px/1 "Fredoka", Arial, sans-serif; color: #fff; background: var(--teal); border: 2px solid #3a2c20; border-radius: 999px; padding: 3px 5px; font-style: normal; }
+  #gear .slot.can::after { content: "🪙"; position: absolute; left: -7px; top: -9px; font-size: 13px; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
   #xp { height: 8px; margin-top: 8px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(0,0,0,.35); overflow: hidden; }
-  #xp div { height: 100%; width: 0; background: #b48be6; }
+  #xp div { height: 100%; width: 0; background: var(--purple); }
   #lvl { position: absolute; right: 0; bottom: 106px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
+  #hint { position: absolute; left: 50%; bottom: 112px; transform: translateX(-50%); width: max-content; max-width: 86%; text-align: center; font: 400 15px/1.2 "Patrick Hand", cursive; color: #fff; background: rgba(58,44,32,.8); padding: 6px 12px; border-radius: 10px; animation: pop .4s both; }
+
+  /* ───────── in-run weapon menu ───────── */
+  #wmenu { position: absolute; left: 10px; right: 10px; bottom: 124px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 12px; box-shadow: var(--shadow); animation: pop .25s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; pointer-events: auto; }
+  #wmenu .wtop { display: flex; gap: 12px; align-items: center; }
+  #wmenu .em { font-size: 40px; width: 52px; text-align: center; }
+  #wmenu .wtop b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; display: block; }
+  #wmenu .d { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  #wmenu .row { margin-top: 10px; }
+  #wmenu .next { font: 400 16px/1.3 "Patrick Hand", cursive; margin: 8px 0 0; }
 
   /* ───────── fact toast ───────── */
   #toast { position: absolute; left: 14px; right: 14px; top: 118px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 10px 14px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; pointer-events: none; z-index: 5; }
@@ -103,26 +153,13 @@
   .row .btn { flex: 1; }
   .stat { display: flex; justify-content: space-between; font: 400 20px/1.5 "Patrick Hand", cursive; border-bottom: 2px dashed var(--line); }
   .stat b { font: 700 20px/1.5 "Fredoka", Arial, sans-serif; }
-  .panel img.m { height: 120px; display: block; margin: -40px auto 0; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
-
-  /* ───────── fact book ───────── */
-  #book { background: var(--paper); }
-  #book .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
-  #book h2 { margin: 0; flex: 1; font-size: 28px; }
-  #book .list { flex: 1; overflow: auto; padding: 0 14px 20px; display: flex; flex-direction: column; gap: 10px; }
-  .fact { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
-  .fact .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
-  .fact b { font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .fact s { color: var(--red); font: 400 14px/1.2 "Patrick Hand", cursive; display: block; }
-  .fact p { margin: 4px 0 0; font: 400 16px/1.25 "Patrick Hand", cursive; }
-  .fact.locked { opacity: .5; } .fact.locked p { font-style: italic; }
-  .howto { font: 400 19px/1.3 "Patrick Hand", cursive; margin: 0; }
+  .stat.know { color: var(--teal); font-weight: 700; }
+  .panel canvas.m { width: 100px; height: 125px; display: block; margin: -46px auto 0; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
+  .howto { font: 400 19px/1.3 "Patrick Hand", cursive; margin: 0; padding-left: 22px; }
   .howto li { margin-bottom: 6px; }
 
   @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
-  .shake { animation: shake .3s linear; }
-  @keyframes shake { 0%, 100% { transform: translate(-50%, -50%) scale(var(--s, 1)); } 25% { transform: translate(calc(-50% - 6px), calc(-50% + 3px)) scale(var(--s, 1)); } 75% { transform: translate(calc(-50% + 5px), calc(-50% - 3px)) scale(var(--s, 1)); } }
 </style>
 </head>
 <body>
@@ -135,27 +172,40 @@
     <div class="cloud" style="top:70px"></div>
     <div class="cloud" style="top:150px; animation-delay:-11s; transform:scale(.7)"></div>
     <div class="fence"></div>
+    <div class="wallet pill know">💡 <span class="knowN">0</span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <img class="dad" src="assets/mascot_wave.png" alt="">
+    <canvas id="titleDad" width="480" height="600"></canvas>
+    <div class="side">
+      <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
+      <button class="btn big-icon ghost" id="openCloset">🧥<small>Closet</small></button>
+      <button class="btn big-icon ghost" id="openBook">📖<small>Facts</small></button>
+    </div>
     <div class="menu">
       <div class="stages" id="stagePick"></div>
-      <button class="btn" id="play">Play ▶</button>
-      <div style="display:flex; gap:10px">
-        <button class="btn ghost small" id="openBook">📖 Fact Book</button>
-        <button class="btn ghost small" id="openHow">❓ How to play</button>
-      </div>
+      <button class="btn play" id="play">Play ▶</button>
+      <button class="btn ghost small" id="openHow">❓ How to play</button>
     </div>
   </section>
 
   <!-- ───────── fact book ───────── -->
-  <section id="book" class="screen" hidden>
-    <div class="head">
-      <button class="btn icon ghost" id="closeBook">←</button>
-      <h2 class="display">Fact Book</h2>
-      <span class="pill hand" id="bookCount"></span>
-    </div>
+  <section id="book" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Fact Book</h2><span class="pill" id="bookCount"></span></div>
     <div class="list" id="factList"></div>
+  </section>
+
+  <!-- ───────── garage: weapon upgrades ───────── -->
+  <section id="shop" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill know">💡 <span class="knowN">0</span></span></div>
+    <p class="intro">Spend Knowledge to make gear permanently better. Power is damage; Quick is how fast it fires. Buy locked gear so it shows up in the garage during a match.</p>
+    <div class="list" id="shopList"></div>
+  </section>
+
+  <!-- ───────── closet: character upgrades ───────── -->
+  <section id="closet" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Dad's Closet</h2><span class="pill know">💡 <span class="knowN">0</span></span></div>
+    <div class="closet-preview"><canvas id="closetDad" width="240" height="300"></canvas><div class="stats" id="closetStats"></div></div>
+    <div class="list" id="closetList"></div>
   </section>
 
   <!-- ───────── HUD ───────── -->
@@ -168,11 +218,17 @@
     <div id="prog"><div></div></div>
     <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
     <div id="bossbar" hidden><div class="nm" id="bossName"></div><div class="bar"><div id="bossHp"></div></div></div>
+    <div id="hint" hidden></div>
     <div class="bottom">
       <div id="lvl">Lv 1</div>
       <div id="xp"><div></div></div>
       <div id="patience"><div></div><span>Patience</span></div>
       <div id="gear"></div>
+    </div>
+    <div id="wmenu" hidden>
+      <div class="wtop"><div class="em"></div><div style="flex:1"><b></b><div class="d"></div></div><button class="btn icon ghost" id="wclose">✕</button></div>
+      <p class="next"></p>
+      <div class="row"><button class="btn" id="wbuy">Upgrade</button></div>
     </div>
   </div>
   <div id="toast" hidden><b></b><p></p></div>
@@ -196,7 +252,7 @@
 
   <div class="modal" id="clearm" hidden>
     <div class="panel">
-      <img class="m" src="assets/mascot_amazed.png" alt="">
+      <canvas class="m" id="clearDad" width="200" height="250"></canvas>
       <h2 class="display" style="text-align:center">Stage cleared!</h2>
       <p class="sub hand" style="text-align:center" id="clearSub">Every myth in the backyard went pop.</p>
       <div id="clearStats"></div>
@@ -206,7 +262,7 @@
 
   <div class="modal" id="overm" hidden>
     <div class="panel">
-      <img class="m" src="assets/mascot_talking.png" alt="">
+      <canvas class="m" id="overDad" width="200" height="250"></canvas>
       <h2 class="display" style="text-align:center">Dad needs a nap.</h2>
       <p class="sub hand" style="text-align:center">Too many questions at once. Try again after a snack.</p>
       <div id="overStats"></div>
@@ -218,11 +274,11 @@
     <div class="panel">
       <h2 class="display">How to play</h2>
       <ol class="howto">
-        <li><b>Dad never moves.</b> Grumpy Myths march in from every side. His gear attacks on its own.</li>
-        <li>Popped myths drop <b>purple "why?" orbs</b>. Fill the bar to level up and pick new gear from the garage: yo-yos, paper airplanes, a baseball bat…</li>
-        <li>Every myth that pops turns into a <b>real fact</b>. They're saved in your Fact Book.</li>
-        <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap.</li>
-        <li><b>Tap a myth</b> to tell Dad to focus on it.</li>
+        <li><b>Dad never moves.</b> Grumpy Myths march in from every side. Once they step inside his <b>attention ring</b>, his gear attacks on its own.</li>
+        <li>Popped myths drop <b>purple "why?" orbs</b> (level up, pick new gear) and <b>🪙 coins</b>. Tap a gear slot at the bottom to spend coins on it mid-match.</li>
+        <li>Every match earns <b>💡 Knowledge</b>. Spend it on the title screen: the <b>Garage</b> makes gear permanently stronger, the <b>Closet</b> dresses Dad in things that help.</li>
+        <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
+        <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to tell Dad to focus on it.</li>
       </ol>
       <div class="row"><button class="btn" id="closeHow">Got it</button></div>
     </div>
@@ -233,57 +289,65 @@
 (() => {
 'use strict';
 const W = 440, H = 760, CX = 220, CY = 420;
-const $ = s => document.querySelector(s);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const frame = $('#frame'), cv = $('#c'), ctx = cv.getContext('2d');
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
 /* ───────── scale the 440x760 frame to the window ───────── */
 function fit() {
   const s = Math.min(innerWidth / W, innerHeight / H);
   frame.style.setProperty('--s', s);
-  const dpr = Math.min(devicePixelRatio || 1, 3);
-  cv.width = W * dpr * Math.min(s, 1.5); cv.height = H * dpr * Math.min(s, 1.5);
+  const dpr = Math.min(devicePixelRatio || 1, 3) * Math.min(s, 1.5);
+  cv.width = W * dpr; cv.height = H * dpr;
   ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
 }
 addEventListener('resize', fit); fit();
 
 /* ───────── art ───────── */
 const IMG = {};
-for (const n of ['wave', 'pointing', 'amazed', 'talking']) { const i = new Image(); i.src = `assets/mascot_${n}.png`; IMG[n] = i; }
+for (const n of ['wave', 'pointing', 'amazed', 'talking']) { const i = new Image(); i.src = `assets/mascot_${n}.png`; i.onload = drawStatics; IMG[n] = i; }
+// where things are on each sprite, as fractions of its width / height
+const ANCHOR = {
+  wave:     { head: [.56, .17], glasses: [.56, .19], chest: [.50, .47], hand: [.12, .34], wrist: [.71, .52], hr: .19 },
+  pointing: { head: [.52, .17], glasses: [.52, .19], chest: [.52, .49], hand: [.08, .33], wrist: [.89, .68], hr: .19 },
+  amazed:   { head: [.50, .17], glasses: [.50, .19], chest: [.50, .51], hand: [.20, .30], wrist: [.76, .31], hr: .20 },
+  talking:  { head: [.52, .17], glasses: [.52, .19], chest: [.50, .50], hand: [.18, .30], wrist: [.22, .45], hr: .19 },
+};
 
 /* ───────── the myths ───────── */
 const MYTHS = {
-  moon:    { em: '🌙', name: 'Cheese Moon',           myth: 'The Moon is made of cheese.', fact: 'The Moon is rock, mostly the same stuff as Earth\'s crust. Astronauts carried home 382 kg of it. No cheese.', kind: 'normal', col: '#fff0b8' },
-  bull:    { em: '🐂', name: 'Red-Rag Bull',          myth: 'Bulls get angry at the colour red.', fact: 'Bulls can\'t even see red. They charge at the cape because it\'s flapping, not because of its colour.', kind: 'tank', col: '#f6c9c9' },
-  fish:    { em: '🐟', name: 'Three-Second Goldfish', myth: 'Goldfish only remember things for three seconds.', fact: 'Goldfish remember things for months. Some have been trained to push levers for food.', kind: 'fast', col: '#ffd9a8' },
-  toad:    { em: '🐸', name: 'Warty Toad',            myth: 'Touching a toad gives you warts.', fact: 'Toads don\'t give you warts. Warts come from a human virus, and toads can\'t carry it.', kind: 'normal', col: '#d4ecb3' },
-  duck:    { em: '🦆', name: 'Silent Quack',          myth: 'A duck\'s quack doesn\'t echo.', fact: 'Duck quacks echo just fine. The quack fades so softly that the echo is hard to hear.', kind: 'fast', col: '#cfe7f5' },
-  sugar:   { em: '🍬', name: 'Sugar Rush',            myth: 'Sugar makes kids hyper.', fact: 'Scientists tested it with real kids and found no sugar rush. Birthday parties make kids hyper.', kind: 'splitter', col: '#ffc9e3' },
-  bat:     { em: '🦇', name: 'Blind Bat',             myth: 'Bats are blind.', fact: 'Bats can see. They also use echolocation, which is like seeing with sound. Two ways to look!', kind: 'fast', col: '#d9d2ec' },
-  tongue:  { em: '👅', name: 'Tongue Map',            myth: 'Each part of your tongue tastes one flavour.', fact: 'Every part of your tongue can taste every flavour. The "tongue map" came from a mistranslated book.', kind: 'normal', col: '#ffd0d0' },
-  hair:    { em: '💇', name: 'Thicker Hair',          myth: 'Shaved hair grows back thicker.', fact: 'Hair grows back exactly the same. Freshly cut ends are blunt, so they only feel thicker.', kind: 'normal', col: '#ecdcc4' },
-  knuckle: { em: '🦴', name: 'Knuckle Cracker',       myth: 'Cracking knuckles causes arthritis.', fact: 'The pop is a gas bubble in the joint. A doctor cracked one hand for 60 years to prove it did no harm.', kind: 'tank', col: '#f3ebd8' },
-  camel:   { em: '🐪', name: 'Water Hump',            myth: 'Camels keep water in their humps.', fact: 'Humps are full of fat, not water. Camels keep their water in their blood and can drink 100 litres at once.', kind: 'tank', col: '#f5dcb0' },
-  cold:    { em: '🥶', name: 'Catch-a-Cold',          myth: 'Cold weather gives you a cold.', fact: 'Colds come from viruses, not from being cold. We catch more in winter because we crowd indoors.', kind: 'normal', col: '#d6ecf7' },
-  banana:  { em: '🍌', name: 'Banana Tree',           myth: 'Bananas grow on trees.', fact: 'A banana plant is a giant herb. Its "trunk" is just leaves rolled up tight.', kind: 'splitter', col: '#fff3b0' },
-  ostrich: { em: '🪶', name: 'Head-in-Sand Ostrich',  myth: 'Ostriches hide their heads in the sand.', fact: 'Ostriches never bury their heads. They lie flat with their necks on the ground to hide, and they can run 70 km/h.', kind: 'fast', col: '#e9dfc9' },
-  penny:   { em: '🪙', name: 'Deadly Penny',          myth: 'A penny dropped from a skyscraper could hurt someone.', fact: 'Air slows a falling penny to about 50 km/h. It would feel like a flick, not a rock.', kind: 'normal', col: '#ffe29a' },
+  moon:    { em: '🌙', name: 'Cheese Moon',           myth: 'The Moon is made of cheese.', fact: 'The Moon is rock, mostly the same stuff as Earth\'s crust. Astronauts carried home 382 kg of it. No cheese.', kind: 'normal', col: '#f3d36b' },
+  bull:    { em: '🐂', name: 'Red-Rag Bull',          myth: 'Bulls get angry at the colour red.', fact: 'Bulls can\'t even see red. They charge at the cape because it\'s flapping, not because of its colour.', kind: 'tank', col: '#d9705f' },
+  fish:    { em: '🐟', name: 'Three-Second Goldfish', myth: 'Goldfish only remember things for three seconds.', fact: 'Goldfish remember things for months. Some have been trained to push levers for food.', kind: 'fast', col: '#f0a35a' },
+  toad:    { em: '🐸', name: 'Warty Toad',            myth: 'Touching a toad gives you warts.', fact: 'Toads don\'t give you warts. Warts come from a human virus, and toads can\'t carry it.', kind: 'normal', col: '#8fbf6a' },
+  duck:    { em: '🦆', name: 'Silent Quack',          myth: 'A duck\'s quack doesn\'t echo.', fact: 'Duck quacks echo just fine. The quack fades so softly that the echo is hard to hear.', kind: 'fast', col: '#7fb6d6' },
+  sugar:   { em: '🍬', name: 'Sugar Rush',            myth: 'Sugar makes kids hyper.', fact: 'Scientists tested it with real kids and found no sugar rush. Birthday parties make kids hyper.', kind: 'splitter', col: '#f4a6c9' },
+  bat:     { em: '🦇', name: 'Blind Bat',             myth: 'Bats are blind.', fact: 'Bats can see. They also use echolocation, which is like seeing with sound. Two ways to look!', kind: 'fast', col: '#9c8bc4' },
+  tongue:  { em: '👅', name: 'Tongue Map',            myth: 'Each part of your tongue tastes one flavour.', fact: 'Every part of your tongue can taste every flavour. The "tongue map" came from a mistranslated book.', kind: 'normal', col: '#e98a8a' },
+  hair:    { em: '💇', name: 'Thicker Hair',          myth: 'Shaved hair grows back thicker.', fact: 'Hair grows back exactly the same. Freshly cut ends are blunt, so they only feel thicker.', kind: 'normal', col: '#c9a978' },
+  knuckle: { em: '🦴', name: 'Knuckle Cracker',       myth: 'Cracking knuckles causes arthritis.', fact: 'The pop is a gas bubble in the joint. A doctor cracked one hand for 60 years to prove it did no harm.', kind: 'tank', col: '#d8cdb3' },
+  camel:   { em: '🐪', name: 'Water Hump',            myth: 'Camels keep water in their humps.', fact: 'Humps are full of fat, not water. Camels keep their water in their blood and can drink 100 litres at once.', kind: 'tank', col: '#d9b06a' },
+  cold:    { em: '🥶', name: 'Catch-a-Cold',          myth: 'Cold weather gives you a cold.', fact: 'Colds come from viruses, not from being cold. We catch more in winter because we crowd indoors.', kind: 'normal', col: '#8ec3e6' },
+  banana:  { em: '🍌', name: 'Banana Tree',           myth: 'Bananas grow on trees.', fact: 'A banana plant is a giant herb. Its "trunk" is just leaves rolled up tight.', kind: 'splitter', col: '#f2d85a' },
+  ostrich: { em: '🪶', name: 'Head-in-Sand Ostrich',  myth: 'Ostriches hide their heads in the sand.', fact: 'Ostriches never bury their heads. They lie flat with their necks on the ground to hide, and they can run 70 km/h.', kind: 'fast', col: '#bfae8c' },
+  penny:   { em: '🪙', name: 'Deadly Penny',          myth: 'A penny dropped from a skyscraper could hurt someone.', fact: 'Air slows a falling penny to about 50 km/h. It would feel like a flick, not a rock.', kind: 'normal', col: '#e6b35a' },
   // bosses
-  wall:    { em: '🧱', name: 'The Wall From Space',   myth: 'The Great Wall of China is visible from space.', fact: 'The Wall is very long but only a few metres wide, so from orbit it vanishes like a hair on a football field.', kind: 'boss', col: '#f1c8a8' },
-  spiders: { em: '🕷️', name: 'Eight Spiders a Year',  myth: 'You swallow eight spiders a year in your sleep.', fact: 'Spiders avoid big, warm, snoring things. There is not one recorded case of sleep-swallowing a spider.', kind: 'boss', col: '#e4d8c8' },
-  brain:   { em: '🧠', name: 'Ten-Percent Brain',     myth: 'We only use 10% of our brains.', fact: 'You use all of your brain, just not all at once. Brain scans show nearly every part lights up every day.', kind: 'boss', col: '#ffd6e0' },
-  bolt:    { em: '⚡', name: 'Strikes-Once Storm',    myth: 'Lightning never strikes the same place twice.', fact: 'Lightning loves the same place. The Empire State Building gets hit about 25 times a year.', kind: 'boss', col: '#fff1a8' },
-  flat:    { em: '🌍', name: 'The Flat Earth',        myth: 'The Earth is flat.', fact: 'Earth is round. Ships sink bottom-first over the horizon, and people have sailed, flown and orbited all the way around.', kind: 'boss', col: '#c9e6ff' },
+  wall:    { em: '🧱', name: 'The Wall From Space',   myth: 'The Great Wall of China is visible from space.', fact: 'The Wall is very long but only a few metres wide, so from orbit it vanishes like a hair on a football field.', kind: 'boss', col: '#b8683f' },
+  spiders: { em: '🕷️', name: 'Eight Spiders a Year',  myth: 'You swallow eight spiders a year in your sleep.', fact: 'Spiders avoid big, warm, snoring things. There is not one recorded case of sleep-swallowing a spider.', kind: 'boss', col: '#6f5a4a' },
+  brain:   { em: '🧠', name: 'Ten-Percent Brain',     myth: 'We only use 10% of our brains.', fact: 'You use all of your brain, just not all at once. Brain scans show nearly every part lights up every day.', kind: 'boss', col: '#d67a9a' },
+  bolt:    { em: '⚡', name: 'Strikes-Once Storm',    myth: 'Lightning never strikes the same place twice.', fact: 'Lightning loves the same place. The Empire State Building gets hit about 25 times a year.', kind: 'boss', col: '#6c7a9c' },
+  flat:    { em: '🌍', name: 'The Flat Earth',        myth: 'The Earth is flat.', fact: 'Earth is round. Ships sink bottom-first over the horizon, and people have sailed, flown and orbited all the way around.', kind: 'boss', col: '#4e8ab8' },
 };
 const KIND = {
-  normal:   { hp: 18, spd: 34, r: 22, dmg: 6,  xp: 1, coin: .3 },
-  fast:     { hp: 10, spd: 62, r: 17, dmg: 4,  xp: 1, coin: .3 },
-  tank:     { hp: 60, spd: 22, r: 30, dmg: 12, xp: 3, coin: .6 },
-  splitter: { hp: 26, spd: 30, r: 24, dmg: 6,  xp: 1, coin: .3 },
-  mini:     { hp: 7,  spd: 50, r: 13, dmg: 3,  xp: 0, coin: .1 },
+  normal:   { hp: 18, spd: 34, r: 22, dmg: 6,  xp: 1, coin: .45 },
+  fast:     { hp: 10, spd: 62, r: 17, dmg: 4,  xp: 1, coin: .35 },
+  tank:     { hp: 60, spd: 22, r: 30, dmg: 12, xp: 3, coin: .9 },
+  splitter: { hp: 26, spd: 30, r: 24, dmg: 6,  xp: 1, coin: .45 },
+  mini:     { hp: 7,  spd: 50, r: 13, dmg: 3,  xp: 0, coin: .15 },
   boss:     { hp: 500, spd: 15, r: 46, dmg: 14, xp: 20, coin: 1 },
 };
 
@@ -297,13 +361,13 @@ const STAGES = [
 
 /* ───────── the garage ───────── */
 const WEAPONS = {
-  glass:   { em: '🔍', name: 'Magnifying Glass', desc: 'A beam of truth at the nearest myth.',          cd: [.9, .8, .7, .6, .5], dmg: [14, 18, 22, 27, 34], n: [1, 1, 2, 2, 3] },
-  yoyo:    { em: '🪀', name: 'Yo-yo',            desc: 'Flies out, bonks everything, comes back.',       cd: [2.2, 2.0, 1.8, 1.6, 1.3], dmg: [12, 15, 18, 22, 28], n: [1, 1, 2, 2, 3] },
-  bat:     { em: '⚾', name: 'Baseball Bat',     desc: 'A big swing that knocks myths back.',            cd: [1.6, 1.5, 1.3, 1.1, .9],  dmg: [18, 22, 27, 33, 42], n: [80, 88, 96, 106, 120] },
-  plane:   { em: '✈️', name: 'Paper Airplanes',  desc: 'Zips through a whole line of myths.',           cd: [1.3, 1.2, 1.0, .9, .75],  dmg: [8, 10, 13, 16, 20],  n: [1, 2, 2, 3, 4] },
-  frisbee: { em: '🥏', name: 'Frisbee',          desc: 'Bounces from myth to myth to myth.',             cd: [2.4, 2.2, 2.0, 1.7, 1.4], dmg: [14, 17, 20, 25, 32], n: [3, 4, 5, 6, 8] },
-  bubble:  { em: '🫧', name: 'Bubble Wand',      desc: 'Drifting bubbles that slow myths down.',         cd: [.9, .8, .7, .6, .5],      dmg: [6, 8, 10, 12, 15],   n: [1, 1, 2, 2, 3] },
-  balloon: { em: '🎈', name: 'Water Balloons',   desc: 'Lobbed at a crowd. Splash!',                     cd: [2.6, 2.4, 2.1, 1.8, 1.5], dmg: [16, 20, 25, 31, 40], n: [60, 66, 72, 80, 92] },
+  glass:   { em: '🔍', name: 'Magnifying Glass', desc: 'A beam of truth at the nearest myth.',      cd: [.9, .8, .7, .6, .5],      dmg: [14, 18, 22, 27, 34], n: [1, 1, 2, 2, 3],      own: true },
+  yoyo:    { em: '🪀', name: 'Yo-yo',            desc: 'Flies out, bonks everything, comes back.',   cd: [2.2, 2.0, 1.8, 1.6, 1.3], dmg: [12, 15, 18, 22, 28], n: [1, 1, 2, 2, 3],      own: true },
+  bat:     { em: '⚾', name: 'Baseball Bat',     desc: 'A big swing that knocks myths back.',        cd: [1.6, 1.5, 1.3, 1.1, .9],  dmg: [18, 22, 27, 33, 42], n: [80, 88, 96, 106, 120], own: true },
+  plane:   { em: '✈️', name: 'Paper Airplanes',  desc: 'Zips through a whole line of myths.',       cd: [1.3, 1.2, 1.0, .9, .75],  dmg: [8, 10, 13, 16, 20],  n: [1, 2, 2, 3, 4],      own: true },
+  frisbee: { em: '🥏', name: 'Frisbee',          desc: 'Bounces from myth to myth to myth.',         cd: [2.4, 2.2, 2.0, 1.7, 1.4], dmg: [14, 17, 20, 25, 32], n: [3, 4, 5, 6, 8],      price: 120 },
+  bubble:  { em: '🫧', name: 'Bubble Wand',      desc: 'Drifting bubbles that slow myths down.',     cd: [.9, .8, .7, .6, .5],      dmg: [6, 8, 10, 12, 15],   n: [1, 1, 2, 2, 3],      price: 160 },
+  balloon: { em: '🎈', name: 'Water Balloons',   desc: 'Lobbed at a crowd. Splash!',                 cd: [2.6, 2.4, 2.1, 1.8, 1.5], dmg: [16, 20, 25, 31, 40], n: [60, 66, 72, 80, 92], price: 220 },
 };
 const PASSIVES = {
   snack:   { em: '🍪', name: 'Snack Break',   desc: 'Patience slowly comes back.',      max: 3 },
@@ -312,27 +376,43 @@ const PASSIVES = {
   coffee:  { em: '☕', name: 'Morning Coffee', desc: 'All gear attacks 12% faster.',     max: 3 },
   book:    { em: '📚', name: 'Encyclopedia',  desc: 'All gear does 15% more.',          max: 3 },
 };
-const MAX_WEAPONS = 4, MAX_PASSIVES = 3;
+const MAX_WEAPONS = 4, MAX_PASSIVES = 3, MAX_RANK = 5;
+// permanent weapon ranks (bought with Knowledge)
+const WRANKS = { pow: { name: 'Power', desc: '+8% damage per rank', base: 40, step: 35 }, quick: { name: 'Quick', desc: '6% faster per rank', base: 40, step: 35 } };
+// closet items (bought with Knowledge, drawn on Dad)
+const CLOSET = {
+  glasses: { em: '👓', name: 'Bigger Glasses', desc: 'Dad notices myths from further away. +22 attention ring per rank.', base: 60, step: 50 },
+  vest:    { em: '🦺', name: 'Sweater Vest',   desc: 'Very cosy. +20 max Patience per rank.', base: 50, step: 40 },
+  cap:     { em: '🧢', name: 'Thinking Cap',   desc: 'Orbs are worth more. +10% level-up speed per rank.', base: 70, step: 60 },
+  watch:   { em: '⌚', name: 'Dad Watch',      desc: 'Time well spent. +10% coins and Knowledge per rank.', base: 80, step: 70 },
+};
+const BASE_RADIUS = 170;
 
 /* ───────── save ───────── */
 const SAVE_KEY = 'whydad.defender.v1';
-let save = { unlocked: 0, cleared: [], facts: [], busted: 0 };
-try { Object.assign(save, JSON.parse(localStorage.getItem(SAVE_KEY) || '{}')); } catch (e) {}
+let save = { unlocked: 0, cleared: [], facts: [], busted: 0, know: 0, wep: {}, chr: { glasses: 0, vest: 0, cap: 0, watch: 0 } };
+try { const s = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); Object.assign(save, s); save.chr = Object.assign({ glasses: 0, vest: 0, cap: 0, watch: 0 }, s.chr || {}); save.wep = s.wep || {}; } catch (e) {}
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
+const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
+const owned = id => !!WEAPONS[id].own || wep(id).own;
+const radiusFor = () => BASE_RADIUS + save.chr.glasses * 22;
+function setKnow(n) { save.know = Math.max(0, Math.round(n)); persist(); $$('.knowN').forEach(e => e.textContent = save.know); }
 
 /* ───────── run state ───────── */
-let G = null, raf = 0, last = 0, mode = 'title';
+let G = null, last = 0, mode = 'title';
 
 function newRun(stage) {
+  const maxhp = 100 + save.chr.vest * 20;
   G = {
     stage, S: STAGES[stage], wave: 0, waveT: 0, toSpawn: [], spawnT: 0, breakT: 2, t: 0,
-    enemies: [], shots: [], orbs: [], fx: [], texts: [], bubbles: [],
-    dad: { x: CX, y: CY, hp: 100, maxhp: 100, xp: 0, lvl: 1, next: 6, face: 1, pose: 0, flash: 0 },
-    weapons: [{ id: 'glass', lvl: 1, cd: 0 }], passives: {}, coins: 0, busted: 0, newFacts: [], speed: 1, paused: false, over: false,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2,
+    enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [],
+    dad: { x: CX, y: CY, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 6, face: 1, anim: null, flash: 0, radius: radiusFor() },
+    weapons: [{ id: 'glass', lvl: 1, cd: 0 }], passives: {}, coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0,
   };
-  $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2');
-  refreshHud();
+  $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#wmenu').hidden = true; $('#hint').hidden = true;
+  $('#coinN').textContent = 0; $('#bustN').textContent = 0;
+  refreshHud(true);
 }
 
 /* ───────── waves ───────── */
@@ -352,29 +432,30 @@ function spawn(id, boss = false, at = null) {
   const M = MYTHS[id], K = KIND[M.kind], hpMul = 1 + G.stage * .45 + G.wave * .12;
   let x, y;
   if (at) { x = at.x; y = at.y; }
-  else { const a = rnd(0, Math.PI * 2), R = 460; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .05), dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, hit: 0, bob: rnd(0, 6), kx: 0, ky: 0, minionT: 4 };
+  else { const a = rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
+  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .05), dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, hit: 0, bob: rnd(0, 6), kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6) };
   if (M.kind === 'boss') { G.boss = e; e.hp = e.maxhp = K.hp * (1 + G.stage * .8); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
   const K = KIND.mini;
-  for (let i = 0; i < 2; i++) G.enemies.push({ id: parent.id, M: parent.M, kind: 'mini', x: parent.x + rnd(-10, 10), y: parent.y + rnd(-10, 10), r: K.r, hp: K.hp * (1 + G.stage * .5), maxhp: K.hp, spd: K.spd, dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, hit: 0, bob: rnd(0, 6), kx: rnd(-80, 80), ky: rnd(-80, 80), mini: true });
+  for (let i = 0; i < 2; i++) G.enemies.push({ id: parent.id, M: parent.M, kind: 'mini', x: parent.x + rnd(-10, 10), y: parent.y + rnd(-10, 10), r: K.r, hp: K.hp * (1 + G.stage * .5), maxhp: K.hp, spd: K.spd, dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, hit: 0, bob: rnd(0, 6), kx: rnd(-80, 80), ky: rnd(-80, 80), mini: true, walk: rnd(0, 6) });
 }
 
 /* ───────── helpers ───────── */
 function text(x, y, s, col = '#fff', size = 18, life = 1) { G.texts.push({ x, y, s, col, size, t: 0, life }); }
+function inRing(e) { return dist(e, G.dad) < G.dad.radius + e.r * .5; }
 function nearest(from, exclude = null, n = 1) {
-  const list = G.enemies.filter(e => e !== exclude && !(exclude && exclude.has && exclude.has(e)) && e.hp > 0 && dist(e, from) < 420);
+  const list = G.enemies.filter(e => e !== exclude && !(exclude && exclude.has && exclude.has(e)) && e.hp > 0 && inRing(e));
   list.sort((a, b) => dist(a, from) - dist(b, from));
   if (G.focus && G.focus.hp > 0 && list.includes(G.focus)) { list.splice(list.indexOf(G.focus), 1); list.unshift(G.focus); }
   return n === 1 ? list[0] : list.slice(0, n);
 }
-const dmgMul = () => 1 + (G.passives.book || 0) * .15;
-const cdMul = () => 1 / (1 + (G.passives.coffee || 0) * .12);
+const dmgMul = id => (1 + (G.passives.book || 0) * .15) * (1 + wep(id).pow * .08);
+const cdMul = id => 1 / ((1 + (G.passives.coffee || 0) * .12) * (1 + wep(id).quick * .06));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
-  d = Math.round(d * dmgMul() * rnd(.9, 1.1));
+  d = Math.round(d * rnd(.9, 1.1));
   e.hp -= d; e.hit = .12;
   text(e.x + rnd(-8, 8), e.y - e.r - 6, d, '#fff', 15, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
@@ -382,12 +463,12 @@ function hurt(e, d, knock = 0, from = G.dad) {
 }
 function kill(e) {
   G.busted++; save.busted++;
-  for (let i = 0; i < 8; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: e.M.col, r: rnd(4, 10) });
+  for (let i = 0; i < 8; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
   text(e.x, e.y - 10, 'POP!', '#cb382e', 22, .8);
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
-  if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 25 : 1 });
+  if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
-  if (e.kind === 'boss') { G.boss = null; $('#bossbar').hidden = true; G.shake = .5; for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
+  if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
@@ -398,46 +479,57 @@ function toast(M) {
   const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = `Busted: "${M.myth}"`; t.querySelector('p').textContent = M.fact;
   clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200);
 }
+function hint(s, life = 2.5) { const h = $('#hint'); h.textContent = s; h.hidden = false; G.hintT = life; }
 
 /* ───────── weapons ───────── */
+// Dad's hand position in world space (the point every shot leaves from)
+function handPos() {
+  const d = G.dad, A = ANCHOR.pointing, h = 118, w = h * 320 / 700;
+  return { x: d.x + d.face * (A.hand[0] - .5) * w, y: d.y + 30 - h + A.hand[1] * h };
+}
+// play a wind-up on Dad, then run the real shot from his hand at the release moment
+function windup(kind, tgt, release) {
+  const dad = G.dad; if (tgt) dad.face = tgt.x < dad.x ? -1 : 1;
+  dad.anim = { kind, t: 0, dur: .42 };
+  G.pending.push({ at: G.t + .14, fn: release });
+}
 function fire(w) {
-  const D = WEAPONS[w.id], L = w.lvl - 1, dad = G.dad, dmg = D.dmg[L];
+  const D = WEAPONS[w.id], L = w.lvl - 1, dad = G.dad, dmg = D.dmg[L] * dmgMul(w.id);
   const tgt = nearest(dad);
   if (!tgt && w.id !== 'bubble') return false;
-  if (tgt) { dad.face = tgt.x < dad.x ? -1 : 1; dad.pose = .35; }
   switch (w.id) {
-    case 'glass': {
-      const ts = D.n[L] === 1 ? [tgt] : nearest(dad, null, D.n[L]);
-      for (const e of ts) { hurt(e, dmg); G.fx.push({ k: 'beam', x: e.x, y: e.y, t: 0, life: .18 }); }
-      G.fx.push({ k: 'lens', t: 0, life: .25 });
-      break; }
+    case 'glass':
+      windup('glass', tgt, () => {
+        const ts = (D.n[L] === 1 ? [tgt] : nearest(dad, null, D.n[L])).filter(e => e && e.hp > 0);
+        if (!ts.length) { const t2 = nearest(dad); if (t2) ts.push(t2); }
+        const hp = handPos();
+        for (const e of ts) { hurt(e, dmg); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); }
+        G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 });
+      }); break;
     case 'yoyo':
-      for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(tgt.y - dad.y, tgt.x - dad.x) + (i - (D.n[L] - 1) / 2) * .5; G.shots.push({ k: 'yoyo', x: dad.x, y: dad.y - 30, a, d: 0, max: 190, out: true, dmg, hitset: new Set(), spin: 0 }); }
-      break;
-    case 'bat': {
-      const a = Math.atan2(tgt.y - dad.y, tgt.x - dad.x), R = D.n[L];
-      for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, dad); if (d > R + e.r) continue; let da = Math.atan2(e.y - dad.y, e.x - dad.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (Math.abs(da) < 1.35) hurt(e, dmg, 160); }
-      G.fx.push({ k: 'swing', a, R, t: 0, life: .22 });
-      break; }
+      windup('yoyo', tgt, () => { const hp = handPos(), t = tgt.hp > 0 ? tgt : nearest(dad) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .5; G.shots.push({ k: 'yoyo', x: hp.x, y: hp.y, ox: hp.x, oy: hp.y, a, d: 0, max: 190, out: true, dmg, hitset: new Set(), spin: 0 }); } }); break;
+    case 'bat':
+      windup('bat', tgt, () => {
+        const a = Math.atan2(tgt.y - dad.y, tgt.x - dad.x), R = D.n[L];
+        for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, dad); if (d > R + e.r) continue; let da = Math.atan2(e.y - dad.y, e.x - dad.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (Math.abs(da) < 1.35) hurt(e, dmg, 160); }
+        G.fx.push({ k: 'swing', a, R, t: 0, life: .22 }); G.shake = .06;
+      }); break;
     case 'plane':
-      for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(tgt.y - dad.y, tgt.x - dad.x) + (i - (D.n[L] - 1) / 2) * .22; G.shots.push({ k: 'plane', x: dad.x, y: dad.y - 20, vx: Math.cos(a) * 330, vy: Math.sin(a) * 330, dmg, pierce: 3, t: 0, hitset: new Set(), wob: rnd(0, 6) }); }
-      break;
+      windup('plane', tgt, () => { const hp = handPos(), t = tgt.hp > 0 ? tgt : nearest(dad) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .22; G.shots.push({ k: 'plane', x: hp.x, y: hp.y, vx: Math.cos(a) * 330, vy: Math.sin(a) * 330, dmg, pierce: 3, t: 0, hitset: new Set(), wob: rnd(0, 6) }); } }); break;
     case 'frisbee':
-      G.shots.push({ k: 'frisbee', x: dad.x, y: dad.y - 20, tgt, dmg, left: D.n[L], hitset: new Set(), spin: 0, t: 0 });
-      break;
+      windup('frisbee', tgt, () => { const hp = handPos(); G.shots.push({ k: 'frisbee', x: hp.x, y: hp.y, tgt: tgt.hp > 0 ? tgt : null, dmg, left: D.n[L], hitset: new Set(), spin: 0, t: 0 }); }); break;
     case 'bubble':
-      for (let i = 0; i < D.n[L]; i++) { const a = tgt ? Math.atan2(tgt.y - dad.y, tgt.x - dad.x) + rnd(-.6, .6) : rnd(0, 7); G.shots.push({ k: 'bubble', x: dad.x, y: dad.y - 30, vx: Math.cos(a) * rnd(50, 80), vy: Math.sin(a) * rnd(50, 80), dmg, t: 0, life: 5, r: rnd(9, 14) }); }
-      break;
-    case 'balloon': {
-      const ts = nearest(dad, null, 3), t = pick(ts);
-      const lead = Math.atan2(dad.y - t.y, dad.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .55, ty = t.y + Math.sin(lead) * t.spd * .55;
-      G.shots.push({ k: 'balloon', x: dad.x, y: dad.y - 30, sx: dad.x, sy: dad.y - 30, tx, ty, t: 0, life: .65, dmg, R: D.n[L], col: pick(['#5c8cbe', '#cb382e', '#4f8a5b', '#ecb23c']) });
-      break; }
+      windup('bubble', tgt, () => { const hp = handPos(); for (let i = 0; i < D.n[L]; i++) { const a = tgt ? Math.atan2(tgt.y - hp.y, tgt.x - hp.x) + rnd(-.6, .6) : rnd(0, 7); G.shots.push({ k: 'bubble', x: hp.x, y: hp.y, vx: Math.cos(a) * rnd(50, 80), vy: Math.sin(a) * rnd(50, 80), dmg, t: 0, life: 5, r: rnd(9, 14) }); } }); break;
+    case 'balloon':
+      windup('balloon', tgt, () => {
+        const ts = nearest(dad, null, 3); if (!ts.length) return; const t = pick(ts), hp = handPos();
+        const lead = Math.atan2(dad.y - t.y, dad.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .55, ty = t.y + Math.sin(lead) * t.spd * .55;
+        G.shots.push({ k: 'balloon', x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .65, dmg, R: D.n[L], col: pick(['#5c8cbe', '#cb382e', '#4f8a5b', '#ecb23c']) });
+      }); break;
   }
   return true;
 }
 function updateShots(dt) {
-  const dad = G.dad;
   for (const s of G.shots) {
     s.t = (s.t || 0) + dt;
     switch (s.k) {
@@ -445,7 +537,8 @@ function updateShots(dt) {
         s.d += (s.out ? 420 : -480) * dt; s.spin += dt * 20;
         if (s.d >= s.max) s.out = false;
         if (s.d <= 0 && !s.out) s.dead = true;
-        s.x = dad.x + Math.cos(s.a) * s.d; s.y = dad.y - 30 + Math.sin(s.a) * s.d;
+        const hp = handPos(); s.ox = hp.x; s.oy = hp.y;
+        s.x = s.ox + Math.cos(s.a) * s.d; s.y = s.oy + Math.sin(s.a) * s.d;
         for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 12) { s.hitset.add(e); hurt(e, s.dmg, 40); }
         if (!s.out && s.hitset.size) { s.hitset = new Set([...s.hitset].filter(e => e.hit > 0)); }
         break; }
@@ -492,30 +585,32 @@ function update(dt) {
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = 6; for (let i = 0; i < 2; i++) spawn(pick(S.pool), false, { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
   for (const e of G.enemies) {
-    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt);
+    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt); e.walk += dt * (e.kind === 'fast' ? 14 : 8);
     const a = Math.atan2(dad.y - e.y, dad.x - e.x), d = dist(e, dad), sp = e.spd * (e.slow > 0 ? .45 : 1);
     if (d > e.r + 34) { e.x += Math.cos(a) * sp * dt; e.y += Math.sin(a) * sp * dt; }
     else if (e.bonk <= 0) { e.bonk = 1.4; dad.hp -= e.dmg; dad.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; e.kx *= .85; e.ky *= .85;
-    // keep them from stacking
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = (min - dd) * .5, ax = (e.x - o.x) / dd, ay = (e.y - o.y) / dd; e.x += ax * push; e.y += ay * push; } }
   }
   G.enemies = G.enemies.filter(e => e.hp > 0);
-  // weapons
-  for (const w of G.weapons) { w.cd -= dt; if (w.cd <= 0) { if (fire(w)) w.cd = WEAPONS[w.id].cd[w.lvl - 1] * cdMul(); else w.cd = .1; } }
+  // weapons: only one wind-up at a time so the animation reads
+  for (const w of G.weapons) { w.cd -= dt; if (w.cd <= 0 && !dad.anim) { if (fire(w)) w.cd = WEAPONS[w.id].cd[w.lvl - 1] * cdMul(w.id); else w.cd = .1; } }
+  for (const p of G.pending) if (G.t >= p.at) { p.done = true; p.fn(); }
+  G.pending = G.pending.filter(p => !p.done);
   updateShots(dt);
   // dad
-  dad.pose = Math.max(0, dad.pose - dt); dad.flash = Math.max(0, dad.flash - dt);
+  if (dad.anim) { dad.anim.t += dt; if (dad.anim.t >= dad.anim.dur) dad.anim = null; }
+  dad.flash = Math.max(0, dad.flash - dt);
   if (G.passives.snack) dad.hp = Math.min(dad.maxhp, dad.hp + G.passives.snack * 1.2 * dt);
   if (dad.hp <= 0) { gameOver(); return; }
   // orbs
-  const mag = 60 + (G.passives.magnet || 0) * 50;
+  const mag = 60 + (G.passives.magnet || 0) * 50, xpMul = 1 + save.chr.cap * .1, coinMul = 1 + save.chr.watch * .1;
   for (const o of G.orbs) {
     const d = dist(o, dad);
     if (d < mag) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'xp') { dad.xp += o.v; if (dad.xp >= dad.next) levelUp(); } else { G.coins += o.v; $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'xp') { dad.xp += o.v * xpMul; if (dad.xp >= dad.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   // fx
@@ -524,25 +619,24 @@ function update(dt) {
   for (const t of G.texts) { t.t += dt; t.y -= 28 * dt; }
   G.texts = G.texts.filter(t => t.t < t.life);
   G.shake = Math.max(0, G.shake - dt);
+  if (G.hintT > 0) { G.hintT -= dt; if (G.hintT <= 0) $('#hint').hidden = true; }
   refreshHud();
 }
 function collectAll() { for (const o of G.orbs) o.pull = true; }
 
-/* ───────── level up ───────── */
+/* ───────── level up & cards ───────── */
 function levelUp() {
   const dad = G.dad; dad.xp -= dad.next; dad.lvl++; dad.next = Math.round(6 + dad.lvl * 3.5);
   text(dad.x, dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2);
   offerCards();
 }
 function offerCards(free = 0) {
-  const dad = G.dad;
-  const opts = [];
+  const dad = G.dad, opts = [];
   for (const w of G.weapons) if (w.lvl < 5) opts.push({ t: 'w', id: w.id, lvl: w.lvl + 1 });
-  if (G.weapons.length < MAX_WEAPONS) for (const id in WEAPONS) if (!G.weapons.find(w => w.id === id)) opts.push({ t: 'w', id, lvl: 1 });
+  if (G.weapons.length < MAX_WEAPONS) for (const id in WEAPONS) if (owned(id) && !G.weapons.find(w => w.id === id)) opts.push({ t: 'w', id, lvl: 1 });
   for (const id in PASSIVES) { const l = G.passives[id] || 0; if (l < PASSIVES[id].max && (l > 0 || Object.keys(G.passives).length < MAX_PASSIVES)) opts.push({ t: 'p', id, lvl: l + 1 }); }
   if (!opts.length) { dad.hp = Math.min(dad.maxhp, dad.hp + 30); G.coins += 10; return; }
   const chosen = [];
-  // always show at least one piece of gear
   const gear = opts.filter(o => o.t === 'w'); if (gear.length) { const g = pick(gear); chosen.push(g); opts.splice(opts.indexOf(g), 1); }
   while (chosen.length < 3 && opts.length) chosen.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
   const box = $('#cards'); box.innerHTML = '';
@@ -555,13 +649,27 @@ function offerCards(free = 0) {
   }
   $('#levelup h2').textContent = free ? 'Dad remembered some gear!' : 'Level up!';
   $('#levelup .sub').textContent = free ? `From last time. Pick one (${free} left):` : 'Dad found something in the garage. Pick one:';
-  G.paused = true; $('#levelup').hidden = false;
+  G.paused = true; $('#levelup').hidden = false; $('#wmenu').hidden = true;
 }
 function apply(o) {
   if (o.t === 'w') { const w = G.weapons.find(w => w.id === o.id); if (w) w.lvl = o.lvl; else G.weapons.push({ id: o.id, lvl: 1, cd: 0 }); }
   else { G.passives[o.id] = o.lvl; if (o.id === 'sweater') { G.dad.maxhp += 25; G.dad.hp = Math.min(G.dad.maxhp, G.dad.hp + 40); } }
   refreshHud(true);
 }
+
+/* ───────── in-run weapon menu (coins) ───────── */
+const upCost = w => 15 + w.lvl * 12;
+let menuW = null;
+function openWmenu(w) {
+  menuW = w; const D = WEAPONS[w.id], m = $('#wmenu');
+  m.querySelector('.em').textContent = D.em; m.querySelector('b').textContent = `${D.name}  ·  Lv ${w.lvl}`; m.querySelector('.d').textContent = D.desc;
+  if (w.lvl >= 5) { m.querySelector('.next').textContent = 'Fully upgraded. Dad is very pleased with it.'; $('#wbuy').hidden = true; }
+  else { const L = w.lvl - 1; m.querySelector('.next').innerHTML = `Next: <b>${Math.round(D.dmg[L + 1] * dmgMul(w.id))}</b> damage (now ${Math.round(D.dmg[L] * dmgMul(w.id))}), every <b>${(D.cd[L + 1] * cdMul(w.id)).toFixed(2)}s</b> (now ${(D.cd[L] * cdMul(w.id)).toFixed(2)}s)${D.n[L + 1] !== D.n[L] ? ', and more of it' : ''}.`; $('#wbuy').hidden = false; $('#wbuy').textContent = `Upgrade for 🪙 ${upCost(w)}`; $('#wbuy').disabled = G.coins < upCost(w); }
+  m.hidden = false; G.paused = true;
+}
+function closeWmenu() { $('#wmenu').hidden = true; menuW = null; if ($('#levelup').hidden && $('#pausem').hidden) G.paused = false; }
+$('#wclose').onclick = closeWmenu;
+$('#wbuy').onclick = () => { const w = menuW; if (!w || G.coins < upCost(w) || w.lvl >= 5) return; G.coins -= upCost(w); w.lvl++; $('#coinN').textContent = G.coins; text(G.dad.x, G.dad.y - 90, `${WEAPONS[w.id].em} Lv ${w.lvl}!`, '#ecb23c', 24, 1.2); refreshHud(true); openWmenu(w); };
 
 /* ───────── hud ───────── */
 let gearKey = '';
@@ -573,96 +681,216 @@ function refreshHud(force) {
   $('#patience span').textContent = `Patience ${Math.max(0, Math.ceil(dad.hp))} / ${dad.maxhp}`;
   $('#xp div').style.width = clamp(dad.xp / dad.next * 100, 0, 100) + '%'; $('#lvl').textContent = 'Lv ' + dad.lvl;
   if (G.boss) $('#bossHp').style.width = clamp(G.boss.hp / G.boss.maxhp * 100, 0, 100) + '%';
-  const key = G.weapons.map(w => w.id + w.lvl).join() + '|' + JSON.stringify(G.passives);
+  const key = G.weapons.map(w => w.id + w.lvl + (G.coins >= upCost(w) && w.lvl < 5 ? '$' : '')).join() + '|' + JSON.stringify(G.passives);
   if (key !== gearKey || force) {
     gearKey = key; const g = $('#gear'); g.innerHTML = '';
-    for (let i = 0; i < MAX_WEAPONS; i++) { const w = G.weapons[i]; const d = document.createElement('div'); d.className = 'slot' + (w ? '' : ' empty'); if (w) d.innerHTML = `${WEAPONS[w.id].em}<i>${w.lvl}</i>`; g.appendChild(d); }
-    for (const id in G.passives) { const d = document.createElement('div'); d.className = 'slot'; d.innerHTML = `${PASSIVES[id].em}<i>${G.passives[id]}</i>`; g.appendChild(d); }
+    for (let i = 0; i < MAX_WEAPONS; i++) {
+      const w = G.weapons[i]; const d = document.createElement('div'); d.className = 'slot' + (w ? '' : ' empty') + (w && w.lvl < 5 && G.coins >= upCost(w) ? ' can' : '');
+      if (w) { d.innerHTML = `${WEAPONS[w.id].em}<i>${w.lvl}</i>`; d.onclick = () => { if (!G.over && !G.cleared && $('#levelup').hidden) openWmenu(w); }; }
+      g.appendChild(d);
+    }
+    for (const id in G.passives) { const d = document.createElement('div'); d.className = 'slot passive'; d.innerHTML = `${PASSIVES[id].em}<i>${G.passives[id]}</i>`; g.appendChild(d); }
   }
 }
 
-/* ───────── draw ───────── */
+/* ───────── draw: dad (shared by game, title, closet) ───────── */
+// draws Dad standing with his feet at (x, y), `h` tall, facing `face`, wearing whatever's in the closet
+function drawDadAt(c, x, y, h, face, pose, opts = {}) {
+  const img = IMG[pose]; if (!img || !img.complete || !img.naturalWidth) return;
+  const w = h * img.naturalWidth / img.naturalHeight, A = ANCHOR[pose], chr = save.chr;
+  c.save(); c.translate(x, y);
+  if (opts.lean) c.rotate(opts.lean);
+  c.scale(face, 1);
+  if (opts.alpha != null) c.globalAlpha = opts.alpha;
+  c.drawImage(img, -w / 2, -h, w, h);
+  const P = f => [(f[0] - .5) * w, -h + f[1] * h];
+  c.lineWidth = Math.max(2, h * .022); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round';
+  // sweater vest: a V-neck over the chest, a new colour each rank
+  if (chr.vest > 0) {
+    const [cx, cy] = P(A.chest), sw = w * .21, top = cy - h * .11, bot = cy + h * .13;
+    c.fillStyle = ['#7a4e2a', '#6b3f7a', '#2f6a5a', '#cb382e', '#20525c'][chr.vest - 1];
+    c.beginPath();
+    c.moveTo(cx - sw, top); c.lineTo(cx - sw * .45, top); c.lineTo(cx, top + h * .075); c.lineTo(cx + sw * .45, top); c.lineTo(cx + sw, top); // shoulders and V-neck
+    c.quadraticCurveTo(cx + sw * .8, top + h * .06, cx + sw * .92, top + h * .11); // armhole
+    c.lineTo(cx + sw * .98, bot); c.lineTo(cx - sw * .98, bot); c.lineTo(cx - sw * .92, top + h * .11);
+    c.quadraticCurveTo(cx - sw * .8, top + h * .06, cx - sw, top); c.closePath(); c.fill(); c.stroke();
+    c.lineWidth = h * .01; c.strokeStyle = 'rgba(58,44,32,.3)'; for (let i = 1; i <= 3; i++) { const yy = top + h * .09 + i * h * .035; c.beginPath(); c.moveTo(cx - sw * .9, yy); c.lineTo(cx + sw * .9, yy); c.stroke(); }
+    c.fillStyle = '#ecb23c'; c.beginPath(); c.arc(cx, bot - h * .04, h * .008, 0, 7); c.fill();
+    c.lineWidth = Math.max(2, h * .022); c.strokeStyle = '#3a2c20';
+  }
+  // bigger glasses: thick round frames over the sprite's own
+  if (chr.glasses > 0) {
+    const [gx, gy] = P(A.glasses), r = w * (.068 + chr.glasses * .005), gap = w * .088;
+    c.lineWidth = Math.max(1.5, h * .013); c.strokeStyle = ['#3a2c20', '#20525c', '#cb382e', '#6b3f7a', '#4f8a5b'][chr.glasses - 1];
+    c.fillStyle = ['rgba(190,230,245,.25)', 'rgba(190,230,245,.3)', 'rgba(255,200,120,.3)', 'rgba(220,190,255,.3)', 'rgba(190,245,210,.3)'][chr.glasses - 1];
+    for (const s of [-1, 1]) { c.beginPath(); c.arc(gx + s * gap, gy, r, 0, 7); c.fill(); c.stroke(); }
+    c.beginPath(); c.moveTo(gx - gap + r, gy); c.lineTo(gx + gap - r, gy); c.stroke();
+    c.lineWidth = Math.max(2, h * .022); c.strokeStyle = '#3a2c20';
+  }
+  // thinking cap: a baseball cap sitting on the hair
+  if (chr.cap > 0) {
+    const [hx, hy] = P(A.head), r = w * A.hr, base = hy - r * .78;
+    c.fillStyle = ['#cb382e', '#20525c', '#4f8a5b', '#ecb23c', '#6b3f7a'][chr.cap - 1];
+    c.beginPath(); c.moveTo(hx - r * 1.05, base + r * .12); c.quadraticCurveTo(hx - r * 1.1, base - r * 1.1, hx, base - r * 1.15); c.quadraticCurveTo(hx + r * 1.1, base - r * 1.1, hx + r * 1.05, base + r * .12); c.closePath(); c.fill(); c.stroke(); // crown
+    c.beginPath(); c.moveTo(hx + r * .6, base + r * .02); c.quadraticCurveTo(hx + r * 1.7, base - r * .25, hx + r * 1.75, base + r * .22); c.quadraticCurveTo(hx + r * 1.3, base + r * .38, hx + r * .7, base + r * .3); c.closePath(); c.fill(); c.stroke(); // brim
+    c.beginPath(); c.moveTo(hx - r * 1.02, base + r * .1); c.quadraticCurveTo(hx, base + r * .3, hx + r * 1.02, base + r * .1); c.stroke(); // band
+    c.beginPath(); c.arc(hx, base - r * 1.15, r * .12, 0, 7); c.fill(); c.stroke(); // button
+    c.font = `700 ${Math.round(r * .7)}px Fredoka, Arial`; c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText('?', hx, base - r * .3);
+  }
+  // dad watch on the lowered wrist
+  if (chr.watch > 0) {
+    const [wx, wy] = P(A.wrist);
+    c.fillStyle = '#3a2c20'; c.fillRect(wx - w * .06, wy - h * .011, w * .12, h * .022);
+    c.fillStyle = ['#ecb23c', '#c0c0c0', '#20525c', '#cb382e', '#6b3f7a'][chr.watch - 1]; c.beginPath(); c.arc(wx, wy, w * .045, 0, 7); c.fill(); c.stroke();
+  }
+  // weapon in hand during a wind-up
+  if (opts.item) drawHeldItem(c, P(A.hand), opts.item, opts.p);
+  c.restore(); c.globalAlpha = 1;
+}
+// what Dad is holding during the wind-up / release; p = 0..1 through the animation
+function drawHeldItem(c, [hx, hy], kind, p) {
+  const wind = p < .33 ? p / .33 : 1, rel = p < .33 ? 0 : Math.min(1, (p - .33) / .3), fade = p > .7 ? 1 - (p - .7) / .3 : 1;
+  c.save(); c.translate(hx, hy); c.globalAlpha *= fade; c.lineWidth = 3; c.strokeStyle = '#3a2c20';
+  switch (kind) {
+    case 'glass': { c.translate(0, -8 * wind); c.rotate(-.6 + rel * .3); c.fillStyle = '#8b5a2b'; c.fillRect(-3, 8, 6, 20); c.strokeRect(-3, 8, 6, 20); c.fillStyle = 'rgba(190,230,245,.6)'; c.beginPath(); c.arc(0, 0, 11, 0, 7); c.fill(); c.stroke(); break; }
+    case 'bat': { c.rotate(-2.2 + wind * -.6 + rel * 3.2); c.fillStyle = '#c69660'; c.beginPath(); c.moveTo(-2.5, 2); c.lineTo(2.5, 2); c.lineTo(3, -16); c.quadraticCurveTo(7, -28, 7, -40); c.arc(0, -40, 7, 0, Math.PI, true); c.quadraticCurveTo(-7, -28, -3, -16); c.closePath(); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.beginPath(); c.arc(0, 3, 4, 0, 7); c.fill(); break; }
+    case 'yoyo': { c.translate(0, -10 * wind); if (rel === 0) { c.fillStyle = '#cb382e'; c.beginPath(); c.arc(0, 0, 11, 0, 7); c.fill(); c.stroke(); c.fillStyle = '#fff'; c.beginPath(); c.arc(0, 0, 4, 0, 7); c.fill(); } break; }
+    case 'plane': { c.translate(-6 * wind, -12 * wind); c.rotate(-.5 + rel); if (rel < 1) { c.font = `24px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('✈️', 0, 0); } break; }
+    case 'frisbee': { c.translate(-10 * wind, -4 * wind); c.rotate(-.4 + rel * 1.2); if (rel < 1) { c.fillStyle = '#ecb23c'; c.beginPath(); c.ellipse(0, 0, 15, 7, 0, 0, 7); c.fill(); c.stroke(); } break; }
+    case 'bubble': { c.rotate(-.9 + rel * .5); c.fillStyle = '#6b3f7a'; c.fillRect(-2, 0, 4, 26); c.strokeRect(-2, 0, 4, 26); c.strokeStyle = '#cb382e'; c.lineWidth = 4; c.beginPath(); c.arc(0, -8, 8, 0, 7); c.stroke(); break; }
+    case 'balloon': { c.translate(0, -14 * wind); if (rel < 1) { c.fillStyle = '#5c8cbe'; c.beginPath(); c.ellipse(0, 0, 10, 13, 0, 0, 7); c.fill(); c.stroke(); } break; }
+  }
+  c.restore();
+}
+function drawDad() {
+  const d = G.dad, a = d.anim, p = a ? a.t / a.dur : 0;
+  ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(d.x, d.y + 26, 30, 10, 0, 0, 7); ctx.fill();
+  const bob = Math.sin(G.t * 4) * 2;
+  // lean back on the wind-up, forward on the release
+  const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * d.face : 0;
+  drawDadAt(ctx, d.x, d.y + 30 + bob, 118, d.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: d.flash > 0 && Math.floor(d.flash * 20) % 2 ? .5 : 1 });
+}
+
+/* ───────── draw: myths ───────── */
+function eyes(x, y, r, e) {
+  const look = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), lx = Math.cos(look) * r * .08, ly = Math.sin(look) * r * .08;
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5;
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(x + s * r * .32, y, r * .19, r * .22, 0, 0, 7); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = '#3a2c20';
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(x + s * r * .32 + lx, y + ly, r * .09, 0, 7); ctx.fill(); }
+  ctx.lineWidth = 3; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x - r * .55, y - r * .42); ctx.lineTo(x - r * .14, y - r * .25); ctx.moveTo(x + r * .55, y - r * .42); ctx.lineTo(x + r * .14, y - r * .25); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - r * .2, y + r * .42); ctx.quadraticCurveTo(x, y + r * .28, x + r * .2, y + r * .42); ctx.stroke();
+}
+function sticker(x, y, r, e) { ctx.font = `${Math.round(r)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#000'; ctx.fillText(e.M.em, x, y); ctx.textBaseline = 'alphabetic'; }
+function shade(hex, k) { const n = parseInt(hex.slice(1), 16); const f = v => Math.round(clamp(v * k, 0, 255)); return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`; }
+function drawEnemy(e) {
+  const r = e.r, x = e.x, y = e.y, col = e.hit > 0 ? '#fff' : e.M.col, step = Math.sin(e.walk);
+  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(x, y + r * .95, r * .85, r * .3, 0, 0, 7); ctx.fill();
+  ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+  switch (e.kind) {
+    case 'normal': { // a grumpy library book, waddling on little legs
+      ctx.translate(x, y + Math.abs(step) * -2); ctx.rotate(step * .07);
+      ctx.fillStyle = '#3a2c20'; for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * r * .4, r * .9 + (s * step > 0 ? -3 : 0), r * .2, r * .12, 0, 0, 7); ctx.fill(); }
+      ctx.fillStyle = '#fbf3df'; ctx.fillRect(-r * .8 + 6, -r * .9 + 6, r * 1.6, r * 1.8); ctx.strokeRect(-r * .8 + 6, -r * .9 + 6, r * 1.6, r * 1.8); // pages
+      ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-r * .8, -r * .9, r * 1.6, r * 1.8, 4); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(58,44,32,.35)'; ctx.fillRect(-r * .8, -r * .9, r * .22, r * 1.8); ctx.strokeRect(-r * .8, -r * .9, r * .22, r * 1.8); // spine
+      ctx.fillStyle = '#fbf3df'; ctx.beginPath(); ctx.roundRect(-r * .35, r * .12, r * 1.0, r * .62, 3); ctx.fill(); ctx.stroke(); // title plate
+      sticker(r * .15, r * .44, r * .5, e); eyes(r * .12, -r * .4, r * .9, e);
+      break; }
+    case 'fast': { // a beetle that scurries
+      ctx.translate(x, y); const a = Math.atan2(G.dad.y - y, G.dad.x - x);
+      ctx.lineWidth = 2.5; for (let i = -1; i <= 1; i++) for (const s of [-1, 1]) { const la = a + s * (1.1 + i * .5), wig = Math.sin(e.walk + i) * .25 * s; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(la + wig) * r * 1.25, Math.sin(la + wig) * r * 1.25); ctx.stroke(); }
+      ctx.lineWidth = 3; ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, r * .95, r * .8, a, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(Math.cos(a) * r * .5, Math.sin(a) * r * .5); ctx.lineTo(-Math.cos(a) * r * .95, -Math.sin(a) * r * .95); ctx.stroke(); // wing split
+      ctx.fillStyle = '#3a2c20'; ctx.beginPath(); ctx.arc(Math.cos(a) * r * .8, Math.sin(a) * r * .8, r * .38, 0, 7); ctx.fill(); // head
+      for (const s of [-1, 1]) { const aa = a + s * .5; ctx.beginPath(); ctx.moveTo(Math.cos(a) * r * .9, Math.sin(a) * r * .9); ctx.quadraticCurveTo(Math.cos(aa) * r * 1.3, Math.sin(aa) * r * 1.3, Math.cos(aa) * r * 1.7, Math.sin(aa) * r * 1.7); ctx.stroke(); }
+      sticker(-Math.cos(a) * r * .25, -Math.sin(a) * r * .25, r * .8, e);
+      for (const s of [-1, 1]) { const ea = a + s * .55; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(Math.cos(ea) * r * 1.0, Math.sin(ea) * r * 1.0, r * .16, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#3a2c20'; ctx.beginPath(); ctx.arc(Math.cos(ea) * r * 1.05, Math.sin(ea) * r * 1.05, r * .07, 0, 7); ctx.fill(); }
+      break; }
+    case 'tank': { // a stuffed backpack, heavy and slow
+      ctx.translate(x, y + Math.abs(step) * -3); ctx.rotate(step * .05);
+      ctx.fillStyle = '#3a2c20'; for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * r * .45, r * .95 + (s * step > 0 ? -4 : 0), r * .24, r * .13, 0, 0, 7); ctx.fill(); }
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; for (const s of [-1, 1]) { ctx.beginPath(); ctx.roundRect(s * r * .55 - r * .1, -r * 1.3, r * .2, r * .5, 4); ctx.fill(); ctx.stroke(); } // straps
+      ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-r * .85, -r * .85, r * 1.7, r * 1.75, r * .35); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.roundRect(-r * .6, r * .05, r * 1.2, r * .75, r * .2); ctx.fill(); ctx.stroke(); // front pocket
+      ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-r * .65, -r * 1.05, r * 1.3, r * .4, r * .2); ctx.fill(); ctx.stroke(); // top flap
+      ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.arc(0, r * .05, r * .13, 0, 7); ctx.fill(); ctx.stroke(); // zipper pull
+      sticker(0, r * .45, r * .55, e); eyes(0, -r * .45, r * .9, e);
+      break; }
+    case 'splitter': case 'mini': { // a stack of sticky notes (minis are a single note)
+      ctx.translate(x, y + Math.abs(step) * -2); ctx.rotate(step * .08);
+      const layers = e.kind === 'mini' ? 1 : 3;
+      ctx.fillStyle = '#3a2c20'; for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * r * .4, r * .9 + (s * step > 0 ? -3 : 0), r * .18, r * .11, 0, 0, 7); ctx.fill(); }
+      for (let i = layers - 1; i >= 0; i--) { ctx.save(); ctx.rotate((i - 1) * .12); ctx.fillStyle = i === 0 ? col : shade(e.M.col, .85); ctx.fillRect(-r * .85, -r * .85 + i * 4, r * 1.7, r * 1.7); ctx.strokeRect(-r * .85, -r * .85 + i * 4, r * 1.7, r * 1.7); ctx.restore(); }
+      ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(-r * .85, -r * .85, r * 1.7, r * .28); // sticky strip
+      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(58,44,32,.35)'; for (let i = 0; i < 2; i++) { ctx.beginPath(); ctx.moveTo(-r * .6, r * .3 + i * r * .25); ctx.lineTo(r * .6, r * .3 + i * r * .25); ctx.stroke(); } ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3;
+      sticker(r * .4, r * .4, r * .5, e); eyes(-r * .1, -r * .3, r * .8, e);
+      break; }
+    case 'boss': { // a huge old tome with a crown, hovering
+      const hover = Math.sin(G.t * 3) * 5; ctx.translate(x, y + hover);
+      ctx.fillStyle = '#fbf3df'; ctx.beginPath(); ctx.roundRect(-r * .8 + 10, -r * .95 + 10, r * 1.7, r * 1.9, 6); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-r * .85, -r * .95, r * 1.7, r * 1.9, 8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(-r * .85, -r * .95, r * .28, r * 1.9); ctx.strokeRect(-r * .85, -r * .95, r * .28, r * 1.9);
+      ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.strokeRect(-r * .45, -r * .8, r * 1.15, r * 1.6); ctx.strokeStyle = '#3a2c20'; // gilt border
+      ctx.fillStyle = '#ecb23c'; for (const [sx, sy] of [[-.45, -.8], [.7, -.8], [-.45, .8], [.7, .8]]) { ctx.beginPath(); ctx.arc(sx * r, sy * r, r * .09, 0, 7); ctx.fill(); ctx.stroke(); }
+      ctx.fillStyle = '#fbf3df'; ctx.beginPath(); ctx.roundRect(-r * .3, r * .05, r * .85, r * .6, 4); ctx.fill(); ctx.stroke();
+      sticker(r * .12, r * .36, r * .5, e); eyes(r * .12, -r * .35, r * .95, e);
+      ctx.font = `${Math.round(r * .55)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', r * .12, -r * 1.1); ctx.textBaseline = 'alphabetic';
+      break; }
+  }
+  ctx.restore();
+  if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.4)'; ctx.beginPath(); ctx.arc(x, y, r * 1.1, 0, 7); ctx.fill(); }
+  if (e.kind === 'tank' || e.kind === 'boss') { const w = r * 1.6, by = y - r - (e.kind === 'boss' ? 40 : 16); ctx.fillStyle = '#3a2c20'; ctx.fillRect(x - w / 2 - 1, by, w + 2, 7); ctx.fillStyle = '#cb382e'; ctx.fillRect(x - w / 2, by + 1, w * clamp(e.hp / e.maxhp, 0, 1), 5); }
+}
+
+/* ───────── draw: world ───────── */
 function draw() {
   const S = G.S, dad = G.dad;
   ctx.save();
   if (G.shake > 0) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
-  // ground
   ctx.fillStyle = S.edge; ctx.fillRect(-20, -20, W + 40, H + 40);
   const g = ctx.createRadialGradient(CX, CY, 40, CX, CY, 330); g.addColorStop(0, S.lawn[0]); g.addColorStop(1, S.lawn[1]);
   ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(CX, CY, 230, 300, 0, 0, 7); ctx.fill();
   ctx.strokeStyle = 'rgba(58,44,32,.35)'; ctx.lineWidth = 4; ctx.stroke();
-  // flagstones
   ctx.fillStyle = S.stone; ctx.strokeStyle = 'rgba(58,44,32,.45)'; ctx.lineWidth = 3;
   for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2, R = 90; ctx.beginPath(); ctx.ellipse(CX + Math.cos(a) * R, CY + Math.sin(a) * R * .8, 34, 26, a, 0, 7); ctx.fill(); ctx.stroke(); }
   ctx.beginPath(); ctx.ellipse(CX, CY, 46, 36, 0, 0, 7); ctx.fill(); ctx.stroke();
-  // grass tufts
   ctx.strokeStyle = 'rgba(58,44,32,.25)'; ctx.lineWidth = 2;
   for (let i = 0; i < 26; i++) { const a = i * 2.4, R = 150 + (i * 37) % 120; const x = CX + Math.cos(a) * R, y = CY + Math.sin(a) * R * 1.25; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 4, y - 9); ctx.moveTo(x, y); ctx.lineTo(x + 4, y - 8); ctx.stroke(); }
+  // attention ring: Dad only notices myths inside it
+  ctx.beginPath(); ctx.arc(dad.x, dad.y, dad.radius, 0, 7);
+  ctx.fillStyle = 'rgba(251,243,223,.08)'; ctx.fill();
+  ctx.setLineDash([10, 8]); ctx.lineDashOffset = -G.t * 20; ctx.strokeStyle = 'rgba(251,243,223,.75)'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([]);
   // orbs
   for (const o of G.orbs) {
     ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
     ctx.fillStyle = o.k === 'xp' ? '#b48be6' : '#ecb23c'; ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke();
-    if (o.k === 'xp') { ctx.fillStyle = '#fff'; ctx.font = '700 8px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText('?', o.x, o.y + 3); }
+    ctx.fillStyle = o.k === 'xp' ? '#fff' : '#3a2c20'; ctx.font = '700 9px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText(o.k === 'xp' ? '?' : '¢', o.x, o.y + 3);
   }
-  // bubbles & balloons shadows
   for (const s of G.shots) if (s.k === 'balloon') { ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(s.x, s.y, 10, 5, 0, 0, 7); ctx.fill(); }
-  // enemies (sorted by y)
   const list = [...G.enemies].sort((a, b) => a.y - b.y);
-  for (const e of list) drawEnemy(e);
-  // dad
+  for (const e of list) if (e.y < dad.y + 20) drawEnemy(e);
   drawDad();
-  // shots
+  for (const e of list) if (e.y >= dad.y + 20) drawEnemy(e);
   for (const s of G.shots) drawShot(s);
-  // fx
   for (const f of G.fx) {
     const p = f.t / f.life;
     if (f.k === 'puff') { ctx.globalAlpha = 1 - p; ctx.fillStyle = f.col; ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (1 + p), 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1; }
-    else if (f.k === 'beam') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 8 - p * 6; ctx.beginPath(); ctx.moveTo(dad.x + dad.face * 18, dad.y - 40); ctx.lineTo(f.x, f.y); ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3 - p * 2; ctx.stroke(); ctx.globalAlpha = 1; }
-    else if (f.k === 'lens') { ctx.globalAlpha = (1 - p) * .9; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dad.x + dad.face * 18, dad.y - 40, 14 + p * 10, 0, 7); ctx.fill(); ctx.globalAlpha = 1; }
+    else if (f.k === 'beam') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 9 - p * 7; ctx.beginPath(); ctx.moveTo(f.sx, f.sy); ctx.lineTo(f.x, f.y); ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3 - p * 2; ctx.stroke(); ctx.globalAlpha = 1; }
+    else if (f.k === 'lens') { ctx.globalAlpha = (1 - p) * .9; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(f.x, f.y, 10 + p * 14, 0, 7); ctx.fill(); ctx.globalAlpha = 1; }
     else if (f.k === 'swing') { ctx.globalAlpha = 1 - p; ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(dad.x, dad.y - 20); ctx.arc(dad.x, dad.y - 20, f.R, f.a - 1.3 + p * .8, f.a + .3 + p * .8); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'splash') { ctx.globalAlpha = (1 - p); ctx.fillStyle = f.col; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.5 + p * .6), f.R * (.35 + p * .45), 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.globalAlpha = 1; }
   }
-  // texts
   for (const t of G.texts) { const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${t.size}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
-  // focus ring
   if (G.focus && G.focus.hp > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(G.focus.x, G.focus.y, G.focus.r + 10, G.t * 3, G.t * 3 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   ctx.restore();
 }
-function drawEnemy(e) {
-  const bob = Math.sin(G.t * 6 + e.bob) * 3, r = e.r, x = e.x, y = e.y + bob;
-  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .9, r * .8, r * .3, 0, 0, 7); ctx.fill();
-  // thought-bubble body
-  ctx.fillStyle = e.hit > 0 ? '#fff' : e.M.col; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3;
-  ctx.beginPath();
-  for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2 - Math.PI / 2; ctx.moveTo(x + Math.cos(a) * r * .55 + r * .45, y + Math.sin(a) * r * .55); ctx.arc(x + Math.cos(a) * r * .55, y + Math.sin(a) * r * .55, r * .5, 0, 7); }
-  ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(x, y, r * .78, 0, 7); ctx.fill();
-  // little trailing bubbles
-  ctx.beginPath(); ctx.arc(x - r * .7, y + r * .9, r * .18, 0, 7); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(x - r * 1.0, y + r * 1.25, r * .1, 0, 7); ctx.fill(); ctx.stroke();
-  // face: angry brows + emoji
-  ctx.font = `${Math.round(r * .95)}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#000'; ctx.fillText(e.M.em, x, y + r * .08); ctx.textBaseline = 'alphabetic';
-  ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x - r * .5, y - r * .55); ctx.lineTo(x - r * .18, y - r * .4); ctx.moveTo(x + r * .5, y - r * .55); ctx.lineTo(x + r * .18, y - r * .4); ctx.stroke();
-  if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.45)'; ctx.beginPath(); ctx.arc(x, y, r * 1.05, 0, 7); ctx.fill(); }
-  if (e.kind === 'boss') { ctx.font = `${Math.round(r * .5)}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; ctx.fillText('👑', x, y - r * .95); }
-  if (e.kind === 'tank' || e.kind === 'boss') { const w = r * 1.6; ctx.fillStyle = '#3a2c20'; ctx.fillRect(x - w / 2 - 1, y - r - 12, w + 2, 7); ctx.fillStyle = '#cb382e'; ctx.fillRect(x - w / 2, y - r - 11, w * clamp(e.hp / e.maxhp, 0, 1), 5); }
-}
-function drawDad() {
-  const d = G.dad, img = d.pose > 0 ? IMG.pointing : IMG.wave, h = 118, w = h * (img.naturalWidth || 320) / (img.naturalHeight || 700);
-  ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(d.x, d.y + 26, 30, 10, 0, 0, 7); ctx.fill();
-  ctx.save(); ctx.translate(d.x, d.y + 30); ctx.scale(d.face, 1);
-  const bob = Math.sin(G.t * 4) * 2;
-  if (d.flash > 0 && Math.floor(d.flash * 20) % 2) ctx.globalAlpha = .5;
-  if (img.complete && img.naturalWidth) ctx.drawImage(img, -w / 2, -h + bob, w, h);
-  ctx.restore(); ctx.globalAlpha = 1;
-}
 function drawShot(s) {
   ctx.save(); ctx.translate(s.x, s.y);
-  const em = f => { ctx.font = `${f}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
+  const em = f => { ctx.font = `${f}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
   switch (s.k) {
-    case 'yoyo': { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(G.dad.x - s.x, G.dad.y - 30 - s.y); ctx.stroke(); ctx.rotate(s.spin); ctx.fillStyle = '#cb382e'; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, 7); ctx.fill(); break; }
+    case 'yoyo': { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s.ox - s.x, s.oy - s.y); ctx.stroke(); ctx.rotate(s.spin); ctx.fillStyle = '#cb382e'; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, 7); ctx.fill(); break; }
     case 'plane': ctx.rotate(Math.atan2(s.vy, s.vx) + Math.PI / 4 + Math.sin(s.wob) * .15); em(26); ctx.fillText('✈️', 0, 0); break;
     case 'frisbee': ctx.rotate(s.spin); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.ellipse(0, 0, 16, 11, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.beginPath(); ctx.ellipse(0, 0, 8, 5, 0, 0, 7); ctx.stroke(); break;
     case 'bubble': ctx.globalAlpha = s.t > s.life - .6 ? (s.life - s.t) / .6 : 1; ctx.fillStyle = 'rgba(200,235,255,.5)'; ctx.beginPath(); ctx.arc(0, 0, s.r, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-s.r * .35, -s.r * .35, s.r * .25, 0, 7); ctx.fill(); break;
@@ -671,34 +899,49 @@ function drawShot(s) {
   ctx.restore(); ctx.globalAlpha = 1;
 }
 
+/* ───────── static dad portraits (title, closet, modals) ───────── */
+function portrait(id, pose) {
+  const c = $(id); if (!c) return; const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
+  drawDadAt(x, c.width / 2, c.height - 6, c.height - 12, 1, pose);
+}
+function drawStatics() { portrait('#titleDad', 'wave'); portrait('#closetDad', 'wave'); }
+
 /* ───────── loop ───────── */
 function loop(ts) {
-  raf = requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
   const dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts;
   if (mode !== 'game' || !G) return;
-  if (!G.paused && !G.over) { const steps = G.speed; for (let i = 0; i < steps; i++) { update(dt); if (G.over || G.paused || G.cleared) break; } }
+  if (!G.paused && !G.over) { for (let i = 0; i < G.speed; i++) { update(dt); if (G.over || G.paused || G.cleared) break; } }
   draw();
 }
 
 /* ───────── flow ───────── */
-function showScreen(id) { for (const s of ['#title', '#book']) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
+const SCREENS = ['#title', '#book', '#shop', '#closet'];
+function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm']) $(m).hidden = true;
+  setTimeout(() => { if (G && G.t < 3) hint('Dad only notices myths inside the ring'); }, 2200);
 }
-function stats(el) {
-  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Coins</span><b>${G.coins}</b></div><div class="stat"><span>Dad's level</span><b>${G.dad.lvl}</b></div>`;
+// Knowledge for the match: every pop counts, bosses and clears pay a bonus, leftover coins convert at half
+function payout(cleared) {
+  const base = G.busted + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0) + Math.floor(G.coins / 2);
+  return Math.round(base * (1 + save.chr.watch * .1));
+}
+function stats(el, know) {
+  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Dad's level</span><b>${G.dad.lvl}</b></div><div class="stat know"><span>💡 Knowledge earned</span><b>+${know}</b></div>`;
 }
 function stageClear() {
-  G.cleared = true; G.paused = true; collectAll();
+  G.cleared = true; G.paused = true; collectAll(); $('#wmenu').hidden = true;
   if (!save.cleared.includes(G.stage)) save.cleared.push(G.stage);
-  save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1)); persist();
+  save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
+  const k = payout(true); setKnow(save.know + k);
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
-  $('#nextStage').hidden = last; stats($('#clearStats')); $('#clearm').hidden = false;
+  $('#nextStage').hidden = last; stats($('#clearStats'), k); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.dad.hp = 0; persist(); stats($('#overStats')); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; }
+function gameOver() { G.over = true; G.dad.hp = 0; $('#wmenu').hidden = true; const k = payout(false); setKnow(save.know + k); stats($('#overStats'), k); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; }
 
 let pickStage = 0;
 function buildStagePick() {
@@ -711,30 +954,62 @@ function buildBook() {
   for (const id in MYTHS) { const M = MYTHS[id], got = save.facts.includes(id); if (got) n++; const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = `<div class="em">${got ? M.em : '❓'}</div><div><b>${got ? M.name : '???'}</b><s>${got ? M.myth : 'A myth you haven\'t popped yet.'}</s><p>${got ? M.fact : 'Pop it in the game to learn the real fact.'}</p></div>`; box.appendChild(d); }
   $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
 }
+function pips(n) { let s = '<div class="pips">'; for (let i = 0; i < MAX_RANK; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
+function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>💡 ${cost}</button>`; }
+function buildShop() {
+  const box = $('#shopList'); box.innerHTML = '';
+  for (const id in WEAPONS) {
+    const D = WEAPONS[id], w = wep(id), own = owned(id), d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked');
+    let html = `<div class="top"><div class="em">${D.em}</div><div><b>${D.name}</b><span class="d">${D.desc}</span></div>`;
+    if (!own) html += `<button class="btn small" data-buy="${id}" ${save.know >= D.price ? '' : 'disabled'}>Unlock 💡 ${D.price}</button>`;
+    html += '</div>';
+    if (own) { html += '<div class="ranks">'; for (const r in WRANKS) { const R = WRANKS[r], lv = w[r], cost = R.base + lv * R.step; html += `<div class="rank"><span class="nm">${R.name}</span>${pips(lv)}<span data-rank="${id}:${r}">${buyBtn(cost, save.know >= cost, lv >= MAX_RANK)}</span></div>`; } html += '</div>'; }
+    d.innerHTML = html; box.appendChild(d);
+  }
+  box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.know < WEAPONS[id].price) return; setKnow(save.know - WEAPONS[id].price); wep(id).own = true; persist(); buildShop(); });
+  box.querySelectorAll('[data-rank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.rank.split(':'), w = wep(id), R = WRANKS[r], cost = R.base + w[r] * R.step; if (w[r] >= MAX_RANK || save.know < cost) return; setKnow(save.know - cost); w[r]++; persist(); buildShop(); });
+}
+function buildCloset() {
+  const box = $('#closetList'); box.innerHTML = '';
+  for (const id in CLOSET) {
+    const C = CLOSET[id], lv = save.chr[id], cost = C.base + lv * C.step, d = document.createElement('div'); d.className = 'item';
+    d.innerHTML = `<div class="top"><div class="em">${C.em}</div><div><b>${C.name}</b><span class="d">${C.desc}</span></div></div><div class="ranks"><div class="rank"><span class="nm">Rank ${lv}</span>${pips(lv)}<span data-chr="${id}">${buyBtn(cost, save.know >= cost, lv >= MAX_RANK)}</span></div></div>`;
+    box.appendChild(d);
+  }
+  box.querySelectorAll('[data-chr] button').forEach(b => b.onclick = () => { const id = b.parentElement.dataset.chr, C = CLOSET[id], cost = C.base + save.chr[id] * C.step; if (save.chr[id] >= MAX_RANK || save.know < cost) return; setKnow(save.know - cost); save.chr[id]++; persist(); buildCloset(); });
+  const c = save.chr;
+  $('#closetStats').innerHTML = `<b>Attention ring</b> ${radiusFor()}<br><b>Max Patience</b> ${100 + c.vest * 20}<br><b>Level-up speed</b> +${c.cap * 10}%<br><b>Coins & Knowledge</b> +${c.watch * 10}%`;
+  portrait('#closetDad', 'wave');
+}
 
 $('#play').onclick = () => startGame(pickStage);
 $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
-$('#closeBook').onclick = () => showScreen('#title');
+$('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
+$('#openCloset').onclick = () => { buildCloset(); showScreen('#closet'); };
+$$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });
 $('#openHow').onclick = () => $('#howm').hidden = false;
 $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
-$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; $('#pausem').hidden = false; };
+$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; $('#wmenu').hidden = true; G.paused = true; $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => startGame(Math.min(G.stage + 1, STAGES.length - 1));
 $('#retry').onclick = () => startGame(G.stage);
-document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
+document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { $('#wmenu').hidden = true; G.paused = true; $('#pausem').hidden = false; } });
 
 // tap a myth to focus
 cv.addEventListener('pointerdown', ev => {
-  if (!G || G.paused) return;
+  if (!G || G.over || G.cleared) return;
+  if (!$('#wmenu').hidden) { closeWmenu(); return; }
+  if (G.paused) return;
   const r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * W, y = (ev.clientY - r.top) / r.height * H;
   let best = null, bd = 48;
   for (const e of G.enemies) { const d = Math.hypot(e.x - x, e.y - y) - e.r; if (d < bd) { bd = d; best = e; } }
   G.focus = best; if (best) text(best.x, best.y - best.r - 18, 'Dad, look!', '#fff', 15, .8);
 });
 
-buildStagePick(); showScreen('#title');
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, spawn, MYTHS, startGame };
+setKnow(save.know); buildStagePick(); showScreen('#title'); drawStatics();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
 </script>
