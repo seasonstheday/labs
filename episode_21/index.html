@@ -1,0 +1,394 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Acorn Lab</title>
+<meta name="description" content="Two small games from the Backyard Library acorn episode: be the oak and decide when to starve the squirrels and when to flood them, then be the squirrel and plant a forest by forgetting where you buried your acorns.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f;
+    --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  }
+  :root[data-theme="dark"] { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding-inline: 14px; padding-block: 14px 40px; overflow-x: hidden; }
+  main { max-width: 980px; margin: 0 auto; position: relative; }
+  .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
+  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .mote { position: absolute; width: 10px; height: 7px; border-radius: 50% 50% 50% 0; background: var(--gold); opacity: .3; animation: drift linear infinite; }
+  @keyframes drift { from { transform: translateY(-10vh) translateX(0) rotate(0); } to { transform: translateY(105vh) translateX(60px) rotate(400deg); } }
+  main > * { position: relative; z-index: 1; }
+  [hidden] { display: none !important; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); border: 4px solid #3a2c20; }
+  .stage.wide { aspect-ratio: 21 / 9; }
+  .stage > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(40,25,10,.35) 100%); pointer-events: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .topbar .spacer { flex: 1; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  #title .stage { aspect-ratio: 16 / 8; }
+  .hero-title { position: absolute; left: 4%; top: 7%; color: #fff; font-size: clamp(38px, 8vw, 92px); line-height: .95; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.35); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  .hero-sub { position: absolute; left: 4.5%; top: 44%; color: #fff; font-size: clamp(16px, 2.6vw, 26px); text-shadow: 0 2px 0 #3a2c20, 0 6px 14px rgba(0,0,0,.4); max-width: 46%; }
+  .hero-btns { position: absolute; left: 4%; bottom: 7%; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stickers { position: absolute; right: 3%; top: 5%; display: flex; gap: 8px; }
+  .stickers img { height: 72px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .stickers img.locked { filter: grayscale(1) opacity(.35); animation: none; }
+  .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); color: var(--ink); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 16px; padding: 8px 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+  .btn:focus-visible { outline: 3px solid var(--water); outline-offset: 3px; }
+  .btn small { font: 400 13px/1 "Patrick Hand", cursive; opacity: .85; }
+  .bubble { position: absolute; background: var(--card); color: var(--ink); border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 14px; font: 400 clamp(14px, 2.2vw, 22px)/1.25 "Patrick Hand", cursive; max-width: 46%; box-shadow: var(--shadow); animation: pop .35s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; border: 10px solid transparent; border-left-color: #3a2c20; }
+  .guide { position: absolute; right: 1%; bottom: -3%; height: 62%; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); z-index: 5; transition: opacity .3s; }
+  .pop-text { position: absolute; font-size: clamp(26px, 5vw, 56px); color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; animation: punch .9s cubic-bezier(.2,1.6,.4,1) both; z-index: 7; }
+  .pop-text.bad { color: var(--red); text-shadow: 0 3px 0 #fff, 0 8px 16px rgba(0,0,0,.35); }
+  @keyframes punch { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes shake { 0%, 100% { transform: translate(0); } 20% { transform: translate(-8px, 3px); } 40% { transform: translate(7px, -3px); } 60% { transform: translate(-5px, 2px); } 80% { transform: translate(4px, -2px); } }
+  .shake { animation: shake .45s linear; }
+  .wobble { animation: wob .5s ease-in-out infinite; } @keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .status { font: 400 22px/1.3 "Patrick Hand", cursive; margin-top: 10px; min-height: 1.4em; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+  .confetti i { position: absolute; width: 10px; height: 14px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+  .results { position: absolute; inset: 6%; background: var(--card); border: 4px solid #3a2c20; border-radius: 18px; padding: 18px 22px; box-shadow: var(--shadow); animation: bounceIn .6s cubic-bezier(.2,1.4,.4,1) both; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; overflow: auto; z-index: 9; }
+  .results h3 { margin: 0 0 6px; font: 700 clamp(20px, 4vw, 34px)/1.1 "Fredoka", Arial, sans-serif; }
+  .results p { margin: 4px 0; font-size: clamp(13px, 2vw, 18px); }
+  .results img { height: clamp(80px, 18vw, 170px); filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); animation: pop .6s .3s cubic-bezier(.2,1.6,.4,1) both; }
+  .pill { position: absolute; font: 700 clamp(12px, 2.2vw, 20px)/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.85); padding: 7px 12px; border-radius: 999px; z-index: 5; pointer-events: none; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { font: 400 19px/1.2 "Patrick Hand", cursive; padding: 6px 12px; border: 2px dashed var(--line); border-radius: 10px; background: var(--card); }
+  .chip b { font: 700 22px/1 "Fredoka", Arial, sans-serif; font-variant-numeric: tabular-nums; }
+  footer { margin-top: 22px; font-size: 14px; color: var(--muted); border-top: 2px solid var(--line); padding-top: 10px; }
+
+  /* ───────── game 1: you are the oak ───────── */
+  #oak { position: absolute; left: 1%; bottom: 4%; height: 92%; z-index: 2; transition: filter .6s; filter: drop-shadow(0 8px 10px rgba(0,0,0,.3)); }
+  #oak.bare { filter: drop-shadow(0 8px 10px rgba(0,0,0,.3)) saturate(.3) brightness(.9); }
+  .nut { position: absolute; width: 3.2%; z-index: 3; pointer-events: none; animation: nutfall 1.1s cubic-bezier(.3,0,.7,1) both; }
+  @keyframes nutfall { 0% { transform: translateY(-40vh) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(0) rotate(300deg); opacity: 1; } }
+  .pile { position: absolute; left: 20%; bottom: 7%; width: 0; z-index: 3; transition: width .8s cubic-bezier(.2,1.2,.4,1); filter: drop-shadow(0 4px 4px rgba(0,0,0,.3)); }
+  .sq { position: absolute; width: 8%; z-index: 4; transition: left .9s ease-in-out, bottom .9s ease-in-out, opacity .5s; filter: drop-shadow(0 4px 4px rgba(0,0,0,.3)); animation: pop .4s cubic-bezier(.2,1.6,.4,1) both; }
+  .sq.flip { transform: scaleX(-1); }
+  .sq.gone { opacity: 0; transform: scale(.4); }
+  .sp { position: absolute; width: 4.5%; z-index: 3; animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; filter: drop-shadow(0 3px 3px rgba(0,0,0,.3)); }
+  .hud { position: absolute; left: 50%; top: 14%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
+  .hud .yr { width: clamp(20px, 3.4vw, 34px); height: clamp(20px, 3.4vw, 34px); border-radius: 50%; background: var(--card); border: 3px solid #3a2c20; display: grid; place-items: center; font: 700 clamp(10px, 1.8vw, 16px)/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .hud .yr.on { background: var(--gold); } .hud .yr.mast { background: var(--red); color: #fff; } .hud .yr.now { outline: 3px solid var(--water); outline-offset: 2px; }
+  .sugar { position: absolute; right: 2%; top: 10%; width: 6%; height: 50%; border: 4px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.7); overflow: hidden; z-index: 5; }
+  .sugar .f { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--gold); transition: height .6s; }
+  .sugar .mark { position: absolute; left: -30%; right: -30%; bottom: 100%; border-top: 3px dashed var(--red); }
+  .sugar-lbl { position: absolute; right: 0; top: 62%; width: 10%; text-align: center; font: 700 clamp(10px, 1.7vw, 15px)/1.1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; z-index: 5; }
+  .forecast { position: absolute; left: 2%; top: 3%; z-index: 5; font: 400 clamp(13px, 2vw, 19px)/1.2 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.92); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 12px; max-width: 46%; }
+  .forecast b { font: 700 clamp(13px, 2vw, 19px)/1 "Fredoka", Arial, sans-serif; }
+  .choices { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .choices .btn { flex: 1 1 200px; flex-direction: column; align-items: flex-start; gap: 4px; }
+
+  /* ───────── game 2: you are the squirrel ───────── */
+  #lawn { cursor: crosshair; touch-action: manipulation; }
+  #oak2 { position: absolute; left: -2%; bottom: 2%; height: 100%; z-index: 2; pointer-events: none; filter: drop-shadow(0 8px 10px rgba(0,0,0,.3)); transition: filter .8s; }
+  #oak2.bare { filter: drop-shadow(0 8px 10px rgba(0,0,0,.3)) saturate(.25) brightness(.8); }
+  .shade { position: absolute; left: -2%; bottom: -30%; width: 46%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(40,25,10,.38) 0 55%, rgba(40,25,10,.18) 72%, transparent 75%); z-index: 1; pointer-events: none; }
+  .shade-lbl { position: absolute; left: 6%; bottom: 8%; font: 400 clamp(12px, 2vw, 19px)/1.1 "Patrick Hand", cursive; color: #fff; text-shadow: 0 2px 0 #3a2c20; z-index: 3; pointer-events: none; }
+  #sq2 { position: absolute; width: 9%; z-index: 4; left: 40%; bottom: 20%; transform: translate(-50%, 0); transition: left .45s ease-in-out, bottom .45s ease-in-out; filter: drop-shadow(0 4px 4px rgba(0,0,0,.3)); pointer-events: none; }
+  .hole { position: absolute; width: 3%; aspect-ratio: 2 / 1; border-radius: 50%; background: #6e4a28; border: 2px solid #3a2c20; transform: translate(-50%, -50%); z-index: 3; animation: pop .3s both; pointer-events: none; }
+  .hole.dark { background: #3a2c20; }
+  .hole .q { position: absolute; left: 50%; top: -150%; transform: translateX(-50%); font: 700 clamp(14px, 2.6vw, 26px)/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; animation: pop .3s both; }
+  .hole img { position: absolute; left: 50%; bottom: 40%; width: 260%; transform: translateX(-50%); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; filter: drop-shadow(0 3px 3px rgba(0,0,0,.3)); }
+  .hole.sprouted { background: transparent; border-color: transparent; }
+  #jay { position: absolute; width: 9%; top: 12%; left: -12%; z-index: 4; pointer-events: none; filter: drop-shadow(0 4px 4px rgba(0,0,0,.3)); }
+  #jay.fly { animation: jayfly 3.2s linear forwards; }
+  @keyframes jayfly { from { left: -12%; } to { left: 108%; } }
+  .season { position: absolute; inset: 0; background: rgba(214,228,240,.0); pointer-events: none; z-index: 2; transition: background 1s; }
+  .season.winter { background: rgba(200,214,230,.45); }
+  @media (max-width: 560px) { #title .stage { aspect-ratio: 4 / 3; } #title .stage > img.bg { object-position: 60% 50%; } .hero-title { font-size: 36px; top: 5%; } .hero-btns { flex-direction: column; gap: 6px; bottom: 5%; } .stickers img { height: 44px; } .hero-sub { display: none; } .bubble { max-width: 60%; font-size: 13px; padding: 6px 9px; } .guide { height: 50%; } .btn { font-size: 17px; padding: 10px 13px; } .forecast { max-width: 62%; font-size: 12px; } }
+</style>
+
+<div class="motes" id="motes" aria-hidden="true"></div>
+<main>
+  <div class="topbar">
+    <span class="eyebrow">The Backyard Library · Why, Dad? · Episode 21</span>
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="home" type="button" hidden>⌂ Title</button>
+    <button class="btn ghost small" id="mute" type="button" aria-pressed="false">🔔 sound</button>
+  </div>
+
+  <!-- ═══════════ TITLE ═══════════ -->
+  <section class="screen" id="title">
+    <div class="stage">
+      <img class="bg" src="assets/title_key.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="hero-title display">The<br>Acorn Lab</div>
+      <div class="hero-sub hand">Be the oak: starve the squirrels, then flood them. Then be the squirrel, and plant a forest by forgetting.</div>
+      <div class="stickers" id="stickers" aria-label="Badges earned"></div>
+      <div class="hero-btns">
+        <button class="btn" id="play1" type="button">🌳 You are the oak</button>
+        <button class="btn teal" id="play2" type="button">🐿 You are the squirrel</button>
+      </div>
+    </div>
+    <p class="status">Two games from the episode <a href="https://www.youtube.com/@thebackyardlibrary">Why Do Oak Trees Drop So Many Acorns?</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a><br><span id="bestline"></span></p>
+  </section>
+
+  <!-- ═══════════ GAME 1: YOU ARE THE OAK ═══════════ -->
+  <section class="screen" id="g1" hidden>
+    <div class="stage" id="stage1">
+      <img class="bg" src="assets/bg_lawn_wide.jpg" alt="">
+      <div class="vignette"></div>
+      <img id="oak" src="assets/oak_autumn.png" alt="your oak">
+      <img class="pile" id="pile" src="assets/acorn_pile.png" alt="">
+      <div id="sqs"></div>
+      <div id="sprouts"></div>
+      <div class="hud" id="hud1" aria-label="Ten autumns"></div>
+      <div class="forecast" id="forecast"></div>
+      <div class="sugar" aria-hidden="true"><div class="f" id="sugarfill"></div><div class="mark" id="sugarmark"></div></div>
+      <div class="sugar-lbl">stored<br>sugar</div>
+      <img class="guide" id="guide1" src="assets/mascot_pointing.png" alt="">
+      <div class="bubble" id="bubble1" style="left:8%;top:34%;max-width:40%">You are the oak. Every autumn, choose how many acorns to drop. The squirrels will answer.</div>
+      <div class="confetti" id="conf1"></div>
+      <div class="results" id="card1" hidden></div>
+    </div>
+    <div class="choices" id="choices">
+      <button class="btn ghost" id="c_few" type="button">🌰 Drop a few <small>300 acorns · stores sugar</small></button>
+      <button class="btn ghost" id="c_usual" type="button">🌰🌰 Drop the usual <small>2,000 acorns</small></button>
+      <button class="btn red" id="c_mast" type="button">🌰🌰🌰 DROP EVERYTHING <small>10,000 · needs a full sugar store</small></button>
+    </div>
+    <div class="chips">
+      <span class="chip">autumn <b id="year">1</b>/10</span>
+      <span class="chip">squirrels here <b id="sqn">12</b></span>
+      <span class="chip">acorns that got to grow <b id="grow">0</b></span>
+    </div>
+    <div class="status" id="s1"></div>
+    <div class="topbar" style="margin-top:10px"><button class="btn ghost small" id="reset1" type="button">↺ Start again</button></div>
+  </section>
+
+  <!-- ═══════════ GAME 2: YOU ARE THE SQUIRREL ═══════════ -->
+  <section class="screen" id="g2" hidden>
+    <div class="stage wide" id="lawn">
+      <img class="bg" src="assets/bg_lawn_wide.jpg" alt="">
+      <div class="shade" id="shade"></div>
+      <div class="shade-lbl hand">the oak's shadow: too dark to grow</div>
+      <img id="oak2" src="assets/oak_autumn.png" alt="">
+      <div class="season" id="season"></div>
+      <div id="holes"></div>
+      <img id="sq2" src="assets/squirrel_sit.png" alt="you, the squirrel">
+      <img id="jay" src="assets/jay.png" alt="">
+      <div class="pill" style="left:2%;top:3%" id="pill2">acorns to bury: 20</div>
+      <div class="pill" style="right:2%;top:3%" id="pill2b">🌳 planted: 0</div>
+      <div class="bubble" id="bubble2" style="left:30%;top:6%;max-width:44%">You are the squirrel. Tap the lawn to bury an acorn. Far from the tree is best.</div>
+      <div class="confetti" id="conf2"></div>
+      <div class="results" id="card2" hidden></div>
+    </div>
+    <div class="status" id="s2"></div>
+    <div class="topbar" style="margin-top:10px"><button class="btn green small" id="winter2" type="button" hidden>❄ Winter comes →</button><button class="btn ghost small" id="reset2" type="button">↺ New autumn</button></div>
+  </section>
+
+  <footer>Game 1 is the boom-and-bust model from the video: lean years shrink the squirrels, a mast year swamps them, and the whole forest has to do it in the same year (a warm, dry spring) or the eaters just walk over from next door. Numbers are illustrative: a mature oak drops about 2,000 acorns in an ordinary year and up to 10,000 in a mast year; a squirrel eats or buries a few hundred a season. Game 2: squirrels forget some of what they bury, and an acorn under its parent is shaded out, so the forgotten ones far from the tree are the oaks of a hundred years from now.</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const store = { get: (k) => { try { return JSON.parse(localStorage.getItem("acornlab:" + k)); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem("acornlab:" + k, JSON.stringify(v)); } catch (e) {} } };
+  const fmt = (n) => n.toLocaleString("en-US");
+
+  /* ───────── sound ───────── */
+  let ac = null, muted = false, musicTimer = null;
+  function tone(f0, f1, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || "sine";
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = { tap: () => tone(600, 900, 0.08, "square", 0.035), thud: () => tone(160, 60, 0.3, "sine", 0.09), pop: () => tone(300, 900, 0.12, "triangle", 0.07),
+                sad: () => tone(380, 200, 0.35, "sine", 0.04), dig: () => tone(220, 160, 0.09, "square", 0.03), chime: () => tone(880, 1320, 0.25, "triangle", 0.05),
+                rain: () => { for (let i = 0; i < 8; i++) tone(500 + Math.random() * 300, 200, 0.08, "triangle", 0.025, i * 0.09); },
+                win: () => [0, .12, .24, .4].forEach((d, i) => tone([523, 659, 784, 1047][i], [523, 659, 784, 1047][i] * 1.01, 0.3, "triangle", 0.06, d)) };
+  const TUNE = [262, 330, 392, 330, 440, 392, 330, 294, 262, 330, 392, 523, 440, 392, 330, 294];
+  function music(on) {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!on || muted) return;
+    let i = 0; musicTimer = setInterval(() => { tone(TUNE[i % TUNE.length], TUNE[i % TUNE.length], 0.22, "triangle", 0.018); if (i % 4 === 0) tone(TUNE[i % TUNE.length] / 2, TUNE[i % TUNE.length] / 2, 0.4, "sine", 0.012); i++; }, 300);
+  }
+  let screen = "title";
+  $("mute").addEventListener("click", () => { muted = !muted; $("mute").textContent = muted ? "🔕 sound" : "🔔 sound"; $("mute").setAttribute("aria-pressed", String(muted)); music(screen !== "title"); });
+
+  /* ───────── motes (falling leaves), confetti, pops ───────── */
+  const motes = $("motes");
+  for (let i = 0; i < 16; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = Math.random() * 100 + "%"; m.style.background = ["#d9823a", "#c8652e", "#e3a83c"][i % 3]; m.style.animationDuration = 14 + Math.random() * 16 + "s"; m.style.animationDelay = -Math.random() * 30 + "s"; motes.appendChild(m); }
+  function confetti(host, n) { if (reduce) return; const cols = ["#ecb23c", "#20525c", "#cb382e", "#5c8cbe", "#4f8a5b"]; for (let i = 0; i < n; i++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.top = "-5%"; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * .6 + "s"; p.style.animationDuration = 1.2 + Math.random() + "s"; host.appendChild(p); setTimeout(() => p.remove(), 2600); } }
+  function popText(stage, text, x, y, bad) { const el = document.createElement("div"); el.className = "pop-text display" + (bad ? " bad" : ""); el.textContent = text; el.style.left = x; el.style.top = y; stage.appendChild(el); setTimeout(() => el.remove(), 1400); }
+  function say(el, t) { el.textContent = t; el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+
+  /* ───────── screens ───────── */
+  function show(id) {
+    screen = id;
+    for (const s of ["title", "g1", "g2"]) $(s).hidden = (s !== id);
+    $("home").hidden = (id === "title"); music(id !== "title"); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "title") { renderStickers(); bestLine(); }
+  }
+  $("home").addEventListener("click", () => { sfx.tap(); show("title"); });
+  $("play1").addEventListener("click", () => { sfx.tap(); show("g1"); });
+  $("play2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  function renderStickers() {
+    const got = store.get("badges") || {}; const host = $("stickers"); host.innerHTML = "";
+    for (const [k, src] of [["oak", "assets/badge_oak.png"], ["planter", "assets/badge_planter.png"]]) { const im = document.createElement("img"); im.src = src; im.alt = got[k] ? k + " badge earned" : k + " badge locked"; if (!got[k]) im.className = "locked"; host.appendChild(im); }
+  }
+  function earn(k) { const got = store.get("badges") || {}; got[k] = true; store.set("badges", got); }
+  function bestLine() {
+    const b = store.get("best") || {}; const parts = [];
+    if (b.oak) parts.push(`🌳 best oak: ${fmt(b.oak)} acorns got to grow`); if (b.planter) parts.push(`🐿 best squirrel: ${b.planter} oaks planted`);
+    $("bestline").textContent = parts.join(" · ");
+  }
+
+  /* ═══════════ GAME 1: YOU ARE THE OAK ═══════════ */
+  // The model from the video's boom-and-bust plate. Each squirrel eats or buries EATS acorns a
+  // season (a bit more in a glut); next year's squirrels follow this year's food; a mast year
+  // costs the tree its stored sugar. On a warm, dry spring every oak for miles masts too, so your
+  // leftovers are yours. Mast alone on a cold, wet spring and the eaters from next door walk over.
+  const EATS = 150, STUFF = 1.2, GROW = 1.3, SHRINK = 0.6, YEARS = 10, NEIGHBOURS = 8, PRESSURE = 2000;
+  const CROPS = { few: 300, usual: 2000, mast: 10000 };
+  const g1 = { year: 1, sq: 12, sugar: 2, grow: 0, log: [], busy: false, done: false, weather: [] };
+  const stage1 = $("stage1");
+  function weatherFor(y) { return g1.weather[y - 1]; }
+  function makeWeather() { g1.weather = []; for (let y = 0; y < YEARS; y++) g1.weather.push(Math.random() < 0.4 ? "warm" : "cold"); if (!g1.weather.includes("warm")) g1.weather[3] = "warm"; }
+  function renderOak() {
+    $("year").textContent = String(Math.min(g1.year, YEARS)); $("sqn").textContent = String(g1.sq); $("grow").textContent = fmt(g1.grow);
+    const hud = $("hud1"); hud.innerHTML = "";
+    for (let y = 1; y <= YEARS; y++) { const d = document.createElement("div"); const l = g1.log[y - 1]; d.className = "yr" + (l ? (l.crop === CROPS.mast ? " mast" : " on") : "") + (y === g1.year && !g1.done ? " now" : ""); d.textContent = String(y); hud.appendChild(d); }
+    $("sugarfill").style.height = (clamp(g1.sugar, 0, 3) / 3 * 100) + "%"; $("sugarmark").style.bottom = "100%";
+    $("c_mast").disabled = g1.busy || g1.done || g1.sugar < 3; $("c_few").disabled = g1.busy || g1.done; $("c_usual").disabled = g1.busy || g1.done;
+    if (!g1.done) {
+      const w = weatherFor(g1.year);
+      $("forecast").innerHTML = w === "warm" ? `<b>Autumn ${g1.year}.</b> It was a warm, dry spring. Every other oak in town is loaded with acorns.` : `<b>Autumn ${g1.year}.</b> It was a cold, wet spring. The other oaks have almost nothing this year.`;
+    }
+    // the squirrels on the lawn
+    const host = $("sqs"); const want = Math.min(12, g1.sq); const have = host.children.length;
+    for (let i = have; i < want; i++) { const im = document.createElement("img"); im.className = "sq" + (i % 2 ? " flip" : ""); im.src = "assets/squirrel_sit.png"; im.style.left = (34 + (i % 6) * 10.5) + "%"; im.style.bottom = (4 + Math.floor(i / 6) * 13) + "%"; host.appendChild(im); }
+    for (let i = have - 1; i >= want; i--) { const im = host.children[i]; im.classList.add("gone"); setTimeout(() => im.remove(), 500); }
+  }
+  async function rainAcorns(n) {
+    sfx.rain();
+    for (let i = 0; i < n; i++) { const im = document.createElement("img"); im.className = "nut"; im.src = "assets/acorn.png"; im.style.left = (6 + Math.random() * 24) + "%"; im.style.bottom = (6 + Math.random() * 10) + "%"; im.style.animationDelay = (Math.random() * 0.6) + "s"; stage1.appendChild(im); setTimeout(() => im.remove(), 2200); }
+  }
+  async function autumn(kind) {
+    if (g1.busy || g1.done) return; g1.busy = true; renderOak(); sfx.tap();
+    const crop = CROPS[kind]; const w = weatherFor(g1.year); const forestMasts = (w === "warm");
+    const alone = (kind === "mast" && !forestMasts);
+    say($("bubble1"), kind === "mast" ? "Everything, all at once!" : kind === "few" ? "Almost nothing this year. Stay strong, oak." : "The usual.");
+    await rainAcorns(kind === "mast" ? 40 : kind === "usual" ? 14 : 4);
+    $("pile").style.width = kind === "mast" ? "22%" : kind === "usual" ? "13%" : "6%";
+    await sleep(1300);
+    // the eating
+    let can = g1.sq * EATS * STUFF;
+    if (alone) { can += NEIGHBOURS * PRESSURE; say($("bubble1"), "Uh oh. You are the only oak with acorns. Every squirrel, jay and deer for miles is walking over…"); await sleep(900); for (let i = 0; i < 6; i++) { const im = document.createElement("img"); im.className = "sq flip"; im.src = "assets/squirrel_eat.png"; im.style.left = (96) + "%"; im.style.bottom = (6 + i * 9) + "%"; stage1.appendChild(im); await sleep(60); im.style.left = (30 + i * 9) + "%"; setTimeout(() => im.remove(), 2600); } await sleep(1200); }
+    const eaten = Math.min(crop, Math.round(can)); const left = crop - eaten;
+    for (const im of $("sqs").children) im.src = "assets/squirrel_eat.png";
+    await sleep(900);
+    $("pile").style.width = left > 0 ? (left >= 5000 ? "18%" : "9%") : "0";
+    if (left > 0) {
+      const n = Math.min(8, Math.ceil(left / 1200)); for (let i = 0; i < n; i++) { const sp = document.createElement("img"); sp.className = "sp"; sp.src = "assets/sprout.png"; sp.style.left = (30 + Math.random() * 60) + "%"; sp.style.bottom = (3 + Math.random() * 16) + "%"; sp.style.animationDelay = (i * 0.12) + "s"; $("sprouts").appendChild(sp); }
+      sfx.chime(); popText(stage1, `+${fmt(left)} get to grow!`, "28%", "20%"); confetti($("conf1"), left >= 5000 ? 90 : 25);
+      say($("bubble1"), alone ? "" : `They ate ${fmt(eaten)}. The other ${fmt(left)} are lying there, and those are the ones that get to grow.`);
+    } else {
+      popText(stage1, "all eaten", "34%", "22%", true); sfx.sad();
+      say($("bubble1"), alone ? `They ate every last one. Masting alone never works.` : `${g1.sq} squirrels, ${fmt(crop)} acorns. Not one got to grow.`);
+    }
+    g1.grow += left; g1.log.push({ crop, eaten, left, sq: g1.sq, alone });
+    // next year's squirrels follow this year's food; the tree's sugar
+    const food = crop / Math.max(1, g1.sq * EATS); const next = Math.max(1, Math.round(g1.sq * clamp(food, SHRINK, GROW)));
+    g1.sugar = kind === "mast" ? 0 : Math.min(3, g1.sugar + (kind === "few" ? 1 : 0.5));
+    await sleep(1600);
+    for (const im of $("sqs").children) im.src = next < g1.sq ? "assets/squirrel_thin.png" : "assets/squirrel_sit.png";
+    if (next < g1.sq) { $("s1").textContent = `Winter. The squirrels went hungry: ${g1.sq} → ${next} next year.`; sfx.sad(); } else if (next > g1.sq) { $("s1").textContent = `Winter. Well fed: ${g1.sq} → ${next} squirrels next year.`; } else { $("s1").textContent = "Winter. Same number of squirrels next year."; }
+    g1.sq = next; g1.year++; $("pile").style.width = "0";
+    await sleep(900);
+    for (const im of $("sqs").children) im.src = "assets/squirrel_sit.png";
+    g1.busy = false;
+    if (g1.year > YEARS) finishOak(); else renderOak();
+  }
+  function finishOak() {
+    g1.done = true; renderOak();
+    const best = store.get("best") || {}; const record = !best.oak || g1.grow > best.oak; if (record) { best.oak = g1.grow; store.set("best", best); }
+    const masts = g1.log.filter(l => l.crop === CROPS.mast); const good = masts.filter(l => l.left > 5000).length;
+    if (g1.grow >= 8000) { earn("oak"); sfx.win(); confetti($("conf1"), 140); } else sfx.thud();
+    const c = $("card1"); c.hidden = false;
+    c.innerHTML = `<div><h3>Ten autumns: ${fmt(g1.grow)} acorns got to grow</h3><p>${record ? "<b>New best!</b> " : ""}${good ? `You masted ${good} time${good > 1 ? "s" : ""} with the whole forest, after starving the squirrels first. That is exactly the oak's plan.` : masts.length ? "You dropped everything, but alone, or with too many squirrels still around. Starve them first, and wait for a warm, dry spring." : "You never dropped everything. The usual every year feeds the squirrels and plants nothing."}</p><p>An oak that drops 2,000 every year: <b>0</b> get to grow. The animals multiply until they eat every last one.</p><p><button class="btn small" id="again1" type="button">↺ Ten more autumns</button> <button class="btn ghost small" id="next1" type="button">Next: you are the squirrel →</button></p></div><img src="assets/${g1.grow >= 8000 ? "badge_oak" : "squirrel_thin"}.png" alt="">`;
+    $("again1").addEventListener("click", () => { sfx.tap(); resetOak(); }); $("next1").addEventListener("click", () => { sfx.tap(); show("g2"); });
+    $("s1").textContent = g1.grow >= 8000 ? "You earned the Forest Planner badge." : "Try again: a few, a few, a few… then everything, on a warm spring.";
+  }
+  function resetOak() { g1.year = 1; g1.sq = 12; g1.sugar = 2; g1.grow = 0; g1.log = []; g1.busy = false; g1.done = false; makeWeather(); $("card1").hidden = true; $("sprouts").innerHTML = ""; $("sqs").innerHTML = ""; $("pile").style.width = "0"; say($("bubble1"), "You are the oak. Every autumn, choose how many acorns to drop. The squirrels will answer."); $("s1").textContent = ""; renderOak(); }
+  $("c_few").addEventListener("click", () => autumn("few")); $("c_usual").addEventListener("click", () => autumn("usual")); $("c_mast").addEventListener("click", () => autumn("mast"));
+  $("reset1").addEventListener("click", () => { sfx.tap(); resetOak(); });
+  resetOak();
+
+  /* ═══════════ GAME 2: YOU ARE THE SQUIRREL ═══════════ */
+  const TOTAL = 20, FORGET = 0.3;
+  const g2 = { left: TOTAL, holes: [], busy: false, done: false };
+  const lawn = $("lawn"), sq2 = $("sq2");
+  function inShade(x, y) { const r = lawn.getBoundingClientRect(); const cx = r.width * 0.21, cy = r.height * 1.08; const rad = r.width * 0.23 * 0.75; return Math.hypot(x - cx, y - cy) < rad; }
+  function dist(x, y) { const r = lawn.getBoundingClientRect(); return Math.hypot(x - r.width * 0.21, y - r.height * 1.08) / r.width; }
+  async function bury(e) {
+    if (g2.busy || g2.done || !g2.left) return;
+    const r = lawn.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top;
+    if (y < r.height * 0.3) return;                                    // the sky
+    g2.busy = true; sfx.tap();
+    sq2.src = "assets/squirrel_sit.png"; sq2.style.left = (x / r.width * 100) + "%"; sq2.style.bottom = (100 - y / r.height * 100 - 2) + "%";
+    await sleep(480); sq2.src = "assets/squirrel_dig.png"; sfx.dig(); await sleep(260); sfx.dig(); await sleep(220);
+    const shade = inShade(x, y); const h = document.createElement("div"); h.className = "hole" + (shade ? " dark" : ""); h.style.left = (x / r.width * 100) + "%"; h.style.top = (y / r.height * 100) + "%"; $("holes").appendChild(h);
+    g2.holes.push({ x: x / r.width, y: y / r.height, shade, el: h, far: dist(x, y) });
+    g2.left--; $("pill2").textContent = `acorns to bury: ${g2.left}`; sq2.src = "assets/squirrel_sit.png";
+    $("s2").textContent = shade ? "Right under the oak. Nothing grows in its shadow, even if you forget it." : g2.holes[g2.holes.length - 1].far > 0.55 ? "Far out in the sun. If you forget this one, it is a tree." : "In the open. Good.";
+    g2.busy = false;
+    if (!g2.left) { $("winter2").hidden = false; $("winter2").classList.add("wobble"); say($("bubble2"), "All twenty buried. Now winter: you will dig up the ones you remember…"); }
+  }
+  async function winter() {
+    if (g2.done) return; g2.done = true; $("winter2").hidden = true; sfx.tap();
+    $("season").classList.add("winter"); $("oak2").classList.add("bare"); say($("bubble2"), "Winter. Hungry. Where did you put them all?");
+    await sleep(1200);
+    let planted = 0;
+    for (const h of g2.holes) {
+      sq2.style.left = (h.x * 100) + "%"; sq2.style.bottom = (100 - h.y * 100 - 2) + "%"; await sleep(380);
+      const forgot = Math.random() < FORGET;
+      if (!forgot) { sq2.src = "assets/squirrel_eat.png"; sfx.dig(); h.el.style.opacity = ".35"; await sleep(300); sq2.src = "assets/squirrel_sit.png"; }
+      else { const q = document.createElement("span"); q.className = "q"; q.textContent = "?"; h.el.appendChild(q); sfx.pop(); h.forgot = true; await sleep(260); }
+    }
+    say($("bubble2"), "Spring! The ones you forgot…"); $("season").classList.remove("winter"); $("oak2").classList.remove("bare"); sq2.style.left = "40%"; sq2.style.bottom = "20%";
+    await sleep(900);
+    for (const h of g2.holes) {
+      if (!h.forgot) continue;
+      const q = h.el.querySelector(".q"); if (q) q.remove();
+      if (h.shade) { h.el.classList.add("dark"); popText(lawn, "too dark", (h.x * 100 - 6) + "%", (h.y * 100 - 14) + "%", true); sfx.sad(); await sleep(420); continue; }
+      const im = document.createElement("img"); im.src = "assets/sprout.png"; h.el.appendChild(im); h.el.classList.add("sprouted"); planted++; $("pill2b").textContent = `🌳 planted: ${planted}`; sfx.chime(); await sleep(360);
+    }
+    // the jay's free gift, far away
+    $("jay").classList.add("fly"); await sleep(1700); const h = document.createElement("div"); h.className = "hole sprouted"; h.style.left = "88%"; h.style.top = "62%"; const im = document.createElement("img"); im.src = "assets/sprout.png"; h.appendChild(im); $("holes").appendChild(h); planted++; $("pill2b").textContent = `🌳 planted: ${planted}`; sfx.chime(); await sleep(1600); $("jay").classList.remove("fly");
+    const best = store.get("best") || {}; const record = !best.planter || planted > best.planter; if (record) { best.planter = planted; store.set("best", best); }
+    if (planted >= 4) { earn("planter"); sfx.win(); confetti($("conf2"), 120); }
+    const shadeN = g2.holes.filter(x => x.shade).length;
+    const c = $("card2"); c.hidden = false;
+    c.innerHTML = `<div><h3>${planted} oak${planted === 1 ? "" : "s"} planted, for free</h3><p>${record ? "<b>New best!</b> " : ""}You buried 20, dug up the ones you remembered, and forgot about ${g2.holes.filter(x => x.forgot).length}. ${shadeN ? `${shadeN} were under the oak, where nothing grows.` : "None under the oak. Well placed."} And a blue jay dropped one miles away: it can carry five at a time and bury three thousand in a season.</p><p>Every forgotten acorn is an oak, planted for free. The squirrel thinks it is stealing. The tree thinks it is hiring.</p><p><button class="btn small" id="again2" type="button">↺ Another autumn</button> <button class="btn ghost small" id="home2" type="button">⌂ Title</button></p></div><img src="assets/${planted >= 4 ? "badge_planter" : "squirrel_sit"}.png" alt="">`;
+    $("again2").addEventListener("click", () => { sfx.tap(); resetSquirrel(); }); $("home2").addEventListener("click", () => { sfx.tap(); show("title"); });
+    $("s2").textContent = planted >= 4 ? "You earned the Forest Planter badge." : "Bury them farther from the oak next time.";
+  }
+  function resetSquirrel() { g2.left = TOTAL; g2.holes = []; g2.busy = false; g2.done = false; $("holes").innerHTML = ""; $("card2").hidden = true; $("winter2").hidden = true; $("winter2").classList.remove("wobble"); $("season").classList.remove("winter"); $("oak2").classList.remove("bare"); $("jay").classList.remove("fly"); $("pill2").textContent = `acorns to bury: ${TOTAL}`; $("pill2b").textContent = "🌳 planted: 0"; sq2.src = "assets/squirrel_sit.png"; sq2.style.left = "40%"; sq2.style.bottom = "20%"; say($("bubble2"), "You are the squirrel. Tap the lawn to bury an acorn. Far from the tree is best."); $("s2").textContent = ""; }
+  lawn.addEventListener("pointerdown", e => { if (e.target.closest("button") || e.target.closest(".results")) return; bury(e); });
+  $("winter2").addEventListener("click", winter);
+  $("reset2").addEventListener("click", () => { sfx.tap(); resetSquirrel(); });
+  resetSquirrel();
+  show("title");
+})();
+</script>
