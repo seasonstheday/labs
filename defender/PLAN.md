@@ -1,0 +1,146 @@
+# Why, Dad? Defender — build plan
+
+Source: `reports/Arena defense genre player feedback.md` (Priority 1 and 2 rows), plus two
+asks from the show: tougher, more varied creeps, and an overarching story.
+
+Each phase is one PR, in order. Phases A and B are the research's Priority 1/2 rows;
+C is creeps; D is story and worlds; E ties the Fact Book into play; F is polish.
+
+---
+
+## Phase A — Safe to ship (Priority 1)
+
+Nothing here changes how the game plays; it changes what it can never become.
+
+1. **Remove the "buy gems" placeholder.** Gems stay earned-only (daily, first clears,
+   world clears). Keep the gem → coin exchange.
+2. **No real-money path to randomness.** Store sells chests and Library Cards for
+   earned currency only. If/when there is IAP, it is deterministic: a full unlock,
+   named companion packs, Dad outfits — behind a parental gate (adult-level task,
+   voiced for pre-readers via Web Speech).
+3. **Show the odds.** Draw screen and Fact Book state the draw chances and the
+   every-5th guarantee in plain words ("3 in 10 draws is a friend. Never more than
+   5 draws between friends."). A free probability lesson.
+4. **Deterministic unlock path beside draws.** Each companion also unlocks by a
+   Fact Book milestone or a world clear (e.g. Hopper joins when you've busted every
+   myth in the Pond world). Draws become the fast path, not the only path.
+5. **Calendar with no hard reset.** Claim the next day whenever you return. Best
+   rewards on days 2–5. No "you missed it" text.
+6. **No analytics, no ad SDK, offline-first.** Already true; keep it true. Add a
+   plain-language privacy note in Settings ("This game keeps everything on your
+   device.").
+7. **Store page copy** never claims learning outcomes; it says what the game does
+   (every popped myth becomes a real fact in your Fact Book).
+
+## Phase B — The loop (Priority 2)
+
+1. **Skip/reroll on level-up cards**: two per match, shown as a small stack of
+   "Nope" cards. Scarce, so the choice stays meaningful.
+2. **Ability evolutions.** Rank 5 of a primary ability transforms it (new look, new
+   behaviour): Truth Beam → Spotlight (sweeping beam), Web Shot → Web Net (hits
+   three), Zap → Thunderclap (chain never breaks), Tongue Lash → Lasso (pulls),
+   Quack → Honk (knocks everything in the ring). Banner + slow-mo on first evolve.
+3. **Synergy badges.** Party screen shows "work well together" pairs (Webster's
+   slow + Sparky's glow; Hopper's knockback + Dad's bat). Small, honest, legible.
+4. **Retry from the current wave.** On defeat: "Try that wave again" keeps ranks
+   and items; coins for the match so far are banked. Full restart stays as an
+   option. A loss always pays something.
+5. **Replace waiting with doing.** The attention ring stays as the targeting rule,
+   but tapping a myth outside it makes Dad shout "Hey, you!": it hurries in and is
+   marked (the existing focus). Tapping the lawn between waves starts the next wave
+   early. Pause button between waves is explicit.
+6. **"Little Kid" toggle** in Settings and on the pause screen, changeable
+   mid-match without losing progress: myths 35% slower, Patience never drops below
+   1 (Dad "needs a snack" instead of a nap, wave restarts), facts read aloud.
+7. **Generous early tuning and boss telegraphs.** Stage 1–2 bosses announce their
+   next move with a wind-up ring; first boss of each world has a visible "weak spot".
+   Slow-mo pop on every boss, confetti of true pages.
+8. **Cap permanent ranks** so cards keep mattering: Power/Quick ranks top out at
+   +40% total, and later worlds scale past that on purpose.
+
+## Phase C — Step up the creeps
+
+Today every myth is one of five kinds. Add behaviours, elites and boss phases so
+reading the screen matters.
+
+New myth behaviours (each introduced by a world, see D):
+
+| Kind | Look | Behaviour | Counter |
+|---|---|---|---|
+| Dasher | thin paperback | walks, pauses, then charges the last 120px | knockback or stun during the pause |
+| Hardcover | thick book, spine forward | front takes 70% less; flips when knocked back | bat, quack, Hopper's hop |
+| Flyer | paper plane / bat | ignores traps and the Bedtime Story aura; dips in and out | ranged only; Sparky's zap chains to flyers |
+| Rumour | faded, half-transparent | invisible outside the ring; appears late | wide-area abilities; Eight Eyes reveals early |
+| Thesaurus | fat purple book | heals myths around it ("…also, in other words…") | focus-tap it first |
+| Gossip | sticky note | jumps onto a companion and mutes it for 3s | Dad's joke shakes it off |
+| Swarm | stack of index cards | 6 tiny fast ones | AoE: balloons, quack, Big Hop |
+
+Elites: any myth can spawn as an elite (bigger, crowned, 3× HP, drops a guaranteed
+Rare+ item). One per wave from world 3 on.
+
+Boss phases: every boss gets a phase 2 at 50% HP with one new move (shield that must
+be knocked off, summons a swarm, a charge that must be dodged by… nobody, so it
+costs Patience unless stunned). Phase change is telegraphed with a line of dialogue.
+
+Spawn director: waves mix kinds deliberately (a Thesaurus behind two Hardcovers)
+instead of random picks from a pool. Entity cap of ~40 on screen for frame rate.
+
+## Phase D — Story and worlds
+
+**Decisions (2026-10-11):** world map first, a Time Machine map in a later update; the story is told by Dad and the Kid in 3-panel comics (Kid sprite is a placeholder until drawn in the mascot style).
+
+**Premise.** The Big Book of Wrong, a grumpy old encyclopedia of everything people
+used to believe, blew open in the library window. Its pages scattered across the
+world, and every page landed somewhere and started marching around insisting it's
+true. Dad and the kid set off to pop every page back into a fact. Each world is a
+chapter; the final boss is the Book itself.
+
+**Worlds** (8, each 5 short stages + boss; stages 3–5 minutes). Each world brings:
+a palette, 6 new myths, one new creep behaviour, one native companion (unlockable
+by draw or by clearing the world), and a 3-panel comic in/out.
+
+| # | World | Myths about | New creep | Native companion |
+|---|---|---|---|---|
+| 1 | The Backyard | garden & home | — (tutorial) | Webster the spider |
+| 2 | The Pond | frogs, ducks, fish | Dasher | Hopper the toad |
+| 3 | The Library | books, brains, words | Hardcover, Thesaurus | Dusty the bookworm |
+| 4 | The Ocean | sharks, whales, tides | Flyer (gulls) | Pip the hermit crab |
+| 5 | The Desert | camels, pyramids, heat | Rumour (mirages) | Scuttle the beetle |
+| 6 | The Arctic | polar bears, penguins, cold | Gossip | Nilla the snowy owl |
+| 7 | The Jungle | monkeys, lightning, rain | Swarm | Sparky the firefly |
+| 8 | The Night Sky | moon, stars, flat earth | all, elites | Luna the moth |
+
+World map on the title screen (a hand-drawn page with pins; locked worlds greyed).
+Dialogue is short, voiced via Web Speech with a toggle, and skippable with one tap.
+
+Myth bank: 48 myths (we have 20). Each world's six are written to the age band and
+checked against a reputable source before shipping; the Fact Book cites it.
+
+## Phase E — Facts in play (intrinsic integration)
+
+1. **"You know this one!"** A myth type whose fact is in the Fact Book spawns with
+   its weak spot shown and takes +25% damage. Learning is the power-up.
+2. **World mastery.** Busting all six myths in a world grants a world trait
+   (Pond: companions +1 rank on slows; Arctic: Patience +20) and unlocks the native
+   companion.
+3. **Fact reveal at rest points only**: card reveal, stage end, Fact Book. Never
+   mid-wave, never a quiz.
+
+## Phase F — Polish and accessibility
+
+Flashing/shake toggles, text at a 7-year-old reading level, voiced labels for the
+six title buttons, big tap targets off the bottom edge, settings remembered,
+offline check, entity cap, frame-rate test on an older iPhone.
+
+---
+
+## Order and rough size
+
+| Phase | Size | Ships as |
+|---|---|---|
+| A | small | PR 6 |
+| B | medium | PR 7 |
+| C | medium | PR 8 |
+| D | large (art + 28 myths + map + comics) | PRs 9–10 |
+| E | small | PR 11 |
+| F | small | PR 12 |
