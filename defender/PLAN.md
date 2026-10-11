@@ -133,6 +133,8 @@ never a nag.
 
 ## Phase D — Story and worlds
 
+**Shipped in PR 12 (D2):** eight chapters of five stages (stage 3 a rough draft of the chapter boss, stage 5 the real one, page stages end in an elite rush), 45 new myths, five native friends (Dusty, Pip, Scuttle, Nilla, Luna) with three abilities, a class, a weapon line and evolutions each, in/out comics per chapter, the scrolling chapter map, and a Fact Book grouped by chapter. Difficulty now scales by the stage's index (0–39) with a gentler curve.
+
 **Shipped in PR 11 (D1):** the map screen, Easy/Normal/Hard (Hard after a Normal clear), stars per stage per difficulty, Hard pays 1.5× coins and a one-time 💎20 + Library Card. D2 adds the worlds.
 
 **Decisions (2026-10-11):** world map first, a Time Machine map in a later update; the story is told by Dad and the Kid in 3-panel comics (Kid sprite is a placeholder until drawn in the mascot style).
