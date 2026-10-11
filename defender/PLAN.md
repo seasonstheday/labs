@@ -173,6 +173,8 @@ checked against a reputable source before shipping; the Fact Book cites it.
 
 ## Phase E — Facts in play (intrinsic integration)
 
+**Shipped in PR 13:** known-fact weak spots (+25%), the Kid's Diary by topic and by chapter with learned dates and sources, 💎2 per fact, a Library Card per finished topic, a chapter trait per mastered chapter, a Diary coin multiplier (+1% per fact), daily Study time (+🪙40), the optional Pop Quiz on the clear screen. Also the **friend level and skill tree**: XP per match, abilities unlock at levels 1/2/4 and the pair-up at 6, three coin upgrades per ability (wider, longer, stronger), skill icons with cooldowns in the HUD, and a stat summary per character on the Party screen.
+
 1. **"You know this one!"** A myth type whose fact is in the Fact Book spawns with
    its weak spot shown and takes +25% damage. Learning is the power-up.
 2. **World mastery.** Busting all six myths in a world grants a world trait
