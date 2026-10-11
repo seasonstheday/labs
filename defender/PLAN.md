@@ -85,6 +85,52 @@ costs Patience unless stunned). Phase change is telegraphed with a line of dialo
 Spawn director: waves mix kinds deliberately (a Thesaurus behind two Hardcovers)
 instead of random picks from a pool. Entity cap of ~40 on screen for frame rate.
 
+## Phase C2 — Classes and gear
+
+Decisions (2026-10-11): family game, 4+ rating, NOT the Kids Category (keeps
+rewarded ads and gated IAP possible); 3★ = Patience never dropped; the Kid is
+"the Kid" with placeholder art.
+
+1. **Classes**, library-themed, with a legible rock-paper-scissors against creep
+   kinds. Each class card shows ✓ strong against / ✗ weak against.
+
+   | Class | Who | Role | Strong vs | Weak vs |
+   |---|---|---|---|---|
+   | 🔍 Detective | Dad | single target, finds weak spots | Hardcover, Rumour | Swarm |
+   | 🕸️ Trapper | Webster | control, slows and traps | Dasher, Swarm | Flyer |
+   | ⚡ Spark | Sparky | chains, hits many | Flyer, Swarm | Hardcover |
+   | 🎵 Bard | Hopper | support, heals Patience, knockback | Gossip | Dasher |
+   | 📣 Herald | Puddles | shoves, breaks escorts | Healer escorts | Rumour |
+
+   Strong = +35% damage and the counter effect (Detective flips Hardcovers on hit;
+   Spark's chain always jumps to Flyers). Weak = −20%. Shown as a floating "✓" or
+   "✗" on the first hit of each kind in a match.
+2. **Weapon clarity.** Every weapon shows a stat strip: Power · Rate · Reach · Hits ·
+   Effect, plus one line "Best against …". Same strip on level-up cards.
+3. **Per-character weapon lines.** Dad: garage tools (today's seven). Webster:
+   fangs (Sticky, Needle, Venom-free "Tickle", Hook). Sparky: lanterns (Jar,
+   Beacon, Strobe). Hopper: lily pads (Bouncy, Wide, Heavy). Puddles: feathers
+   (Down, Quill, Flight). Each variant moves two attributes in opposite
+   directions (e.g. Needle: +Power −Hits), so there is a real choice.
+4. **Bookmarks** (our runes). Weapons, armor and books get 1–3 bookmark slots by
+   rarity. Bookmark types: 🔖 Red (Power), Blue (Rate), Green (Reach), Gold
+   (Coins), Purple (Crit), Silver (Patience). A bookmark can be moved between
+   items for a small coin fee.
+5. **Rewarded-ad hooks** (hidden until an ad provider exists in the native build,
+   and always behind an adult gate): +1 Reading Room run, +20 gems once a day.
+   No ad SDK in the web build.
+
+## Phase C3 — The Reading Room (mini-game)
+
+Unlocks when the party reaches level 10 (total ranks bought). The hook:
+**"Myth or Fact?" boss duels.** One big boss, no waves. Between its phases the
+Kid holds up a card ("Myth or fact: lightning never strikes the same place
+twice?"); a right answer stuns the boss and opens a weak spot for 5s, a wrong
+answer just shows the fact, kindly. Questions come only from facts already in
+the Diary, so it is review, not a test. Clearing drops a bookmark of a type the
+player picks, plus coins. **3 runs per 12 hours**, timer visible, no streak,
+never a nag.
+
 ## Phase D — Story and worlds
 
 **Decisions (2026-10-11):** world map first, a Time Machine map in a later update; the story is told by Dad and the Kid in 3-panel comics (Kid sprite is a placeholder until drawn in the mascot style).
@@ -110,7 +156,12 @@ by draw or by clearing the world), and a 3-panel comic in/out.
 | 7 | The Jungle | monkeys, lightning, rain | Swarm | Sparky the firefly |
 | 8 | The Night Sky | moon, stars, flat earth | all, elites | Luna the moth |
 
-World map on the title screen (a hand-drawn page with pins; locked worlds greyed).
+World map on the title screen: the Big Book's torn-out pages scattered over a
+hand-drawn map; each world a region, each stage a pin. Beaten stages stay
+tappable to replay. Each stage has three difficulties (Easy / Normal / Hard,
+unlocked in order) and up to three stars per difficulty: 1★ cleared, 2★ Patience
+above half at the end, 3★ Patience never dropped. Stars show on the pin; world
+star totals unlock the native companion and a world trait.
 Dialogue is short, voiced via Web Speech with a toggle, and skippable with one tap.
 
 Myth bank: 48 myths (we have 20). Each world's six are written to the age band and
@@ -156,6 +207,8 @@ offline check, entity cap, frame-rate test on an older iPhone.
 | A | small | PR 6 |
 | B | medium | PR 7 |
 | C | medium | PR 8 |
-| D | large (art + 28 myths + map + comics) | PRs 9–10 |
-| E | small | PR 11 |
-| F | small | PR 12 |
+| C2 | medium | PR 9 |
+| C3 | medium | PR 10 |
+| D | large (art + 28 myths + map + comics) | PRs 11–12 |
+| E | small | PR 13 |
+| F | small | PR 14 |

@@ -187,6 +187,20 @@
   .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
   .pity { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 4px 0 8px; }
   .nope { margin-top: 10px; display: flex; justify-content: center; }
+  .cls { display: inline-flex; align-items: center; gap: 6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; background: var(--teal); border: 2px solid #3a2c20; border-radius: 999px; padding: 5px 10px; margin-top: 6px; }
+  .vs { font: 400 14px/1.3 "Patrick Hand", cursive; margin-top: 4px; } .vs b { color: var(--green); } .vs s { color: var(--red); text-decoration: none; }
+  .strip { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .strip span { font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .04em; background: rgba(58,44,32,.08); border: 2px solid var(--line); border-radius: 8px; padding: 4px 7px; color: var(--ink); }
+  .strip span i { font-style: normal; color: var(--muted); font-weight: 400; margin-right: 3px; }
+  .strip span.fx { background: #fff; border-color: var(--teal); color: var(--teal); }
+  .best { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 6px; padding: 0 14px 10px; overflow-x: auto; }
+  .tabs button { flex: none; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 999px; background: var(--card); padding: 8px 12px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
+  .tabs button.on { background: var(--gold); }
+  .marks { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .mark { width: 30px; height: 30px; border-radius: 8px; border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; background: #fff; cursor: pointer; }
+  .mark.empty { border-style: dashed; background: rgba(58,44,32,.05); font-size: 12px; color: var(--muted); }
+  .itm .txt .marks { margin-top: 4px; }
   .syn { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
   .syn span { font: 400 14px/1 "Patrick Hand", cursive; background: #fff; border: 2px solid var(--green); color: var(--green); border-radius: 999px; padding: 5px 9px; }
   .syn span.off { border-color: var(--line); color: var(--muted); background: transparent; }
@@ -219,7 +233,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 8</div>
+    <div class="build">build 9</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -247,7 +261,8 @@
   <!-- ───────── garage: dad's weapon ───────── -->
   <section id="shop" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Dad takes one thing into the backyard. Pick it here, and spend coins to make it permanently better: Power is damage, Quick is how fast he uses it.</p>
+    <p class="intro" id="shopIntro">Everyone brings one thing into the backyard. Pick it here, and spend coins to make it permanently better.</p>
+    <div class="tabs" id="shopTabs"></div>
     <div class="list" id="shopList"></div>
   </section>
 
@@ -478,6 +493,55 @@ const WEAPONS = {
   balloon: { em: '🎈', name: 'Water Balloons',   desc: 'Lobbed at a crowd. Splash!',                 cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [22, 27, 33, 41, 50], n: [60, 66, 72, 80, 92], price: 220 },
 };
 
+// how each weapon reads on the stat strip
+const WINFO = {
+  glass:   { reach: 'Ring', hits: 'One', fx: 'Instant', best: 'Hardcovers and anything with armour. Never misses.' },
+  yoyo:    { reach: 'Mid', hits: 'A line', fx: 'Bonk', best: 'Lines of myths walking in together.' },
+  bat:     { reach: 'Close', hits: 'Everything near', fx: 'Knockback', best: 'Crowds that got too close. Flips Hardcovers.' },
+  plane:   { reach: 'Far', hits: 'Pierces 3', fx: 'Fast', best: 'Flyers and long lines.' },
+  frisbee: { reach: 'Far', hits: 'Bounces', fx: 'Homing', best: 'Spread-out groups and Rumours.' },
+  bubble:  { reach: 'Mid', hits: 'Many', fx: 'Slow', best: 'Dashers and Swarms. Low damage, lots of it.' },
+  balloon: { reach: 'Far', hits: 'Splash', fx: 'Splash + slow', best: 'Healer escorts and Swarms.' },
+};
+function strip(D, L = 0, extra = '') {
+  const info = WINFO[D.id] || D.info || {}, rate = (1 / D.cd[L]).toFixed(1);
+  return `<div class="strip"><span><i>Power</i>${Math.round(D.dmg[L])}</span><span><i>Rate</i>${rate}/s</span>${info.reach ? `<span><i>Reach</i>${info.reach}</span>` : ''}${info.hits ? `<span><i>Hits</i>${info.hits}</span>` : ''}${info.fx ? `<span class="fx">${info.fx}</span>` : ''}${extra}</div>${info.best ? `<div class="best">Best against: ${info.best}</div>` : ''}`;
+}
+// classes: a legible rock-paper-scissors against the creep kinds
+const CLASS = {
+  dad:     { name: 'Detective', em: '🔍', role: 'Finds the weak spot. One myth at a time.', strong: ['hardcover', 'rumour'], weak: ['swarm'] },
+  webster: { name: 'Trapper',   em: '🕸️', role: 'Slows and traps. Makes everyone else better.', strong: ['dasher', 'swarm'], weak: ['flyer'] },
+  sparky:  { name: 'Spark',     em: '⚡', role: 'Chains through crowds. Hits many at once.', strong: ['flyer', 'swarm'], weak: ['hardcover'] },
+  hopper:  { name: 'Bard',      em: '🎵', role: 'Sings Patience back, splats the crowd.', strong: ['gossip'], weak: ['dasher'] },
+  puddles: { name: 'Herald',    em: '📣', role: 'Shoves and scatters. Breaks up escorts.', strong: ['healer', 'tank'], weak: ['rumour'] },
+};
+const KNAME = { normal: 'Books', fast: 'Beetles', tank: 'Backpacks', splitter: 'Sticky notes', dasher: 'Dashers', hardcover: 'Hardcovers', flyer: 'Flyers', rumour: 'Rumours', healer: 'Thesauruses', gossip: 'Gossips', swarm: 'Swarms', boss: 'Bosses' };
+const clsMul = (id, kind) => { const C = CLASS[id]; return !C ? 1 : C.strong.includes(kind) ? 1.35 : C.weak.includes(kind) ? .8 : 1; };
+// companion weapon lines: each variant moves two things in opposite directions
+const CWEAP = {
+  webster: { line: 'Fangs', v: {
+    sticky: { em: '🕸️', name: 'Sticky Fang', desc: 'The web that slows.', pow: 1, rate: 1, fx: 'Slow', own: true },
+    needle: { em: '📌', name: 'Needle Fang', desc: 'Sharper, but it doesn\'t stick.', pow: 1.35, rate: .85, fx: 'No slow, +crit', price: 150 },
+    tickle: { em: '🪶', name: 'Tickle Fang', desc: 'Myths stop to giggle.', pow: .85, rate: 1, fx: 'Stun', price: 220 },
+    hook:   { em: '🪝', name: 'Hook Fang', desc: 'Reels the myth back toward Webster.', pow: .9, rate: .9, fx: 'Pull', price: 300 } } },
+  sparky:  { line: 'Lanterns', v: {
+    jar:    { em: '🫙', name: 'Jar Lantern', desc: 'The spark that jumps.', pow: 1, rate: 1, fx: 'Chain', own: true },
+    beacon: { em: '🏮', name: 'Beacon', desc: 'Jumps further, hits softer.', pow: .85, rate: 1, fx: '+1 jump', price: 150 },
+    strobe: { em: '🔦', name: 'Strobe', desc: 'Quick flashes that make myths blink.', pow: .8, rate: 1.3, fx: 'Tiny stun', price: 260 } } },
+  hopper:  { line: 'Lily pads', v: {
+    bouncy: { em: '🪷', name: 'Bouncy Pad', desc: 'A good long lick.', pow: 1, rate: 1, fx: 'Line', own: true },
+    wide:   { em: '🍃', name: 'Wide Pad', desc: 'A fatter tongue. Hits more, hits softer.', pow: .85, rate: 1, fx: 'Wide', price: 160 },
+    heavy:  { em: '🪨', name: 'Heavy Pad', desc: 'Slower, and it hurts.', pow: 1.35, rate: .8, fx: 'Big knockback', price: 280 } } },
+  puddles: { line: 'Feathers', v: {
+    down:   { em: '🪶', name: 'Down Feather', desc: 'A quack that shoves.', pow: 1, rate: 1, fx: 'Shove', own: true },
+    quill:  { em: '🖋️', name: 'Quill', desc: 'Sharp and loud, but it doesn\'t push.', pow: 1.3, rate: 1, fx: 'No shove', price: 160 },
+    flight: { em: '🕊️', name: 'Flight Feather', desc: 'Lighter, faster, and it really shoves.', pow: .85, rate: 1.2, fx: 'Big shove', price: 280 } } },
+};
+// bookmarks (our runes): colour = stat. Slots on an item come from its rarity.
+const MARKS = { red: ['🔴', 'Red', 'pow', 4], blue: ['🔵', 'Blue', 'quick', 3], green: ['🟢', 'Green', 'ring', 8], gold: ['🟡', 'Gold', 'coin', 5], purple: ['🟣', 'Purple', 'crit', 2], silver: ['⚪', 'Silver', 'pat', 6] };
+const SLOTS_BY_RAR = [1, 1, 2, 3];
+function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS)), M = MARKS[c]; return { uid: Date.now().toString(36) + (uidN++).toString(36), type: 'mark', rar, col: c, name: `${RADJ[rar]}${M[1]} Bookmark`, em: M[0], stat: M[2], val: Math.round(M[3] * RAR[rar].mul) }; }
+
 /* ───────── the party ───────── */
 const CHARS = {
   dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has a magnifying glass, unless the garage says otherwise.', abil: ['weapon', 'story', 'joke'], price: 0 },
@@ -525,6 +589,7 @@ const DAD_H = 102; // Dad's height in the arena
 const SPOTS = [[-70, 28], [70, 28], [0, 82]];
 
 /* ───────── items ───────── */
+let uidN = 0;
 const RAR = [{ n: 'Common', mul: 1, sell: 15 }, { n: 'Rare', mul: 1.7, sell: 40 }, { n: 'Epic', mul: 2.6, sell: 120 }, { n: 'Legendary', mul: 4, sell: 400 }];
 const RADJ = ['', 'Shiny ', 'Ancient ', 'Legendary '];
 const ITEMS = {
@@ -533,10 +598,9 @@ const ITEMS = {
   book:   { slot: 'Book',   bases: [['Field Guide', '📗', 'ring'], ['Joke Book', '📙', 'crit'], ['Atlas', '📘', 'ring'], ['Dictionary', '📕', 'quick'], ['Comic', '📔', 'coin'], ['Encyclopedia', '📚', 'quick']] },
 };
 const STAT = { pow: ['Power', '%'], quick: ['Quick', '%'], pat: ['Patience', ''], ring: ['Ring', ''], coin: ['Coins', '%'], crit: ['Crit', '%'] };
-let uidN = 0;
 function makeItem(type, rar) {
   const T = ITEMS[type], base = pick(T.bases), mul = RAR[rar].mul;
-  const it = { uid: Date.now().toString(36) + (uidN++).toString(36), type, rar, name: RADJ[rar] + base[0], em: base[1] };
+  const it = { uid: Date.now().toString(36) + (uidN++).toString(36), type, rar, name: RADJ[rar] + base[0], em: base[1], marks: [] };
   if (type === 'weapon') { it.stat = 'pow'; it.val = Math.round(6 * mul); }
   else if (type === 'armor') { it.stat = 'pat'; it.val = Math.round(8 * mul); it.look = base[2]; }
   else { it.stat = base[2]; it.val = { ring: Math.round(12 * mul), crit: Math.round(3 * mul), quick: Math.round(4 * mul), coin: Math.round(6 * mul) }[it.stat]; }
@@ -565,7 +629,11 @@ const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own
 const itemBy = uid => save.items.find(i => i.uid === uid);
 const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
-function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) g[it.stat] += it.val; } return g; }
+function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
+for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
+save.cweap = save.cweap || {};
+const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
+const ownedCW = (id, k) => !!CWEAP[id].v[k].own || !!(save.cwown && save.cwown[id + ':' + k]);
 // the party-wide stats, summed over everyone who's coming
 function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } return g; }
 const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
@@ -596,7 +664,7 @@ function newRun(stage) {
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0,
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(),
   };
   $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
@@ -650,11 +718,16 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100);
-const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100));
+const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
-  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + partyGear().crit / 100;
+  // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
+  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
+  if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
+  if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
+  if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
+  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -720,8 +793,8 @@ function useAbility(m, a) {
       if (!tgt) return false;
       windup(m, 'zap', tgt, () => {
         m.zaps++; const surge = rankOf('sparky', 'surge'), big = surge && m.zaps % (7 - surge) === 0;
-        const ev = evolved(m, 'zap'); let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hitset = new Set(); let n = D.n[L] + (ev ? 3 : 0);
-        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1)); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && !ev && dist(cur, from) > 130) cur = null; }
+        const ev = evolved(m, 'zap'), V = cweapOf('sparky') || {}; let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hitset = new Set(); let n = D.n[L] + (ev ? 3 : 0) + (V.fx === '+1 jump' ? 1 : 0);
+        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1), 0, m); if (V.fx === 'Tiny stun') cur.stun = Math.max(cur.stun, .25); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && !ev && dist(cur, from) > 130) cur = null; }
         if (big) { text(m.x, m.y - 50, 'SURGE!', '#ecb23c', 22, .9); G.shake = .1; }
       });
       return true; }
@@ -729,7 +802,7 @@ function useAbility(m, a) {
       if (!tgt) return false;
       windup(m, 'tongue', tgt, () => {
         const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 210;
-        for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); if (off < e.r + 10) hurt(e, D.dmg[L] * mul, evolved(m, 'tongue') ? -140 : 90, m); }
+        for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); const V = cweapOf('hopper') || {}; if (off < e.r + 10 + (V.fx === 'Wide' ? 22 : 0)) hurt(e, D.dmg[L] * mul, evolved(m, 'tongue') ? -140 : V.fx === 'Big knockback' ? 170 : 90, m); }
         G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: a2, len, t: 0, life: .32 });
       });
       return true; }
@@ -739,7 +812,7 @@ function useAbility(m, a) {
       return true; }
     case 'quack': {
       if (!tgt) return false;
-      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); if (evolved(m, 'quack') || Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, evolved(m, 'quack') ? 200 : 150, m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
+      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
       windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap) { sp.cds.zap = 0; } } }); });
       return true; }
   }
@@ -751,11 +824,11 @@ function fireWeapon(m, tgt) {
   if (!tgt && id !== 'bubble') return false;
   switch (id) {
     case 'glass':
-      windup(m, 'glass', tgt, () => { const ts = (evolved(m, 'weapon') ? nearest(m, null, 8) : D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 }); }); break;
+      windup(m, 'glass', tgt, () => { const ts = (evolved(m, 'weapon') ? nearest(m, null, 8) : D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg, 0, m); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 }); }); break;
     case 'yoyo':
       windup(m, 'yoyo', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .5; G.shots.push({ k: 'yoyo', m, x: hp.x, y: hp.y, ox: hp.x, oy: hp.y, a, d: 0, max: 190, out: true, dmg, hitset: new Set(), spin: 0 }); } }); break;
     case 'bat':
-      windup(m, 'bat', tgt, () => { const a = Math.atan2(tgt.y - m.y, tgt.x - m.x), R = D.n[L]; for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, m); if (d > R + e.r) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (ev || Math.abs(da) < 1.35) hurt(e, dmg, 160); } G.fx.push({ k: 'swing', a, R, t: 0, life: .22 }); G.shake = .06; }); break;
+      windup(m, 'bat', tgt, () => { const a = Math.atan2(tgt.y - m.y, tgt.x - m.x), R = D.n[L]; for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, m); if (d > R + e.r) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (ev || Math.abs(da) < 1.35) hurt(e, dmg, 160, m); } G.fx.push({ k: 'swing', a, R, t: 0, life: .22 }); G.shake = .06; }); break;
     case 'plane':
       windup(m, 'plane', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .22; G.shots.push({ k: 'plane', x: hp.x, y: hp.y, vx: Math.cos(a) * 330, vy: Math.sin(a) * 330, dmg, pierce: 3, t: 0, hitset: new Set(), wob: rnd(0, 6) }); } }); break;
     case 'frisbee':
@@ -782,7 +855,7 @@ function updateShots(dt) {
       case 'plane': case 'web':
         s.wob = (s.wob || 0) + dt * 8; const px = -s.vy, py = s.vx, wv = s.k === 'plane' ? Math.sin(s.wob) * .12 : 0; s.x += (s.vx + px * wv) * dt; s.y += (s.vy + py * wv) * dt;
         if (s.k === 'plane') { for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 10) { s.hitset.add(e); hurt(e, s.dmg); if (--s.pierce <= 0) s.dead = true; } }
-        else { for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { hurt(e, s.dmg); e.slow = Math.max(e.slow, 1.8); s.dead = true; G.fx.push({ k: 'webhit', x: e.x, y: e.y, t: 0, life: .5 }); break; } }
+        else { for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { const V = cweapOf('webster') || {}, wm = G.party.find(x => x.id === 'webster'); hurt(e, s.dmg, V.fx === 'Pull' ? -130 : 0, wm || G.dad); if (V.fx !== 'No slow, +crit') e.slow = Math.max(e.slow, 1.8); if (V.fx === 'Stun') e.stun = Math.max(e.stun, .5); s.dead = true; G.fx.push({ k: 'webhit', x: e.x, y: e.y, t: 0, life: .5 }); break; } }
         if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) s.dead = true;
         break;
       case 'frisbee': {
@@ -920,7 +993,8 @@ function offerCards(free = 0) {
   const box = $('#cards'); box.innerHTML = '';
   for (const o of chosen) {
     const b = document.createElement('button'); b.className = 'card';
-    b.innerHTML = `<div class="em">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><div><b>${abilName(o.a)}<em class="${o.lvl === 1 ? 'new' : ''}">${CHARS[o.m.id].name} · ${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}</em></b><span>${abilDesc(o.a)}</span></div>`;
+    const D = o.a === 'weapon' ? { ...WEAPONS[save.weapon], id: save.weapon } : ABIL[o.a].cd ? { ...ABIL[o.a], id: o.a } : null;
+    b.innerHTML = `<div class="em">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><div style="flex:1"><b>${abilName(o.a)}<em class="${o.lvl === 1 ? 'new' : ''}">${CHARS[o.m.id].name} · ${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}</em></b><span>${abilDesc(o.a)}</span>${D && D.dmg ? strip(D, o.lvl - 1) : ''}</div>`;
     b.onclick = () => { o.m.ranks[o.a] = o.lvl; refreshHud(true); $('#levelup').hidden = true; G.paused = false; if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a); if (free > 1) offerCards(free - 1); };
     box.appendChild(b);
   }
@@ -1309,7 +1383,7 @@ function stats(el, coins, gems) {
 }
 // random items at the end of a match; more and better for clears and later stages
 function dropLoot(el, n, bonus) {
-  const drops = []; for (let i = 0; i < n; i++) { const it = randItem(bonus); save.items.push(it); drops.push(it); }
+  const drops = []; for (let i = 0; i < n; i++) { const it = Math.random() < .15 ? makeMark(rollRar(bonus)) : randItem(bonus); save.items.push(it); drops.push(it); }
   persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
@@ -1318,7 +1392,7 @@ function stageClear() {
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
   const k = payout(true), gems = first ? 20 + G.stage * 10 : 0; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) });
-  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), G.stage * .08 + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), G.stage * .08 + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
   if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
@@ -1343,11 +1417,15 @@ function buildBook() {
 }
 function pips(n) { let s = '<div class="pips">'; for (let i = 0; i < MAX_RANK; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
 function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
+let shopTab = 'dad';
 function buildShop() {
+  const tabs = $('#shopTabs'); tabs.innerHTML = ['dad', ...Object.keys(CWEAP).filter(id => chr(id).own)].map(id => `<button class="${shopTab === id ? 'on' : ''}" data-tab="${id}">${CHARS[id].em} ${id === 'dad' ? 'Dad\'s tools' : CHARS[id].name + '\'s ' + CWEAP[id].line.toLowerCase()}</button>`).join('');
+  tabs.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { shopTab = b.dataset.tab; buildShop(); });
   const box = $('#shopList'); box.innerHTML = '';
+  if (shopTab !== 'dad') { buildCompanionShop(shopTab); return; }
   for (const id in WEAPONS) {
     const D = WEAPONS[id], w = wep(id), own = ownedW(id), eq = save.weapon === id, d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked') + (eq ? ' inparty' : '');
-    let html = `<div class="top"><div class="em">${D.em}</div><div><b>${D.name}</b><span class="d">${D.desc}</span></div>`;
+    let html = `<div class="top"><div class="em">${D.em}</div><div><b>${D.name}</b><span class="d">${D.desc}</span>${strip({ ...D, id }, 0)}</div>`;
     if (!own) html += `<button class="btn small" data-buy="${id}" ${save.coins >= D.price ? '' : 'disabled'}>Unlock 🪙 ${D.price}</button>`;
     else html += eq ? `<button class="btn small green" disabled>Equipped</button>` : `<button class="btn small ghost" data-eq="${id}">Equip</button>`;
     html += '</div>';
@@ -1356,6 +1434,17 @@ function buildShop() {
   }
   box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.coins < WEAPONS[id].price) return; setWallet({ coins: save.coins - WEAPONS[id].price }); wep(id).own = true; save.weapon = id; persist(); buildShop(); });
   box.querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { save.weapon = b.dataset.eq; persist(); buildShop(); });
+}
+function buildCompanionShop(id) {
+  const box = $('#shopList'), L = CWEAP[id], cur = cweapOf(id);
+  for (const k in L.v) {
+    const V = L.v[k], own = ownedCW(id, k), eq = cur === V, d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked') + (eq ? ' inparty' : '');
+    const fx = `<div class="strip"><span><i>Power</i>${Math.round(V.pow * 100)}%</span><span><i>Rate</i>${Math.round(V.rate * 100)}%</span><span class="fx">${V.fx}</span></div>`;
+    d.innerHTML = `<div class="top"><div class="em">${V.em}</div><div><b>${V.name}</b><span class="d">${V.desc}</span>${fx}</div>${own ? (eq ? '<button class="btn small green" disabled>Equipped</button>' : `<button class="btn small ghost" data-ceq="${k}">Equip</button>`) : `<button class="btn small" data-cbuy="${k}" ${save.coins >= V.price ? '' : 'disabled'}>Unlock 🪙 ${V.price}</button>`}</div>`;
+    box.appendChild(d);
+  }
+  box.querySelectorAll('[data-ceq]').forEach(b => b.onclick = () => { save.cweap[id] = b.dataset.ceq; persist(); buildShop(); });
+  box.querySelectorAll('[data-cbuy]').forEach(b => b.onclick = () => { const k = b.dataset.cbuy, V = L.v[k]; if (save.coins < V.price) return; setWallet({ coins: save.coins - V.price }); save.cwown = save.cwown || {}; save.cwown[id + ':' + k] = true; save.cweap[id] = k; persist(); buildShop(); });
   box.querySelectorAll('[data-rank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.rank.split(':'), w = wep(id), R = WRANKS[r], cost = R.base + w[r] * R.step; if (w[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); w[r]++; persist(); buildShop(); });
 }
 function buildParty() {
@@ -1368,6 +1457,7 @@ function buildParty() {
     else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
+    const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
     html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}${i === 0 && EVO[a === 'weapon' ? save.weapon : a] ? ` → ${EVO[a === 'weapon' ? save.weapon : a][0]}` : ''}</span>`).join('')}</div>`;
     if (c.own) { const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); const inParty = x => x === 'dad' || save.party.includes(x); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && inParty(other); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}</span>`; }).join('')}</div>`; }
     if (c.own) {
@@ -1377,6 +1467,7 @@ function buildParty() {
       const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
       for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
+      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — change it in the Garage</span></div>`; }
       html += '</div>';
     } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name.slice(3)}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
@@ -1391,7 +1482,8 @@ function buildParty() {
 
 /* ───────── equip picker ───────── */
 let pickFor = null;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${it.name}</b><span>${RAR[it.rar].n} ${ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span></div>${btn}</div>`;
+const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${it.name}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${markRow(it)}</div>${btn}</div>`;
 function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
 function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
@@ -1407,9 +1499,19 @@ $('#pickClose').onclick = () => $('#pickm').hidden = true;
 
 /* ───────── the bag ───────── */
 function buildItems() {
-  const box = $('#itemList'), list = [...save.items].sort((a, b) => b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
+  const box = $('#itemList'), list = [...save.items].sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
   box.innerHTML = list.length ? list.map(it => itemRow(it, wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`)).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
+  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">🔖 Bookmarks tuck into an item\'s slots (more slots on rarer items). Tap an empty slot to add one.</p>');
   box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); setWallet({ coins: save.coins + RAR[it.rar].sell }); buildItems(); });
+  // bookmarks: tap an empty slot to pick one from the bag, tap a placed one to take it off (20 coins)
+  box.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
+    const it = itemBy(b.dataset.addmark), marks = save.items.filter(i => i.type === 'mark').sort((a, c) => c.rar - a.rar || c.val - a.val);
+    pickFor = null; $('#pickTitle').textContent = `Bookmark for ${it.name}`; $('#pickSub').textContent = marks.length ? 'Tap one to tuck it in.' : 'No bookmarks yet. They come from elites, the Reading Room, and the Store.'; $('#pickUnequip').hidden = true;
+    $('#pickList').innerHTML = marks.map(mk => itemRow(mk, `<button class="btn small" data-mk="${mk.uid}">Add</button>`)).join('');
+    $('#pickList').querySelectorAll('[data-mk]').forEach(x => x.onclick = () => { const mk = itemBy(x.dataset.mk); if (!mk || it.marks.length >= SLOTS_BY_RAR[it.rar]) return; it.marks.push(mk); save.items = save.items.filter(i => i !== mk); persist(); $('#pickm').hidden = true; buildItems(); });
+    $('#pickm').hidden = false;
+  });
+  box.querySelectorAll('[data-unmark]').forEach(b => b.onclick = () => { const [uid, i] = b.dataset.unmark.split(':'), it = itemBy(uid); if (!it || save.coins < 20) return; const mk = it.marks.splice(+i, 1)[0]; save.items.push(mk); setWallet({ coins: save.coins - 20 }); buildItems(); });
 }
 
 /* ───────── the store ───────── */
@@ -1419,9 +1521,13 @@ const OFFERS = [
   { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
+  { em: '🔖', name: 'Bookmark', desc: 'One random bookmark for an item slot.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
+  // rewarded-ad hooks: only rendered when the native build provides window.rewardedAd (never in the web build), and only behind the adult gate
+  { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
 function buildStore() {
-  const box = $('#storeList'); box.innerHTML = OFFERS.map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  const box = $('#storeList'); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || window.rewardedAd).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; if (!window.rewardedAd) return; window.rewardedAd().then(ok => { if (ok) { o.run(); buildStore(); } }); });
   box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1]) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
@@ -1496,7 +1602,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, evolveBanner, levelUp };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
