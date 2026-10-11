@@ -147,6 +147,16 @@
   .stat b { font: 700 20px/1.5 "Fredoka", Arial, sans-serif; }
   .stat.know { color: var(--teal); font-weight: 700; }
   .panel canvas.m { width: 100px; height: 125px; display: block; margin: -46px auto 0; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
+  .runs { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
+  .runs i { width: 46px; height: 46px; border-radius: 12px; border: 3px solid #3a2c20; background: #d7c9a7; display: grid; place-items: center; font-size: 22px; font-style: normal; }
+  .runs i.on { background: var(--gold); }
+  .timer { font: 400 16px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 0 0 8px; }
+  .quizcard { background: #fff; border: 4px solid #3a2c20; border-radius: 14px; padding: 14px 16px; font: 400 22px/1.25 "Patrick Hand", cursive; text-align: center; margin: 6px 0 12px; box-shadow: var(--shadow); transform: rotate(-1.5deg); }
+  .quizcard small { display: block; font: 700 11px/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+  #kidc { width: 120px; height: 120px; display: block; margin: -56px auto 0; }
+  .colors { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
+  .colors button { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; font-size: 24px; cursor: pointer; box-shadow: 0 3px 0 #3a2c20; }
+  .colors button.on { background: var(--gold); transform: scale(1.1); }
   .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 12px; font: 400 17px/1.2 "Patrick Hand", cursive; text-align: center; }
   .howto { font: 400 19px/1.3 "Patrick Hand", cursive; margin: 0; padding-left: 22px; }
   .howto li { margin-bottom: 6px; }
@@ -233,7 +243,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 9</div>
+    <div class="build">build 10</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -244,6 +254,7 @@
       <button class="btn big-icon ghost" id="openDraw">🎟️<small>Draw</small></button>
       <button class="btn big-icon ghost" id="openStore">🏪<small>Store</small></button>
       <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
+      <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
     </div>
     <div class="menu">
       <div class="stages" id="stagePick"></div>
@@ -388,6 +399,38 @@
     </div>
   </div>
 
+  <div class="modal" id="roomm" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">The Reading Room</h2>
+      <p class="sub hand" id="roomSub">One big boss, no waves. Three times it stops to ask: <b>myth, or fact?</b> Get it right and it's wide open. Win a bookmark.</p>
+      <div class="runs" id="runs"></div>
+      <p class="timer" id="roomTimer"></p>
+      <div class="row"><button class="btn" id="roomGo">Go in</button><button class="btn ghost" id="roomClose">Later</button></div>
+      <div class="row" id="roomAdRow" hidden><button class="btn ghost small" id="roomAd">📺 Watch a short video for one more</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="quizm" hidden>
+    <div class="panel" style="text-align:center">
+      <canvas id="kidc" width="240" height="240"></canvas>
+      <h2 class="display">Myth or fact?</h2>
+      <div class="quizcard" id="quizCard"><small>The Kid holds up a card</small><span id="quizText"></span></div>
+      <div class="row"><button class="btn red" id="ansMyth">🚫 Myth</button><button class="btn green" id="ansFact">✅ Fact</button></div>
+      <p class="hand" id="quizAfter" style="margin:12px 0 0; min-height:1.3em"></p>
+    </div>
+  </div>
+
+  <div class="modal" id="roomwin" hidden>
+    <div class="panel" style="text-align:center">
+      <canvas class="m" id="roomDad" width="200" height="250"></canvas>
+      <h2 class="display">Busted, with style.</h2>
+      <p class="sub hand" id="roomWinSub">Pick a bookmark colour to take home.</p>
+      <div class="colors" id="colors"></div>
+      <div id="roomStats"></div>
+      <div class="row"><button class="btn" id="roomTake">Take it</button></div>
+    </div>
+  </div>
+
   <div class="modal" id="howm" hidden>
     <div class="panel">
       <h2 class="display">How to play</h2>
@@ -398,6 +441,7 @@
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
+        <li>The <b>Reading Room</b> opens at party level 10: one boss, three questions from your own Fact Book, a bookmark if you win. Three visits per twelve hours.</li>
         <li>Everything in this game stays on your device. No accounts, no ads, nothing to buy with real money.</li>
       </ol>
       <div class="row"><button class="btn" id="closeHow">Got it</button></div>
@@ -631,7 +675,7 @@ const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
-save.cweap = save.cweap || {};
+save.cweap = save.cweap || {}; save.room = save.room || { used: [] };
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
 const ownedCW = (id, k) => !!CWEAP[id].v[k].own || !!(save.cwown && save.cwown[id + ':' + k]);
 // the party-wide stats, summed over everyone who's coming
@@ -722,6 +766,7 @@ const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m
 const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
+  if (e.weak > 0) d *= 2;
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
@@ -882,7 +927,12 @@ function updateShots(dt) {
 function update(dt) {
   G.t += dt; const dad = G.dad, S = G.S;
   if (G.freePicks > 0) { G.freePicks--; offerCards(G.freePicks + 1); return; }
-  if (G.breakT > 0) { G.breakT -= dt; if (G.breakT <= 0) startWave(); }
+  if (G.room) {
+    const b = G.boss;
+    if (b && b.hp > 0) { const th = [.75, .5, .25][G.qAsked]; if (th != null && b.hp < b.maxhp * th && $('#quizm').hidden) { G.qAsked++; askQuiz(); return; } if (b.weak > 0) b.weak -= dt; }
+    else if (G.bossDown && !G.enemies.length && !G.cleared) { roomWin(); return; }
+  }
+  else if (G.breakT > 0) { G.breakT -= dt; if (G.breakT <= 0) startWave(); }
   else {
     G.waveT += dt;
     while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 40) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
@@ -1275,6 +1325,7 @@ function drawEnemy(e) {
       break; }
   }
   ctx.restore();
+  if (e.weak > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 5; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.arc(x, y, r * 1.25 + Math.sin(G.t * 8) * 4, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('WEAK SPOT', x, y + r + 28); }
   if (e.elite) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', x, y - r - 6); ctx.textBaseline = 'alphabetic'; ctx.strokeStyle = 'rgba(236,178,60,.8)'; ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(x, y, r * 1.15, G.t * 2, G.t * 2 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.4)'; ctx.beginPath(); ctx.arc(x, y, r * 1.1, 0, 7); ctx.fill(); }
   if (e.stun > 0) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.textAlign = 'center'; const sx = x + Math.cos(G.t * 6) * r * .5, sy = y - r - 8 + Math.sin(G.t * 6) * 3; ctx.strokeText('?', sx, sy); ctx.fillText('?', sx, sy); }
@@ -1358,6 +1409,83 @@ function drawTitleParty() {
 }
 function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); }); }
 
+/* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
+function drawKid(c, x, y, h, holding) {
+  c.save(); c.translate(x, y); c.lineWidth = Math.max(2, h * .03); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round'; c.lineCap = 'round';
+  const r = h * .22;
+  c.fillStyle = '#6a8fb8'; c.beginPath(); c.roundRect(-h * .17, -h * .55, h * .34, h * .38, h * .06); c.fill(); c.stroke(); // shirt
+  c.fillStyle = '#5a7a50'; c.beginPath(); c.roundRect(-h * .15, -h * .2, h * .13, h * .2, h * .03); c.fill(); c.stroke(); c.beginPath(); c.roundRect(h * .02, -h * .2, h * .13, h * .2, h * .03); c.fill(); c.stroke(); // legs
+  c.fillStyle = '#f3d2b0'; c.beginPath(); c.arc(0, -h * .7, r, 0, 7); c.fill(); c.stroke(); // head
+  c.fillStyle = '#7a4e2a'; c.beginPath(); c.arc(0, -h * .72, r, Math.PI * 1.05, Math.PI * 1.95); c.quadraticCurveTo(r * .3, -h * .72 - r * .6, -r * .2, -h * .72 - r * .4); c.closePath(); c.fill(); c.stroke(); // hair
+  c.fillStyle = '#3a2c20'; for (const sg of [-1, 1]) { c.beginPath(); c.arc(sg * r * .35, -h * .7, r * .09, 0, 7); c.fill(); }
+  c.beginPath(); c.arc(0, -h * .64, r * .3, .2, Math.PI - .2); c.stroke(); // smile
+  if (holding) { c.fillStyle = '#f3d2b0'; c.beginPath(); c.arc(h * .22, -h * .5, h * .05, 0, 7); c.fill(); c.stroke(); c.fillStyle = '#fff'; c.save(); c.translate(h * .3, -h * .62); c.rotate(.12); c.beginPath(); c.roundRect(-h * .13, -h * .16, h * .26, h * .3, h * .02); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.font = `700 ${Math.round(h * .16)}px Fredoka, Arial`; c.textAlign = 'center'; c.fillText('?', 0, h * .06); c.restore(); }
+  c.restore();
+}
+
+/* ───────── the Reading Room ───────── */
+const ROOM_LEVEL = 10, ROOM_RUNS = 3, ROOM_WINDOW = 12 * 3600e3;
+// party level: every rank bought and every stage cleared counts
+function partyLevel() { let n = save.cleared.length * 3; for (const id in save.chars) { const c = save.chars[id]; if (c.own) n += (c.pow || 0) + (c.quick || 0) + (c.ring || 0) + (c.pat || 0); } for (const id in save.wep) n += (save.wep[id].pow || 0) + (save.wep[id].quick || 0); return n; }
+function roomRunsLeft() { save.room.used = save.room.used.filter(t => Date.now() - t < ROOM_WINDOW); return ROOM_RUNS - save.room.used.length + (save.room.bonus || 0); }
+function fmtWait(ms) { const m = Math.ceil(ms / 60000); return m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `${m}m`; }
+function openRoom() {
+  const lv = partyLevel(), left = roomRunsLeft();
+  if (lv < ROOM_LEVEL) { $('#roomSub').innerHTML = `The door is locked. It opens at <b>party level ${ROOM_LEVEL}</b> and you are at <b>${lv}</b>. Levels come from stages cleared and ranks bought.`; $('#runs').innerHTML = ''; $('#roomTimer').textContent = ''; $('#roomGo').hidden = true; }
+  else {
+    $('#roomSub').innerHTML = 'One big boss, no waves. Three times it stops to ask: <b>myth, or fact?</b> Get it right and it\'s wide open. Win a bookmark.';
+    $('#runs').innerHTML = Array.from({ length: ROOM_RUNS }).map((_, i) => `<i class="${i < left ? 'on' : ''}">📖</i>`).join('');
+    const oldest = save.room.used[0]; $('#roomTimer').textContent = left > 0 ? `${left} visit${left > 1 ? 's' : ''} left` : `All used up. Another opens in ${fmtWait(oldest + ROOM_WINDOW - Date.now())}.`;
+    $('#roomGo').hidden = false; $('#roomGo').disabled = left <= 0;
+  }
+  $('#roomAdRow').hidden = !(window.rewardedAd && left <= 0);
+  $('#roomm').hidden = false;
+}
+$('#openRoom').onclick = openRoom; $('#roomClose').onclick = () => $('#roomm').hidden = true;
+$('#roomAd').onclick = () => { if (!window.rewardedAd) return; window.rewardedAd().then(ok => { if (ok) { save.room.bonus = (save.room.bonus || 0) + 1; persist(); openRoom(); } }); };
+$('#roomGo').onclick = () => { if (roomRunsLeft() <= 0) return; if (save.room.bonus > 0) save.room.bonus--; else save.room.used.push(Date.now()); persist(); $('#roomm').hidden = true; startRoom(); };
+function startRoom() {
+  const stage = Math.min(save.unlocked, STAGES.length - 1);
+  startGame(stage); G.room = true; G.freePicks = 0; G.breakT = 999; G.qAsked = 0; G.asked = [];
+  // everyone starts with their first two abilities so the duel is lively from the first second
+  for (const m of G.party) for (const a of CHARS[m.id].abil.slice(0, 2)) m.ranks[a] = Math.max(m.ranks[a], 1);
+  const b = spawn(STAGES[stage].boss, { x: CX, y: CY - G.radius - 30 }); b.hp = b.maxhp = b.maxhp * 1.5; b.chargeT = 6; b.spd *= .6;
+  $('#stageName').textContent = 'The Reading Room'; $('#prog').hidden = true; $('#hint').hidden = true;
+  text(CX, CY - 160, 'Myth or fact?', '#ecb23c', 34, 1.6); say('Welcome to the Reading Room.');
+}
+// a question from the Fact Book: the statement is either the myth (answer Myth) or the real fact (answer Fact)
+function askQuiz() {
+  const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
+  const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
+  $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
+  const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
+  $('#ansMyth').disabled = $('#ansFact').disabled = false; G.paused = true; $('#quizm').hidden = false;
+  say(`Myth, or fact? ${isFact ? M.fact : M.myth}`);
+}
+function answerQuiz(saidFact) {
+  const q = G.quiz, right = saidFact === q.isFact, M = MYTHS[q.id], b = G.boss;
+  $('#ansMyth').disabled = $('#ansFact').disabled = true;
+  if (right) G.right = (G.right || 0) + 1;
+  if (right) { $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
+  else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
+  setTimeout(() => {
+    $('#quizm').hidden = true; G.paused = false;
+    if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
+  }, right ? 1400 : 2600);
+}
+$('#ansMyth').onclick = () => answerQuiz(false); $('#ansFact').onclick = () => answerQuiz(true);
+let roomColor = 'red';
+function roomWin() {
+  G.cleared = true; G.paused = true; collectAll(); $('#prog').hidden = false;
+  const k = G.busted * 2 + G.coins + 60; setWallet({ coins: save.coins + k });
+  $('#roomStats').innerHTML = `<div class="stat"><span>Questions right</span><b>${G.right || 0} / ${G.qAsked}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${k}</b></div>`;
+  const box = $('#colors'); box.innerHTML = Object.keys(MARKS).map(c => `<button class="${c === roomColor ? 'on' : ''}" data-c="${c}" title="${MARKS[c][1]}: ${STAT[MARKS[c][2]][0]}">${MARKS[c][0]}</button>`).join('');
+  box.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { roomColor = b.dataset.c; roomWin(); });
+  $('#roomWinSub').textContent = `Pick a bookmark colour to take home: ${MARKS[roomColor][1]} is ${STAT[MARKS[roomColor][2]][0]}.`;
+  portrait('#roomDad', 'amazed'); $('#roomwin').hidden = false;
+}
+$('#roomTake').onclick = () => { const rar = Math.min(3, 1 + Math.floor((G.right || 0) / 2)); save.items.push(makeMark(rar, roomColor)); persist(); $('#roomwin').hidden = true; goHome(); };
+
 /* ───────── loop ───────── */
 function loop(ts) {
   requestAnimationFrame(loop);
@@ -1373,8 +1501,8 @@ const SCREENS = ['#title', '#book', '#shop', '#partyScreen', '#items', '#store']
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
-  for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm']) $(m).hidden = true;
-  setTimeout(() => { if (G && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
+  for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
+  setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
 }
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0); }
@@ -1401,8 +1529,8 @@ function stageClear() {
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
   $('#nextStage').hidden = last; stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
+function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
 function buildStagePick() {
@@ -1602,7 +1730,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
