@@ -50,6 +50,33 @@
   #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   #title .menu .btn.play { width: 240px; font-size: 24px; }
+  /* ───────── world map ───────── */
+  #map { background: #d9c49a; }
+  #map .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
+  #map h2 { margin: 0; flex: 1; font-size: 26px; }
+  #mapWrap { position: relative; flex: 1; overflow: hidden; }
+  #mapc { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pin { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
+  .pin .st { font-size: 10px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; line-height: 1; margin-top: 2px; }
+  .pin.done { background: var(--green); color: #fff; }
+  .pin.on { background: var(--gold); color: #3a2c20; transform: scale(1.15); z-index: 2; }
+  .pin.on .st { color: #3a2c20; text-shadow: none; }
+  .pin.locked { background: #b8a784; color: #7a6a4e; box-shadow: none; cursor: default; }
+  .pin .lab { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 400 14px/1 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.85); border: 2px solid #3a2c20; border-radius: 8px; padding: 3px 7px; }
+  .pin.on .lab { font-weight: 700; }
+  .mapcard { background: var(--card); border-top: 4px solid #3a2c20; padding: 12px 14px 14px; box-shadow: 0 -10px 30px rgba(58,44,32,.2); }
+  .mapcard h3 { margin: 0; font: 700 24px/1.1 "Fredoka", Arial, sans-serif; }
+  .mapcard .d { font: 400 16px/1.25 "Patrick Hand", cursive; color: var(--muted); margin: 2px 0 8px; }
+  .diffs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .diffs button { flex: 1; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .diffs button.on { background: var(--gold); }
+  .diffs button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
+  .diffs .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
+  .diffs button.on .st, .diffs button:disabled .st { color: #3a2c20; text-shadow: none; }
+  .starrow { display: flex; justify-content: center; gap: 6px; font-size: 34px; margin: 4px 0 8px; }
+  .starrow span { filter: grayscale(1) opacity(.35); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .starrow span.on { filter: none; }
+  .starwhy { font: 400 15px/1.25 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 0 0 8px; }
   .stages { display: flex; gap: 8px; margin-bottom: 4px; }
   .stages button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #3a2c20; background: var(--card); font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .stages button.on { background: var(--gold); } .stages button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
@@ -243,7 +270,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 10</div>
+    <div class="build">build 11</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -257,9 +284,20 @@
       <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
     </div>
     <div class="menu">
-      <div class="stages" id="stagePick"></div>
-      <button class="btn play" id="play">Play ▶</button>
+      <button class="btn play" id="play">🗺️ World Map</button>
       <div style="display:flex; gap:8px"><button class="btn ghost small" id="openHow">❓ How to play</button><button class="btn ghost small" id="openSettings">⚙️ Settings</button></div>
+    </div>
+  </section>
+
+  <!-- ───────── world map ───────── -->
+  <section id="map" class="screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Big Book's Pages</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
+    <div id="mapWrap"><canvas id="mapc" width="880" height="1000"></canvas><div id="pins"></div></div>
+    <div class="mapcard">
+      <h3 id="mapName">The Backyard</h3>
+      <div class="d" id="mapDesc"></div>
+      <div class="diffs" id="diffs"></div>
+      <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
     </div>
   </section>
 
@@ -341,6 +379,8 @@
     <div class="panel">
       <canvas class="m" id="clearDad" width="200" height="250"></canvas>
       <h2 class="display" style="text-align:center">Stage cleared!</h2>
+      <div class="starrow" id="starrow"></div>
+      <p class="starwhy" id="starwhy"></p>
       <p class="sub hand" style="text-align:center" id="clearSub">Every myth in the backyard went pop.</p>
       <div id="clearStats"></div>
       <div class="lootrow" id="clearLoot"></div>
@@ -441,6 +481,7 @@
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
+        <li>Every stage has <b>Easy, Normal and Hard</b> and up to <b>three stars</b>: one for clearing, two if Dad kept more than half his Patience, three if nothing ever reached him.</li>
         <li>The <b>Reading Room</b> opens at party level 10: one boss, three questions from your own Fact Book, a bookmark if you win. Three visits per twelve hours.</li>
         <li>Everything in this game stays on your device. No accounts, no ads, nothing to buy with real money.</li>
       </ol>
@@ -518,6 +559,12 @@ const KIND = {
   swarm:    { hp: 6,  spd: 58, r: 11, dmg: 2,  xp: 0, coin: .15 }, // six at once
 };
 const KIND_NOTE = { dasher: 'It stops, then charges. Stun it while it winds up.', hardcover: 'Armoured in front. Knock it back or stun it to flip it open.', flyer: 'Flies over webs and lullabies.', rumour: 'Hard to see until it gets close.', healer: 'Patches up its friends. Pop it first.', gossip: 'Jumps on a friend and talks their ear off. A Dad Joke shakes it off.', swarm: 'Lots of little ones.' };
+const DIFF = {
+  easy:   { name: 'Easy',   em: '🌤️', hp: .72, spd: .9,  dmg: .7,  coin: .8,  desc: 'Slower, softer myths.' },
+  normal: { name: 'Normal', em: '🌳', hp: 1,   spd: 1,   dmg: 1,   coin: 1,   desc: 'The backyard as it is.' },
+  hard:   { name: 'Hard',   em: '🌩️', hp: 1.45, spd: 1.12, dmg: 1.3, coin: 1.5, desc: 'Tougher, faster, more of them.' },
+};
+const STAGE_DESC = ['Where it all started. Four kinds of myth and a very big wall.', 'Out front, where the neighbours can see. Bats and bulls.', 'Swings, slides, and a brain that thinks it only works a tenth of the time.', 'Sand, camels, and a storm that swears it never strikes twice.', 'Everything you have learned, under the stars, against the flattest idea of all.'];
 const STAGES = [
   { name: '1. The Backyard',   waves: 6, boss: 'wall',    pool: ['moon', 'fish', 'duck', 'tongue'],                       lawn: ['#8cc26e', '#79b05d'], stone: '#e9dcb8', edge: '#5f8f49' },
   { name: '2. The Front Yard', waves: 7, boss: 'spiders', pool: ['moon', 'toad', 'sugar', 'bat', 'bull', 'duck'],        lawn: ['#a7c86b', '#93b457'], stone: '#dfd3b3', edge: '#6f8f44' },
@@ -657,7 +704,7 @@ const itemDesc = it => `+${it.val}${STAT[it.stat][1]} ${STAT[it.stat][0]}`;
 
 /* ───────── save ───────── */
 const SAVE_KEY = 'whydad.defender.v3';
-let save = { unlocked: 0, cleared: [], facts: [], busted: 0, coins: 0, gems: 0, tix: 0, weapon: 'glass', wep: {}, chars: {}, party: [], items: [], equip: {}, daily: { last: '', streak: 0 }, pity: 0 };
+let save = { unlocked: 0, cleared: [], facts: [], stars: {}, diff: 'normal', busted: 0, coins: 0, gems: 0, tix: 0, weapon: 'glass', wep: {}, chars: {}, party: [], items: [], equip: {}, daily: { last: '', streak: 0 }, pity: 0 };
 try {
   let s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
   if (!s) { const v2 = JSON.parse(localStorage.getItem('whydad.defender.v2') || 'null'); if (v2) { s = v2; s.coins = v2.know || 0; s.gems = 30; s.tix = 1; } }
@@ -675,7 +722,9 @@ const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
-save.cweap = save.cweap || {}; save.room = save.room || { used: [] };
+save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal';
+const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
+const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
 const ownedCW = (id, k) => !!CWEAP[id].v[k].own || !!(save.cwown && save.cwown[id + ':' + k]);
 // the party-wide stats, summed over everyone who's coming
@@ -708,9 +757,9 @@ function newRun(stage) {
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(),
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
   };
-  $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
+  $('#stageName').textContent = G.S.name + (save.diff === 'normal' ? '' : ' · ' + DIFF[save.diff].name); $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
   refreshHud(true);
 }
@@ -725,7 +774,7 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = 3 + w * 2 + G.stage * 2 + Math.floor(G.stage * G.stage * .5), dur = 10 + w * 1.2;
+    const n = Math.round((3 + w * 2 + G.stage * 2 + Math.floor(G.stage * G.stage * .5)) * (save.diff === 'hard' ? 1.25 : 1)), dur = 10 + w * 1.2;
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -738,12 +787,12 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? 'BOSS!' : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[M.kind], hpMul = 1 + G.stage * .5 + G.stage * G.stage * .25 + G.wave * .14;
+  const M = MYTHS[id], K = KIND[M.kind], hpMul = (1 + G.stage * .5 + G.stage * G.stage * .25 + G.wave * .14) * G.D.hp;
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .12), dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .12) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * (.5 + G.stage * .45 + G.stage * G.stage * .3); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
+  if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .45 + G.stage * G.stage * .3) * G.D.hp; $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
@@ -943,10 +992,10 @@ function update(dt) {
     const b = G.boss;
     if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 15, 1.3); } }
     else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
-    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= b.dmg * (G.stage ? 1.2 : .8); G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
+    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= b.dmg * (G.stage ? 1.2 : .8); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
   }
   // boss phase two at half health: a line, a crowd, and charges come sooner
-  if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < 3 + G.stage; j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
+  if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.stage ? 3 : 2) + G.stage; j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - G.stage * .6; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
   const story = rankOf('dad', 'story'), storyR = 110 + story * 15;
@@ -980,7 +1029,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -1446,7 +1495,7 @@ $('#roomAd').onclick = () => { if (!window.rewardedAd) return; window.rewardedAd
 $('#roomGo').onclick = () => { if (roomRunsLeft() <= 0) return; if (save.room.bonus > 0) save.room.bonus--; else save.room.used.push(Date.now()); persist(); $('#roomm').hidden = true; startRoom(); };
 function startRoom() {
   const stage = Math.min(save.unlocked, STAGES.length - 1);
-  startGame(stage); G.room = true; G.freePicks = 0; G.breakT = 999; G.qAsked = 0; G.asked = [];
+  startGame(stage); G.room = true; G.D = DIFF.normal; G.freePicks = 0; G.breakT = 999; G.qAsked = 0; G.asked = [];
   // everyone starts with their first two abilities so the duel is lively from the first second
   for (const m of G.party) for (const a of CHARS[m.id].abil.slice(0, 2)) m.ranks[a] = Math.max(m.ranks[a], 1);
   const b = spawn(STAGES[stage].boss, { x: CX, y: CY - G.radius - 30 }); b.hp = b.maxhp = b.maxhp * 1.5; b.chargeT = 6; b.spd *= .6;
@@ -1497,7 +1546,7 @@ function loop(ts) {
 }
 
 /* ───────── flow ───────── */
-const SCREENS = ['#title', '#book', '#shop', '#partyScreen', '#items', '#store'];
+const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store'];
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
@@ -1505,7 +1554,7 @@ function startGame(stage) {
   setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
 }
 // coins for the match: every pop counts, bosses and clears pay a bonus
-function payout(cleared) { return G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0); }
+function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0)) * G.D.coin); }
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 First clear bonus</span><b>+${gems}</b></div>` : ''}`;
 }
@@ -1519,7 +1568,13 @@ function stageClear() {
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
-  const k = payout(true), gems = first ? 20 + G.stage * 10 : 0; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) });
+  // stars: one for the clear, two with more than half of Patience left, three if nothing ever reached Dad
+  const stars = !G.dropped ? 3 : G.hp > G.maxhp / 2 ? 2 : 1, key = G.stage + ':' + save.diff, prev = starsOf(G.stage, save.diff), newStars = Math.max(0, stars - prev);
+  save.stars[key] = Math.max(prev, stars);
+  $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
+  $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
+  const hardFirst = save.diff === 'hard' && prev === 0;
+  const k = payout(true), gems = (first ? 20 + G.stage * 10 : 0) + newStars * 5 + (hardFirst ? 20 : 0); setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), G.stage * .08 + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
@@ -1527,16 +1582,57 @@ function stageClear() {
   $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
-  $('#nextStage').hidden = last; stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
+  $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
 function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
+// pin positions on the 440x500 map, the path winds up through them
+const PINS = [[82, 440], [196, 372], [300, 405], [352, 290], [222, 190]];
+function drawMap() {
+  const c = $('#mapc'), x = c.getContext('2d'), Wm = 440, Hm = 500; x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, Wm, Hm);
+  // parchment with a worn edge
+  x.fillStyle = '#e9d9b3'; x.fillRect(0, 0, Wm, Hm);
+  x.fillStyle = 'rgba(120,90,50,.08)'; for (let i = 0; i < 40; i++) { x.beginPath(); x.arc((i * 97) % Wm, (i * 61) % Hm, 20 + (i * 13) % 40, 0, 7); x.fill(); }
+  x.strokeStyle = 'rgba(58,44,32,.25)'; x.lineWidth = 2; x.strokeRect(10, 10, Wm - 20, Hm - 20);
+  // hills, a pond, the sea (hints of worlds to come)
+  x.fillStyle = '#c9d8a8'; x.beginPath(); x.ellipse(120, 470, 140, 70, 0, 0, 7); x.fill(); x.beginPath(); x.ellipse(330, 440, 150, 60, 0, 0, 7); x.fill();
+  x.fillStyle = '#a9cfe0'; x.beginPath(); x.ellipse(372, 120, 110, 60, .3, 0, 7); x.fill();
+  x.fillStyle = '#b8d2a3'; x.beginPath(); x.ellipse(90, 230, 100, 55, -.2, 0, 7); x.fill();
+  x.fillStyle = '#e0cfa0'; x.beginPath(); x.ellipse(360, 300, 60, 36, 0, 0, 7); x.fill();
+  x.fillStyle = '#3a2c20'; x.font = '400 13px "Patrick Hand", cursive';
+  [['the pond', 90, 236], ['the sea', 372, 126], ['the dunes', 360, 306]].forEach(([t, px, py]) => { x.fillStyle = 'rgba(58,44,32,.55)'; x.textAlign = 'center'; x.fillText(t, px, py); });
+  // the path
+  x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); x.moveTo(PINS[0][0], PINS[0][1]);
+  for (let i = 1; i < PINS.length; i++) { const [ax, ay] = PINS[i - 1], [bx, by] = PINS[i]; x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 40 : -40), (ay + by) / 2, bx, by); }
+  x.stroke(); x.setLineDash([]);
+  // torn pages fluttering where the next stages will be
+  x.save(); x.globalAlpha = .5; for (let i = 0; i < 4; i++) { x.save(); x.translate(60 + i * 95, 70 + (i % 2) * 30); x.rotate(-.3 + i * .2); x.fillStyle = '#fbf3df'; x.fillRect(-10, -13, 20, 26); x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.strokeRect(-10, -13, 20, 26); x.restore(); } x.restore();
+  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText('more pages blew this way…', 240, 40);
+}
+function buildMap() {
+  drawMap(); pickStage = Math.min(pickStage, save.unlocked);
+  const box = $('#pins'); box.innerHTML = '';
+  let total = 0; for (const k in save.stars) total += save.stars[k]; $('#starTotal').textContent = total;
+  STAGES.forEach((st, i) => {
+    const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard')), b = document.createElement('button');
+    b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '');
+    b.style.left = PINS[i][0] / 440 * 100 + '%'; b.style.top = PINS[i][1] / 500 * 100 + '%';
+    b.innerHTML = `${locked ? '🔒' : i + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}<div class="lab">${st.name.slice(3)}</div>`;
+    if (!locked) b.onclick = () => { pickStage = i; buildMap(); };
+    box.appendChild(b);
+  });
+  const st = STAGES[pickStage]; $('#mapName').textContent = st.name.slice(3); $('#mapDesc').textContent = STAGE_DESC[pickStage];
+  if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
+  $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
+  $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(); });
+  $('#mapPlay').textContent = `Play ${st.name.slice(3)} on ${DIFF[save.diff].name} ▶`;
+}
 function buildStagePick() {
-  pickStage = Math.min(pickStage, save.unlocked); const box = $('#stagePick'); box.innerHTML = '';
-  STAGES.forEach((s, i) => { const b = document.createElement('button'); b.textContent = i + 1; b.disabled = i > save.unlocked; b.className = (i === pickStage ? 'on ' : '') + (save.cleared.includes(i) ? 'done' : ''); b.onclick = () => { pickStage = i; buildStagePick(); }; box.appendChild(b); });
-  $('#play').textContent = `Play ${STAGES[pickStage].name.slice(3)} ▶`;
+  pickStage = Math.min(pickStage, save.unlocked);
+  let total = 0; for (const k in save.stars) total += save.stars[k];
+  $('#play').textContent = total ? `🗺️ World Map · ⭐ ${total}` : '🗺️ World Map';
 }
 function buildBook() {
   const box = $('#factList'); box.innerHTML = ''; let n = 0;
@@ -1692,7 +1788,8 @@ function checkDaily() {
   $('#dailym').hidden = false;
 }
 
-$('#play').onclick = () => startGame(pickStage);
+$('#play').onclick = () => { buildMap(); showScreen('#map'); };
+$('#mapPlay').onclick = () => startGame(pickStage);
 $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
@@ -1708,7 +1805,7 @@ $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $
 $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; buildToggles($('#pauseToggles')); $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
-$('#nextStage').onclick = () => startGame(Math.min(G.stage + 1, STAGES.length - 1));
+$('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
 $('#retry').onclick = () => startGame(G.stage);
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
@@ -1730,7 +1827,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
