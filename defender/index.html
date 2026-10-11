@@ -186,6 +186,22 @@
   .cardback.flip { transform: rotateY(180deg); }
   .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
   .pity { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 4px 0 8px; }
+  .nope { margin-top: 10px; display: flex; justify-content: center; }
+  .syn { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .syn span { font: 400 14px/1 "Patrick Hand", cursive; background: #fff; border: 2px solid var(--green); color: var(--green); border-radius: 999px; padding: 5px 9px; }
+  .syn span.off { border-color: var(--line); color: var(--muted); background: transparent; }
+  .toggles { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; text-align: left; }
+  .tog { display: flex; align-items: center; gap: 10px; background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px 12px; cursor: pointer; }
+  .tog .em { font-size: 24px; width: 32px; text-align: center; }
+  .tog b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; }
+  .tog span { font: 400 14px/1.15 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .tog .txt { flex: 1; }
+  .tog .sw { width: 44px; height: 26px; border-radius: 999px; border: 3px solid #3a2c20; background: #d7c9a7; position: relative; flex: none; }
+  .tog .sw::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid #3a2c20; transition: left .15s; }
+  .tog.on .sw { background: var(--green); } .tog.on .sw::after { left: 20px; }
+  .evo { position: absolute; left: 0; right: 0; top: 38%; text-align: center; pointer-events: none; z-index: 8; animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .evo b { display: block; font: 700 44px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.4); }
+  .evo span { display: inline-block; margin-top: 6px; font: 400 20px/1.2 "Patrick Hand", cursive; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 14px; }
   @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
@@ -203,7 +219,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 5</div>
+    <div class="build">build 6</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -218,7 +234,7 @@
     <div class="menu">
       <div class="stages" id="stagePick"></div>
       <button class="btn play" id="play">Play ▶</button>
-      <button class="btn ghost small" id="openHow">❓ How to play</button>
+      <div style="display:flex; gap:8px"><button class="btn ghost small" id="openHow">❓ How to play</button><button class="btn ghost small" id="openSettings">⚙️ Settings</button></div>
     </div>
   </section>
 
@@ -282,6 +298,7 @@
       <h2 class="display">Level up!</h2>
       <p class="sub hand">Someone learned a new trick. Pick one:</p>
       <div class="cards" id="cards"></div>
+      <div class="nope"><button class="btn ghost small" id="nope">🙅 Nope, show me others (2 left)</button></div>
     </div>
   </div>
 
@@ -289,6 +306,7 @@
     <div class="panel" style="text-align:center">
       <h2 class="display">Paused</h2>
       <p class="sub hand">Dad is catching his breath.</p>
+      <div class="toggles" id="pauseToggles"></div>
       <div class="row"><button class="btn" id="resume">Keep going</button><button class="btn ghost" id="quit">Home</button></div>
     </div>
   </div>
@@ -309,10 +327,11 @@
     <div class="panel">
       <canvas class="m" id="overDad" width="200" height="250"></canvas>
       <h2 class="display" style="text-align:center">Dad needs a nap.</h2>
-      <p class="sub hand" style="text-align:center">Too many questions at once. Try again after a snack.</p>
+      <p class="sub hand" style="text-align:center">Too many questions at once. Everyone keeps what they learned.</p>
       <div id="overStats"></div>
       <div class="lootrow" id="overLoot"></div>
-      <div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="overHome">Home</button></div>
+      <div class="row"><button class="btn" id="retryWave">Try that wave again</button></div>
+      <div class="row" style="margin-top:8px"><button class="btn ghost small" id="retry">Restart stage</button><button class="btn ghost small" id="overHome">Home</button></div>
     </div>
   </div>
 
@@ -345,12 +364,22 @@
     </div>
   </div>
 
+  <div class="modal" id="settingsm" hidden>
+    <div class="panel">
+      <h2 class="display">Settings</h2>
+      <p class="sub hand">Change these any time, even mid-match.</p>
+      <div class="toggles" id="settingToggles"></div>
+      <div class="row"><button class="btn" id="closeSettings">Done</button></div>
+    </div>
+  </div>
+
   <div class="modal" id="howm" hidden>
     <div class="panel">
       <h2 class="display">How to play</h2>
       <ol class="howto">
         <li><b>Nobody moves.</b> Dad and his friends stand in the backyard while grumpy Myths march in. Once a myth steps inside Dad's <b>attention ring</b>, the party attacks on its own.</li>
-        <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Ranks last for the match.</li>
+        <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Rank 5 of a weapon <b>evolves</b> it. You get two "Nope" cards a match if you don't like the choices.</li>
+        <li><b>Tap a myth</b> outside the ring and Dad shouts "Hey, you!" so it hurries over. Tap the lawn between waves to start the next one early.</li>
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
@@ -465,6 +494,19 @@ const ABIL = {
   pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Puddles finds things. +10% coins found per rank.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
+// what rank 5 of a primary turns into
+const EVO = {
+  glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Yo-yo Storm', 'Twice the yo-yos, twice the bonks.'], bat: ['Grand Slam', 'A swing that circles all the way round.'], plane: ['Paper Squadron', 'A whole squadron, and they come back for more.'], frisbee: ['Boomerang', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Water Fight', 'Two balloons, bigger splashes.'],
+  web: ['Web Net', 'Three webs in a spread.'], zap: ['Thunderclap', 'The spark never stops jumping.'], tongue: ['Lasso', 'The tongue pulls myths back toward Hopper.'], quack: ['HONK', 'A honk that shoves everything in the ring.'],
+};
+const evolved = (m, a) => m.ranks[a] >= MAX_RANK && !!EVO[a === 'weapon' ? save.weapon : a];
+// pairs that work well together, shown on the party screen
+const SYNERGY = [
+  { ids: ['webster', 'sparky'], name: 'Slow & Glow', desc: 'Webster slows them down, Sparky lights them up.' },
+  { ids: ['hopper', 'puddles'], name: 'Splash & Honk', desc: 'Puddles shoves them into Hopper\'s landing spot.' },
+  { ids: ['dad', 'webster'], name: 'Sticky Situation', desc: 'Dad Joke stuns last longer on webbed myths.' },
+  { ids: ['sparky', 'puddles'], name: 'Echo Spark', desc: 'An echoed quack sends a free zap.' },
+];
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
 const DADRANKS = { ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
 const BASE_RADIUS = 170;
@@ -503,11 +545,12 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
+save.opt = Object.assign({ little: false, voice: false, shake: true }, save.opt || {});
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
 const ownedW = id => !!WEAPONS[id].own || wep(id).own;
-const chr = id => save.chars[id] || (save.chars[id] = { own: id === 'dad', pow: 0, quick: 0, ring: 0, pat: 0 });
+const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
 const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
@@ -518,6 +561,18 @@ const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!ownedW(save.weapon)) save.weapon = 'glass';
 save.party = save.party.filter(id => CHARS[id] && chr(id).own).slice(0, MAX_COMPANIONS);
+
+// read a line aloud for pre-readers (Web Speech; no network, no account)
+function say(t) { try { if (!save.opt.voice || !window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .95; u.pitch = 1; speechSynthesis.speak(u); } catch (e) {} }
+const OPTS = [
+  ['little', '🧸', 'Little Kid mode', 'Myths walk slower and Dad never runs out of Patience; he just takes a snack break.'],
+  ['voice', '🔊', 'Read facts aloud', 'Dad reads every new fact out loud.'],
+  ['shake', '📳', 'Screen shake', 'Turn off if the wobble is too much.'],
+];
+function buildToggles(el) {
+  el.innerHTML = OPTS.map(o => `<div class="tog ${save.opt[o[0]] ? 'on' : ''}" data-opt="${o[0]}"><div class="em">${o[1]}</div><div class="txt"><b>${o[2]}</b><span>${o[3]}</span></div><div class="sw"></div></div>`).join('');
+  el.querySelectorAll('[data-opt]').forEach(t => t.onclick = () => { save.opt[t.dataset.opt] = !save.opt[t.dataset.opt]; persist(); buildToggles(el); if (t.dataset.opt === 'voice' && save.opt.voice) say('Hi! I\'m Dad. I\'ll read the facts to you.'); });
+}
 
 /* ───────── run state ───────── */
 let G = null, last = 0, mode = 'title';
@@ -530,7 +585,7 @@ function newRun(stage) {
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0,
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0,
   };
   $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
@@ -552,7 +607,7 @@ function spawn(id, at = null) {
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .12), dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6) };
-  if (M.kind === 'boss') { G.boss = e; e.hp = e.maxhp = K.hp * (.5 + G.stage * .55 + G.stage * G.stage * .3); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
+  if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * (.5 + G.stage * .55 + G.stage * G.stage * .3); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
@@ -590,7 +645,7 @@ function kill(e) {
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
-  if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
+  if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
@@ -599,6 +654,7 @@ function kill(e) {
 let toastT = 0;
 function toast(M) {
   const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = `Busted: "${M.myth}"`; t.querySelector('p').textContent = M.fact;
+  say(`Busted! ${M.fact}`);
   clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200);
 }
 function hint(s, life = 2.5) { const h = $('#hint'); h.textContent = s; h.hidden = false; G.hintT = life; }
@@ -621,11 +677,11 @@ function useAbility(m, a) {
     case 'weapon': return fireWeapon(m, tgt);
     case 'joke': {
       if (!tgt) return false;
-      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, 1.2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
+      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, e.slow > 0 && rankOf('webster', 'web') ? 2.0 : 1.2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
       return true; }
     case 'web': {
       if (!tgt) return false;
-      windup(m, 'web', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; const a2 = Math.atan2(t.y - hp.y, t.x - hp.x); G.shots.push({ k: 'web', x: hp.x, y: hp.y, vx: Math.cos(a2) * 320, vy: Math.sin(a2) * 320, dmg: D.dmg[L] * mul, t: 0 }); });
+      windup(m, 'web', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; const a2 = Math.atan2(t.y - hp.y, t.x - hp.x), n = evolved(m, 'web') ? 3 : 1; for (let i = 0; i < n; i++) { const a3 = a2 + (i - (n - 1) / 2) * .35; G.shots.push({ k: 'web', x: hp.x, y: hp.y, vx: Math.cos(a3) * 320, vy: Math.sin(a3) * 320, dmg: D.dmg[L] * mul, t: 0 }); } });
       return true; }
     case 'trap': {
       if (!G.enemies.length) return false;
@@ -635,8 +691,8 @@ function useAbility(m, a) {
       if (!tgt) return false;
       windup(m, 'zap', tgt, () => {
         m.zaps++; const surge = rankOf('sparky', 'surge'), big = surge && m.zaps % (7 - surge) === 0;
-        let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hitset = new Set(); let n = D.n[L];
-        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1)); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && dist(cur, from) > 130) cur = null; }
+        const ev = evolved(m, 'zap'); let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hitset = new Set(); let n = D.n[L] + (ev ? 3 : 0);
+        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1)); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && !ev && dist(cur, from) > 130) cur = null; }
         if (big) { text(m.x, m.y - 50, 'SURGE!', '#ecb23c', 22, .9); G.shake = .1; }
       });
       return true; }
@@ -644,7 +700,7 @@ function useAbility(m, a) {
       if (!tgt) return false;
       windup(m, 'tongue', tgt, () => {
         const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 210;
-        for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); if (off < e.r + 10) hurt(e, D.dmg[L] * mul, 90, m); }
+        for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); if (off < e.r + 10) hurt(e, D.dmg[L] * mul, evolved(m, 'tongue') ? -140 : 90, m); }
         G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: a2, len, t: 0, life: .32 });
       });
       return true; }
@@ -654,22 +710,23 @@ function useAbility(m, a) {
       return true; }
     case 'quack': {
       if (!tgt) return false;
-      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); if (Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, 150, m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
-      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); } }); });
+      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); if (evolved(m, 'quack') || Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, evolved(m, 'quack') ? 200 : 150, m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
+      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap) { sp.cds.zap = 0; } } }); });
       return true; }
   }
   return false;
 }
 function fireWeapon(m, tgt) {
-  const id = save.weapon, D = WEAPONS[id], L = m.ranks.weapon - 1, dmg = D.dmg[L] * dmgMul(m);
+  const id = save.weapon, D0 = WEAPONS[id], L = m.ranks.weapon - 1, ev = evolved(m, 'weapon');
+  const D = ev ? { ...D0, n: D0.n.map(v => id === 'bat' || id === 'balloon' ? Math.round(v * 1.35) : v * 2), cd: D0.cd.map(v => v * .85) } : D0, dmg = D.dmg[L] * dmgMul(m) * (ev ? 1.2 : 1);
   if (!tgt && id !== 'bubble') return false;
   switch (id) {
     case 'glass':
-      windup(m, 'glass', tgt, () => { const ts = (D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 }); }); break;
+      windup(m, 'glass', tgt, () => { const ts = (evolved(m, 'weapon') ? nearest(m, null, 8) : D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 }); }); break;
     case 'yoyo':
       windup(m, 'yoyo', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .5; G.shots.push({ k: 'yoyo', m, x: hp.x, y: hp.y, ox: hp.x, oy: hp.y, a, d: 0, max: 190, out: true, dmg, hitset: new Set(), spin: 0 }); } }); break;
     case 'bat':
-      windup(m, 'bat', tgt, () => { const a = Math.atan2(tgt.y - m.y, tgt.x - m.x), R = D.n[L]; for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, m); if (d > R + e.r) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (Math.abs(da) < 1.35) hurt(e, dmg, 160); } G.fx.push({ k: 'swing', a, R, t: 0, life: .22 }); G.shake = .06; }); break;
+      windup(m, 'bat', tgt, () => { const a = Math.atan2(tgt.y - m.y, tgt.x - m.x), R = D.n[L]; for (const e of G.enemies) { if (e.hp <= 0) continue; const d = dist(e, m); if (d > R + e.r) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a; da = Math.atan2(Math.sin(da), Math.cos(da)); if (ev || Math.abs(da) < 1.35) hurt(e, dmg, 160); } G.fx.push({ k: 'swing', a, R, t: 0, life: .22 }); G.shake = .06; }); break;
     case 'plane':
       windup(m, 'plane', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .22; G.shots.push({ k: 'plane', x: hp.x, y: hp.y, vx: Math.cos(a) * 330, vy: Math.sin(a) * 330, dmg, pierce: 3, t: 0, hitset: new Set(), wob: rnd(0, 6) }); } }); break;
     case 'frisbee':
@@ -729,16 +786,24 @@ function update(dt) {
     while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT) spawn(G.toSpawn.shift().id);
     if (!G.toSpawn.length && !G.enemies.length) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = 1.6; collectAll(); }
   }
+  // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
+  if (G.boss && G.boss.hp > 0) {
+    const b = G.boss;
+    if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 15, 1.3); } }
+    else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
+    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= b.dmg * (G.stage ? 1.2 : .8); G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
+  }
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = 6 - G.stage * .7; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
   const story = rankOf('dad', 'story'), storyR = 110 + story * 15;
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
     e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt); e.stun = Math.max(0, e.stun - dt);
-    let sp = e.spd * (e.slow > 0 ? .45 : 1);
+    let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1);
+    if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
     if (story && dist(e, dad) < storyR) sp *= 1 - story * .09;
     for (const t of G.traps) if (dist(e, t) < t.r + e.r * .3) { sp *= .4; break; }
-    if (e.stun > 0) sp = 0; else e.walk += dt * (e.kind === 'fast' ? 14 : 8);
+    if (e.stun > 0 || e.winding > 0 || e.charging > 0) sp = 0; else e.walk += dt * (e.kind === 'fast' ? 14 : 8);
     const a = Math.atan2(dad.y - e.y, dad.x - e.x), d = dist(e, dad);
     if (d > e.r + 34) { e.x += Math.cos(a) * sp * dt; e.y += Math.sin(a) * sp * dt; }
     else if (e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
@@ -766,7 +831,10 @@ function update(dt) {
   updateShots(dt);
   G.flash = Math.max(0, G.flash - dt);
   const song = rankOf('hopper', 'song'); if (song) G.hp = Math.min(G.maxhp, G.hp + song * .3 * dt);
-  if (G.hp <= 0) { gameOver(); return; }
+  if (G.hp <= 0) {
+    if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
+    else { gameOver(); return; }
+  }
   // orbs
   const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + partyGear().coin / 100;
   for (const o of G.orbs) {
@@ -800,12 +868,21 @@ function offerCards(free = 0) {
   for (const o of chosen) {
     const b = document.createElement('button'); b.className = 'card';
     b.innerHTML = `<div class="em">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><div><b>${abilName(o.a)}<em class="${o.lvl === 1 ? 'new' : ''}">${CHARS[o.m.id].name} · ${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}</em></b><span>${abilDesc(o.a)}</span></div>`;
-    b.onclick = () => { o.m.ranks[o.a] = o.lvl; refreshHud(true); $('#levelup').hidden = true; G.paused = false; if (free > 1) offerCards(free - 1); };
+    b.onclick = () => { o.m.ranks[o.a] = o.lvl; refreshHud(true); $('#levelup').hidden = true; G.paused = false; if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a); if (free > 1) offerCards(free - 1); };
     box.appendChild(b);
   }
+  $('#nope').textContent = `🙅 Nope, show me others (${G.nopes} left)`; $('#nope').disabled = G.nopes <= 0 || !!free; $('#nope').onclick = () => { if (G.nopes <= 0) return; G.nopes--; offerCards(free); };
   $('#levelup h2').textContent = free ? 'Everyone remembered a trick!' : 'Level up!';
   $('#levelup .sub').textContent = free ? `From last time. Pick one (${free} left):` : 'Someone learned a new trick. Pick one:';
   G.paused = true; $('#levelup').hidden = false;
+}
+
+function evolveBanner(m, a) {
+  const key = a === 'weapon' ? save.weapon : a, E = EVO[key]; if (!E) return;
+  G.slowmo = 1.2; G.shake = .2; text(m.x, m.y - 110, 'EVOLVED!', '#ecb23c', 30, 1.5);
+  const d = document.createElement('div'); d.className = 'evo'; d.innerHTML = `<b>${E[0]}!</b><span>${CHARS[m.id].name}: ${E[1]}</span>`; $('#frame').appendChild(d); setTimeout(() => d.remove(), 2600);
+  say(`${E[0]}! ${E[1]}`);
+  for (let i = 0; i < 24; i++) G.fx.push({ k: 'puff', x: m.x, y: m.y - 30, vx: rnd(-200, 200), vy: rnd(-260, 40), t: 0, life: rnd(.6, 1.1), col: pick(['#ecb23c', '#fff', '#b48be6', '#6fb1be']), r: rnd(4, 10) });
 }
 
 /* ───────── hud ───────── */
@@ -1033,7 +1110,7 @@ function drawEnemy(e) {
 function draw() {
   const S = G.S, dad = G.dad;
   ctx.save();
-  if (G.shake > 0) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
+  if (G.shake > 0 && save.opt.shake) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
   ctx.fillStyle = S.edge; ctx.fillRect(-20, -20, W + 40, H + 40);
   const g = ctx.createRadialGradient(CX, CY, 40, CX, CY, 330); g.addColorStop(0, S.lawn[0]); g.addColorStop(1, S.lawn[1]);
   ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(CX, CY, 230, 300, 0, 0, 7); ctx.fill();
@@ -1107,8 +1184,9 @@ function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const 
 /* ───────── loop ───────── */
 function loop(ts) {
   requestAnimationFrame(loop);
-  const dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts;
+  let dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts;
   if (mode !== 'game' || !G) return;
+  if (G.slowmo > 0) { G.slowmo -= dt; dt *= .3; }
   if (!G.paused && !G.over) { for (let i = 0; i < G.speed; i++) { update(dt); if (G.over || G.paused || G.cleared) break; } }
   draw();
 }
@@ -1118,7 +1196,7 @@ const SCREENS = ['#title', '#book', '#shop', '#partyScreen', '#items', '#store']
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
-  for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm']) $(m).hidden = true;
+  for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm']) $(m).hidden = true;
   setTimeout(() => { if (G && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
 }
 // coins for the match: every pop counts, bosses and clears pay a bonus
@@ -1146,7 +1224,7 @@ function stageClear() {
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
   $('#nextStage').hidden = last; stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
@@ -1187,7 +1265,8 @@ function buildParty() {
     else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
-    html += `<div class="abils">${C.abil.map(a => `<span>${abilEm(a)} ${abilName(a)}</span>`).join('')}</div>`;
+    html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}${i === 0 && EVO[a === 'weapon' ? save.weapon : a] ? ` → ${EVO[a === 'weapon' ? save.weapon : a][0]}` : ''}</span>`).join('')}</div>`;
+    if (c.own) { const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); const inParty = x => x === 'dad' || save.party.includes(x); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && inParty(other); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}</span>`; }).join('')}</div>`; }
     if (c.own) {
       const eq = equipOf(id); html += '<div class="slots">';
       for (const t in ITEMS) { const it = itemBy(eq[t]); html += it ? `<div class="slotb r${it.rar}" data-slot="${id}:${t}"><span class="ie">${it.em}</span>${itemDesc(it)}</div>` : `<div class="slotb empty" data-slot="${id}:${t}"><span class="ie">➕</span>${ITEMS[t].slot}</div>`; }
@@ -1285,13 +1364,22 @@ $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
 $$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });
 $('#openHow').onclick = () => $('#howm').hidden = false;
+$('#openSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
+$('#closeSettings').onclick = () => $('#settingsm').hidden = true;
 $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
-$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; $('#pausem').hidden = false; };
+$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; buildToggles($('#pauseToggles')); $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => startGame(Math.min(G.stage + 1, STAGES.length - 1));
 $('#retry').onclick = () => startGame(G.stage);
+// pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
+$('#retryWave').onclick = () => {
+  G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
+  G.coins = 0; G.busted = 0; $('#coinN').textContent = 0; $('#bustN').textContent = 0; G.breakT = 2.2; G.nopes = Math.max(G.nopes, 1);
+  for (const m of G.party) { m.anim = null; m.jump = null; m.x = m.home.x; m.y = m.home.y; }
+  $('#overm').hidden = true; text(CX, CY - 150, 'One more try!', '#ecb23c', 30, 1.4);
+};
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
 
 // tap a myth to focus
@@ -1301,10 +1389,11 @@ cv.addEventListener('pointerdown', ev => {
   const r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * W, y = (ev.clientY - r.top) / r.height * H;
   let best = null, bd = 48;
   for (const e of G.enemies) { const d = Math.hypot(e.x - x, e.y - y) - e.r; if (d < bd) { bd = d; best = e; } }
-  G.focus = best; if (best) text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 15, .8);
+  if (best) { G.focus = best; if (!inRing(best)) { best.hurry = 3; G.dad.face = best.x < G.dad.x ? -1 : 1; text(G.dad.x, G.dad.y - 100, '"Hey, you!"', '#fff', 20, .9); text(best.x, best.y - best.r - 18, '!', '#ecb23c', 24, .8); } else text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 15, .8); }
+  else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, evolveBanner, levelUp };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
