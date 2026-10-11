@@ -133,6 +133,8 @@ never a nag.
 
 ## Phase D — Story and worlds
 
+**Shipped in PR 11 (D1):** the map screen, Easy/Normal/Hard (Hard after a Normal clear), stars per stage per difficulty, Hard pays 1.5× coins and a one-time 💎20 + Library Card. D2 adds the worlds.
+
 **Decisions (2026-10-11):** world map first, a Time Machine map in a later update; the story is told by Dad and the Kid in 3-panel comics (Kid sprite is a placeholder until drawn in the mascot style).
 
 **Premise.** The Big Book of Wrong, a grumpy old encyclopedia of everything people
@@ -209,6 +211,7 @@ offline check, entity cap, frame-rate test on an older iPhone.
 | C | medium | PR 8 |
 | C2 | medium | PR 9 |
 | C3 | medium | PR 10 |
-| D | large (art + 28 myths + map + comics) | PRs 11–12 |
+| D1 | medium (map, difficulty, stars) | PR 11 |
+| D2 | large (8 worlds, 28 myths, companions, comics) | PR 12 |
 | E | small | PR 13 |
 | F | small | PR 14 |
