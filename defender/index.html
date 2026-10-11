@@ -88,8 +88,47 @@
   .cpanel.kid .bub::before { left: auto; right: -12px; border-right: 0; border-left: 7px solid #3a2c20; }
   .cpanel .bub b { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-bottom: 4px; letter-spacing: .5px; }
   #comicm .tap { text-align: center; color: var(--muted); font: 400 15px/1 "Patrick Hand", cursive; margin: 2px 0 6px; }
+  /* ───────── diary ───────── */
+  .dtabs { display: flex; gap: 6px; padding: 0 14px 8px; }
+  .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
+  .dtabs button.on { background: var(--gold); }
+  .cats { display: flex; gap: 8px; overflow-x: auto; padding: 4px 14px 10px; scrollbar-width: none; }
+  .cat { flex: none; width: 74px; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; cursor: pointer; font: 700 11px/1.1 "Fredoka", Arial, sans-serif; }
+  .cat.on { background: var(--gold); }
+  .cat .ring { width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 4px; background: conic-gradient(var(--green) calc(var(--p) * 1%), #e4d9bd 0); display: flex; align-items: center; justify-content: center; border: 2px solid #3a2c20; }
+  .cat .ring span { width: 28px; height: 28px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .cat.done .ring { background: var(--gold); }
+  .fact .meta { display: block; font: 400 12px/1.2 "Patrick Hand", cursive; color: var(--muted); margin-top: 4px; }
+  .fact .kid { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 4px; }
+  .study { margin: 0 14px 10px; border: 3px dashed #3a2c20; border-radius: 14px; padding: 10px 12px; background: rgba(255,255,255,.5); display: flex; align-items: center; gap: 10px; font: 400 15px/1.25 "Patrick Hand", cursive; }
+  .study b { font: 700 15px/1 "Fredoka", Arial, sans-serif; display: block; margin-bottom: 2px; }
+  .study .btn { flex: none; }
+  #studym .fact { margin-bottom: 8px; }
+  /* skill tree on the party screen */
+  .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  .xpbar .bar { flex: 1; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: #fff; overflow: hidden; }
+  .xpbar .bar div { height: 100%; background: var(--water); }
+  .skills { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+  .skill { display: flex; align-items: center; gap: 8px; border: 2px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 8px; }
+  .skill.locked { opacity: .55; background: #f1e9d6; }
+  .skill .em { font-size: 24px; width: 30px; text-align: center; }
+  .skill .txt { flex: 1; min-width: 0; }
+  .skill .txt b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; }
+  .skill .txt span { display: block; font: 400 13px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .skill .txt em { font-style: normal; color: var(--ink); }
+  .skill .pips i { width: 10px; height: 10px; }
+  .statsum { font: 400 14px/1.3 "Patrick Hand", cursive; color: var(--ink); background: rgba(255,255,255,.55); border-radius: 10px; padding: 6px 8px; margin: 6px 0; }
+  .statsum b { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 2px; }
+  /* in-match skill icons */
+  #party .slot { height: 62px; }
+  #party .slot .ap { gap: 4px; }
+  #party .slot .ab { position: relative; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #3a2c20; background: #fff; font-size: 12px; line-height: 17px; text-align: center; overflow: hidden; }
+  #party .slot .ab i { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(58,44,32,.35); height: 0; }
+  #party .slot .ab.off { opacity: .35; } #party .slot .ab.r5 { border-color: var(--red); box-shadow: 0 0 0 1.5px var(--red); } #party .slot .ab.r3 { border-color: var(--gold); }
   .wh { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
   .wh small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  #clearm .panel { overflow-y: auto; } #clearm canvas.m { margin-top: 0; }
+  #quizRow { margin-top: 6px; }
   .starrow { display: flex; justify-content: center; gap: 6px; font-size: 34px; margin: 4px 0 8px; }
   .starrow span { filter: grayscale(1) opacity(.35); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .starrow span.on { filter: none; }
@@ -287,12 +326,12 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 12</div>
+    <div class="build">build 13</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
-      <button class="btn big-icon ghost" id="openBook">📖<small>Facts</small></button>
+      <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
     </div>
     <div class="side2">
       <button class="btn big-icon ghost" id="openDraw">🎟️<small>Draw</small></button>
@@ -328,9 +367,22 @@
     </div>
   </div>
 
+  <!-- ───────── study time: the Kid re-reads a topic ───────── -->
+  <div class="modal" id="studym" hidden>
+    <div class="panel">
+      <h2 class="display" id="studyTitle">Study time</h2>
+      <p class="sub hand">The Kid reads three pages back to you.</p>
+      <div id="studyList"></div>
+      <div class="row"><button class="btn" id="studyDone">That's the lot · +🪙 40</button></div>
+    </div>
+  </div>
+
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Fact Book</h2><span class="pill" id="bookCount"></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Kid's Diary</h2><span class="pill" id="bookCount"></span></div>
+    <div class="dtabs"><button class="on" data-dt="topic">By topic</button><button data-dt="chapter">By chapter</button></div>
+    <div class="cats" id="cats"></div>
+    <div class="study" id="study" hidden><div style="flex:1"><b>📖 Study time</b><span id="studyTxt"></span></div><button class="btn small" id="studyGo">Read</button></div>
     <div class="list" id="factList"></div>
   </section>
 
@@ -412,7 +464,9 @@
       <div id="clearStats"></div>
       <div class="lootrow" id="clearLoot"></div>
       <div class="joined" id="joined" hidden></div>
+      <div class="joined" id="grew" hidden></div>
       <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
+      <div class="row" id="quizRow" hidden><button class="btn ghost small" id="popQuiz">🙋 The Kid has a question (optional, +🪙)</button></div>
     </div>
   </div>
 
@@ -508,6 +562,8 @@
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
+        <li>Pop a myth whose fact is already in the Diary and it shows up with a <b>weak spot</b>: "You know this one!" means it takes a quarter more damage. Learning is the power-up.</li>
+        <li>Every friend has a <b>level</b> that grows with each match. Abilities unlock at levels 1, 2 and 4, and the pair-up at 6. Once unlocked, each ability can be <b>upgraded for coins</b> on the Party screen: wider, longer, stronger.</li>
         <li>The Big Book of Wrong has <b>eight chapters</b>, five stages each. Stage 3 is a rough draft of the chapter boss, stage 5 is the real thing. Clear stage 3 and that chapter's <b>native friend</b> joins you.</li>
         <li>Every stage has <b>Easy, Normal and Hard</b> and up to <b>three stars</b>: one for clearing, two if Dad kept more than half his Patience, three if nothing ever reached him.</li>
         <li>The <b>Reading Room</b> opens at party level 10: one boss, three questions from your own Fact Book, a bookmark if you win. Three visits per twelve hours.</li>
@@ -622,6 +678,21 @@ const MYTHS = {
   gravity:   { em: '🧑‍🚀', name: 'No-Gravity Space',    myth: 'There is no gravity in space.', fact: 'Gravity up there is nearly as strong as on the ground. Astronauts float because they are falling around the Earth, all the time.', kind: 'dasher', col: '#8a9ac0' },
   flat:    { em: '🌍', name: 'The Flat Earth',        myth: 'The Earth is flat.', fact: 'Earth is round. Ships sink bottom-first over the horizon, and people have sailed, flown and orbited all the way around.', kind: 'boss', col: '#4e8ab8' },
 };
+// the Diary: every fact has a topic and the place Dad read it. Learned dates live in the save.
+const CATS = { animals: ['🐾', 'Animals'], body: ['🫀', 'My body'], space: ['🪐', 'Space'], weather: ['🌦️', 'Weather'], food: ['🍎', 'Food'], history: ['🏛️', 'History'], words: ['📝', 'Words'], earth: ['🌍', 'Earth'], science: ['⚗️', 'Science'] };
+const META = { moon: ['space', 'NASA'], bull: ['animals', 'Britannica'], fish: ['animals', 'University of Plymouth'], toad: ['body', 'NHS'], duck: ['animals', 'University of Salford'], sugar: ['food', 'JAMA'], bat: ['animals', 'Bat Conservation International'], tongue: ['body', 'Britannica'], hair: ['body', 'Mayo Clinic'], knuckle: ['body', 'Johns Hopkins Medicine'], camel: ['animals', 'San Diego Zoo'], cold: ['body', 'NHS'], banana: ['food', 'Kew Gardens'], ostrich: ['animals', 'San Diego Zoo'], penny: ['science', 'Scientific American'], words: ['words', 'Britannica'], wall: ['history', 'NASA'], spiders: ['animals', 'Scientific American'], brain: ['body', 'Scientific American'], bolt: ['weather', 'NOAA'], flat: ['earth', 'NASA'],
+  frogdrink: ['animals', 'Smithsonian'], fishsleep: ['animals', 'National Geographic'], bread: ['animals', 'RSPB'], turtle: ['animals', 'Smithsonian'], tadpole: ['animals', 'Natural History Museum'], dragonfly: ['animals', 'Smithsonian'], boil: ['animals', 'Scientific American'],
+  leftbrain: ['body', 'University of Utah'], einstein: ['history', 'Britannica'], senses: ['body', 'Harvard Medical School'], vikings: ['history', 'National Museum of Denmark'], napoleon: ['history', 'Britannica'],
+  starfish: ['animals', 'NOAA'], whale: ['animals', 'NOAA'], shark: ['animals', 'Smithsonian'], gull: ['animals', 'Cornell Lab of Ornithology'], octopus: ['animals', 'Smithsonian'], drain: ['science', 'Scientific American'], triangle: ['earth', 'NOAA'],
+  cactus: ['food', 'Britannica'], snake: ['animals', 'Smithsonian'], quicksand: ['earth', 'Nature'], mirage: ['science', 'Met Office'], pyramid: ['history', 'Smithsonian'], scorpion: ['animals', 'Natural History Museum'], hot: ['earth', 'NASA'],
+  headheat: ['body', 'British Medical Journal'], polarbear: ['animals', 'Polar Bears International'], igloo: ['history', 'The Canadian Encyclopedia'], lemming: ['animals', 'Britannica'], northpole: ['earth', 'NOAA'], bearfur: ['animals', 'Polar Bears International'], penguin: ['animals', 'National Geographic'],
+  monkey: ['animals', 'Smithsonian'], raindrop: ['weather', 'NASA'], butterfly: ['animals', 'Smithsonian'], sloth: ['animals', 'Smithsonian'], chameleon: ['animals', 'National Geographic'], piranha: ['animals', 'Smithsonian'],
+  star5: ['space', 'NASA'], shooting: ['space', 'NASA'], darkside: ['space', 'NASA'], sun: ['space', 'NASA'], northstar: ['space', 'NASA'], gravity: ['space', 'NASA'] };
+const catOf = id => (META[id] || ['science'])[0], srcOf = id => (META[id] || [0, 'Dad'])[1];
+// what busting every myth in a chapter earns, for good
+const TRAITS = [['🏡', 'Backyard Calm', 'Patience +10'], ['🪷', 'Pond Patience', 'Slows last 20% longer'], ['📚', 'Well Read', 'One extra Nope on level-up cards'], ['🌊', 'Beachcomber', 'Coins +8%'], ['🏜️', 'Far Sight', 'Ring +12'], ['❄️', 'Thick Coat', 'Patience +20'], ['🌴', 'Sharp Eyes', 'Critical hits +4%'], ['🌙', 'Stargazer', 'One extra remembered trick each match']];
+const worldIds = W => [...W.pool, ...(W.mid ? [W.mid] : []), W.boss];
+const mastered = w => worldIds(WORLDS[w]).every(id => save.facts.includes(id));
 const KIND = {
   normal:   { hp: 18, spd: 34, r: 22, dmg: 6,  xp: 1, coin: .45 },
   fast:     { hp: 10, spd: 62, r: 17, dmg: 4,  xp: 1, coin: .35 },
@@ -812,6 +883,26 @@ const ABIL = {
   moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Dad\'s Bedtime Story reaches 15% further per rank, and Patience trickles back.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
+// the permanent skill tree: abilities unlock with a friend's level, then each has three coin upgrades
+const UNLOCK_AT = [1, 2, 4], SYN_AT = 6, SK_MAX = 3;
+const SKILL = {
+  story: ['Longer story', 'The sleepy circle reaches 12% further per rank.'], joke: ['Bigger laugh', 'The groan lasts 0.2s longer per rank.'],
+  web: ['Stickier web', 'Slows last 0.4s longer per rank.'], trap: ['Wider webs', 'Each trap is 6 wider per rank.'], eyes: ['Sharper eyes', '+2% critical hits per rank.'],
+  zap: ['Longer jumps', 'The spark jumps 20 further per rank.'], glow: ['Brighter glow', 'The glow reaches 10 further per rank.'], surge: ['Sooner surge', 'The big one comes one zap sooner per rank.'],
+  tongue: ['Longer tongue', 'The lick reaches 25 further per rank.'], hop: ['Bigger splat', 'The landing is 12 wider per rank.'], song: ['Longer verse', 'Patience comes back 0.1/s faster per rank.'],
+  quack: ['Wider quack', 'The wave spreads 15% wider per rank.'], echo: ['Clearer echo', '+5% echo chance per rank.'], pond: ['Deeper pond', '+5% coins per rank.'],
+  toss: ['Sharper bookmark', 'Goes through one more myth per rank.'], footnote: ['Longer footnote', 'Marks last 1s longer per rank.'], speedread: ['Faster reading', '+1% party speed per rank.'],
+  shell: ['Bigger shell', 'The splash is 8 wider per rank.'], shellwall: ['Sturdier wall', 'Shells last 2s longer per rank.'], thickshell: ['Thicker shell', '2% less Patience lost per rank.'],
+  roll: ['Heavier ball', 'Knocks 20 harder per rank.'], dig: ['Wider hole', 'Pops up 12 wider per rank.'], antennae: ['Longer feelers', 'The ring grows 4 more per rank.'],
+  hoot: ['Colder hoot', 'The chill lasts 0.4s longer per rank.'], swoop: ['Harder swoop', '+15% swoop damage per rank.'], nighteyes: ['Keener eyes', '+1% critical hits per rank.'],
+  dust: ['Bigger puff', 'The puff bursts 10 wider per rank.'], lamp: ['Longer dance', 'Myths stay drawn 0.4s longer per rank.'], moonlight: ['Fuller moon', 'The story reaches 5% further per rank.'],
+};
+const skCost = r => 80 + r * 70;
+const xpNeed = L => 25 * L; // xp to go from level L to L+1
+function charLevel(xp) { let L = 1; while (L < 30 && xp >= xpNeed(L)) { xp -= xpNeed(L); L++; } return { L, into: xp, need: xpNeed(L) }; }
+const clv = id => charLevel(chr(id).xp || 0).L;
+const unlocked = (id, a) => clv(id) >= UNLOCK_AT[CHARS[id].abil.indexOf(a)];
+const sk = (id, a) => { const c = save.chars[id]; return c && c.sk && c.sk[a] || 0; };
 // what rank 5 of a primary turns into
 const EVO = {
   glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Yo-yo Storm', 'Twice the yo-yos, twice the bonks.'], bat: ['Grand Slam', 'A swing that circles all the way round.'], plane: ['Paper Squadron', 'A whole squadron, and they come back for more.'], frisbee: ['Boomerang', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Water Fight', 'Two balloons, bigger splashes.'],
@@ -873,19 +964,24 @@ save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.part
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
 const ownedW = id => !!WEAPONS[id].own || wep(id).own;
-const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; return c; };
+const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
 const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
 save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal'; save.comics = save.comics || [];
+save.factDate = save.factDate || {}; save.catCards = save.catCards || []; save.paidFacts = save.paidFacts || []; save.traits = save.traits || [];
+// friends who were already in the party before levels existed start at level 6 with everything they had
+for (const id in save.chars) { const c = save.chars[id]; if (c.own && c.xp == null) c.xp = save.cleared.length ? 25 * (1 + 2 + 3) : 0; c.sk = c.sk || {}; }
 const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
 const ownedCW = (id, k) => !!CWEAP[id].v[k].own || !!(save.cwown && save.cwown[id + ':' + k]);
 // the party-wide stats, summed over everyone who's coming
-function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } return g; }
+function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
+// a friend's pair-up is live once they have the level for it and both halves are coming
+const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
 const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!ownedW(save.weapon)) save.weapon = 'glass';
@@ -909,12 +1005,13 @@ function newRun(stage) {
   const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat;
   const party = [{ id: 'dad', x: CX, y: CY }, ...save.party.map((id, i) => ({ id, x: CX + SPOTS[i][0], y: CY + SPOTS[i][1] }))];
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
+  const known = new Set(save.facts);
   G = {
     stage, S: STAGES[stage], wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: Math.min(6, Math.floor(stage / 2)), hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: Math.min(6, Math.floor(stage / 2)) + (mastered(7) ? 1 : 0), hintT: 0, nopes: 2 + (mastered(2) ? 1 : 0), known, knownSaid: new Set(), slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
   };
   $('#stageName').textContent = G.S.W.em + ' ' + G.S.name + (save.diff === 'normal' ? '' : ' · ' + DIFF[save.diff].name); $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
@@ -950,6 +1047,7 @@ function spawn(id, at = null, q = {}) {
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  if (G.known.has(id) && M.kind !== 'boss') e.known = true;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
@@ -971,19 +1069,20 @@ function nearest(from, exclude = null, n = 1) {
 }
 // permanent damage / speed multipliers for a party member
 const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03));
+const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
   if (e.weak > 0) d *= 2;
-  if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && G.party.some(x => x.id === 'dusty') ? .1 : 0);
+  if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
+  if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
-  if (sp && dist(e, sp) < 100 + glow * 10) d *= 1 + glow * .06;
+  if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
@@ -1002,7 +1101,7 @@ function kill(e) {
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
@@ -1033,7 +1132,7 @@ function useAbility(m, a) {
     case 'weapon': return fireWeapon(m, tgt);
     case 'joke': {
       if (!tgt) return false;
-      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, e.slow > 0 && rankOf('webster', 'web') ? 2.0 : 1.2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
+      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, (e.slow > 0 && rankOf('webster', 'web') && synOn(SYNERGY[2]) ? 2.0 : 1.2) + sk('dad', 'joke') * .2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
       return true; }
     case 'web': {
       if (!tgt) return false;
@@ -1041,21 +1140,21 @@ function useAbility(m, a) {
       return true; }
     case 'trap': {
       if (!G.enemies.length) return false;
-      windup(m, 'trap', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = rnd(0, 7), R = G.radius * rnd(.45, .9); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 34 + rk * 3, t: 0, life: 8 + rk }); } });
+      windup(m, 'trap', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = rnd(0, 7), R = G.radius * rnd(.45, .9); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 34 + rk * 3 + sk('webster', 'trap') * 6, t: 0, life: 8 + rk }); } });
       return true; }
     case 'zap': {
       if (!tgt) return false;
       windup(m, 'zap', tgt, () => {
-        m.zaps++; const surge = rankOf('sparky', 'surge'), big = surge && m.zaps % (7 - surge) === 0;
+        m.zaps++; const surge = rankOf('sparky', 'surge'), big = surge && m.zaps % Math.max(2, 7 - surge - sk('sparky', 'surge')) === 0;
         const ev = evolved(m, 'zap'), V = cweapOf('sparky') || {}; let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hitset = new Set(); let n = D.n[L] + (ev ? 3 : 0) + (V.fx === '+1 jump' ? 1 : 0);
-        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1), 0, m); if (V.fx === 'Tiny stun') cur.stun = Math.max(cur.stun, .25); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && !ev && dist(cur, from) > 130) cur = null; }
+        while (cur && n-- > 0) { hitset.add(cur); hurt(cur, D.dmg[L] * mul * (big ? 3 : 1), 0, m); if (V.fx === 'Tiny stun') cur.stun = Math.max(cur.stun, .25); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .22, big }); from = cur; cur = nearest(cur, hitset); if (cur && !ev && dist(cur, from) > 130 + sk('sparky', 'zap') * 20) cur = null; }
         if (big) { text(m.x, m.y - 50, 'SURGE!', '#ecb23c', 22, .9); G.shake = .1; }
       });
       return true; }
     case 'tongue': {
       if (!tgt) return false;
       windup(m, 'tongue', tgt, () => {
-        const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 210;
+        const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 210 + sk('hopper', 'tongue') * 25;
         for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); const V = cweapOf('hopper') || {}; if (off < e.r + 10 + (V.fx === 'Wide' ? 22 : 0)) hurt(e, D.dmg[L] * mul, evolved(m, 'tongue') ? -140 : V.fx === 'Big knockback' ? 170 : 90, m); }
         G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: a2, len, t: 0, life: .32 });
       });
@@ -1066,19 +1165,19 @@ function useAbility(m, a) {
       return true; }
     case 'toss': {
       if (!tgt) return false;
-      windup(m, 'toss', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), n = evolved(m, 'toss') ? 3 : 1; for (let i = 0; i < n; i++) { const a3 = a2 + (i - (n - 1) / 2) * .3; G.shots.push({ k: 'mark', x: hp.x, y: hp.y, vx: Math.cos(a3) * 360, vy: Math.sin(a3) * 360, dmg: D.dmg[L] * mul, pierce: 2, hitset: new Set(), t: 0, m }); } });
+      windup(m, 'toss', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), n = evolved(m, 'toss') ? 3 : 1; for (let i = 0; i < n; i++) { const a3 = a2 + (i - (n - 1) / 2) * .3; G.shots.push({ k: 'mark', x: hp.x, y: hp.y, vx: Math.cos(a3) * 360, vy: Math.sin(a3) * 360, dmg: D.dmg[L] * mul, pierce: 2 + sk('dusty', 'toss'), hitset: new Set(), t: 0, m }); } });
       return true; }
     case 'shell': {
       if (!tgt) return false;
-      windup(m, 'shell', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const hp = handPos(m), V = cweapOf('pip') || {}, lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .5, ty = t.y + Math.sin(lead) * t.spd * .5; G.shots.push({ k: 'balloon', shell: true, x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .6, dmg: D.dmg[L] * mul, R: (evolved(m, 'shell') ? 70 : 40) * (V.fx === 'Big splash' ? 1.4 : 1), knock: 110, slowOn: V.fx === 'Slow' ? 1.5 : 0, col: '#f0a070', m }); });
+      windup(m, 'shell', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const hp = handPos(m), V = cweapOf('pip') || {}, lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .5, ty = t.y + Math.sin(lead) * t.spd * .5; G.shots.push({ k: 'balloon', shell: true, x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .6, dmg: D.dmg[L] * mul, R: (evolved(m, 'shell') ? 70 : 40) * (V.fx === 'Big splash' ? 1.4 : 1) + sk('pip', 'shell') * 8, knock: 110, slowOn: V.fx === 'Slow' ? 1.5 : 0, col: '#f0a070', m }); });
       return true; }
     case 'shellwall': {
       if (!G.enemies.length) return false;
-      windup(m, 'shellwall', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = tgt ? Math.atan2(tgt.y - CY, tgt.x - CX) + rnd(-.5, .5) : rnd(0, 7), R = G.radius * rnd(.7, .95); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 30 + rk * 3, t: 0, life: 7 + rk, mul: .12, shell: true }); } });
+      windup(m, 'shellwall', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = tgt ? Math.atan2(tgt.y - CY, tgt.x - CX) + rnd(-.5, .5) : rnd(0, 7), R = G.radius * rnd(.7, .95); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 30 + rk * 3, t: 0, life: 7 + rk + sk('pip', 'shellwall') * 2, mul: .12, shell: true }); } });
       return true; }
     case 'roll': {
       if (!tgt) return false;
-      windup(m, 'roll', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), V = cweapOf('scuttle') || {}; G.shots.push({ k: 'roll', x: hp.x, y: m.y, vx: Math.cos(a2) * 210, vy: Math.sin(a2) * 210, dmg: D.dmg[L] * mul, r: 10 + (V.fx === 'Wider' ? 8 : 0), knock: evolved(m, 'roll') ? 120 : V.fx === 'Knockback' ? 100 : 20, hitset: new Set(), t: 0, spin: 0, m }); });
+      windup(m, 'roll', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), V = cweapOf('scuttle') || {}; G.shots.push({ k: 'roll', x: hp.x, y: m.y, vx: Math.cos(a2) * 210, vy: Math.sin(a2) * 210, dmg: D.dmg[L] * mul, r: 10 + (V.fx === 'Wider' ? 8 : 0), knock: (evolved(m, 'roll') ? 120 : V.fx === 'Knockback' ? 100 : 20) + sk('scuttle', 'roll') * 20, hitset: new Set(), t: 0, spin: 0, m }); });
       return true; }
     case 'dig': {
       if (!tgt || m.jump) return false;
@@ -1091,20 +1190,20 @@ function useAbility(m, a) {
     case 'swoop': {
       if (m.jump) return false;
       const big = G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e)).sort((a, b) => b.hp - a.hp)[0]; if (!big) return false;
-      const V = cweapOf('nilla') || {}; m.face = big.x < m.x ? -1 : 1; m.jump = { kind: 'swoop', from: { x: m.x, y: m.y }, to: { x: big.x, y: big.y }, t: 0, dur: .45, back: false, dmg: D.dmg[L] * mul * (V.fx === 'Big swoop' ? 1.3 : 1) };
+      const V = cweapOf('nilla') || {}; m.face = big.x < m.x ? -1 : 1; m.jump = { kind: 'swoop', from: { x: m.x, y: m.y }, to: { x: big.x, y: big.y }, t: 0, dur: .45, back: false, dmg: D.dmg[L] * mul * (V.fx === 'Big swoop' ? 1.3 : 1) * (1 + sk('nilla', 'swoop') * .15) };
       return true; }
     case 'dust': {
       if (!tgt) return false;
-      windup(m, 'dust', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), V = cweapOf('luna') || {}; G.shots.push({ k: 'dust', x: hp.x, y: hp.y, vx: Math.cos(a2) * 190, vy: Math.sin(a2) * 190, dmg: D.dmg[L] * mul, R: (evolved(m, 'dust') ? 80 : 45) + (V.fx === 'Bigger puff' ? 20 : 0), stun: V.fx === 'Stun' ? .4 : 0, t: 0, life: 3, m }); });
+      windup(m, 'dust', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), V = cweapOf('luna') || {}; G.shots.push({ k: 'dust', x: hp.x, y: hp.y, vx: Math.cos(a2) * 190, vy: Math.sin(a2) * 190, dmg: D.dmg[L] * mul, R: (evolved(m, 'dust') ? 80 : 45) + (V.fx === 'Bigger puff' ? 20 : 0) + sk('luna', 'dust') * 10, stun: V.fx === 'Stun' ? .4 : 0, t: 0, life: 3, m }); });
       return true; }
     case 'lamp': {
       if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
-      windup(m, 'lamp', tgt, () => { const pt = { x: m.x + m.face * 70, y: m.y - 10 }; G.lure = pt; const st = rankOf('dad', 'story') ? .8 : .3; for (const e of G.enemies) { if (e.hp <= 0 || !inRing(e)) continue; const a2 = Math.atan2(pt.y - e.y, pt.x - e.x), dd = dist(e, pt); e.kx += Math.cos(a2) * Math.min(dd * 3, 330); e.ky += Math.sin(a2) * Math.min(dd * 3, 330); e.lured = 1.4; e.stun = Math.max(e.stun, st); } G.fx.push({ k: 'ring', x: pt.x, y: pt.y, R: 60, t: 0, life: .8, col: '#ffe9a0' }); text(pt.x, pt.y - 50, 'ooooh…', '#ffe9a0', 16, 1.2); });
+      windup(m, 'lamp', tgt, () => { const pt = { x: m.x + m.face * 70, y: m.y - 10 }; G.lure = pt; const st = rankOf('dad', 'story') && synOn(SYNERGY[6]) ? .8 : .3; for (const e of G.enemies) { if (e.hp <= 0 || !inRing(e)) continue; const a2 = Math.atan2(pt.y - e.y, pt.x - e.x), dd = dist(e, pt); e.kx += Math.cos(a2) * Math.min(dd * 3, 330); e.ky += Math.sin(a2) * Math.min(dd * 3, 330); e.lured = 1.4 + sk('luna', 'lamp') * .4; e.stun = Math.max(e.stun, st + sk('luna', 'lamp') * .2); } G.fx.push({ k: 'ring', x: pt.x, y: pt.y, R: 60, t: 0, life: .8, col: '#ffe9a0' }); text(pt.x, pt.y - 50, 'ooooh…', '#ffe9a0', 16, 1.2); });
       return true; }
     case 'quack': {
       if (!tgt) return false;
-      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
-      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap) { sp.cds.zap = 0; } } }); });
+      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6 * (1 + sk('puddles', 'quack') * .15)) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
+      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15 + sk('puddles', 'echo') * .05) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap && synOn(SYNERGY[3])) { sp.cds.zap = 0; } } }); });
       return true; }
   }
   return false;
@@ -1146,7 +1245,7 @@ function updateShots(dt) {
       case 'plane': case 'web':
         s.wob = (s.wob || 0) + dt * 8; const px = -s.vy, py = s.vx, wv = s.k === 'plane' ? Math.sin(s.wob) * .12 : 0; s.x += (s.vx + px * wv) * dt; s.y += (s.vy + py * wv) * dt;
         if (s.k === 'plane') { for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 10) { s.hitset.add(e); hurt(e, s.dmg); if (--s.pierce <= 0) s.dead = true; } }
-        else { for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { const V = cweapOf('webster') || {}, wm = G.party.find(x => x.id === 'webster'); hurt(e, s.dmg, V.fx === 'Pull' ? -130 : 0, wm || G.dad); if (V.fx !== 'No slow, +crit') e.slow = Math.max(e.slow, 1.8); if (V.fx === 'Stun') e.stun = Math.max(e.stun, .5); s.dead = true; G.fx.push({ k: 'webhit', x: e.x, y: e.y, t: 0, life: .5 }); break; } }
+        else { for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { const V = cweapOf('webster') || {}, wm = G.party.find(x => x.id === 'webster'); hurt(e, s.dmg, V.fx === 'Pull' ? -130 : 0, wm || G.dad); if (V.fx !== 'No slow, +crit') e.slow = Math.max(e.slow, 1.8 + sk('webster', 'web') * .4); if (V.fx === 'Stun') e.stun = Math.max(e.stun, .5); s.dead = true; G.fx.push({ k: 'webhit', x: e.x, y: e.y, t: 0, life: .5 }); break; } }
         if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) s.dead = true;
         break;
       case 'frisbee': {
@@ -1162,7 +1261,7 @@ function updateShots(dt) {
         break;
       case 'mark': case 'hoot': case 'roll': {
         s.x += s.vx * dt; s.y += s.vy * dt; s.spin = (s.spin || 0) + dt * 10; if (s.k === 'roll') s.r = Math.min(24, s.r + dt * 8);
-        for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + (s.r || 10)) { s.hitset.add(e); if (s.k === 'mark') e.marked = 3; if (s.k === 'hoot') e.slow = Math.max(e.slow, s.chill); hurt(e, s.dmg, s.knock || 0, s.m); if (s.k !== 'roll' && --s.pierce <= 0) { s.dead = true; break; } }
+        for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + (s.r || 10)) { s.hitset.add(e); if (s.k === 'mark') e.marked = 3 + sk('dusty', 'footnote'); if (s.k === 'hoot') e.slow = Math.max(e.slow, s.chill + sk('nilla', 'hoot') * .4); hurt(e, s.dmg, s.knock || 0, s.m); if (s.k !== 'roll' && --s.pierce <= 0) { s.dead = true; break; } }
         if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) s.dead = true;
         break; }
       case 'dust':
@@ -1204,11 +1303,11 @@ function update(dt) {
   if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && !G.boss.rough && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.stage ? 3 : 2) + Math.min(5, Math.floor(G.stage / 4)); j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.stage, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
-  const story = rankOf('dad', 'story'), storyR = (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * .15);
-  G.radius = G.baseRadius + rankOf('scuttle', 'antennae') * 8;
+  const story = rankOf('dad', 'story'), storyR = (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * (.15 + sk('luna', 'moonlight') * .05) + sk('dad', 'story') * .12);
+  G.radius = G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
-    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt); e.stun = Math.max(0, e.stun - dt);
+    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1)); e.stun = Math.max(0, e.stun - dt);
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1);
     if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
     const flies = e.kind === 'flyer';
@@ -1250,8 +1349,8 @@ function update(dt) {
       const j = m.jump; j.t += dt; const p = Math.min(1, j.t / j.dur), ease = p * p * (3 - 2 * p);
       m.x = j.from.x + (j.to.x - j.from.x) * ease; m.y = j.from.y + (j.to.y - j.from.y) * ease; m.z = Math.sin(p * Math.PI) * (j.kind === 'dig' ? 0 : j.kind === 'swoop' ? 110 : 90);
       if (p >= 1) { if (!j.back) { const kd = j.kind || 'hop';
-          if (kd === 'swoop') { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 40) hurt(e, j.dmg * (e.slow > 0 && G.party.some(x => x.id === 'webster') ? 2 : 1), 100, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 40, t: 0, life: .35, col: '#eef4ff' }); text(m.x, m.y - 40, 'SWOOP!', '#fff', 22, .8); }
-          else { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 62) { hurt(e, j.dmg, kd === 'dig' ? 70 : 120, m); if (kd === 'dig') e.stun = Math.max(e.stun, 1); } G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: kd === 'dig' ? '#d9c08a' : '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, kd === 'dig' ? 'SURPRISE!' : 'SPLAT', '#fff', 22, .8); }
+          if (kd === 'swoop') { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 40) hurt(e, j.dmg * (e.slow > 0 && synOn(SYNERGY[5]) ? 2 : 1), 100, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 40, t: 0, life: .35, col: '#eef4ff' }); text(m.x, m.y - 40, 'SWOOP!', '#fff', 22, .8); }
+          else { const R = 62 + (kd === 'dig' ? sk('scuttle', 'dig') : sk('hopper', 'hop')) * 12; for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + R) { hurt(e, j.dmg, kd === 'dig' ? 70 : 120, m); if (kd === 'dig') e.stun = Math.max(e.stun, 1); } G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: kd === 'dig' ? '#d9c08a' : '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, kd === 'dig' ? 'SURPRISE!' : 'SPLAT', '#fff', 22, .8); }
           m.jump = { kind: kd, from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
       continue;
     }
@@ -1266,13 +1365,13 @@ function update(dt) {
   G.pending = G.pending.filter(p => !p.done);
   updateShots(dt);
   G.flash = Math.max(0, G.flash - dt);
-  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if (song || moon) G.hp = Math.min(G.maxhp, G.hp + (song * .3 + moon * .15) * dt);
+  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if (song || moon) G.hp = Math.min(G.maxhp, G.hp + (song * (.3 + sk('hopper', 'song') * .1) + moon * .15) * dt);
   if (G.hp <= 0) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
   }
   // orbs
-  const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + partyGear().coin / 100;
+  const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
   for (const o of G.orbs) {
     const d = dist(o, dad); if (d < mag) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
@@ -1297,7 +1396,7 @@ const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 function offerCards(free = 0) {
   const opts = [];
-  for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK) opts.push({ m, a, lvl: m.ranks[a] + 1 });
+  for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) opts.push({ m, a, lvl: m.ranks[a] + 1 });
   if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; $('#coinN').textContent = G.coins; return; }
   const chosen = []; while (chosen.length < 3 && opts.length) chosen.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
   const box = $('#cards'); box.innerHTML = '';
@@ -1323,7 +1422,7 @@ function evolveBanner(m, a) {
 }
 
 /* ───────── hud ───────── */
-let partyKey = '';
+let partyKey = '', hudAbs = [];
 function refreshHud(force) {
   const S = G.S;
   const wavesDone = G.wave + (G.breakT > 0 ? 0 : clamp(G.waveT / (10 + G.wave), 0, .95));
@@ -1338,10 +1437,13 @@ function refreshHud(force) {
     for (let i = 0; i <= MAX_COMPANIONS; i++) {
       const m = G.party[i], d = document.createElement('div');
       d.className = 'slot' + (m ? '' : ' empty');
-      if (m) { d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<i class="r${m.ranks[a] >= 5 ? 5 : m.ranks[a] >= 3 ? 3 : m.ranks[a] >= 1 ? 1 : 0}"></i>`).join('')}</div>`; }
+      if (m) { d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<div class="ab ${m.ranks[a] ? (m.ranks[a] >= 5 ? 'r5' : m.ranks[a] >= 3 ? 'r3' : '') : 'off'}" data-a="${a}" title="${abilName(a)}">${m.ranks[a] ? abilEm(a) : G.room || unlocked(m.id, a) ? '·' : '🔒'}<i></i></div>`).join('')}</div>`; }
       g.appendChild(d);
     }
+    hudAbs = $$('#party .ab');
   }
+  // cooldown shade on each live skill
+  G.party.forEach((m, i) => CHARS[m.id].abil.forEach((a, j) => { const el = hudAbs[i * 3 + j]; if (!el || !m.ranks[a]) return; const D = ABIL[a].passive ? null : a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; el.firstElementChild && (el.lastElementChild.style.height = D ? clamp(m.cds[a] / (D.cd[m.ranks[a] - 1] * cdMul(m)) * 100, 0, 100) + '%' : '0'); }));
 }
 
 /* ───────── draw: characters ───────── */
@@ -1523,7 +1625,7 @@ function drawMember(m) {
   if (m.land > 0) m.land -= 1 / 60;
   drawCompanionAt(ctx, m.id, m.x, m.y + 4 - z, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0 });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
-  if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
+  if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
 
 /* ───────── draw: myths ───────── */
@@ -1554,6 +1656,7 @@ function drawEnemy(e) {
   ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill();
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
+  if (e.known) { ctx.save(); ctx.globalAlpha = .7 + Math.sin(G.t * 6) * .3; ctx.fillStyle = '#8fd38a'; ctx.beginPath(); ctx.arc(x - r * .55, y - r * .1, r * .18, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - r * .62, y - r * .1); ctx.lineTo(x - r * .56, y - r * .03); ctx.lineTo(x - r * .46, y - r * .18); ctx.stroke(); ctx.restore(); }
   if (e.marked > 0) { ctx.font = `16px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📝', x + r * .8, y - r - 8 + Math.sin(G.t * 6) * 2); ctx.textBaseline = 'alphabetic'; }
   switch (e.kind) {
     case 'dasher': { // a thin paperback that leans forward and crouches before it charges
@@ -1667,7 +1770,7 @@ function draw() {
   ctx.beginPath(); ctx.arc(dad.x, dad.y, G.radius, 0, 7); ctx.fillStyle = 'rgba(251,243,223,.08)'; ctx.fill();
   ctx.setLineDash([10, 8]); ctx.lineDashOffset = -G.t * 20; ctx.strokeStyle = 'rgba(251,243,223,.75)'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([]);
   // bedtime story aura
-  const story = rankOf('dad', 'story'); if (story) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * .15), 0, 7); ctx.fill(); if (Math.floor(G.t * 2) % 2) { ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.textAlign = 'center'; ctx.fillText('z', dad.x + 30, dad.y - 110 - Math.sin(G.t * 2) * 6); } }
+  const story = rankOf('dad', 'story'); if (story) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * (.15 + sk('luna', 'moonlight') * .05) + sk('dad', 'story') * .12), 0, 7); ctx.fill(); if (Math.floor(G.t * 2) % 2) { ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.textAlign = 'center'; ctx.fillText('z', dad.x + 30, dad.y - 110 - Math.sin(G.t * 2) * 6); } }
   // silk traps
   for (const t of G.traps) { const p = t.t / t.life; ctx.save(); ctx.translate(t.x, t.y); ctx.globalAlpha = p > .8 ? (1 - p) / .2 : 1;
     if (t.shell) { ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; for (const [sx, sy, sr] of [[-t.r * .5, 4, 10], [0, -6, 12], [t.r * .5, 5, 10]]) { ctx.fillStyle = '#f0a070'; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); for (let a = 0; a < 7; a += .4) { const rr = a * sr / 7; ctx.lineTo(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr); } ctx.stroke(); } ctx.restore(); continue; }
@@ -1779,7 +1882,7 @@ function startRoom() {
 }
 // a question from the Fact Book: the statement is either the myth (answer Myth) or the real fact (answer Fact)
 function askQuiz() {
-  const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
+  G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
   const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
   const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
@@ -1793,7 +1896,9 @@ function answerQuiz(saidFact) {
   if (right) { $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
   else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
   setTimeout(() => {
-    $('#quizm').hidden = true; G.paused = false;
+    $('#quizm').hidden = true;
+    if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
+    G.paused = false;
     if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
   }, right ? 1400 : 2600);
 }
@@ -1851,11 +1956,11 @@ function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && spe
 $('#comicm').onclick = e => { if (e.target.closest('button')) return; if (comicAt < comicPanels.length) comicNext(); };
 $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
-function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin); }
+function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06);
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02);
 function stats(el, coins, gems) {
-  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 First clear bonus</span><b>+${gems}</b></div>` : ''}`;
+  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
 }
 // random items at the end of a match; more and better for clears and later stages
 function dropLoot(el, n, bonus) {
@@ -1873,8 +1978,10 @@ function stageClear() {
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
   const hardFirst = save.diff === 'hard' && prev === 0;
-  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0); setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
+  const factGems = payFacts();
+  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
   if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
@@ -1884,9 +1991,29 @@ function stageClear() {
   $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
+  $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
   if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+// every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
+function giveXp(cleared) {
+  const gain = Math.round((G.busted * .6 + (cleared ? 20 : 5) + G.lvl * 2) * (G.room ? .5 : 1)), lines = [];
+  for (const m of G.party) {
+    const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
+    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${CHARS[m.id].em} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
+  }
+  persist(); $('#grew').innerHTML = `✨ Everyone gained ${gain} XP.` + (lines.length ? '<br>' + lines.join('<br>') : ''); return true;
+}
+// a one-time gem for every fact, a Library Card for every finished topic, a trait for every finished chapter
+function payFacts() {
+  let gems = 0;
+  for (const id of save.facts) if (!save.paidFacts.includes(id)) { save.paidFacts.push(id); gems += 2; }
+  for (const c in CATS) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); if (ids.length && ids.every(id => save.facts.includes(id)) && !save.catCards.includes(c)) { save.catCards.push(c); save.tix++; toastLine(`📚 Every ${CATS[c][1]} page is in the Diary. Library Card earned!`); } }
+  WORLDS.forEach((W, w) => { if (mastered(w) && !save.traits.includes(w)) { save.traits.push(w); toastLine(`${TRAITS[w][0]} Chapter mastered: ${TRAITS[w][1]}. ${TRAITS[w][2]}, for good.`); } });
+  persist(); return gems;
+}
+function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
+$('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
+function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
@@ -1938,15 +2065,38 @@ function buildStagePick() {
   let total = 0; for (const k in save.stars) total += save.stars[k];
   $('#play').textContent = total ? `🗺️ World Map · ⭐ ${total}` : '🗺️ World Map';
 }
+let diaryTab = 'topic', diaryCat = 'animals', diaryW = 0;
 function buildBook() {
   const box = $('#factList'); box.innerHTML = ''; let n = 0;
+  $$('#book [data-dt]').forEach(b => { b.classList.toggle('on', b.dataset.dt === diaryTab); b.onclick = () => { diaryTab = b.dataset.dt; buildBook(); }; });
+  const kidRow = id => { const M = MYTHS[id], got = save.facts.includes(id); listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = got ? `<div class="em">${M.em}</div><div><b>${M.name}</b><s><span class="kid">I THOUGHT</span>${M.myth}</s><p><span class="kid">DAD SAYS</span>${M.fact}</p><span class="meta">${save.factDate[id] ? 'Learned ' + save.factDate[id] : 'Learned before I kept a diary'} · Dad read it in ${srcOf(id)}</span></div>` : `<div class="em">❓</div><div><b>???</b><s>A page I haven't popped yet.</s><p>Pop it in the game and I'll write it down.</p></div>`; box.appendChild(d); };
   const listed = new Set();
-  const row = id => { const M = MYTHS[id], got = save.facts.includes(id); if (got) n++; listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = `<div class="em">${got ? M.em : '❓'}</div><div><b>${got ? M.name : '???'}</b><s>${got ? M.myth : 'A myth you haven\'t popped yet.'}</s><p>${got ? M.fact : 'Pop it in the game to learn the real fact.'}</p></div>`; box.appendChild(d); };
-  WORLDS.forEach((W, w) => { const ids = [...W.pool, ...(W.mid ? [W.mid] : []), W.boss].filter(id => !listed.has(id)), got = ids.filter(id => save.facts.includes(id)).length; const h = document.createElement('div'); h.className = 'wh'; h.innerHTML = `${W.em} ${W.name} <small>${got} / ${ids.length}</small>`; box.appendChild(h); ids.forEach(row); });
-  for (const id in MYTHS) if (!listed.has(id)) row(id);
+  if (diaryTab === 'topic') {
+    const cats = $('#cats'); cats.innerHTML = Object.keys(CATS).map(c => { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${c === diaryCat ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-cat="${c}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${CATS[c][0]}</span></div>${CATS[c][1]}<br><small>${got}/${ids.length}</small></div>`; }).join('');
+    cats.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { diaryCat = b.dataset.cat; buildBook(); });
+    const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat), got = ids.filter(id => save.facts.includes(id));
+    const today = new Date().toISOString().slice(0, 10), studied = save.study === today, can = got.length >= 3;
+    $('#study').hidden = false; $('#studyTxt').textContent = studied ? 'Done for today. The Kid will read again tomorrow.' : can ? `Re-read three ${CATS[diaryCat][1]} pages with the Kid. Once a day, +🪙 40.` : `Learn three ${CATS[diaryCat][1]} facts and the Kid can read them back to you.`; $('#studyGo').disabled = studied || !can;
+    ids.forEach(kidRow);
+  } else {
+    $('#study').hidden = true;
+    const cats = $('#cats'); cats.innerHTML = WORLDS.map((W, w) => { const ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${w === diaryW ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-w="${w}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${W.em}</span></div>${W.name.replace('The ', '')}<br><small>${got}/${ids.length}</small></div>`; }).join('');
+    cats.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { diaryW = +b.dataset.w; buildBook(); });
+    const W = WORLDS[diaryW], ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length;
+    const h = document.createElement('div'); h.className = 'wh'; h.innerHTML = `${W.em} ${W.name} <small>${got === ids.length ? `${TRAITS[diaryW][0]} ${TRAITS[diaryW][1]}: ${TRAITS[diaryW][2]}` : `pop every page for a chapter trait: ${TRAITS[diaryW][2].toLowerCase()}`}</small>`; box.appendChild(h);
+    ids.forEach(kidRow);
+  }
+  n = save.facts.length;
   $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
 }
-function pips(n) { let s = '<div class="pips">'; for (let i = 0; i < MAX_RANK; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
+$('#studyGo').onclick = () => {
+  const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat && save.facts.includes(id)).sort(() => Math.random() - .5).slice(0, 3); if (ids.length < 3) return;
+  $('#studyTitle').textContent = `${CATS[diaryCat][0]} ${CATS[diaryCat][1]}`; $('#studyList').innerHTML = ids.map(id => `<div class="fact"><div class="em">${MYTHS[id].em}</div><div><b>${MYTHS[id].name}</b><p>${MYTHS[id].fact}</p></div></div>`).join('');
+  say(ids.map(id => MYTHS[id].fact).join(' ')); $('#studym').hidden = false;
+};
+$('#studyDone').onclick = () => { save.study = new Date().toISOString().slice(0, 10); setWallet({ coins: save.coins + 40 }); $('#studym').hidden = true; buildBook(); try { speechSynthesis.cancel(); } catch (e) {}
+}
+function pips(n, max = MAX_RANK) { let s = '<div class="pips">'; for (let i = 0; i < max; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
 function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
 let shopTab = 'dad';
 function buildShop() {
@@ -1989,8 +2139,20 @@ function buildParty() {
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
     const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
-    html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}${i === 0 && EVO[a === 'weapon' ? save.weapon : a] ? ` → ${EVO[a === 'weapon' ? save.weapon : a][0]}` : ''}</span>`).join('')}</div>`;
-    if (c.own) { const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); const inParty = x => x === 'dad' || save.party.includes(x); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && inParty(other); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}</span>`; }).join('')}</div>`; }
+    if (c.own) {
+      const lv = charLevel(c.xp || 0);
+      html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
+      html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
+        if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Upgrade it in the Garage.</em></span></div></div>`;
+        return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on && S ? `<span><em>${S[0]}:</em> ${S[1]}</span>` : on ? '' : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div>${on && S ? `${pips(r, SK_MAX)}<span data-sk="${id}:${a}">${r >= SK_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>`}</span>` : ''}</div>`; }).join('') + '</div>';
+      const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
+      // what all of it adds up to
+      const g = gear(id), V = cweapOf(id), parts = [];
+      const powP = (id === 'dad' ? wep(save.weapon).pow * 8 : c.pow * 8) + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = (id === 'dad' ? wep(save.weapon).quick * 6 : c.quick * 6) + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
+      if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
+      const pat = (id === 'dad' ? c.pat * 20 : 0) + g.pat, ring = (id === 'dad' ? c.ring * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
+      html += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items and buy ranks below.'}</div>`;
+    } else html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
       const eq = equipOf(id); html += '<div class="slots">';
       for (const t in ITEMS) { const it = itemBy(eq[t]); html += it ? `<div class="slotb r${it.rar}" data-slot="${id}:${t}"><span class="ie">${it.em}</span>${itemDesc(it)}</div>` : `<div class="slotb empty" data-slot="${id}:${t}"><span class="ie">➕</span>${ITEMS[t].slot}</div>`; }
@@ -2003,6 +2165,7 @@ function buildParty() {
     } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
+  box.querySelectorAll('[data-sk] button').forEach(b => b.onclick = () => { const [id, a] = b.parentElement.dataset.sk.split(':'), c = chr(id), r = sk(id, a), cost = skCost(r); if (r >= SK_MAX || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c.sk[a] = r + 1; persist(); buildParty(); });
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
   box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
   box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) return; save.party.push(b.dataset.join); persist(); buildParty(); });
@@ -2134,7 +2297,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
