@@ -48,6 +48,7 @@
   #titleParty { position: absolute; left: 0; top: 36%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
   #title .wallet { position: absolute; left: 12px; top: 12px; }
+  #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
   #title .side { position: absolute; right: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   #title .menu .btn.play { width: 240px; font-size: 24px; }
@@ -109,32 +110,17 @@
   #patience.low div { background: linear-gradient(#f3a08f, #cb382e); }
   #patience span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20; }
   #party { display: flex; gap: 8px; margin-top: 8px; pointer-events: auto; }
-  #party .slot { flex: 1; height: 58px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; cursor: pointer; }
+  #party .slot { flex: 1; height: 58px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
   #party .slot .face { font-size: 24px; line-height: 1; }
   #party .slot.empty { background: rgba(251,243,223,.35); border-style: dashed; cursor: default; }
   #party .slot .ap { display: flex; gap: 3px; }
   #party .slot .ap i { width: 14px; height: 6px; border-radius: 3px; background: rgba(58,44,32,.2); border: 1.5px solid #3a2c20; }
   #party .slot .ap i.r1 { background: var(--water); } #party .slot .ap i.r3 { background: var(--gold); } #party .slot .ap i.r5 { background: var(--red); }
-  #party .slot.can::after { content: "🪙"; position: absolute; right: -6px; top: -9px; font-size: 13px; animation: pulse 1s ease-in-out infinite; }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
   #xp { height: 8px; margin-top: 8px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(0,0,0,.35); overflow: hidden; }
   #xp div { height: 100%; width: 0; background: var(--purple); }
   #lvl { position: absolute; right: 0; bottom: 118px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
   #hint { position: absolute; left: 7%; right: 7%; bottom: 124px; text-align: center; font: 400 15px/1.2 "Patrick Hand", cursive; color: #fff; background: rgba(58,44,32,.8); padding: 6px 12px; border-radius: 10px; animation: pop .4s both; }
 
-  /* ───────── in-run ability menu ───────── */
-  #amenu { position: absolute; left: 10px; right: 10px; bottom: 136px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 12px; box-shadow: var(--shadow); animation: pop .25s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; pointer-events: auto; }
-  #amenu .wtop { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
-  #amenu .wtop .em { font-size: 36px; width: 46px; text-align: center; }
-  #amenu .wtop b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  #amenu .wtop .d { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); }
-  .arow { display: flex; gap: 10px; align-items: center; padding: 6px 0; border-top: 2px dashed var(--line); }
-  .arow .em { font-size: 26px; width: 34px; text-align: center; }
-  .arow .txt { flex: 1; }
-  .arow b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .arow b em { font-style: normal; color: var(--teal); font-size: 12px; margin-left: 6px; }
-  .arow span { font: 400 14px/1.15 "Patrick Hand", cursive; color: var(--muted); display: block; }
-  .arow .btn { min-width: 92px; }
 
   /* ───────── fact toast ───────── */
   #toast { position: absolute; left: 14px; right: 14px; top: 118px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 10px 14px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; pointer-events: none; z-index: 5; }
@@ -184,6 +170,7 @@
     <div class="wallet pill know">💡 <span class="knowN">0</span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
+    <div class="build">build 3</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -225,7 +212,7 @@
       <button class="btn icon" id="pause">❚❚</button>
     </div>
     <div id="prog"><div></div></div>
-    <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
+    <div class="coins"><div class="pill">💡 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
     <div id="bossbar" hidden><div class="nm" id="bossName"></div><div class="bar"><div id="bossHp"></div></div></div>
     <div id="hint" hidden></div>
     <div class="bottom">
@@ -233,10 +220,6 @@
       <div id="xp"><div></div></div>
       <div id="patience"><div></div><span>Patience</span></div>
       <div id="party"></div>
-    </div>
-    <div id="amenu" hidden>
-      <div class="wtop"><div class="em"></div><div style="flex:1"><b></b><div class="d"></div></div><button class="btn icon ghost" id="aclose">✕</button></div>
-      <div id="arows"></div>
     </div>
   </div>
   <div id="toast" hidden><b></b><p></p></div>
@@ -284,8 +267,8 @@
       <h2 class="display">How to play</h2>
       <ol class="howto">
         <li><b>Nobody moves.</b> Dad and his friends stand in the backyard while grumpy Myths march in. Once a myth steps inside Dad's <b>attention ring</b>, the party attacks on its own.</li>
-        <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Tap a character at the bottom to rank one up with 🪙 coins instead.</li>
-        <li>Every match earns <b>💡 Knowledge</b>. Spend it on the title screen: the <b>Party</b> collects and strengthens friends, the <b>Garage</b> picks and strengthens Dad's weapon.</li>
+        <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Ranks last for the match.</li>
+        <li>Gold orbs are <b>💡 Knowledge</b>, and every match pays more at the end. Spend it on the title screen: the <b>Party</b> collects and strengthens friends, the <b>Garage</b> picks and strengthens Dad's weapon.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
       </ol>
@@ -395,7 +378,7 @@ const ABIL = {
   song:   { name: 'Toad Song',     em: '🎵', desc: 'A croaky lullaby. Dad\'s Patience slowly comes back.', passive: true },
   quack:  { name: 'Quack',         em: '📣', desc: 'A sound wave that shoves myths back.', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [16, 20, 25, 31, 38] },
   echo:   { name: 'Echo',          em: '🔊', desc: 'The quack echoes. (It does.) Chance of a second wave.', passive: true },
-  pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Puddles finds coins. +10% coins per rank.', passive: true },
+  pond:   { name: 'Duck Pond',     em: '💡', desc: 'Puddles finds things. +10% Knowledge found per rank.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
@@ -431,11 +414,11 @@ function newRun(stage) {
   G = {
     stage, S: STAGES[stage], wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
-    dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 5, flash: 0, radius: radiusFor(),
+    dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
     boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0,
   };
-  $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#amenu').hidden = true; $('#hint').hidden = true;
+  $('#stageName').textContent = G.S.name; $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
   refreshHud(true);
 }
@@ -455,7 +438,7 @@ function spawn(id, at = null) {
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .12), dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6) };
-  if (M.kind === 'boss') { G.boss = e; e.hp = e.maxhp = K.hp * (.6 + G.stage * .7 + G.stage * G.stage * .3); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
+  if (M.kind === 'boss') { G.boss = e; e.hp = e.maxhp = K.hp * (.5 + G.stage * .55 + G.stage * G.stage * .3); $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
@@ -690,14 +673,14 @@ function update(dt) {
 function collectAll() { for (const o of G.orbs) o.pull = true; }
 
 /* ───────── level up & cards ───────── */
-function levelUp() { G.xp -= G.next; G.lvl++; G.next = Math.round(5 + G.lvl * 3); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
+function levelUp() { G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 function offerCards(free = 0) {
   const opts = [];
   for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK) opts.push({ m, a, lvl: m.ranks[a] + 1 });
-  if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; return; }
+  if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; $('#coinN').textContent = G.coins; return; }
   const chosen = []; while (chosen.length < 3 && opts.length) chosen.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
   const box = $('#cards'); box.innerHTML = '';
   for (const o of chosen) {
@@ -708,26 +691,8 @@ function offerCards(free = 0) {
   }
   $('#levelup h2').textContent = free ? 'Everyone remembered a trick!' : 'Level up!';
   $('#levelup .sub').textContent = free ? `From last time. Pick one (${free} left):` : 'Someone learned a new trick. Pick one:';
-  G.paused = true; $('#levelup').hidden = false; $('#amenu').hidden = true;
+  G.paused = true; $('#levelup').hidden = false;
 }
-
-/* ───────── in-run ability menu (coins) ───────── */
-const upCost = rk => 15 + rk * 12;
-let menuM = null;
-function openAmenu(m) {
-  menuM = m; const C = CHARS[m.id], box = $('#amenu');
-  box.querySelector('.wtop .em').textContent = C.em; box.querySelector('.wtop b').textContent = C.name; box.querySelector('.wtop .d').textContent = C.desc;
-  const rows = $('#arows'); rows.innerHTML = '';
-  for (const a of C.abil) {
-    const rk = m.ranks[a], d = document.createElement('div'); d.className = 'arow';
-    d.innerHTML = `<div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}<em>${rk ? 'Rank ' + rk : 'not learned'}</em></b><span>${abilDesc(a)}</span></div>${rk >= MAX_RANK ? '<button class="btn small green" disabled>Maxed</button>' : `<button class="btn small" data-a="${a}" ${G.coins >= upCost(rk) ? '' : 'disabled'}>🪙 ${upCost(rk)}</button>`}`;
-    rows.appendChild(d);
-  }
-  rows.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { const a = b.dataset.a, rk = m.ranks[a]; if (G.coins < upCost(rk) || rk >= MAX_RANK) return; G.coins -= upCost(rk); m.ranks[a] = rk + 1; $('#coinN').textContent = G.coins; text(m.x, m.y - 60, `${abilEm(a)} Rank ${rk + 1}!`, '#ecb23c', 22, 1.2); refreshHud(true); openAmenu(m); });
-  box.hidden = false; G.paused = true;
-}
-function closeAmenu() { $('#amenu').hidden = true; menuM = null; if ($('#levelup').hidden && $('#pausem').hidden) G.paused = false; }
-$('#aclose').onclick = closeAmenu;
 
 /* ───────── hud ───────── */
 let partyKey = '';
@@ -739,13 +704,13 @@ function refreshHud(force) {
   $('#patience span').textContent = `Patience ${Math.max(0, Math.ceil(G.hp))} / ${G.maxhp}`;
   $('#xp div').style.width = clamp(G.xp / G.next * 100, 0, 100) + '%'; $('#lvl').textContent = 'Lv ' + G.lvl;
   if (G.boss) $('#bossHp').style.width = clamp(G.boss.hp / G.boss.maxhp * 100, 0, 100) + '%';
-  const key = G.party.map(m => m.id + Object.values(m.ranks).join('') + (CHARS[m.id].abil.some(a => m.ranks[a] < MAX_RANK && G.coins >= upCost(m.ranks[a])) ? '$' : '')).join();
+  const key = G.party.map(m => m.id + Object.values(m.ranks).join('')).join();
   if (key !== partyKey || force) {
     partyKey = key; const g = $('#party'); g.innerHTML = '';
     for (let i = 0; i <= MAX_COMPANIONS; i++) {
       const m = G.party[i], d = document.createElement('div');
-      d.className = 'slot' + (m ? '' : ' empty') + (m && CHARS[m.id].abil.some(a => m.ranks[a] < MAX_RANK && G.coins >= upCost(m.ranks[a])) ? ' can' : '');
-      if (m) { d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<i class="r${m.ranks[a] >= 5 ? 5 : m.ranks[a] >= 3 ? 3 : m.ranks[a] >= 1 ? 1 : 0}"></i>`).join('')}</div>`; d.onclick = () => { if (!G.over && !G.cleared && $('#levelup').hidden) openAmenu(m); }; }
+      d.className = 'slot' + (m ? '' : ' empty');
+      if (m) { d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<i class="r${m.ranks[a] >= 5 ? 5 : m.ranks[a] >= 3 ? 3 : m.ranks[a] >= 1 ? 1 : 0}"></i>`).join('')}</div>`; }
       g.appendChild(d);
     }
   }
@@ -935,7 +900,7 @@ function draw() {
   for (const o of G.orbs) {
     ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
     ctx.fillStyle = o.k === 'xp' ? '#b48be6' : '#ecb23c'; ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = o.k === 'xp' ? '#fff' : '#3a2c20'; ctx.font = '700 9px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText(o.k === 'xp' ? '?' : '¢', o.x, o.y + 3);
+    ctx.fillStyle = o.k === 'xp' ? '#fff' : '#3a2c20'; ctx.font = '700 9px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText(o.k === 'xp' ? '?' : '!', o.x, o.y + 3);
   }
   for (const s of G.shots) if (s.k === 'balloon') { ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(s.x, s.y, 10, 5, 0, 0, 7); ctx.fill(); }
   // everyone, back to front
@@ -1003,12 +968,12 @@ function startGame(stage) {
   setTimeout(() => { if (G && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
 }
 // Knowledge for the match: every pop counts, bosses and clears pay a bonus, leftover coins convert at half
-function payout(cleared) { return G.busted + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0) + Math.floor(G.coins / 2); }
+function payout(cleared) { return G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0); }
 function stats(el, know) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>💡 Knowledge earned</span><b>+${know}</b></div>`;
 }
 function stageClear() {
-  G.cleared = true; G.paused = true; collectAll(); $('#amenu').hidden = true;
+  G.cleared = true; G.paused = true; collectAll();
   if (!save.cleared.includes(G.stage)) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
   const k = payout(true); setKnow(save.know + k);
@@ -1020,7 +985,7 @@ function stageClear() {
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
   $('#nextStage').hidden = last; stats($('#clearStats'), k); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; $('#amenu').hidden = true; const k = payout(false); setKnow(save.know + k); stats($('#overStats'), k); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { G.over = true; G.hp = 0; const k = payout(false); setKnow(save.know + k); stats($('#overStats'), k); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; }
 
 let pickStage = 0;
@@ -1085,17 +1050,16 @@ $$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics()
 $('#openHow').onclick = () => $('#howm').hidden = false;
 $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
-$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; $('#amenu').hidden = true; G.paused = true; $('#pausem').hidden = false; };
+$('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => startGame(Math.min(G.stage + 1, STAGES.length - 1));
 $('#retry').onclick = () => startGame(G.stage);
-document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { $('#amenu').hidden = true; G.paused = true; $('#pausem').hidden = false; } });
+document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
 
 // tap a myth to focus
 cv.addEventListener('pointerdown', ev => {
   if (!G || G.over || G.cleared) return;
-  if (!$('#amenu').hidden) { closeAmenu(); return; }
   if (G.paused) return;
   const r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * W, y = (ev.clientY - r.top) / r.height * H;
   let best = null, bd = 48;
