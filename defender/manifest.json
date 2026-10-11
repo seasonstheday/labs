@@ -1,0 +1,15 @@
+{
+  "name": "Why, Dad? Defender",
+  "short_name": "Defender",
+  "description": "Dad and his backyard friends stand their ground while grumpy Myths march in. Every wrong idea that pops turns into a real fact.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbf3df",
+  "theme_color": "#3a2c20",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

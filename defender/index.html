@@ -7,12 +7,24 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#3a2c20">
 <title>Why, Dad? Defender</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <meta name="description" content="Dad and his backyard friends stand their ground while grumpy Myths march in. Every wrong idea that pops turns into a real fact. No dodging. Only wondering.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
 <style>
   :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
   html, body { height: 100%; margin: 0; }
+  /* bigger text for early readers: the reading-heavy bits only */
+  #frame.big .hand, #frame.big .sub, #frame.big .fact p, #frame.big .fact s, #frame.big .skill .txt span, #frame.big .vs, #frame.big .mapcard .d, #frame.big .cpanel .bub, #frame.big #toast p, #frame.big .item .d, #frame.big .tog span, #frame.big .intro, #frame.big .quizcard span, #frame.big .starwhy, #frame.big #hint { font-size: 20px !important; line-height: 1.3 !important; }
+  #frame.big .btn { font-size: 20px; }
+  #frame.calm * { animation-duration: .01s !important; }
+  #frame.calm .starrow span, #frame.calm .lootc, #frame.calm .panel { animation: none !important; }
+  .privacy { font: 400 14px/1.3 "Patrick Hand", cursive; color: var(--muted); margin: 10px 0 0; text-align: left; }
+  .privacy b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  #fps { position: absolute; left: 8px; bottom: 4px; font: 700 11px/1 monospace; color: #fff; background: rgba(0,0,0,.4); padding: 2px 5px; border-radius: 6px; pointer-events: none; display: none; }
   body { background: #2b2219; color: var(--ink); font: 17px/1.4 Georgia, "Times New Roman", serif; overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
   .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
   .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
@@ -326,7 +338,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 14</div>
+    <div class="build">build 15</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -434,6 +446,7 @@
     </div>
   </div>
   <div id="toast" hidden><b></b><p></p></div>
+  <div id="fps"></div>
 
   <!-- ───────── modals ───────── -->
   <div class="modal" id="levelup" hidden>
@@ -516,6 +529,7 @@
       <h2 class="display">Settings</h2>
       <p class="sub hand">Change these any time, even mid-match.</p>
       <div class="toggles" id="settingToggles"></div>
+      <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no ads, no tracking, and it works with no signal once it has loaded.</p>
       <div class="row"><button class="btn" id="closeSettings">Done</button></div>
     </div>
   </div>
@@ -579,6 +593,7 @@
 'use strict';
 const W = 440, H = 760, CX = 220, CY = 420;
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const DEBUG = location.search.includes('debug');
 const frame = $('#frame'), cv = $('#c'), ctx = cv.getContext('2d');
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -588,7 +603,8 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 
 /* ───────── scale the 440x760 frame to the window ───────── */
 function fit() {
-  const s = Math.min(innerWidth / W, innerHeight / H);
+  const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
+  const s = Math.min(innerWidth / W, (innerHeight - inset) / H);
   frame.style.setProperty('--s', s);
   const dpr = Math.min(devicePixelRatio || 1, 3) * Math.min(s, 1.5);
   cv.width = W * dpr; cv.height = H * dpr;
@@ -963,7 +979,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: false, shake: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
@@ -992,15 +1008,22 @@ if (!ownedW(save.weapon)) save.weapon = 'glass';
 save.party = save.party.filter(id => CHARS[id] && chr(id).own).slice(0, MAX_COMPANIONS);
 
 // read a line aloud for pre-readers (Web Speech; no network, no account)
+// buttons say their name when the labels option is on (any button, any screen)
+function sayNow(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = 1; speechSynthesis.speak(u); } catch (e) {} }
+document.addEventListener('pointerdown', e => { if (!save.opt.labels) return; const b = e.target.closest('button, .tog, .pin, .cat, .card'); if (!b) return; const t = (b.getAttribute('title') || b.textContent || '').replace(/[^\p{L}\p{N}'’ .,!?%+-]/gu, ' ').replace(/\s+/g, ' ').trim(); if (t) sayNow(t.slice(0, 80)); }, true);
 function say(t) { try { if (!save.opt.voice || !window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .95; u.pitch = 1; speechSynthesis.speak(u); } catch (e) {} }
 const OPTS = [
   ['little', '🧸', 'Little Kid mode', 'Myths walk slower and Dad never runs out of Patience; he just takes a snack break.'],
   ['voice', '🔊', 'Read facts aloud', 'Dad reads every new fact out loud.'],
   ['shake', '📳', 'Screen shake', 'Turn off if the wobble is too much.'],
+  ['calm', '🫧', 'Calm screen', 'No flashing, no blinking, fewer sparkles. Good for sensitive eyes.'],
+  ['big', '🔠', 'Bigger text', 'Larger words on every screen for early readers.'],
+  ['labels', '🗣️', 'Read buttons aloud', 'Every button says its name when you press it.'],
 ];
+function applyOpts() { frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
 function buildToggles(el) {
   el.innerHTML = OPTS.map(o => `<div class="tog ${save.opt[o[0]] ? 'on' : ''}" data-opt="${o[0]}"><div class="em">${o[1]}</div><div class="txt"><b>${o[2]}</b><span>${o[3]}</span></div><div class="sw"></div></div>`).join('');
-  el.querySelectorAll('[data-opt]').forEach(t => t.onclick = () => { save.opt[t.dataset.opt] = !save.opt[t.dataset.opt]; persist(); buildToggles(el); if (t.dataset.opt === 'voice' && save.opt.voice) say('Hi! I\'m Dad. I\'ll read the facts to you.'); });
+  el.querySelectorAll('[data-opt]').forEach(t => t.onclick = () => { save.opt[t.dataset.opt] = !save.opt[t.dataset.opt]; persist(); buildToggles(el); applyOpts(); if (t.dataset.opt === 'labels' && save.opt.labels) sayNow('Read buttons aloud. On.'); if (t.dataset.opt === 'voice' && save.opt.voice) say('Hi! I\'m Dad. I\'ll read the facts to you.'); });
 }
 
 /* ───────── run state ───────── */
@@ -1099,12 +1122,12 @@ function kill(e) {
   G.busted++; save.busted++;
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); }
   if (e.host) { e.host.muted = 0; e.host = null; }
-  for (let i = 0; i < 8; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
+  for (let i = 0; i < fxN(8); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
   text(e.x, e.y - 10, 'POP!', '#cb382e', 22, .8);
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
-  if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < 30; i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
+  if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
@@ -1422,7 +1445,7 @@ function evolveBanner(m, a) {
   G.slowmo = 1.2; G.shake = .2; text(m.x, m.y - 110, 'EVOLVED!', '#ecb23c', 30, 1.5);
   const d = document.createElement('div'); d.className = 'evo'; d.innerHTML = `<b>${E[0]}!</b><span>${CHARS[m.id].name}: ${E[1]}</span>`; $('#frame').appendChild(d); setTimeout(() => d.remove(), 2600);
   say(`${E[0]}! ${E[1]}`);
-  for (let i = 0; i < 24; i++) G.fx.push({ k: 'puff', x: m.x, y: m.y - 30, vx: rnd(-200, 200), vy: rnd(-260, 40), t: 0, life: rnd(.6, 1.1), col: pick(['#ecb23c', '#fff', '#b48be6', '#6fb1be']), r: rnd(4, 10) });
+  for (let i = 0; i < fxN(24); i++) G.fx.push({ k: 'puff', x: m.x, y: m.y - 30, vx: rnd(-200, 200), vy: rnd(-260, 40), t: 0, life: rnd(.6, 1.1), col: pick(['#ecb23c', '#fff', '#b48be6', '#6fb1be']), r: rnd(4, 10) });
 }
 
 /* ───────── hud ───────── */
@@ -1727,7 +1750,7 @@ function drawMember(m) {
     const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * m.face : 0;
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
-    drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
+    drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
     return;
   }
   const z = m.z || 0;
@@ -1874,7 +1897,7 @@ function drawEnemy(e) {
 function draw() {
   const S = G.S, dad = G.dad;
   ctx.save();
-  if (G.shake > 0 && save.opt.shake) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
+  if (G.shake > 0 && save.opt.shake && !save.opt.calm) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
   if (!G.bg || G.bg.w !== G.S.w) G.bg = makeArena(G.S.w);
   ctx.drawImage(G.bg.c, -20, -20);
   if (G.S.w === 7) for (let i = 0; i < 12; i++) { const a = G.t * .4 + i * 2.1, fx = CX + Math.cos(a) * (120 + i * 12), fy = CY + Math.sin(a * 1.3) * (160 + i * 9); ctx.fillStyle = `rgba(255,240,150,${.3 + Math.sin(G.t * 3 + i) * .3})`; ctx.beginPath(); ctx.arc(fx, fy, 2.5, 0, 7); ctx.fill(); }
@@ -2040,9 +2063,14 @@ function roomWin() {
 $('#roomTake').onclick = () => { const rar = Math.min(3, 1 + Math.floor((G.right || 0) / 2)); save.items.push(makeMark(rar, roomColor)); persist(); $('#roomwin').hidden = true; goHome(); };
 
 /* ───────── loop ───────── */
+// if the device can't keep up, drop the sparkle count rather than the frame rate
+let frameMs = 16, lowFx = false, slowFrames = 0, fpsT = 0;
+const fxN = n => lowFx ? Math.ceil(n * .4) : n;
 function loop(ts) {
   requestAnimationFrame(loop);
-  let dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts;
+  const raw = (ts - last) || 0; let dt = Math.min(.05, raw / 1000); last = ts;
+  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 90 && !lowFx) { lowFx = true; slowFrames = 0; }
+  if (DEBUG) { fpsT += raw; if (fpsT > 500) { fpsT = 0; $('#fps').style.display = 'block'; $('#fps').textContent = `${Math.round(1000 / frameMs)} fps · ${G ? G.enemies.length + ' myths · ' + G.fx.length + ' fx' : ''}${lowFx ? ' · low fx' : ''}`; } }
   if (mode !== 'game' || !G) return;
   if (G.slowmo > 0) { G.slowmo -= dt; dt *= .3; }
   if (!G.paused && !G.over) { for (let i = 0; i < G.speed; i++) { update(dt); if (G.over || G.paused || G.cleared) break; } }
@@ -2440,6 +2468,8 @@ cv.addEventListener('pointerdown', ev => {
 if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
+applyOpts();
+if ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
 </script>
 </body>

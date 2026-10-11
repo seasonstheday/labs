@@ -200,6 +200,8 @@ checked against a reputable source before shipping; the Fact Book cites it.
 
 ## Phase F — Polish and accessibility
 
+**Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
+
 Flashing/shake toggles, text at a 7-year-old reading level, voiced labels for the
 six title buttons, big tap targets off the bottom edge, settings remembered,
 offline check, entity cap, frame-rate test on an older iPhone.
@@ -218,4 +220,4 @@ offline check, entity cap, frame-rate test on an older iPhone.
 | D1 | medium (map, difficulty, stars) | PR 11 |
 | D2 | large (8 worlds, 28 myths, companions, comics) | PR 12 |
 | E | small | PR 13 |
-| F | small | PR 14 |
+| F | small | PR 14 (done) |
