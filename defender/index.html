@@ -54,15 +54,20 @@
   #map { background: #d9c49a; }
   #map .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
   #map h2 { margin: 0; flex: 1; font-size: 26px; }
-  #mapWrap { position: relative; flex: 1; overflow: hidden; }
-  #mapc { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .pin { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
+  #mapWrap { position: relative; flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  #mapInner { position: relative; width: 440px; }
+  #mapc { position: absolute; left: 0; top: 0; width: 440px; }
+  .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 10px; pointer-events: none; }
+  .wlab small { display: block; font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); margin-top: 2px; }
+  .wlab.locked { opacity: .6; }
+  .pin { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
   .pin .st { font-size: 10px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; line-height: 1; margin-top: 2px; }
   .pin.done { background: var(--green); color: #fff; }
   .pin.on { background: var(--gold); color: #3a2c20; transform: scale(1.15); z-index: 2; }
   .pin.on .st { color: #3a2c20; text-shadow: none; }
   .pin.locked { background: #b8a784; color: #7a6a4e; box-shadow: none; cursor: default; }
-  .pin .lab { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 400 14px/1 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.85); border: 2px solid #3a2c20; border-radius: 8px; padding: 3px 7px; }
+  .pin.rough::after, .pin.bossp::after { content: '👑'; position: absolute; top: -16px; right: -10px; font-size: 16px; } .pin.rough::after { content: '📝'; }
+  .pin .lab { display: none; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 400 14px/1 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.85); border: 2px solid #3a2c20; border-radius: 8px; padding: 3px 7px; }
   .pin.on .lab { font-weight: 700; }
   .mapcard { background: var(--card); border-top: 4px solid #3a2c20; padding: 12px 14px 14px; box-shadow: 0 -10px 30px rgba(58,44,32,.2); }
   .mapcard h3 { margin: 0; font: 700 24px/1.1 "Fredoka", Arial, sans-serif; }
@@ -73,6 +78,18 @@
   .diffs button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
   .diffs .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
   .diffs button.on .st, .diffs button:disabled .st { color: #3a2c20; text-shadow: none; }
+  /* ───────── comics ───────── */
+  #comicm .panel { padding: 12px; }
+  .cpanel { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; animation: pop .4s cubic-bezier(.2,1.4,.4,1) both; }
+  .cpanel.kid { flex-direction: row-reverse; }
+  .cpanel canvas { width: 78px; height: 96px; flex: none; }
+  .cpanel .bub { flex: 1; background: #fff; border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 12px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
+  .cpanel .bub::before { content: ''; position: absolute; bottom: 14px; left: -12px; border: 7px solid transparent; border-right-color: #3a2c20; border-left: 0; }
+  .cpanel.kid .bub::before { left: auto; right: -12px; border-right: 0; border-left: 7px solid #3a2c20; }
+  .cpanel .bub b { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-bottom: 4px; letter-spacing: .5px; }
+  #comicm .tap { text-align: center; color: var(--muted); font: 400 15px/1 "Patrick Hand", cursive; margin: 2px 0 6px; }
+  .wh { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
+  .wh small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
   .starrow { display: flex; justify-content: center; gap: 6px; font-size: 34px; margin: 4px 0 8px; }
   .starrow span { filter: grayscale(1) opacity(.35); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .starrow span.on { filter: none; }
@@ -270,7 +287,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 11</div>
+    <div class="build">build 12</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -292,7 +309,7 @@
   <!-- ───────── world map ───────── -->
   <section id="map" class="screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Big Book's Pages</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
-    <div id="mapWrap"><canvas id="mapc" width="880" height="1000"></canvas><div id="pins"></div></div>
+    <div id="mapWrap"><div id="mapInner"><canvas id="mapc" width="880" height="3400"></canvas><div id="pins"></div></div></div>
     <div class="mapcard">
       <h3 id="mapName">The Backyard</h3>
       <div class="d" id="mapDesc"></div>
@@ -300,6 +317,16 @@
       <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
     </div>
   </section>
+
+  <!-- ───────── comics: Dad and the Kid, three panels ───────── -->
+  <div class="modal" id="comicm" hidden>
+    <div class="panel">
+      <h2 class="display" id="comicTitle" style="font-size:22px;text-align:center;margin-bottom:8px">Chapter 1</h2>
+      <div id="strip"></div>
+      <div class="tap" id="comicTap">tap to continue</div>
+      <div class="row"><button class="btn ghost small" id="comicSkip">Skip</button><button class="btn" id="comicGo" hidden>Let's go ▶</button></div>
+    </div>
+  </div>
 
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
@@ -481,6 +508,7 @@
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
+        <li>The Big Book of Wrong has <b>eight chapters</b>, five stages each. Stage 3 is a rough draft of the chapter boss, stage 5 is the real thing. Clear stage 3 and that chapter's <b>native friend</b> joins you.</li>
         <li>Every stage has <b>Easy, Normal and Hard</b> and up to <b>three stars</b>: one for clearing, two if Dad kept more than half his Patience, three if nothing ever reached him.</li>
         <li>The <b>Reading Room</b> opens at party level 10: one boss, three questions from your own Fact Book, a bookmark if you win. Three visits per twelve hours.</li>
         <li>Everything in this game stays on your device. No accounts, no ads, nothing to buy with real money.</li>
@@ -540,6 +568,58 @@ const MYTHS = {
   spiders: { em: '🕷️', name: 'Eight Spiders a Year',  myth: 'You swallow eight spiders a year in your sleep.', fact: 'Spiders avoid big, warm, snoring things. There is not one recorded case of sleep-swallowing a spider.', kind: 'boss', col: '#6f5a4a' },
   brain:   { em: '🧠', name: 'Ten-Percent Brain',     myth: 'We only use 10% of our brains.', fact: 'You use all of your brain, just not all at once. Brain scans show nearly every part lights up every day.', kind: 'boss', col: '#d67a9a' },
   bolt:    { em: '⚡', name: 'Strikes-Once Storm',    myth: 'Lightning never strikes the same place twice.', fact: 'Lightning loves the same place. The Empire State Building gets hit about 25 times a year.', kind: 'boss', col: '#6c7a9c' },
+  // the Pond
+  frogdrink: { em: '🐸', name: 'Thirsty Frog',          myth: 'Frogs drink water through their mouths.', fact: 'Frogs don\'t drink at all. They soak water in through a patch of thin skin on their bellies.', kind: 'normal', col: '#9ccf7a' },
+  fishsleep: { em: '🐠', name: 'Never-Sleeps Fish',     myth: 'Fish never sleep.', fact: 'Fish rest with their eyes open, because they have no eyelids. Some tuck themselves into the sand for the night.', kind: 'fast', col: '#f3b16a' },
+  bread:     { em: '🍞', name: 'Bread for Ducks',       myth: 'Bread is good food for ducks.', fact: 'Bread fills a duck up but has almost nothing it needs. Peas, oats and corn are proper duck snacks.', kind: 'gossip', col: '#e2c48c' },
+  turtle:    { em: '🐢', name: 'Shell-Less Turtle',     myth: 'A turtle can crawl out of its shell.', fact: 'The shell is part of the turtle\'s skeleton, ribs and spine included. Leaving it would be like you leaving your bones.', kind: 'hardcover', col: '#7fa86b' },
+  tadpole:   { em: '🫧', name: 'Baby-Fish Tadpole',     myth: 'Tadpoles are baby fish.', fact: 'Tadpoles are baby frogs. They start with gills and a tail, then grow legs and lungs and hop away.', kind: 'swarm', col: '#a8d8c0' },
+  dragonfly: { em: '🪰', name: 'Stinging Dragonfly',    myth: 'Dragonflies sting.', fact: 'Dragonflies have no stinger. They are harmless to people and eat hundreds of mosquitoes a day.', kind: 'flyer', col: '#7fc3d6' },
+  boil:      { em: '🍲', name: 'The Boiling Frog',      myth: 'A frog in slowly warming water will sit there until it boils.', fact: 'A frog jumps out as soon as the water gets uncomfortable. The story is about people who ignore slow changes, not real frogs.', kind: 'boss', col: '#c86a4a' },
+  // the Library
+  leftbrain: { em: '🧩', name: 'Left-Brain, Right-Brain', myth: 'People are either left-brained or right-brained.', fact: 'Scans of over a thousand brains found no one who favours one side. Both halves work together on almost everything.', kind: 'normal', col: '#d8a0c8' },
+  einstein:  { em: '🧮', name: 'Flunked-Maths Einstein', myth: 'Einstein failed maths at school.', fact: 'Einstein had mastered calculus by fifteen and got top marks. Shown the rumour, he laughed and said he never failed.', kind: 'hardcover', col: '#c9c9c9' },
+  senses:    { em: '👃', name: 'Five Senses',           myth: 'Humans have exactly five senses.', fact: 'You have more: balance, temperature, pain, hunger, and knowing where your arms are without looking.', kind: 'splitter', col: '#f0c080' },
+  vikings:   { em: '⛑️', name: 'Horned Viking',         myth: 'Vikings wore horned helmets.', fact: 'No Viking helmet with horns has ever been found. The horns came from an opera costume in the 1870s.', kind: 'tank', col: '#8aa0b8' },
+  napoleon:  { em: '🎩', name: 'Tiny Napoleon',         myth: 'Napoleon was very short.', fact: 'Napoleon was about 1.68 m, average for his time. French inches were longer than English ones, so his height got mistranslated.', kind: 'dasher', col: '#6f7fb0' },
+  // the Ocean
+  starfish:  { em: '🪸', name: 'Starfish Fish',         myth: 'Starfish are fish.', fact: 'Sea stars have no fins, gills or backbone. They are cousins of sea urchins, so scientists call them sea stars.', kind: 'normal', col: '#f29b7a' },
+  whale:     { em: '🐋', name: 'Water-Spout Whale',     myth: 'Whales spout water from their blowholes.', fact: 'That spout is warm breath turning to mist, like your breath on a cold morning. A whale\'s nose is on top of its head.', kind: 'splitter', col: '#7f9fc9' },
+  shark:     { em: '🦈', name: 'Never-Stops Shark',     myth: 'A shark dies if it stops swimming.', fact: 'Many sharks rest on the sea floor and pump water over their gills. Nurse sharks nap in piles.', kind: 'tank', col: '#8aa5b5' },
+  gull:      { em: '🐦', name: 'Exploding Gull',        myth: 'Rice makes birds explode.', fact: 'Birds eat rice in paddy fields all over the world. It swells in the bowl, not in the bird.', kind: 'flyer', col: '#d6d6d6' },
+  octopus:   { em: '🐙', name: 'Red-Blooded Octopus',   myth: 'An octopus has red blood like ours.', fact: 'Octopus blood is blue. It carries oxygen with copper instead of iron.', kind: 'fast', col: '#c98ad0' },
+  drain:     { em: '🌀', name: 'Backwards Drain',       myth: 'Water swirls the other way down the drain in Australia.', fact: 'The Earth\'s spin is far too weak to steer a sink. The shape of the basin and how you pulled the plug decide the swirl.', kind: 'rumour', col: '#8fd0e0' },
+  triangle:  { em: '🔺', name: 'The Bermuda Triangle',  myth: 'Ships and planes vanish in the Bermuda Triangle.', fact: 'Insurers checked: no more ships go missing there than in any other busy patch of ocean. The triangle isn\'t even on official maps.', kind: 'boss', col: '#4e7fa8' },
+  // the Desert
+  cactus:    { em: '🌵', name: 'Cactus Canteen',        myth: 'You can drink water from any cactus.', fact: 'Most cactus pulp is bitter and makes you ill. Desert travellers carry water and leave the cacti alone.', kind: 'normal', col: '#79b27a' },
+  snake:     { em: '🐍', name: 'Slimy Snake',           myth: 'Snakes are slimy.', fact: 'Snake skin is dry and smooth, like a leather belt. The shine comes from scales, not slime.', kind: 'fast', col: '#b7a860' },
+  quicksand: { em: '⏳', name: 'Hungry Quicksand',      myth: 'Quicksand sucks you under.', fact: 'You float in quicksand, because you are lighter than it. Lean back, wiggle slowly, and you drift out.', kind: 'dasher', col: '#d9c08a' },
+  mirage:    { em: '🌫️', name: 'Mind-Trick Mirage',     myth: 'A mirage is a trick of a tired mind.', fact: 'A mirage is real light bending in hot air. Cameras photograph them too.', kind: 'rumour', col: '#e8d6a8' },
+  pyramid:   { em: '⛰️', name: 'Slave-Built Pyramid',   myth: 'The pyramids were built by slaves.', fact: 'They were built by paid workers who lived in villages nearby. We found their bakeries, and their tombs with honour beside the king\'s.', kind: 'hardcover', col: '#d9b77a' },
+  scorpion:  { em: '🦂', name: 'Scorpion Bug',          myth: 'Scorpions are insects.', fact: 'Scorpions have eight legs, so they are arachnids, cousins of spiders. Insects have six.', kind: 'swarm', col: '#c08a5a' },
+  hot:       { em: '☀️', name: 'The Always-Hot Desert', myth: 'Deserts are always hot.', fact: 'A desert is just a place with almost no rain. The biggest desert on Earth is Antarctica, and Sahara nights can freeze.', kind: 'boss', col: '#e4a04a' },
+  // the Arctic
+  headheat:  { em: '🧣', name: 'Hat Rule',              myth: 'You lose most of your body heat through your head.', fact: 'Your head loses heat like any other part its size. A hat helps because your head is the bit you left uncovered.', kind: 'normal', col: '#d88a8a' },
+  polarbear: { em: '🐻‍❄️', name: 'Sleepy Polar Bear',    myth: 'Polar bears hibernate all winter.', fact: 'Only mothers with new cubs den up. The other polar bears hunt on the sea ice right through the dark winter.', kind: 'tank', col: '#e8eef2' },
+  igloo:     { em: '🧊', name: 'Ice Igloo',             myth: 'Igloos are made of ice.', fact: 'Igloos are built from packed snow, which is full of tiny air pockets that trap warmth. Ice would be far colder.', kind: 'hardcover', col: '#b8dcea' },
+  lemming:   { em: '🐹', name: 'Cliff-Jumping Lemming', myth: 'Lemmings jump off cliffs together.', fact: 'Lemmings do no such thing. A 1958 film crew pushed them to stage the scene.', kind: 'dasher', col: '#c9a46e' },
+  northpole: { em: '🧭', name: 'North Pole Land',       myth: 'The North Pole is on land.', fact: 'The North Pole is sea ice floating on a deep ocean. The South Pole sits on a continent under two miles of ice.', kind: 'rumour', col: '#a9c8e0' },
+  bearfur:   { em: '❄️', name: 'White-Fur Bear',        myth: 'Polar bear fur is white.', fact: 'Each hair is clear and hollow. It scatters light so the bear looks white, and the skin underneath is black.', kind: 'gossip', col: '#f4f8fb' },
+  penguin:   { em: '🐧', name: 'The North Pole Penguin', myth: 'Penguins live at the North Pole.', fact: 'Every wild penguin lives south of the equator. Penguins and polar bears have never met, except in cartoons.', kind: 'boss', col: '#4a5a70' },
+  // the Jungle
+  monkey:    { em: '🐒', name: 'Banana Monkey',         myth: 'Monkeys mostly eat bananas.', fact: 'Wild monkeys hardly ever find a banana. They eat leaves, fruit, seeds and bugs. Zoos stopped the bananas: too sugary.', kind: 'fast', col: '#b07a4a' },
+  raindrop:  { em: '💧', name: 'Teardrop Rain',         myth: 'Raindrops are shaped like teardrops.', fact: 'Falling raindrops are round, then squash flat on the bottom like a burger bun as the air pushes up.', kind: 'normal', col: '#7fb8e6' },
+  butterfly: { em: '🦋', name: 'Fragile Butterfly',     myth: 'Touching a butterfly\'s wings kills it.', fact: 'A touch rubs off a few scales, but the butterfly flies on. Be gentle anyway; wings tear.', kind: 'flyer', col: '#f0a0c0' },
+  sloth:     { em: '🦥', name: 'Lazy Sloth',            myth: 'Sloths are lazy.', fact: 'Sloths move slowly to save energy on a diet of leaves. They can swim three times faster than they walk.', kind: 'hardcover', col: '#a89a7a' },
+  chameleon: { em: '🦎', name: 'Hide-and-Seek Chameleon', myth: 'Chameleons change colour to hide.', fact: 'They mostly change colour to talk to other chameleons and to warm up or cool down. Their mood shows on their skin.', kind: 'rumour', col: '#8fc96a' },
+  piranha:   { em: '🦷', name: 'Piranha Frenzy',        myth: 'Piranhas strip animals to the bone in seconds.', fact: 'Piranhas mostly nibble fins, bugs and plants. The famous frenzy was a show staged for President Roosevelt with starved fish.', kind: 'swarm', col: '#d26a6a' },
+  // the Night Sky
+  star5:     { em: '⭐', name: 'Pointy Star',           myth: 'Stars are star-shaped.', fact: 'Stars are giant round balls of hot gas. The points you see are your own eyes and the wobbly air making spikes.', kind: 'normal', col: '#f7e08a' },
+  shooting:  { em: '☄️', name: 'Falling Star',          myth: 'A shooting star is a star falling.', fact: 'It\'s a speck of space dust, often smaller than a pea, burning up as it hits the air.', kind: 'fast', col: '#f0c070' },
+  darkside:  { em: '🌑', name: 'Dark Side',             myth: 'The Moon has a permanent dark side.', fact: 'Every part of the Moon gets two weeks of sunlight. We just always see the same side from Earth.', kind: 'hardcover', col: '#6c6c8a' },
+  sun:       { em: '🌞', name: 'Yellow Sun',            myth: 'The Sun is yellow.', fact: 'From space the Sun is white. Our air scatters the blue light away and leaves the yellow.', kind: 'splitter', col: '#ffd25a' },
+  northstar: { em: '🌟', name: 'Brightest North Star',  myth: 'The North Star is the brightest star in the sky.', fact: 'It\'s about the 48th brightest. It\'s famous because it sits almost still above the North Pole.', kind: 'rumour', col: '#e0e8ff' },
+  gravity:   { em: '🧑‍🚀', name: 'No-Gravity Space',    myth: 'There is no gravity in space.', fact: 'Gravity up there is nearly as strong as on the ground. Astronauts float because they are falling around the Earth, all the time.', kind: 'dasher', col: '#8a9ac0' },
   flat:    { em: '🌍', name: 'The Flat Earth',        myth: 'The Earth is flat.', fact: 'Earth is round. Ships sink bottom-first over the horizon, and people have sailed, flown and orbited all the way around.', kind: 'boss', col: '#4e8ab8' },
 };
 const KIND = {
@@ -564,14 +644,42 @@ const DIFF = {
   normal: { name: 'Normal', em: '🌳', hp: 1,   spd: 1,   dmg: 1,   coin: 1,   desc: 'The backyard as it is.' },
   hard:   { name: 'Hard',   em: '🌩️', hp: 1.45, spd: 1.12, dmg: 1.3, coin: 1.5, desc: 'Tougher, faster, more of them.' },
 };
-const STAGE_DESC = ['Where it all started. Four kinds of myth and a very big wall.', 'Out front, where the neighbours can see. Bats and bulls.', 'Swings, slides, and a brain that thinks it only works a tenth of the time.', 'Sand, camels, and a storm that swears it never strikes twice.', 'Everything you have learned, under the stars, against the flattest idea of all.'];
-const STAGES = [
-  { name: '1. The Backyard',   waves: 6, boss: 'wall',    pool: ['moon', 'fish', 'duck', 'tongue'],                       lawn: ['#8cc26e', '#79b05d'], stone: '#e9dcb8', edge: '#5f8f49' },
-  { name: '2. The Front Yard', waves: 7, boss: 'spiders', pool: ['moon', 'toad', 'sugar', 'bat', 'bull', 'duck'],        lawn: ['#a7c86b', '#93b457'], stone: '#dfd3b3', edge: '#6f8f44' },
-  { name: '3. The Park',       waves: 8, boss: 'brain',   pool: ['tongue', 'hair', 'sugar', 'bat', 'knuckle', 'ostrich', 'words'], lawn: ['#7fb792', '#6aa37d'], stone: '#e3d9c6', edge: '#4f8564' },
-  { name: '4. The Beach',      waves: 8, boss: 'bolt',    pool: ['camel', 'banana', 'cold', 'fish', 'penny', 'moon', 'duck', 'words'],  lawn: ['#f0dba6', '#e5cc90'], stone: '#f8efd6', edge: '#7fb6c9' },
-  { name: '5. The Night Sky',  waves: 9, boss: 'flat',    pool: ['moon', 'bat', 'bull', 'camel', 'cold', 'penny', 'tongue', 'banana', 'toad', 'words', 'hair'], lawn: ['#4a5e7a', '#3c4d66'], stone: '#8d97ad', edge: '#2d3a50' },
+// the eight chapters of the Big Book of Wrong. Each one: a palette, its own myths, a boss (stage 3 is a rough draft of it,
+// stage 5 the real thing), a native friend who joins after stage 3, and a three-panel comic in and out.
+const WORLDS = [
+  { name: 'The Backyard', em: '🏡', desc: 'Where it all started. Four kinds of myth and a very big wall.', pool: ['moon', 'fish', 'duck', 'tongue', 'sugar', 'bull', 'bat'], boss: 'wall', mid: 'spiders', comp: 'webster', deco: '🌳', lawn: ['#8cc26e', '#79b05d'], stone: '#e9dcb8', edge: '#5f8f49',
+    comic: { in: [['k', 'Dad! The big old book in the library window just burst open. Pages are blowing everywhere!'], ['d', 'That\'s the Big Book of Wrong. Every page is something people used to believe, and every page still thinks it\'s true. Pop one and it turns back into a real fact.'], ['k', 'They\'re marching into the backyard! Get the magnifying glass!']],
+             out: [['k', 'The backyard\'s clear! But look. The pages are blowing toward the pond.'], ['d', 'Then that\'s where we go. Pack snacks.'], ['k', 'Why snacks? …Actually, never mind. Snacks.']] } },
+  { name: 'The Pond', em: '🪷', desc: 'Frogs, ducks and fish, and a lot of nonsense about all three.', pool: ['toad', 'frogdrink', 'fishsleep', 'tadpole', 'turtle', 'bread', 'dragonfly'], boss: 'boil', comp: 'hopper', deco: '🪷', lawn: ['#7fb792', '#5fa285'], stone: '#d9e4c8', edge: '#4f8564',
+    comic: { in: [['d', 'Frogs, ducks and fish. Half of what people say about them is wrong, and the other half is also wrong.'], ['k', 'That page says frogs drink through their mouths. Do they?'], ['d', 'Pop it and find out.']],
+             out: [['k', 'The frog didn\'t boil, Dad. It just jumped out.'], ['d', 'Frogs are smarter than stories. Now, the pages went into town. Toward the library.'], ['k', 'Back where it started. I\'ll bring the glasses.']] } },
+  { name: 'The Library', em: '📚', desc: 'Thick books, big words, and a brain that thinks it only works a tenth of the time.', pool: ['knuckle', 'words', 'leftbrain', 'hair', 'einstein', 'senses', 'vikings', 'napoleon', 'penny'], boss: 'brain', comp: 'dusty', deco: '📚', lawn: ['#c9a57a', '#b08d62'], stone: '#f1e4c4', edge: '#8a6a44',
+    comic: { in: [['d', 'Shh. Library. The pages in here are the thick ones: history, brains and big words.'], ['k', 'That one\'s a hardcover. It won\'t open!'], ['d', 'Knock it on its back. Even a thick book has soft pages inside.']],
+             out: [['k', 'We use our whole brain? All of it?'], ['d', 'All of it. Just not all at once. Now, see those sails? The pages went out to sea.'], ['k', 'Please tell me there\'s a boat.']] } },
+  { name: 'The Ocean', em: '🌊', desc: 'Sharks, whales, and a triangle that is supposed to eat ships.', pool: ['starfish', 'whale', 'octopus', 'gull', 'shark', 'drain'], boss: 'triangle', comp: 'pip', deco: '🐚', lawn: ['#f0dba6', '#e5cc90'], stone: '#f8efd6', edge: '#7fb6c9',
+    comic: { in: [['k', 'Sharks, whales and a triangle that eats ships. I\'m not scared. You\'re scared.'], ['d', 'The sea is full of tall tales because nobody can see the bottom. We\'re going to check.'], ['k', 'Pip says he knows the way. Pip\'s a crab.']],
+             out: [['d', 'No ships vanished. Just a lot of ocean and a lot of stories.'], ['k', 'Where next? The pages are heading somewhere dry.'], ['d', 'The desert. Bring water. Not a cactus. Water.']] } },
+  { name: 'The Desert', em: '🏜️', desc: 'Sand, camels, and a page that swears it is always hot.', pool: ['camel', 'cactus', 'snake', 'ostrich', 'quicksand', 'mirage', 'pyramid', 'scorpion'], boss: 'hot', comp: 'scuttle', deco: '🌵', lawn: ['#e8c47a', '#d9ad5f'], stone: '#f5e3b8', edge: '#c08a3e',
+    comic: { in: [['k', 'It\'s so hot. Is it always this hot?'], ['d', 'Nope. Tonight it\'ll freeze. Deserts are about rain, not heat. Hold that thought, we\'ll need it.'], ['k', 'The sand\'s moving. Dad, the SAND is moving.']],
+             out: [['k', 'The desert froze! You were right!'], ['d', 'I\'m Dad. Now the pages are heading north, past the snow line.'], ['k', 'Then it\'s hat time. Even if the head thing is a myth.']] } },
+  { name: 'The Arctic', em: '❄️', desc: 'Polar bears at one end of the world, and a penguin that is very lost.', pool: ['cold', 'headheat', 'polarbear', 'igloo', 'lemming', 'northpole', 'bearfur'], boss: 'penguin', comp: 'nilla', deco: '⛄', lawn: ['#e6f1f7', '#c8dde9'], stone: '#ffffff', edge: '#9fbfd3',
+    comic: { in: [['d', 'Brrr. Polar bears live here, penguins at the other end of the world. They\'ve never met.'], ['k', 'The pages say penguins live at the North Pole.'], ['d', 'Then the pages are about to meet a very confused penguin.']],
+             out: [['k', 'No penguins up here. Just us and a lot of wrong.'], ['d', 'The last pages went south, into the jungle, and then up.'], ['k', 'Up? Up where?']] } },
+  { name: 'The Jungle', em: '🌴', desc: 'Rain, monkeys, and a storm that swears it never strikes twice.', pool: ['banana', 'monkey', 'raindrop', 'butterfly', 'sloth', 'chameleon', 'piranha'], boss: 'bolt', comp: 'sparky', deco: '🌴', lawn: ['#5f9e4e', '#4a8540'], stone: '#c9d8a0', edge: '#2f5f2c',
+    comic: { in: [['k', 'It\'s raining sideways and something is laughing at us.'], ['d', 'That\'s a monkey, and it isn\'t eating a banana. Keep your eyes on the leaves.'], ['k', 'Something just struck that tree twice. TWICE, Dad.']],
+             out: [['d', 'Lightning strikes the same place as often as it likes. One page to go.'], ['k', 'It flew up. Straight up. Into the sky.'], ['d', 'Then we\'re going to need a clear night.']] } },
+  { name: 'The Night Sky', em: '🌙', desc: 'Everything you have learned, under the stars, against the flattest idea of all.', pool: ['moon', 'star5', 'shooting', 'sun', 'darkside', 'northstar', 'gravity'], boss: 'flat', comp: 'luna', deco: '⭐', lawn: ['#4a5e7a', '#3c4d66'], stone: '#8d97ad', edge: '#2d3a50',
+    comic: { in: [['k', 'The last page is up there. The oldest, flattest idea of all.'], ['d', 'The Earth is round. People sailed around it, flew around it, and took pictures from above.'], ['k', 'Then let\'s go pop the biggest wrong there is.']],
+             out: [['d', 'Every page of the Big Book of Wrong, popped. Every one turned back into a fact.'], ['k', 'Dad… why did the book have so many wrong things in it?'], ['d', 'Because every fact started out as a question. And you kept asking. That\'s the whole trick.']] } },
 ];
+// 40 stages: five per chapter. Index = chapter * 5 + stage; the index is also the difficulty tier.
+const STAGES = [];
+WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
+  const prev = w ? WORLDS[w - 1].pool.slice(-2) : [], pool = [...W.pool.slice(0, Math.min(W.pool.length, 4 + i)), ...(i >= 2 ? prev : [])];
+  STAGES.push({ w, idx: i, W, name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid,
+    desc: i === 4 ? `The chapter boss. ${W.desc}` : i === 2 ? (W.mid ? 'A boss of its own, before the chapter boss.' : 'A rough draft of the chapter boss: smaller, and it never gets to its second act.') : i === 0 ? W.desc : 'A page stage. It ends in a rush of two elites.',
+    lawn: W.lawn, stone: W.stone, edge: W.edge });
+} });
 
 /* ───────── dad's weapons (one at a time, chosen in the garage) ───────── */
 const WEAPONS = {
@@ -605,6 +713,11 @@ const CLASS = {
   sparky:  { name: 'Spark',     em: '⚡', role: 'Chains through crowds. Hits many at once.', strong: ['flyer', 'swarm'], weak: ['hardcover'] },
   hopper:  { name: 'Bard',      em: '🎵', role: 'Sings Patience back, splats the crowd.', strong: ['gossip'], weak: ['dasher'] },
   puddles: { name: 'Herald',    em: '📣', role: 'Shoves and scatters. Breaks up escorts.', strong: ['healer', 'tank'], weak: ['rumour'] },
+  dusty:   { name: 'Scholar',   em: '📚', role: 'Marks the weak page. Everyone hits it harder.', strong: ['hardcover', 'healer'], weak: ['swarm'] },
+  pip:     { name: 'Keeper',    em: '🐚', role: 'Holds the line. Shells that stop a rush.', strong: ['dasher', 'tank'], weak: ['flyer'] },
+  scuttle: { name: 'Scout',     em: '🔭', role: 'Sees further. Pops up where you least expect.', strong: ['rumour', 'swarm'], weak: ['hardcover'] },
+  nilla:   { name: 'Sage',      em: '🌙', role: 'Quiet and far-seeing. Picks off the big one.', strong: ['flyer', 'rumour'], weak: ['tank'] },
+  luna:    { name: 'Dreamer',   em: '💤', role: 'Gathers the crowd and sends it to sleep.', strong: ['swarm', 'gossip'], weak: ['dasher'] },
 };
 const KNAME = { normal: 'Books', fast: 'Beetles', tank: 'Backpacks', splitter: 'Sticky notes', dasher: 'Dashers', hardcover: 'Hardcovers', flyer: 'Flyers', rumour: 'Rumours', healer: 'Thesauruses', gossip: 'Gossips', swarm: 'Swarms', boss: 'Bosses' };
 const clsMul = (id, kind) => { const C = CLASS[id]; return !C ? 1 : C.strong.includes(kind) ? 1.35 : C.weak.includes(kind) ? .8 : 1; };
@@ -627,6 +740,26 @@ const CWEAP = {
     down:   { em: '🪶', name: 'Down Feather', desc: 'A quack that shoves.', pow: 1, rate: 1, fx: 'Shove', own: true },
     quill:  { em: '🖋️', name: 'Quill', desc: 'Sharp and loud, but it doesn\'t push.', pow: 1.3, rate: 1, fx: 'No shove', price: 160 },
     flight: { em: '🕊️', name: 'Flight Feather', desc: 'Lighter, faster, and it really shoves.', pow: .85, rate: 1.2, fx: 'Big shove', price: 280 } } },
+  dusty:   { line: 'Spectacles', v: {
+    reading: { em: '👓', name: 'Reading Glasses', desc: 'The bookmark that goes through two.', pow: 1, rate: 1, fx: 'Pierce', own: true },
+    bifocal: { em: '🥽', name: 'Bifocals', desc: 'Quicker reading, lighter throws.', pow: .85, rate: 1.3, fx: 'Quick read', price: 170 },
+    monocle: { em: '🧐', name: 'Monocle', desc: 'Slow and very, very precise.', pow: 1.4, rate: .8, fx: 'Big crit', price: 290 } } },
+  pip:     { line: 'Shells', v: {
+    spiral:  { em: '🐚', name: 'Spiral Shell', desc: 'A good solid shove.', pow: 1, rate: 1, fx: 'Shove', own: true },
+    conch:   { em: '🐌', name: 'Conch', desc: 'Heavier. Much bigger splash.', pow: 1.3, rate: .85, fx: 'Big splash', price: 170 },
+    cowrie:  { em: '🦪', name: 'Cowrie', desc: 'Light and slippery. Myths skid in it.', pow: .85, rate: 1.25, fx: 'Slow', price: 290 } } },
+  scuttle: { line: 'Horns', v: {
+    stub:    { em: '🪲', name: 'Stub Horn', desc: 'Rolls a ball through a line.', pow: 1, rate: 1, fx: 'Line', own: true },
+    rhino:   { em: '🦏', name: 'Rhino Horn', desc: 'Slower, and the ball hits like a truck.', pow: 1.35, rate: .8, fx: 'Knockback', price: 170 },
+    antler:  { em: '🦌', name: 'Antler', desc: 'Lighter, and the ball is wider.', pow: .85, rate: 1.2, fx: 'Wider', price: 290 } } },
+  nilla:   { line: 'Talons', v: {
+    soft:    { em: '🪶', name: 'Soft Talons', desc: 'A hoot with a chill in it.', pow: 1, rate: 1, fx: 'Chill', own: true },
+    hook:    { em: '🪝', name: 'Hook Talons', desc: 'Swoops hit harder, hoots slower.', pow: 1.3, rate: .85, fx: 'Big swoop', price: 170 },
+    fluff:   { em: '☁️', name: 'Fluff Talons', desc: 'Softer, quicker, and the chill really lingers.', pow: .85, rate: 1.25, fx: 'Deep chill', price: 290 } } },
+  luna:    { line: 'Lamps', v: {
+    candle:  { em: '🕯️', name: 'Candle', desc: 'Sleepy dust, a puff at a time.', pow: 1, rate: 1, fx: 'Sleepy', own: true },
+    lantern: { em: '🏮', name: 'Paper Lantern', desc: 'Softer puffs, but much bigger.', pow: .85, rate: 1.2, fx: 'Bigger puff', price: 170 },
+    moonlamp:{ em: '🌕', name: 'Moon Lamp', desc: 'Slow and heavy. Myths doze off where they stand.', pow: 1.3, rate: .85, fx: 'Stun', price: 290 } } },
 };
 // bookmarks (our runes): colour = stat. Slots on an item come from its rarity.
 const MARKS = { red: ['🔴', 'Red', 'pow', 4], blue: ['🔵', 'Blue', 'quick', 3], green: ['🟢', 'Green', 'ring', 8], gold: ['🟡', 'Gold', 'coin', 5], purple: ['🟣', 'Purple', 'crit', 2], silver: ['⚪', 'Silver', 'pat', 6] };
@@ -640,6 +773,11 @@ const CHARS = {
   sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], freeAfter: 2 },
   hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], freeAfter: 1 },
   puddles: { name: 'Puddles', em: '🦆', desc: 'A duck whose quack definitely echoes.', abil: ['quack', 'echo', 'pond'], freeAfter: 3 },
+  dusty:   { name: 'Dusty',   em: '🐛', desc: 'A bookworm from the library stacks. Has read everything, twice.', abil: ['toss', 'footnote', 'speedread'], freeAfter: 12 },
+  pip:     { name: 'Pip',     em: '🦀', desc: 'A hermit crab who keeps changing shells. Very hard to knock over.', abil: ['shell', 'shellwall', 'thickshell'], freeAfter: 17 },
+  scuttle: { name: 'Scuttle', em: '🪲', desc: 'A desert beetle. Feels footsteps from across the lawn.', abil: ['roll', 'dig', 'antennae'], freeAfter: 22 },
+  nilla:   { name: 'Nilla',   em: '🦉', desc: 'A snowy owl. Says little, misses nothing.', abil: ['hoot', 'swoop', 'nighteyes'], freeAfter: 27 },
+  luna:    { name: 'Luna',    em: '🦋', desc: 'A luna moth who followed the porch light home.', abil: ['dust', 'lamp', 'moonlight'], freeAfter: 37 },
 };
 const ABIL = {
   weapon: { name: 'Weapon', em: '🔍', desc: 'Whatever Dad picked in the garage.' },
@@ -657,12 +795,28 @@ const ABIL = {
   quack:  { name: 'Quack',         em: '📣', desc: 'A sound wave that shoves myths back.', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [16, 20, 25, 31, 38] },
   echo:   { name: 'Echo',          em: '🔊', desc: 'The quack echoes. (It does.) Chance of a second wave.', passive: true },
   pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Puddles finds things. +10% coins found per rank.', passive: true },
+  toss:   { name: 'Bookmark Toss', em: '🔖', desc: 'A sharp bookmark that goes through two myths and marks them.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [14, 18, 23, 29, 36] },
+  footnote: { name: 'Footnote',    em: '📝', desc: 'Everyone hits a marked myth 5% harder per rank.', passive: true },
+  speedread: { name: 'Speed Read', em: '⏩', desc: 'The whole party acts 3% sooner per rank.', passive: true },
+  shell:  { name: 'Shell Toss',    em: '🐚', desc: 'A lobbed shell. Splash, and a shove.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [18, 23, 29, 36, 45] },
+  shellwall: { name: 'Shell Wall', em: '🧱', desc: 'Shells on the lawn that myths get stuck behind.', cd: [8, 7.5, 7, 6, 5], n: [1, 1, 2, 2, 3] },
+  thickshell: { name: 'Thick Shell', em: '🛡️', desc: 'Dad loses 6% less Patience per rank when a myth gets through.', passive: true },
+  roll:   { name: 'Sand Ball',     em: '🟤', desc: 'A rolling ball that flattens a whole line.', cd: [2.0, 1.8, 1.6, 1.4, 1.2], dmg: [15, 19, 24, 30, 38] },
+  dig:    { name: 'Dig',           em: '⛏️', desc: 'Scuttle burrows and pops up under a crowd. Surprise!', cd: [8, 7, 6, 5, 4], dmg: [20, 26, 33, 42, 55] },
+  antennae: { name: 'Antennae',    em: '📡', desc: 'Scuttle feels them coming. The ring grows by 8 per rank.', passive: true },
+  hoot:   { name: 'Hoot',          em: '🎶', desc: 'A chilly hoot that passes through myths and slows them.', cd: [1.6, 1.45, 1.3, 1.15, 1.0], dmg: [13, 17, 21, 27, 34] },
+  swoop:  { name: 'Swoop',         em: '🪽', desc: 'Nilla dives on the biggest myth in the ring.', cd: [8, 7, 6, 5, 4], dmg: [40, 52, 66, 84, 110] },
+  nighteyes: { name: 'Night Eyes', em: '👁️', desc: 'Rumours show up sooner, and +4% critical hits for everyone per rank.', passive: true },
+  dust:   { name: 'Dust Puff',     em: '✨', desc: 'A puff of sleepy dust that bursts on the first myth it meets.', cd: [1.7, 1.55, 1.4, 1.25, 1.1], dmg: [12, 16, 20, 25, 32] },
+  lamp:   { name: 'Lamp Dance',    em: '🏮', desc: 'Every myth in the ring is drawn to the light.', cd: [9, 8, 7, 6, 5] },
+  moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Dad\'s Bedtime Story reaches 15% further per rank, and Patience trickles back.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // what rank 5 of a primary turns into
 const EVO = {
   glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Yo-yo Storm', 'Twice the yo-yos, twice the bonks.'], bat: ['Grand Slam', 'A swing that circles all the way round.'], plane: ['Paper Squadron', 'A whole squadron, and they come back for more.'], frisbee: ['Boomerang', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Water Fight', 'Two balloons, bigger splashes.'],
   web: ['Web Net', 'Three webs in a spread.'], zap: ['Thunderclap', 'The spark never stops jumping.'], tongue: ['Lasso', 'The tongue pulls myths back toward Hopper.'], quack: ['HONK', 'A honk that shoves everything in the ring.'],
+  toss: ['Index Storm', 'Three bookmarks in a fan.'], shell: ['Conch Cannon', 'A much bigger splash.'], roll: ['Boulder', 'Big enough to send myths flying.'], hoot: ['WHO-WHO', 'The hoot goes through everything.'], dust: ['Dust Storm', 'The puff is a cloud now.'],
 };
 const evolved = (m, a) => m.ranks[a] >= MAX_RANK && !!EVO[a === 'weapon' ? save.weapon : a];
 // pairs that work well together, shown on the party screen
@@ -671,6 +825,9 @@ const SYNERGY = [
   { ids: ['hopper', 'puddles'], name: 'Splash & Honk', desc: 'Puddles shoves them into Hopper\'s landing spot.' },
   { ids: ['dad', 'webster'], name: 'Sticky Situation', desc: 'Dad Joke stuns last longer on webbed myths.' },
   { ids: ['sparky', 'puddles'], name: 'Echo Spark', desc: 'An echoed quack sends a free zap.' },
+  { ids: ['dad', 'dusty'], name: 'Read the Room', desc: 'Dad\'s weapon hits marked myths 10% harder.' },
+  { ids: ['webster', 'nilla'], name: 'Night Watch', desc: 'Swoop hits webbed myths twice as hard.' },
+  { ids: ['dad', 'luna'], name: 'Lights Out', desc: 'With Bedtime Story, Lamp Dance also puts myths to sleep.' },
 ];
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
 const DADRANKS = { ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
@@ -722,7 +879,7 @@ const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
-save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal';
+save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal'; save.comics = save.comics || [];
 const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
@@ -756,10 +913,10 @@ function newRun(stage) {
     stage, S: STAGES[stage], wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
-    coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false,
-    boss: null, focus: null, shake: 0, cleared: false, freePicks: stage * 2, hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
+    coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
+    boss: null, focus: null, shake: 0, cleared: false, freePicks: Math.min(6, Math.floor(stage / 2)), hintT: 0, nopes: 2, slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
   };
-  $('#stageName').textContent = G.S.name + (save.diff === 'normal' ? '' : ' · ' + DIFF[save.diff].name); $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
+  $('#stageName').textContent = G.S.W.em + ' ' + G.S.name + (save.diff === 'normal' ? '' : ' · ' + DIFF[save.diff].name); $('#bossbar').hidden = true; $('#speed').textContent = 'x1'; $('#speed').classList.remove('x2'); $('#hint').hidden = true;
   $('#coinN').textContent = 0; $('#bustN').textContent = 0;
   refreshHud(true);
 }
@@ -770,11 +927,11 @@ const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ?
 function startWave() {
   const S = G.S, w = G.wave;
   G.toSpawn = []; G.waveT = 0;
-  if (w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
+  if (S.boss && w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + G.stage * 2 + Math.floor(G.stage * G.stage * .5)) * (save.diff === 'hard' ? 1.25 : 1)), dur = 10 + w * 1.2;
+    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * (save.diff === 'hard' ? 1.25 : 1)), dur = 10 + w * 1.2;
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -782,28 +939,30 @@ function startWave() {
       else if (k === 'swarm') { if (swarmed) { i++; continue; } swarmed = true; for (let j = 0; j < 6; j++) G.toSpawn.push({ id, at: at + j * .12, ang: ang + rnd(-.3, .3) }); i += 3; }
       else { G.toSpawn.push({ id, at, ang, elite: i === eliteAt }); i++; }
     }
+    // a page stage closes with a rush of two crowned myths
+    if (w === S.waves - 1 && G.stage >= 1) for (let j = 0; j < 2; j++) G.toSpawn.push({ id: pick(S.pool), at: dur + .5 + j * 1.2, ang: rnd(0, 7), elite: true });
     G.toSpawn.sort((a, b) => a.at - b.at);
   }
-  text(CX, CY - 160, w === S.waves - 1 ? 'BOSS!' : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
+  text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[M.kind], hpMul = (1 + G.stage * .5 + G.stage * G.stage * .25 + G.wave * .14) * G.D.hp;
+  const M = MYTHS[id], K = KIND[M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp;
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + G.stage * .12) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  const e = { id, M, kind: M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .45 + G.stage * G.stage * .3) * G.D.hp; $('#bossbar').hidden = false; $('#bossName').textContent = M.name; }
+  if (M.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
   const K = KIND.mini;
-  for (let i = 0; i < 2; i++) G.enemies.push({ id: parent.id, M: parent.M, kind: 'mini', x: parent.x + rnd(-10, 10), y: parent.y + rnd(-10, 10), r: K.r, hp: K.hp * (1 + G.stage * .5), maxhp: K.hp, spd: K.spd, dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: rnd(-80, 80), ky: rnd(-80, 80), mini: true, walk: rnd(0, 6) });
+  for (let i = 0; i < 2; i++) G.enemies.push({ id: parent.id, M: parent.M, kind: 'mini', x: parent.x + rnd(-10, 10), y: parent.y + rnd(-10, 10), r: K.r, hp: K.hp * (1 + G.stage * .18), maxhp: K.hp, spd: K.spd, dmg: K.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: rnd(-80, 80), ky: rnd(-80, 80), mini: true, walk: rnd(0, 6) });
 }
 
 /* ───────── helpers ───────── */
 function text(x, y, s, col = '#fff', size = 18, life = 1) { G.texts.push({ x, y, s, col, size, t: 0, life }); }
 function inRing(e) { return dist(e, G.dad) < G.radius + e.r * .5; }
-const seen = e => e.kind !== 'rumour' || dist(e, G.dad) < G.radius * .72 + rankOf('webster', 'eyes') * 25;
+const seen = e => e.kind !== 'rumour' || dist(e, G.dad) < G.radius * .72 + rankOf('webster', 'eyes') * 25 + rankOf('nilla', 'nighteyes') * 30;
 function nearest(from, exclude = null, n = 1) {
   const list = G.enemies.filter(e => e !== exclude && !(exclude && exclude.has && exclude.has(e)) && e.hp > 0 && (inRing(e) || e.host) && seen(e));
   list.sort((a, b) => dist(a, from) - dist(b, from));
@@ -812,16 +971,17 @@ function nearest(from, exclude = null, n = 1) {
 }
 // permanent damage / speed multipliers for a party member
 const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1));
+const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
   if (e.weak > 0) d *= 2;
+  if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && G.party.some(x => x.id === 'dusty') ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0);
+  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -904,6 +1064,43 @@ function useAbility(m, a) {
       if (!tgt || m.jump) return false;
       m.face = tgt.x < m.x ? -1 : 1; m.jump = { from: { x: m.x, y: m.y }, to: { x: tgt.x, y: tgt.y }, t: 0, dur: .5, back: false, dmg: D.dmg[L] * mul };
       return true; }
+    case 'toss': {
+      if (!tgt) return false;
+      windup(m, 'toss', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), n = evolved(m, 'toss') ? 3 : 1; for (let i = 0; i < n; i++) { const a3 = a2 + (i - (n - 1) / 2) * .3; G.shots.push({ k: 'mark', x: hp.x, y: hp.y, vx: Math.cos(a3) * 360, vy: Math.sin(a3) * 360, dmg: D.dmg[L] * mul, pierce: 2, hitset: new Set(), t: 0, m }); } });
+      return true; }
+    case 'shell': {
+      if (!tgt) return false;
+      windup(m, 'shell', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const hp = handPos(m), V = cweapOf('pip') || {}, lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .5, ty = t.y + Math.sin(lead) * t.spd * .5; G.shots.push({ k: 'balloon', shell: true, x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .6, dmg: D.dmg[L] * mul, R: (evolved(m, 'shell') ? 70 : 40) * (V.fx === 'Big splash' ? 1.4 : 1), knock: 110, slowOn: V.fx === 'Slow' ? 1.5 : 0, col: '#f0a070', m }); });
+      return true; }
+    case 'shellwall': {
+      if (!G.enemies.length) return false;
+      windup(m, 'shellwall', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = tgt ? Math.atan2(tgt.y - CY, tgt.x - CX) + rnd(-.5, .5) : rnd(0, 7), R = G.radius * rnd(.7, .95); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 30 + rk * 3, t: 0, life: 7 + rk, mul: .12, shell: true }); } });
+      return true; }
+    case 'roll': {
+      if (!tgt) return false;
+      windup(m, 'roll', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), V = cweapOf('scuttle') || {}; G.shots.push({ k: 'roll', x: hp.x, y: m.y, vx: Math.cos(a2) * 210, vy: Math.sin(a2) * 210, dmg: D.dmg[L] * mul, r: 10 + (V.fx === 'Wider' ? 8 : 0), knock: evolved(m, 'roll') ? 120 : V.fx === 'Knockback' ? 100 : 20, hitset: new Set(), t: 0, spin: 0, m }); });
+      return true; }
+    case 'dig': {
+      if (!tgt || m.jump) return false;
+      m.face = tgt.x < m.x ? -1 : 1; m.jump = { kind: 'dig', from: { x: m.x, y: m.y }, to: { x: tgt.x, y: tgt.y }, t: 0, dur: .6, back: false, dmg: D.dmg[L] * mul };
+      return true; }
+    case 'hoot': {
+      if (!tgt) return false;
+      windup(m, 'hoot', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), V = cweapOf('nilla') || {}; G.shots.push({ k: 'hoot', x: hp.x, y: hp.y, vx: Math.cos(a2) * 300, vy: Math.sin(a2) * 300, dmg: D.dmg[L] * mul, pierce: evolved(m, 'hoot') ? 99 : 2, chill: V.fx === 'Deep chill' ? 2.2 : 1.2, hitset: new Set(), t: 0, m }); });
+      return true; }
+    case 'swoop': {
+      if (m.jump) return false;
+      const big = G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e)).sort((a, b) => b.hp - a.hp)[0]; if (!big) return false;
+      const V = cweapOf('nilla') || {}; m.face = big.x < m.x ? -1 : 1; m.jump = { kind: 'swoop', from: { x: m.x, y: m.y }, to: { x: big.x, y: big.y }, t: 0, dur: .45, back: false, dmg: D.dmg[L] * mul * (V.fx === 'Big swoop' ? 1.3 : 1) };
+      return true; }
+    case 'dust': {
+      if (!tgt) return false;
+      windup(m, 'dust', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - hp.y, t.x - hp.x), V = cweapOf('luna') || {}; G.shots.push({ k: 'dust', x: hp.x, y: hp.y, vx: Math.cos(a2) * 190, vy: Math.sin(a2) * 190, dmg: D.dmg[L] * mul, R: (evolved(m, 'dust') ? 80 : 45) + (V.fx === 'Bigger puff' ? 20 : 0), stun: V.fx === 'Stun' ? .4 : 0, t: 0, life: 3, m }); });
+      return true; }
+    case 'lamp': {
+      if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
+      windup(m, 'lamp', tgt, () => { const pt = { x: m.x + m.face * 70, y: m.y - 10 }; G.lure = pt; const st = rankOf('dad', 'story') ? .8 : .3; for (const e of G.enemies) { if (e.hp <= 0 || !inRing(e)) continue; const a2 = Math.atan2(pt.y - e.y, pt.x - e.x), dd = dist(e, pt); e.kx += Math.cos(a2) * Math.min(dd * 3, 330); e.ky += Math.sin(a2) * Math.min(dd * 3, 330); e.lured = 1.4; e.stun = Math.max(e.stun, st); } G.fx.push({ k: 'ring', x: pt.x, y: pt.y, R: 60, t: 0, life: .8, col: '#ffe9a0' }); text(pt.x, pt.y - 50, 'ooooh…', '#ffe9a0', 16, 1.2); });
+      return true; }
     case 'quack': {
       if (!tgt) return false;
       const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
@@ -963,9 +1160,18 @@ function updateShots(dt) {
         if (s.t > s.life) s.dead = true;
         for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + s.r) { hurt(e, s.dmg); e.slow = 2; s.dead = true; G.fx.push({ k: 'puff', x: s.x, y: s.y, vx: 0, vy: -20, t: 0, life: .3, col: '#dff3ff', r: s.r }); break; }
         break;
+      case 'mark': case 'hoot': case 'roll': {
+        s.x += s.vx * dt; s.y += s.vy * dt; s.spin = (s.spin || 0) + dt * 10; if (s.k === 'roll') s.r = Math.min(24, s.r + dt * 8);
+        for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + (s.r || 10)) { s.hitset.add(e); if (s.k === 'mark') e.marked = 3; if (s.k === 'hoot') e.slow = Math.max(e.slow, s.chill); hurt(e, s.dmg, s.knock || 0, s.m); if (s.k !== 'roll' && --s.pierce <= 0) { s.dead = true; break; } }
+        if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) s.dead = true;
+        break; }
+      case 'dust':
+        s.x += s.vx * dt; s.y += s.vy * dt; if (s.t > s.life) s.dead = true;
+        for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { s.dead = true; for (const o of G.enemies) if (o.hp > 0 && dist(o, s) < o.r + s.R) { hurt(o, s.dmg, 0, s.m); o.slow = Math.max(o.slow, 1.5); if (s.stun) o.stun = Math.max(o.stun, s.stun); } G.fx.push({ k: 'splash', x: s.x, y: s.y, R: s.R, t: 0, life: .5, col: '#d8f0c0' }); break; }
+        break;
       case 'balloon': {
         const p = Math.min(1, s.t / s.life); s.x = s.sx + (s.tx - s.sx) * p; s.y = s.sy + (s.ty - s.sy) * p; s.z = Math.sin(p * Math.PI) * 120;
-        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, 60, { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.shake = .12; }
+        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, s.knock || 60, s.m ? { x: s.tx, y: s.ty, id: s.m.id } : { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, s.slowOn || .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.shake = .12; }
         break; }
     }
   }
@@ -992,13 +1198,14 @@ function update(dt) {
     const b = G.boss;
     if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 15, 1.3); } }
     else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
-    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= b.dmg * (G.stage ? 1.2 : .8); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
+    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.stage ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
   }
   // boss phase two at half health: a line, a crowd, and charges come sooner
-  if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.stage ? 3 : 2) + G.stage; j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
-  if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - G.stage * .6; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
+  if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && !G.boss.rough && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.stage ? 3 : 2) + Math.min(5, Math.floor(G.stage / 4)); j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
+  if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.stage, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
-  const story = rankOf('dad', 'story'), storyR = 110 + story * 15;
+  const story = rankOf('dad', 'story'), storyR = (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * .15);
+  G.radius = G.baseRadius + rankOf('scuttle', 'antennae') * 8;
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
     e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt); e.stun = Math.max(0, e.stun - dt);
@@ -1006,9 +1213,10 @@ function update(dt) {
     if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
     const flies = e.kind === 'flyer';
     if (story && !flies && dist(e, dad) < storyR) sp *= 1 - story * .09;
-    if (!flies) for (const t of G.traps) if (dist(e, t) < t.r + e.r * .3) { sp *= .4; break; }
+    if (!flies) for (const t of G.traps) if (dist(e, t) < t.r + e.r * .3) { sp *= t.mul || .4; break; }
+    e.marked = Math.max(0, (e.marked || 0) - dt); if (e.lured > 0) e.lured -= dt;
     e.flipped = Math.max(0, (e.flipped || 0) - dt);
-    const a = Math.atan2(dad.y - e.y, dad.x - e.x), d = dist(e, dad);
+    const Lp = e.lured > 0 && G.lure ? G.lure : dad, a = Math.atan2(Lp.y - e.y, Lp.x - e.x), d = dist(e, dad);
     // dasher: stop, crouch, then charge the last stretch (a stun during the crouch cancels it)
     if (e.kind === 'dasher' && !e.dashed && e.winding == null && d < G.radius * .85 && d > e.r + 40) { e.winding = .7; text(e.x, e.y - e.r - 16, '…', '#fff', 18, .7); }
     if (e.kind !== 'boss' && e.winding > 0) { e.winding -= dt; if (e.stun > 0) { e.winding = null; e.dashed = true; } else if (e.winding <= 0) { e.winding = null; e.dashed = true; e.charging = .5; } }
@@ -1029,7 +1237,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -1040,8 +1248,11 @@ function update(dt) {
     if (m.anim) { m.anim.t += dt; if (m.anim.t >= m.anim.dur) m.anim = null; }
     if (m.jump) { // hopper's big hop
       const j = m.jump; j.t += dt; const p = Math.min(1, j.t / j.dur), ease = p * p * (3 - 2 * p);
-      m.x = j.from.x + (j.to.x - j.from.x) * ease; m.y = j.from.y + (j.to.y - j.from.y) * ease; m.z = Math.sin(p * Math.PI) * 90;
-      if (p >= 1) { if (!j.back) { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 62) hurt(e, j.dmg, 120, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, 'SPLAT', '#fff', 22, .8); m.jump = { from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
+      m.x = j.from.x + (j.to.x - j.from.x) * ease; m.y = j.from.y + (j.to.y - j.from.y) * ease; m.z = Math.sin(p * Math.PI) * (j.kind === 'dig' ? 0 : j.kind === 'swoop' ? 110 : 90);
+      if (p >= 1) { if (!j.back) { const kd = j.kind || 'hop';
+          if (kd === 'swoop') { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 40) hurt(e, j.dmg * (e.slow > 0 && G.party.some(x => x.id === 'webster') ? 2 : 1), 100, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 40, t: 0, life: .35, col: '#eef4ff' }); text(m.x, m.y - 40, 'SWOOP!', '#fff', 22, .8); }
+          else { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 62) { hurt(e, j.dmg, kd === 'dig' ? 70 : 120, m); if (kd === 'dig') e.stun = Math.max(e.stun, 1); } G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: kd === 'dig' ? '#d9c08a' : '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, kd === 'dig' ? 'SURPRISE!' : 'SPLAT', '#fff', 22, .8); }
+          m.jump = { kind: kd, from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
       continue;
     }
     if (m.muted > 0) { m.muted -= dt; continue; }
@@ -1055,7 +1266,7 @@ function update(dt) {
   G.pending = G.pending.filter(p => !p.done);
   updateShots(dt);
   G.flash = Math.max(0, G.flash - dt);
-  const song = rankOf('hopper', 'song'); if (song) G.hp = Math.min(G.maxhp, G.hp + song * .3 * dt);
+  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if (song || moon) G.hp = Math.min(G.maxhp, G.hp + (song * .3 + moon * .15) * dt);
   if (G.hp <= 0) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
@@ -1239,6 +1450,56 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
       c.fillStyle = '#f3a23a'; c.beginPath(); c.moveTo(18, -29); c.lineTo(30, -26); c.lineTo(18, -23); c.closePath(); c.fill(); c.stroke(); // beak
       c.fillStyle = '#fff'; c.beginPath(); c.arc(13, -31, 3.5, 0, 7); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.beginPath(); c.arc(14, -31, 1.8, 0, 7); c.fill();
       break; }
+    case 'dusty': { // a bookworm: three green segments, reading glasses, a book tucked under
+      c.translate(0, bob * .4);
+      c.fillStyle = '#cb382e'; c.save(); c.translate(-4, -3); c.rotate(-.2); c.beginPath(); c.roundRect(-9, -5, 18, 10, 2); c.fill(); c.stroke(); c.restore();
+      c.fillStyle = '#8fcf6a'; for (const [sx, sy, sr] of [[-16, -8, 9], [-6, -12, 10], [5, -18, 11]]) { c.beginPath(); c.arc(sx, sy + Math.sin(t * 5 + sx) * .6, sr, 0, 7); c.fill(); c.stroke(); }
+      c.beginPath(); c.arc(14, -28, 12, 0, 7); c.fill(); c.stroke();
+      c.fillStyle = 'rgba(255,255,255,.75)'; for (const ex of [9, 21]) { c.beginPath(); c.arc(ex, -30, 5, 0, 7); c.fill(); c.stroke(); } c.beginPath(); c.moveTo(14, -30); c.lineTo(16, -30); c.stroke();
+      c.fillStyle = '#3a2c20'; for (const ex of [10, 22]) { c.beginPath(); c.arc(ex, -30, 1.8, 0, 7); c.fill(); }
+      c.beginPath(); c.arc(17, -23, 4, .1, Math.PI - .1); c.stroke();
+      break; }
+    case 'pip': { // a hermit crab: spiral shell behind, orange body and claws in front, eyes on stalks
+      c.translate(0, bob * .3);
+      c.fillStyle = '#f0a070'; c.beginPath(); c.arc(-8, -16, 16, 0, 7); c.fill(); c.stroke();
+      c.lineWidth = 2; c.beginPath(); for (let a = 0; a < 9; a += .3) { const rr = a * 1.6; c.lineTo(-8 + Math.cos(a) * rr, -16 + Math.sin(a) * rr); } c.stroke(); c.lineWidth = 2.5;
+      c.fillStyle = '#e8734a'; for (const lx of [4, 10, 16]) { c.beginPath(); c.moveTo(lx, -4); c.lineTo(lx + 2 + Math.sin(t * 10 + lx) * 1.5, 2); c.stroke(); }
+      c.beginPath(); c.ellipse(8, -7, 11, 7, 0, 0, 7); c.fill(); c.stroke();
+      c.beginPath(); c.ellipse(20, -11, 7, 5, -.4, 0, 7); c.fill(); c.stroke(); c.beginPath(); c.moveTo(24, -14); c.lineTo(27, -9); c.stroke();
+      for (const ex of [6, 13]) { c.beginPath(); c.moveTo(ex, -11); c.lineTo(ex + 1, -20); c.stroke(); c.fillStyle = '#fff'; c.beginPath(); c.arc(ex + 1, -21, 3.5, 0, 7); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.beginPath(); c.arc(ex + 2, -21, 1.6, 0, 7); c.fill(); c.fillStyle = '#e8734a'; }
+      break; }
+    case 'scuttle': { // a beetle: a round blue shell with a seam, six legs, long antennae
+      c.translate(0, bob * .3);
+      for (const lx of [-9, 0, 9]) { const w = Math.sin(t * 12 + lx) * 2; c.beginPath(); c.moveTo(lx, -8); c.lineTo(lx + (lx < 0 ? -8 : lx > 0 ? 8 : 0) + w, 0); c.stroke(); }
+      c.fillStyle = '#3f4f8a'; c.beginPath(); c.ellipse(-2, -14, 17, 11, 0, 0, 7); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-2, -25); c.lineTo(-2, -3); c.stroke();
+      c.fillStyle = 'rgba(255,255,255,.25)'; c.beginPath(); c.ellipse(-8, -18, 5, 3, -.4, 0, 7); c.fill();
+      c.fillStyle = '#2b3660'; c.beginPath(); c.arc(16, -13, 6, 0, 7); c.fill(); c.stroke();
+      for (const sg of [-1, 1]) { c.beginPath(); c.moveTo(19, -16); c.quadraticCurveTo(26, -22 + sg * 3, 30, -26 + sg * 6); c.stroke(); }
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(18, -14, 2.6, 0, 7); c.fill(); c.fillStyle = '#3a2c20'; c.beginPath(); c.arc(19, -14, 1.3, 0, 7); c.fill();
+      break; }
+    case 'nilla': { // a snowy owl: round and white, speckled, big yellow eyes
+      c.translate(0, bob * .5);
+      for (const fx of [-5, 4]) { c.beginPath(); c.moveTo(fx, -2); c.lineTo(fx - 3, 1); c.moveTo(fx, -2); c.lineTo(fx + 3, 1); c.stroke(); }
+      c.fillStyle = '#fbfbf7'; c.beginPath(); c.ellipse(0, -20, 15, 19, 0, 0, 7); c.fill(); c.stroke();
+      c.fillStyle = '#eeeee6'; c.beginPath(); c.ellipse(-9, -16, 6, 12, .2, 0, 7); c.fill(); c.stroke();
+      c.fillStyle = 'rgba(58,44,32,.35)'; for (const [sx, sy] of [[-3, -12], [4, -8], [0, -4], [8, -14]]) { c.beginPath(); c.ellipse(sx, sy, 2.5, 1.2, 0, 0, 7); c.fill(); }
+      c.fillStyle = '#fff'; c.beginPath(); c.ellipse(2, -29, 12, 9, 0, 0, 7); c.fill();
+      for (const ex of [-3, 8]) { c.fillStyle = '#f3c93c'; c.beginPath(); c.arc(ex, -29, 5, 0, 7); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.beginPath(); c.arc(ex + 1, -29, 2.4, 0, 7); c.fill(); }
+      c.fillStyle = '#3a2c20'; c.beginPath(); c.moveTo(1, -25); c.lineTo(5, -25); c.lineTo(3, -20); c.closePath(); c.fill();
+      break; }
+    case 'luna': { // a luna moth, seen from above, hovering: pale green wings with eyespots and long tails
+      c.translate(0, -22 + bob * 2); const flap = 1 - Math.abs(Math.sin(t * 16)) * .25;
+      for (const sg of [-1, 1]) { c.save(); c.scale(flap, 1);
+        c.fillStyle = '#bfe7b0'; c.beginPath(); c.ellipse(sg * 14, -6, 13, 9, sg * .5, 0, 7); c.fill(); c.stroke();
+        c.beginPath(); c.ellipse(sg * 11, 6, 9, 8, sg * -.6, 0, 7); c.fill(); c.stroke();
+        c.beginPath(); c.moveTo(sg * 14, 12); c.quadraticCurveTo(sg * 22, 20, sg * 18, 26); c.stroke();
+        c.fillStyle = '#8fc48a'; c.beginPath(); c.arc(sg * 14, -6, 3, 0, 7); c.fill(); c.stroke(); c.restore(); }
+      c.fillStyle = '#e9e2c6'; c.beginPath(); c.ellipse(0, 0, 5, 13, 0, 0, 7); c.fill(); c.stroke();
+      c.beginPath(); c.arc(0, -13, 5, 0, 7); c.fill(); c.stroke();
+      for (const sg of [-1, 1]) { c.beginPath(); c.moveTo(sg * 2, -16); c.quadraticCurveTo(sg * 8, -26, sg * 12, -24); c.stroke(); }
+      c.fillStyle = '#3a2c20'; for (const sg of [-1, 1]) { c.beginPath(); c.arc(sg * 2.5, -14, 1.5, 0, 7); c.fill(); }
+      break; }
   }
   c.restore();
 }
@@ -1251,6 +1512,12 @@ function drawMember(m) {
     return;
   }
   const z = m.z || 0;
+  if (m.jump && m.jump.kind === 'dig') { // underground: a travelling mound of lawn
+    ctx.fillStyle = '#c9a06a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(m.x, m.y + 2, 22, 10, 0, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#e2c48c'; ctx.beginPath(); ctx.ellipse(m.x - 4, m.y - 1, 10, 4, 0, 0, 7); ctx.fill();
+    if (Math.random() < .4) G.fx.push({ k: 'puff', x: m.x + rnd(-10, 10), y: m.y, vx: rnd(-30, 30), vy: rnd(-80, -30), t: 0, life: .35, col: '#d9c08a', r: rnd(3, 6) });
+    return;
+  }
   ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 4, 20 - z * .05, 7, 0, 0, 7); ctx.fill();
   const lean = a ? (p < .33 ? -.22 * (p / .33) : .18 * (1 - Math.min(1, (p - .33) / .67)) - .03) * m.face : 0;
   if (m.land > 0) m.land -= 1 / 60;
@@ -1287,6 +1554,7 @@ function drawEnemy(e) {
   ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill();
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
+  if (e.marked > 0) { ctx.font = `16px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📝', x + r * .8, y - r - 8 + Math.sin(G.t * 6) * 2); ctx.textBaseline = 'alphabetic'; }
   switch (e.kind) {
     case 'dasher': { // a thin paperback that leans forward and crouches before it charges
       const crouch = e.winding > 0 ? 1 - e.winding / .7 : 0, dash = e.charging > 0 ? 1 : 0, dir = e.x < G.dad.x ? 1 : -1;
@@ -1399,9 +1667,11 @@ function draw() {
   ctx.beginPath(); ctx.arc(dad.x, dad.y, G.radius, 0, 7); ctx.fillStyle = 'rgba(251,243,223,.08)'; ctx.fill();
   ctx.setLineDash([10, 8]); ctx.lineDashOffset = -G.t * 20; ctx.strokeStyle = 'rgba(251,243,223,.75)'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([]);
   // bedtime story aura
-  const story = rankOf('dad', 'story'); if (story) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, 110 + story * 15, 0, 7); ctx.fill(); if (Math.floor(G.t * 2) % 2) { ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.textAlign = 'center'; ctx.fillText('z', dad.x + 30, dad.y - 110 - Math.sin(G.t * 2) * 6); } }
+  const story = rankOf('dad', 'story'); if (story) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * .15), 0, 7); ctx.fill(); if (Math.floor(G.t * 2) % 2) { ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.textAlign = 'center'; ctx.fillText('z', dad.x + 30, dad.y - 110 - Math.sin(G.t * 2) * 6); } }
   // silk traps
-  for (const t of G.traps) { const p = t.t / t.life; ctx.save(); ctx.translate(t.x, t.y); ctx.globalAlpha = p > .8 ? (1 - p) / .2 : 1; ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.5; for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * t.r, Math.sin(a) * t.r * .7); ctx.stroke(); } for (let k = 1; k <= 3; k++) { ctx.beginPath(); for (let i = 0; i <= 8; i++) { const a = i / 8 * Math.PI * 2, rr = t.r * k / 3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .7); } ctx.stroke(); } ctx.restore(); }
+  for (const t of G.traps) { const p = t.t / t.life; ctx.save(); ctx.translate(t.x, t.y); ctx.globalAlpha = p > .8 ? (1 - p) / .2 : 1;
+    if (t.shell) { ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; for (const [sx, sy, sr] of [[-t.r * .5, 4, 10], [0, -6, 12], [t.r * .5, 5, 10]]) { ctx.fillStyle = '#f0a070'; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); for (let a = 0; a < 7; a += .4) { const rr = a * sr / 7; ctx.lineTo(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr); } ctx.stroke(); } ctx.restore(); continue; }
+    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.5; for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * t.r, Math.sin(a) * t.r * .7); ctx.stroke(); } for (let k = 1; k <= 3; k++) { ctx.beginPath(); for (let i = 0; i <= 8; i++) { const a = i / 8 * Math.PI * 2, rr = t.r * k / 3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .7); } ctx.stroke(); } ctx.restore(); }
   // orbs
   for (const o of G.orbs) {
     ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
@@ -1439,7 +1709,12 @@ function drawShot(s) {
     case 'web': { ctx.rotate(s.t * 6); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI; ctx.beginPath(); ctx.moveTo(-Math.cos(a) * 11, -Math.sin(a) * 11); ctx.lineTo(Math.cos(a) * 11, Math.sin(a) * 11); ctx.stroke(); } ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(0, 0, 6, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.stroke(); break; }
     case 'frisbee': ctx.rotate(s.spin); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.ellipse(0, 0, 16, 11, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.beginPath(); ctx.ellipse(0, 0, 8, 5, 0, 0, 7); ctx.stroke(); break;
     case 'bubble': ctx.globalAlpha = s.t > s.life - .6 ? (s.life - s.t) / .6 : 1; ctx.fillStyle = 'rgba(200,235,255,.5)'; ctx.beginPath(); ctx.arc(0, 0, s.r, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-s.r * .35, -s.r * .35, s.r * .25, 0, 7); ctx.fill(); break;
-    case 'balloon': ctx.translate(0, -(s.z || 0)); ctx.rotate(s.t * 5); ctx.fillStyle = s.col; ctx.beginPath(); ctx.ellipse(0, 0, 11, 14, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); break;
+    case 'mark': ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.fillStyle = '#cb382e'; ctx.beginPath(); ctx.roundRect(-12, -4, 24, 8, 2); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(-20, -4); ctx.moveTo(-12, 0); ctx.lineTo(-20, 4); ctx.stroke(); break;
+    case 'roll': ctx.rotate(s.spin); ctx.fillStyle = '#c9a06a'; ctx.beginPath(); ctx.arc(0, 0, s.r, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(0, 0, s.r * .6, 0, 7); ctx.stroke(); ctx.setLineDash([]); break;
+    case 'hoot': ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.strokeStyle = '#cfe8ff'; ctx.lineWidth = 3; for (let i = 1; i <= 3; i++) { ctx.beginPath(); ctx.arc(-i * 6, 0, i * 7, -.9, .9); ctx.stroke(); } break;
+    case 'dust': ctx.globalAlpha = .85; ctx.fillStyle = '#d8f0c0'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#fff'; for (let i = 0; i < 4; i++) { const a = s.t * 6 + i * 1.6; ctx.beginPath(); ctx.arc(Math.cos(a) * 14, Math.sin(a) * 14, 2.5, 0, 7); ctx.fill(); } break;
+    case 'balloon': if (s.shell) { ctx.translate(0, -(s.z || 0)); ctx.rotate(s.t * 6); ctx.fillStyle = '#f0a070'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); for (let a = 0; a < 8; a += .4) { const rr = a * 1.3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.stroke(); break; }
+      ctx.translate(0, -(s.z || 0)); ctx.rotate(s.t * 5); ctx.fillStyle = s.col; ctx.beginPath(); ctx.ellipse(0, 0, 11, 14, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); break;
   }
   ctx.restore(); ctx.globalAlpha = 1;
 }
@@ -1498,7 +1773,7 @@ function startRoom() {
   startGame(stage); G.room = true; G.D = DIFF.normal; G.freePicks = 0; G.breakT = 999; G.qAsked = 0; G.asked = [];
   // everyone starts with their first two abilities so the duel is lively from the first second
   for (const m of G.party) for (const a of CHARS[m.id].abil.slice(0, 2)) m.ranks[a] = Math.max(m.ranks[a], 1);
-  const b = spawn(STAGES[stage].boss, { x: CX, y: CY - G.radius - 30 }); b.hp = b.maxhp = b.maxhp * 1.5; b.chargeT = 6; b.spd *= .6;
+  const b = spawn(STAGES[stage].W.boss, { x: CX, y: CY - G.radius - 30 }); b.hp = b.maxhp = b.maxhp * 1.5; b.chargeT = 6; b.spd *= .6;
   $('#stageName').textContent = 'The Reading Room'; $('#prog').hidden = true; $('#hint').hidden = true;
   text(CX, CY - 160, 'Myth or fact?', '#ecb23c', 34, 1.6); say('Welcome to the Reading Room.');
 }
@@ -1552,9 +1827,33 @@ function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
   setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
+  const ck = G.S.w + ':in';
+  if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
 }
+/* ───────── comics: three panels, tap through, always skippable ───────── */
+let comicDone = null, comicPanels = [], comicAt = 0;
+function showComic(W, which, done) {
+  comicDone = done; comicPanels = W.comic[which]; comicAt = 0;
+  $('#comicTitle').textContent = `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`;
+  $('#strip').innerHTML = ''; $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false;
+  comicNext();
+}
+function comicNext() {
+  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; return; }
+  const [who, line] = comicPanels[comicAt++], d = document.createElement('div'); d.className = 'cpanel ' + (who === 'd' ? 'dad' : 'kid');
+  d.innerHTML = `<canvas width="156" height="192"></canvas><div class="bub"><b>${who === 'd' ? 'DAD' : 'THE KID'}</b>${line}</div>`;
+  $('#strip').appendChild(d); const c = d.querySelector('canvas'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0);
+  if (who === 'd') drawDadAt(x, 39, 94, 90, 1, comicAt === 1 ? 'talking' : comicAt === 2 ? 'pointing' : 'amazed'); else drawKid(x, 39, 94, 86, false);
+  say(line);
+  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; }
+}
+function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && speechSynthesis.cancel(); } catch (e) {} const f = comicDone; comicDone = null; if (f) f(); }
+$('#comicm').onclick = e => { if (e.target.closest('button')) return; if (comicAt < comicPanels.length) comicNext(); };
+$('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
-function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0)) * G.D.coin); }
+function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin); }
+// Patience lost when a myth gets through, after Pip's shell
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06);
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 First clear bonus</span><b>+${gems}</b></div>` : ''}`;
 }
@@ -1574,60 +1873,65 @@ function stageClear() {
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
   const hardFirst = save.diff === 'hard' && prev === 0;
-  const k = payout(true), gems = (first ? 20 + G.stage * 10 : 0) + newStars * 5 + (hardFirst ? 20 : 0); setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
-  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), G.stage * .08 + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0); setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
   if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
   $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`;
   const last = G.stage === STAGES.length - 1;
-  $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
-  $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
+  $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
+  $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
+  // the chapter's closing comic plays once, before the scoreboard
+  const ck = G.S.w + ':out';
+  if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
-// pin positions on the 440x500 map, the path winds up through them
-const PINS = [[82, 440], [196, 372], [300, 405], [352, 290], [222, 190]];
+// the map is one long scroll: chapter 1 at the bottom, chapter 8 at the top. Pins zigzag up through each band.
+const BAND = 200, MAP_H = WORLDS.length * BAND + 40, PINS = [[70, 160], [175, 128], [285, 152], [360, 88], [225, 42]];
+const pinXY = i => { const S = STAGES[i], [px, py] = PINS[S.idx]; return [px, MAP_H - (S.w + 1) * BAND + py]; };
 function drawMap() {
-  const c = $('#mapc'), x = c.getContext('2d'), Wm = 440, Hm = 500; x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, Wm, Hm);
-  // parchment with a worn edge
-  x.fillStyle = '#e9d9b3'; x.fillRect(0, 0, Wm, Hm);
-  x.fillStyle = 'rgba(120,90,50,.08)'; for (let i = 0; i < 40; i++) { x.beginPath(); x.arc((i * 97) % Wm, (i * 61) % Hm, 20 + (i * 13) % 40, 0, 7); x.fill(); }
-  x.strokeStyle = 'rgba(58,44,32,.25)'; x.lineWidth = 2; x.strokeRect(10, 10, Wm - 20, Hm - 20);
-  // hills, a pond, the sea (hints of worlds to come)
-  x.fillStyle = '#c9d8a8'; x.beginPath(); x.ellipse(120, 470, 140, 70, 0, 0, 7); x.fill(); x.beginPath(); x.ellipse(330, 440, 150, 60, 0, 0, 7); x.fill();
-  x.fillStyle = '#a9cfe0'; x.beginPath(); x.ellipse(372, 120, 110, 60, .3, 0, 7); x.fill();
-  x.fillStyle = '#b8d2a3'; x.beginPath(); x.ellipse(90, 230, 100, 55, -.2, 0, 7); x.fill();
-  x.fillStyle = '#e0cfa0'; x.beginPath(); x.ellipse(360, 300, 60, 36, 0, 0, 7); x.fill();
-  x.fillStyle = '#3a2c20'; x.font = '400 13px "Patrick Hand", cursive';
-  [['the pond', 90, 236], ['the sea', 372, 126], ['the dunes', 360, 306]].forEach(([t, px, py]) => { x.fillStyle = 'rgba(58,44,32,.55)'; x.textAlign = 'center'; x.fillText(t, px, py); });
+  const c = $('#mapc'), x = c.getContext('2d'); c.height = MAP_H * 2; c.style.height = MAP_H + 'px'; $('#mapInner').style.height = MAP_H + 'px';
+  x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, MAP_H);
+  WORLDS.forEach((W, w) => {
+    const top = MAP_H - (w + 1) * BAND, open = w * 5 <= save.unlocked;
+    const g = x.createLinearGradient(0, top, 0, top + BAND); g.addColorStop(0, W.lawn[1]); g.addColorStop(1, W.lawn[0]); x.fillStyle = g; x.fillRect(0, top, 440, BAND);
+    // a torn edge between chapters
+    x.fillStyle = 'rgba(58,44,32,.18)'; x.beginPath(); x.moveTo(0, top); for (let i = 0; i <= 22; i++) x.lineTo(i * 20, top + ((i * 7) % 3) * 2 - 2); x.lineTo(440, top + 4); x.lineTo(0, top + 4); x.fill();
+    // scattered decoration, same spots every time
+    x.font = `22px ${EMOJI_FONT}`; x.textAlign = 'center'; x.globalAlpha = open ? .55 : .25;
+    for (let i = 0; i < 9; i++) x.fillText(W.deco, 30 + (i * 83 + w * 37) % 400, top + 36 + (i * 61 + w * 17) % (BAND - 50));
+    x.globalAlpha = 1;
+    if (!open) { x.fillStyle = 'rgba(58,44,32,.28)'; x.fillRect(0, top, 440, BAND); x.font = `34px ${EMOJI_FONT}`; x.fillText('🔒', 400, top + 44); }
+  });
   // the path
-  x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); x.moveTo(PINS[0][0], PINS[0][1]);
-  for (let i = 1; i < PINS.length; i++) { const [ax, ay] = PINS[i - 1], [bx, by] = PINS[i]; x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 40 : -40), (ay + by) / 2, bx, by); }
+  x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); const [sx, sy] = pinXY(0); x.moveTo(sx, sy);
+  for (let i = 1; i < STAGES.length; i++) { const [ax, ay] = pinXY(i - 1), [bx, by] = pinXY(i); x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 30 : -30), (ay + by) / 2, bx, by); }
   x.stroke(); x.setLineDash([]);
-  // torn pages fluttering where the next stages will be
-  x.save(); x.globalAlpha = .5; for (let i = 0; i < 4; i++) { x.save(); x.translate(60 + i * 95, 70 + (i % 2) * 30); x.rotate(-.3 + i * .2); x.fillStyle = '#fbf3df'; x.fillRect(-10, -13, 20, 26); x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.strokeRect(-10, -13, 20, 26); x.restore(); } x.restore();
-  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText('more pages blew this way…', 240, 40);
+  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText('the last page of the Big Book of Wrong', 220, 24);
 }
-function buildMap() {
+function buildMap(scroll = true) {
   drawMap(); pickStage = Math.min(pickStage, save.unlocked);
   const box = $('#pins'); box.innerHTML = '';
   let total = 0; for (const k in save.stars) total += save.stars[k]; $('#starTotal').textContent = total;
+  WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}<small>Chapter ${w + 1}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
   STAGES.forEach((st, i) => {
-    const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard')), b = document.createElement('button');
-    b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '');
-    b.style.left = PINS[i][0] / 440 * 100 + '%'; b.style.top = PINS[i][1] / 500 * 100 + '%';
-    b.innerHTML = `${locked ? '🔒' : i + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}<div class="lab">${st.name.slice(3)}</div>`;
-    if (!locked) b.onclick = () => { pickStage = i; buildMap(); };
+    const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard')), b = document.createElement('button'), [px, py] = pinXY(i);
+    b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
+    b.style.left = px + 'px'; b.style.top = py + 'px';
+    b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}`;
+    if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
-  const st = STAGES[pickStage]; $('#mapName').textContent = st.name.slice(3); $('#mapDesc').textContent = STAGE_DESC[pickStage];
+  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc;
   if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
   $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
-  $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(); });
-  $('#mapPlay').textContent = `Play ${st.name.slice(3)} on ${DIFF[save.diff].name} ▶`;
+  $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
+  $('#mapPlay').textContent = `Play ${st.name} on ${DIFF[save.diff].name} ▶`;
+  if (scroll) { const wrap = $('#mapWrap'); requestAnimationFrame(() => { wrap.scrollTop = Math.max(0, pinXY(pickStage)[1] - wrap.clientHeight / 2); }); }
 }
 function buildStagePick() {
   pickStage = Math.min(pickStage, save.unlocked);
@@ -1636,7 +1940,10 @@ function buildStagePick() {
 }
 function buildBook() {
   const box = $('#factList'); box.innerHTML = ''; let n = 0;
-  for (const id in MYTHS) { const M = MYTHS[id], got = save.facts.includes(id); if (got) n++; const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = `<div class="em">${got ? M.em : '❓'}</div><div><b>${got ? M.name : '???'}</b><s>${got ? M.myth : 'A myth you haven\'t popped yet.'}</s><p>${got ? M.fact : 'Pop it in the game to learn the real fact.'}</p></div>`; box.appendChild(d); }
+  const listed = new Set();
+  const row = id => { const M = MYTHS[id], got = save.facts.includes(id); if (got) n++; listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = `<div class="em">${got ? M.em : '❓'}</div><div><b>${got ? M.name : '???'}</b><s>${got ? M.myth : 'A myth you haven\'t popped yet.'}</s><p>${got ? M.fact : 'Pop it in the game to learn the real fact.'}</p></div>`; box.appendChild(d); };
+  WORLDS.forEach((W, w) => { const ids = [...W.pool, ...(W.mid ? [W.mid] : []), W.boss].filter(id => !listed.has(id)), got = ids.filter(id => save.facts.includes(id)).length; const h = document.createElement('div'); h.className = 'wh'; h.innerHTML = `${W.em} ${W.name} <small>${got} / ${ids.length}</small>`; box.appendChild(h); ids.forEach(row); });
+  for (const id in MYTHS) if (!listed.has(id)) row(id);
   $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
 }
 function pips(n) { let s = '<div class="pips">'; for (let i = 0; i < MAX_RANK; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
@@ -1693,7 +2000,7 @@ function buildParty() {
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
       else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — change it in the Garage</span></div>`; }
       html += '</div>';
-    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name.slice(3)}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
+    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
@@ -1788,7 +2095,7 @@ function checkDaily() {
   $('#dailym').hidden = false;
 }
 
-$('#play').onclick = () => { buildMap(); showScreen('#map'); };
+$('#play').onclick = () => { pickStage = save.unlocked; buildMap(); showScreen('#map'); };
 $('#mapPlay').onclick = () => startGame(pickStage);
 $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
@@ -1827,7 +2134,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
