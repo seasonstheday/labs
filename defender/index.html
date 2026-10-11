@@ -45,7 +45,7 @@
   #title h1 { position: relative; margin: 48px 0 0; font-size: 60px; line-height: .92; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.3); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
   #title h1 small { display: block; font-size: 26px; color: var(--gold); }
   #title .tag { position: relative; margin: 8px 0 0; font-size: 22px; color: #3a2c20; }
-  #titleParty { position: absolute; left: 0; top: 36%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
+  #titleParty { position: absolute; left: 0; top: 33%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
   #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -219,7 +219,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 7</div>
+    <div class="build">build 8</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -520,8 +520,9 @@ const SYNERGY = [
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
 const DADRANKS = { ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
 const BASE_RADIUS = 170;
+const DAD_H = 102; // Dad's height in the arena
 // where each companion stands, relative to Dad
-const SPOTS = [[-78, 34], [78, 34], [0, 92]];
+const SPOTS = [[-70, 28], [70, 28], [0, 82]];
 
 /* ───────── items ───────── */
 const RAR = [{ n: 'Common', mul: 1, sell: 15 }, { n: 'Rare', mul: 1.7, sell: 40 }, { n: 'Epic', mul: 2.6, sell: 120 }, { n: 'Legendary', mul: 4, sell: 400 }];
@@ -690,7 +691,7 @@ function hint(s, life = 2.5) { const h = $('#hint'); h.textContent = s; h.hidden
 /* ───────── attacks ───────── */
 // the point a character's shots leave from
 function handPos(m) {
-  if (m.id === 'dad') { const h = 118, w = h * 320 / 700, A = HAND.pointing; return { x: m.x + m.face * (A[0] - .5) * w, y: m.y + 30 - h + A[1] * h }; }
+  if (m.id === 'dad') { const h = DAD_H, w = h * 320 / 700, A = HAND.pointing; return { x: m.x + m.face * (A[0] - .5) * w, y: m.y + 30 - h + A[1] * h }; }
   return { x: m.x + m.face * 12, y: m.y - 14 };
 }
 // wind up (lean, item in hand), then do the real thing from the hand at the release moment
@@ -771,7 +772,7 @@ function updateShots(dt) {
     s.t = (s.t || 0) + dt;
     switch (s.k) {
       case 'yoyo': {
-        s.d += (s.out ? 420 : -480) * dt; s.spin += dt * 20;
+        const ease = s.out ? .35 + .65 * (1 - s.d / s.max) : 1; s.d += (s.out ? 460 * ease : -520) * dt; s.spin += dt * (14 + ease * 10);
         if (s.d >= s.max) s.out = false;
         if (s.d <= 0 && !s.out) s.dead = true;
         const hp = handPos(s.m); s.ox = hp.x; s.oy = hp.y; s.x = s.ox + Math.cos(s.a) * s.d; s.y = s.oy + Math.sin(s.a) * s.d;
@@ -779,14 +780,14 @@ function updateShots(dt) {
         if (!s.out && s.hitset.size) s.hitset = new Set([...s.hitset].filter(e => e.hit > 0));
         break; }
       case 'plane': case 'web':
-        s.x += s.vx * dt; s.y += s.vy * dt; s.wob = (s.wob || 0) + dt * 8;
+        s.wob = (s.wob || 0) + dt * 8; const px = -s.vy, py = s.vx, wv = s.k === 'plane' ? Math.sin(s.wob) * .12 : 0; s.x += (s.vx + px * wv) * dt; s.y += (s.vy + py * wv) * dt;
         if (s.k === 'plane') { for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 10) { s.hitset.add(e); hurt(e, s.dmg); if (--s.pierce <= 0) s.dead = true; } }
         else { for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + 10) { hurt(e, s.dmg); e.slow = Math.max(e.slow, 1.8); s.dead = true; G.fx.push({ k: 'webhit', x: e.x, y: e.y, t: 0, life: .5 }); break; } }
         if (s.x < -40 || s.x > W + 40 || s.y < -40 || s.y > H + 40) s.dead = true;
         break;
       case 'frisbee': {
         if (!s.tgt || s.tgt.hp <= 0) { s.tgt = nearest(s, s.hitset); if (!s.tgt) { s.dead = true; break; } }
-        const a = Math.atan2(s.tgt.y - s.y, s.tgt.x - s.x); s.x += Math.cos(a) * 300 * dt; s.y += Math.sin(a) * 300 * dt; s.spin += dt * 14;
+        const want = Math.atan2(s.tgt.y - s.y, s.tgt.x - s.x); if (s.a == null) s.a = want; let da = Math.atan2(Math.sin(want - s.a), Math.cos(want - s.a)); s.a += clamp(da, -7 * dt, 7 * dt); s.x += Math.cos(s.a) * 300 * dt; s.y += Math.sin(s.a) * 300 * dt; s.spin += dt * 14;
         if (dist(s, s.tgt) < s.tgt.r + 8) { s.hitset.add(s.tgt); hurt(s.tgt, s.dmg, 30); s.tgt = null; if (--s.left <= 0) s.dead = true; else { s.tgt = nearest(s, s.hitset); if (!s.tgt) s.dead = true; } }
         if (s.t > 6) s.dead = true;
         break; }
@@ -848,15 +849,18 @@ function update(dt) {
       for (const m of G.party) if (m.id !== 'dad' && !(m.muted > 0) && dist(e, m) < 40) { e.host = m; e.talk = 2; m.muted = 2; text(m.x, m.y - 50, '"Did you hear…"', '#fff', 14, 1.2); break; }
       if (e.host) continue;
       const tgtM = G.party.filter(m => m.id !== 'dad' && !(m.muted > 0)).sort((p1, p2) => dist(p1, e) - dist(p2, e))[0];
-      if (tgtM) { const a2 = Math.atan2(tgtM.y - e.y, tgtM.x - e.x); if (e.stun <= 0) { e.x += Math.cos(a2) * sp * dt; e.y += Math.sin(a2) * sp * dt; e.walk += dt * 14; } e.x += e.kx * dt; e.y += e.ky * dt; e.kx *= .85; e.ky *= .85; continue; }
+      if (tgtM) { const a2 = Math.atan2(tgtM.y - e.y, tgtM.x - e.x); if (e.stun <= 0) { e.x += Math.cos(a2) * sp * dt; e.y += Math.sin(a2) * sp * dt; e.walk += dt * 14; } e.x += e.kx * dt; e.y += e.ky * dt; const kd2 = Math.exp(-dt * 9); e.kx *= kd2; e.ky *= kd2; continue; }
     }
     if (e.stun > 0 || e.winding > 0 || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
     if (flies) e.z = 26 + Math.sin(e.walk * .7) * 10;
-    if (d > e.r + 34) { e.x += Math.cos(a) * sp * dt; e.y += Math.sin(a) * sp * dt; }
-    else if (e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
-    e.x += e.kx * dt; e.y += e.ky * dt; e.kx *= .85; e.ky *= .85;
+    // steer toward Dad with a little inertia so turns and recoveries from knockback read as motion, not teleports
+    const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
+    e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
+    e.x += e.vx * dt; e.y += e.vy * dt;
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0) { e.bonk = 1.4; G.hp -= e.dmg; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
-    for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = (min - dd) * .5; e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
+    for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
   }
   G.enemies = G.enemies.filter(e => e.hp > 0);
   // party: each member runs its active abilities, one wind-up at a time per member
@@ -865,7 +869,7 @@ function update(dt) {
     if (m.jump) { // hopper's big hop
       const j = m.jump; j.t += dt; const p = Math.min(1, j.t / j.dur), ease = p * p * (3 - 2 * p);
       m.x = j.from.x + (j.to.x - j.from.x) * ease; m.y = j.from.y + (j.to.y - j.from.y) * ease; m.z = Math.sin(p * Math.PI) * 90;
-      if (p >= 1) { if (!j.back) { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 62) hurt(e, j.dmg, 120, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, 'SPLAT', '#fff', 22, .8); m.jump = { from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; } }
+      if (p >= 1) { if (!j.back) { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 62) hurt(e, j.dmg, 120, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, 'SPLAT', '#fff', 22, .8); m.jump = { from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
       continue;
     }
     if (m.muted > 0) { m.muted -= dt; continue; }
@@ -1068,15 +1072,16 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
 function drawMember(m) {
   const a = m.anim, p = a ? a.t / a.dur : 0;
   if (m.id === 'dad') {
-    ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 26, 30, 10, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 26, 26, 9, 0, 0, 7); ctx.fill();
     const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * m.face : 0;
-    drawDadAt(ctx, m.x, m.y + 30 + Math.sin(G.t * 4) * 2, 118, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
+    drawDadAt(ctx, m.x, m.y + 30 + Math.sin(G.t * 4) * 2, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
     return;
   }
   const z = m.z || 0;
   ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 4, 20 - z * .05, 7, 0, 0, 7); ctx.fill();
   const lean = a ? (p < .33 ? -.22 * (p / .33) : .18 * (1 - Math.min(1, (p - .33) / .67)) - .03) * m.face : 0;
-  drawCompanionAt(ctx, m.id, m.x, m.y + 4 - z, 1, m.face, G.t, { lean, bob: m.bob, squash: a && p < .33 ? p / .33 : 0 });
+  if (m.land > 0) m.land -= 1 / 60;
+  drawCompanionAt(ctx, m.id, m.x, m.y + 4 - z, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0 });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
@@ -1272,8 +1277,10 @@ function portrait(id, pose) {
 }
 function drawTitleParty() {
   const c = $('#titleParty'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, 300);
-  drawDadAt(x, 220, 292, 280, 1, 'wave');
-  save.party.forEach((id, i) => { const [sx, sy] = [[112, 292], [330, 292], [52, 238]][i]; drawCompanionAt(x, id, sx, sy, 1.9, i === 1 ? -1 : 1, performance.now() / 1000); });
+  drawDadAt(x, 220, 290, 236, 1, 'wave');
+  // companions in an arc in front of Dad, each with its own clear patch of lawn
+  const SPOT = [[118, 284, 1.5, 1], [330, 284, 1.5, -1], [40, 262, 1.25, 1]];
+  save.party.forEach((id, i) => { const [sx, sy, sc, f] = SPOT[i]; drawCompanionAt(x, id, sx, sy, sc, f, performance.now() / 1000); });
 }
 function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); }); }
 
