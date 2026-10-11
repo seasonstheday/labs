@@ -124,7 +124,22 @@ checked against a reputable source before shipping; the Fact Book cites it.
    (Pond: companions +1 rank on slows; Arctic: Patience +20) and unlocks the native
    companion.
 3. **Fact reveal at rest points only**: card reveal, stage end, Fact Book. Never
-   mid-wave, never a quiz.
+   mid-wave, never a gate.
+4. **The Diary.** The Fact Book becomes a diary, organised by category (Animals,
+   Body, Sky & Space, Weather, Food, History, Words) and by world, with a per-category
+   progress ring, the date each fact was learned, and the source it came from.
+   Facts are written in the Kid's voice ("Dad says…") so it reads like a journal.
+5. **Facts feed the economy.** Every fact learned pays a one-time 💎 bonus; every
+   full category pays a Library Card; the diary's completion percent sets a
+   permanent coin multiplier (+1% per fact). "Study time": once a day the Kid can
+   re-read a category in the diary for a small coin reward, so revisiting facts is
+   worth something but never required.
+6. **Pop Quiz (later, optional).** At rest points only (stage end, daily visit), the
+   Kid offers one voiced multiple-choice question drawn from facts already in the
+   diary. Right or wrong, play continues; a right answer adds a bonus (coins, a
+   chest, an item), a wrong answer shows the fact again, kindly, with no penalty.
+   Never a gate, never mid-wave, always skippable, questions only about things the
+   player has already seen. Ships after D so the question bank matches the worlds.
 
 ## Phase F — Polish and accessibility
 
