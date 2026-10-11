@@ -203,7 +203,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 4</div>
+    <div class="build">build 5</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -252,7 +252,7 @@
   <!-- ───────── store ───────── -->
   <section id="store" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Store</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
-    <p class="intro">Coins come from every match. Gems come from daily visits and first-time clears. Library Cards draw new friends.</p>
+    <p class="intro">Coins come from every match. Gems come from daily visits and first-time clears. Nothing here costs real money.</p>
     <div class="list" id="storeList"></div>
   </section>
 
@@ -328,7 +328,7 @@
   <div class="modal" id="drawm" hidden>
     <div class="panel" style="text-align:center">
       <h2 class="display">Library Card Draw</h2>
-      <p class="sub hand">A new friend, or something for the bag.</p>
+      <p class="sub hand">A new friend, or something for the bag. About 3 in 10 draws is a friend, and never more than 5 draws go by without one.</p>
       <div class="cardback" id="cardback">📇</div>
       <div class="reveal" id="reveal"></div>
       <p class="pity" id="pity"></p>
@@ -354,6 +354,7 @@
         <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
+        <li>Everything in this game stays on your device. No accounts, no ads, nothing to buy with real money.</li>
       </ol>
       <div class="row"><button class="btn" id="closeHow">Got it</button></div>
     </div>
@@ -442,9 +443,9 @@ const WEAPONS = {
 const CHARS = {
   dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has a magnifying glass, unless the garage says otherwise.', abil: ['weapon', 'story', 'joke'], price: 0 },
   webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], freeAfter: 0 },
-  sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'] },
-  hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'] },
-  puddles: { name: 'Puddles', em: '🦆', desc: 'A duck whose quack definitely echoes.', abil: ['quack', 'echo', 'pond'] },
+  sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], freeAfter: 2 },
+  hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], freeAfter: 1 },
+  puddles: { name: 'Puddles', em: '🦆', desc: 'A duck whose quack definitely echoes.', abil: ['quack', 'echo', 'pond'], freeAfter: 3 },
 };
 const ABIL = {
   weapon: { name: 'Weapon', em: '🔍', desc: 'Whatever Dad picked in the garage.' },
@@ -1140,7 +1141,7 @@ function stageClear() {
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
   if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
-  $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching from the tub and wants to help. ${CHARS[joined].name} joined the party!`;
+  $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
   $('#nextStage').hidden = last; stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
@@ -1195,7 +1196,7 @@ function buildParty() {
       for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
       html += '</div>';
-    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free after clearing ${STAGES[C.freeAfter].name.slice(3)}, or from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
+    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name.slice(3)}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
@@ -1236,7 +1237,6 @@ const OFFERS = [
   { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
-  { em: '💎', name: 'Gem Pack', desc: 'Real-money gems arrive with the App Store version.', cost: ['soon', 0], run: () => [] },
 ];
 function buildStore() {
   const box = $('#storeList'); box.innerHTML = OFFERS.map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
@@ -1269,10 +1269,8 @@ const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { ti
 const today = () => new Date().toISOString().slice(0, 10);
 function checkDaily() {
   if (save.daily.last === today()) return;
-  const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
-  if (save.daily.last !== yesterday) save.daily.streak = 0;
   const day = save.daily.streak % 7;
-  $('#dailySub').textContent = save.daily.streak ? `Day ${save.daily.streak + 1} in a row. Keep it up!` : 'A little something for coming by.';
+  $('#dailySub').textContent = save.daily.streak ? `Day ${day + 1} of 7. Come back any day for the next one.` : 'A little something for coming by.';
   $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
   $('#dailyClaim').onclick = () => { const r = DAILY[day][2]; setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
   $('#dailym').hidden = false;
