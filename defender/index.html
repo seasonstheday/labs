@@ -47,9 +47,7 @@
   #title .tag { position: relative; margin: 8px 0 0; font-size: 22px; color: #3a2c20; }
   #titleParty { position: absolute; left: 0; top: 36%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
-  #title .wallet { position: absolute; left: 12px; top: 12px; }
   #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
-  #title .side { position: absolute; right: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   #title .menu .btn.play { width: 240px; font-size: 24px; }
   .stages { display: flex; gap: 8px; margin-bottom: 4px; }
@@ -153,6 +151,41 @@
   .howto { font: 400 19px/1.3 "Patrick Hand", cursive; margin: 0; padding-left: 22px; }
   .howto li { margin-bottom: 6px; }
 
+  /* ───────── wallet, items, store, draws, daily ───────── */
+  .wallet { position: absolute; left: 12px; top: 12px; display: flex; gap: 6px; }
+  .wallet .pill { font-size: 14px; padding: 7px 10px; }
+  .pill.coins { background: var(--gold); color: #3a2c20; } .pill.gems { background: var(--teal); } .pill.tix { background: var(--red); }
+  #title .side { position: absolute; right: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
+  #title .side2 { position: absolute; left: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
+  .r0 { --rc: #8b6d4b; } .r1 { --rc: #5c8cbe; } .r2 { --rc: #8a5cc4; } .r3 { --rc: #e0962a; }
+  .slots { display: flex; gap: 8px; margin-top: 8px; }
+  .slotb { flex: 1; height: 54px; border-radius: 12px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .slotb .ie { font-size: 22px; line-height: 1; }
+  .slotb.empty { border-style: dashed; background: rgba(58,44,32,.05); }
+  .itm { display: flex; gap: 10px; align-items: center; background: #fff; border: 3px solid var(--rc); border-radius: 14px; padding: 8px 10px; }
+  .itm .ie { font-size: 30px; width: 40px; text-align: center; flex: none; }
+  .itm .txt { flex: 1; }
+  .itm b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; color: var(--rc); }
+  .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .itm .btn { min-width: 70px; }
+  .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
+  .lootc { width: 64px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 10px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; }
+  .lootc.big { width: 90px; font-size: 12px; } .lootc.big .ie { font-size: 36px; }
+  .offer { display: flex; gap: 12px; align-items: center; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
+  .offer .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
+  .offer .txt { flex: 1; }
+  .offer b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
+  .offer span { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .offer .btn { min-width: 96px; }
+  .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
+  .day { border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 4px; text-align: center; font: 700 11px/1.2 "Fredoka", Arial, sans-serif; }
+  .day .ie { font-size: 22px; display: block; } .day.got { background: var(--green); color: #fff; opacity: .75; } .day.now { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+  .cardback { width: 150px; height: 200px; margin: 0 auto 12px; border: 4px solid #3a2c20; border-radius: 16px; background: repeating-linear-gradient(45deg, #20525c 0 12px, #2a6a76 12px 24px); display: grid; place-items: center; font-size: 60px; box-shadow: var(--shadow); transition: transform .4s; }
+  .cardback.flip { transform: rotateY(180deg); }
+  .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
+  .pity { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 4px 0 8px; }
   @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
@@ -167,15 +200,20 @@
     <div class="cloud" style="top:70px"></div>
     <div class="cloud" style="top:150px; animation-delay:-11s; transform:scale(.7)"></div>
     <div class="fence"></div>
-    <div class="wallet pill know">💡 <span class="knowN">0</span></div>
+    <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 3</div>
+    <div class="build">build 4</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
-      <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
+      <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
       <button class="btn big-icon ghost" id="openBook">📖<small>Facts</small></button>
+    </div>
+    <div class="side2">
+      <button class="btn big-icon ghost" id="openDraw">🎟️<small>Draw</small></button>
+      <button class="btn big-icon ghost" id="openStore">🏪<small>Store</small></button>
+      <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
     </div>
     <div class="menu">
       <div class="stages" id="stagePick"></div>
@@ -192,16 +230,30 @@
 
   <!-- ───────── garage: dad's weapon ───────── -->
   <section id="shop" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill know">💡 <span class="knowN">0</span></span></div>
-    <p class="intro">Dad takes one thing into the backyard. Pick it here, and spend Knowledge to make it permanently better: Power is damage, Quick is how fast he uses it.</p>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
+    <p class="intro">Dad takes one thing into the backyard. Pick it here, and spend coins to make it permanently better: Power is damage, Quick is how fast he uses it.</p>
     <div class="list" id="shopList"></div>
   </section>
 
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill know">💡 <span class="knowN">0</span></span></div>
-    <p class="intro">Dad can bring three backyard friends. Each has one weapon and three abilities you rank up mid-match. Spend Knowledge here to make them stronger for good.</p>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
+    <p class="intro">Dad can bring three backyard friends. Each has one weapon and three abilities you rank up mid-match. Equip items, and spend coins to make them stronger for good. New friends come from Library Card draws.</p>
     <div class="list" id="partyList"></div>
+  </section>
+
+  <!-- ───────── items: the bag ───────── -->
+  <section id="items" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
+    <p class="intro">Everything you've found. Weapons add Power, armor adds Patience (and Dad wears it), books add a little of something clever. Equip from the Party screen; sell what you don't need.</p>
+    <div class="list" id="itemList"></div>
+  </section>
+
+  <!-- ───────── store ───────── -->
+  <section id="store" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Store</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
+    <p class="intro">Coins come from every match. Gems come from daily visits and first-time clears. Library Cards draw new friends.</p>
+    <div class="list" id="storeList"></div>
   </section>
 
   <!-- ───────── HUD ───────── -->
@@ -212,7 +264,7 @@
       <button class="btn icon" id="pause">❚❚</button>
     </div>
     <div id="prog"><div></div></div>
-    <div class="coins"><div class="pill">💡 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
+    <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
     <div id="bossbar" hidden><div class="nm" id="bossName"></div><div class="bar"><div id="bossHp"></div></div></div>
     <div id="hint" hidden></div>
     <div class="bottom">
@@ -247,6 +299,7 @@
       <h2 class="display" style="text-align:center">Stage cleared!</h2>
       <p class="sub hand" style="text-align:center" id="clearSub">Every myth in the backyard went pop.</p>
       <div id="clearStats"></div>
+      <div class="lootrow" id="clearLoot"></div>
       <div class="joined" id="joined" hidden></div>
       <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
     </div>
@@ -258,7 +311,37 @@
       <h2 class="display" style="text-align:center">Dad needs a nap.</h2>
       <p class="sub hand" style="text-align:center">Too many questions at once. Try again after a snack.</p>
       <div id="overStats"></div>
+      <div class="lootrow" id="overLoot"></div>
       <div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="overHome">Home</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="pickm" hidden>
+    <div class="panel">
+      <h2 class="display" id="pickTitle">Equip</h2>
+      <p class="sub hand" id="pickSub"></p>
+      <div class="cards" id="pickList" style="max-height:380px; overflow:auto"></div>
+      <div class="row"><button class="btn ghost" id="pickUnequip">Take off</button><button class="btn" id="pickClose">Done</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="drawm" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">Library Card Draw</h2>
+      <p class="sub hand">A new friend, or something for the bag.</p>
+      <div class="cardback" id="cardback">📇</div>
+      <div class="reveal" id="reveal"></div>
+      <p class="pity" id="pity"></p>
+      <div class="row"><button class="btn" id="draw1">Draw · 🎟️ 1</button><button class="btn ghost" id="drawClose">Close</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="dailym" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">Welcome back!</h2>
+      <p class="sub hand" id="dailySub">Day 1 of your streak.</p>
+      <div class="days" id="days"></div>
+      <div class="row"><button class="btn" id="dailyClaim">Claim</button></div>
     </div>
   </div>
 
@@ -268,7 +351,7 @@
       <ol class="howto">
         <li><b>Nobody moves.</b> Dad and his friends stand in the backyard while grumpy Myths march in. Once a myth steps inside Dad's <b>attention ring</b>, the party attacks on its own.</li>
         <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Ranks last for the match.</li>
-        <li>Gold orbs are <b>💡 Knowledge</b>, and every match pays more at the end. Spend it on the title screen: the <b>Party</b> collects and strengthens friends, the <b>Garage</b> picks and strengthens Dad's weapon.</li>
+        <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
         <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
         <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
       </ol>
@@ -358,10 +441,10 @@ const WEAPONS = {
 /* ───────── the party ───────── */
 const CHARS = {
   dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has a magnifying glass, unless the garage says otherwise.', abil: ['weapon', 'story', 'joke'], price: 0 },
-  webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], price: 150, freeAfter: 0 },
-  sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], price: 250 },
-  hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], price: 350 },
-  puddles: { name: 'Puddles', em: '🦆', desc: 'A duck whose quack definitely echoes.', abil: ['quack', 'echo', 'pond'], price: 500 },
+  webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], freeAfter: 0 },
+  sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'] },
+  hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'] },
+  puddles: { name: 'Puddles', em: '🦆', desc: 'A duck whose quack definitely echoes.', abil: ['quack', 'echo', 'pond'] },
 };
 const ABIL = {
   weapon: { name: 'Weapon', em: '🔍', desc: 'Whatever Dad picked in the garage.' },
@@ -378,7 +461,7 @@ const ABIL = {
   song:   { name: 'Toad Song',     em: '🎵', desc: 'A croaky lullaby. Dad\'s Patience slowly comes back.', passive: true },
   quack:  { name: 'Quack',         em: '📣', desc: 'A sound wave that shoves myths back.', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [16, 20, 25, 31, 38] },
   echo:   { name: 'Echo',          em: '🔊', desc: 'The quack echoes. (It does.) Chance of a second wave.', passive: true },
-  pond:   { name: 'Duck Pond',     em: '💡', desc: 'Puddles finds things. +10% Knowledge found per rank.', passive: true },
+  pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Puddles finds things. +10% coins found per rank.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
@@ -387,28 +470,58 @@ const BASE_RADIUS = 170;
 // where each companion stands, relative to Dad
 const SPOTS = [[-78, 34], [78, 34], [0, 92]];
 
+/* ───────── items ───────── */
+const RAR = [{ n: 'Common', mul: 1, sell: 15 }, { n: 'Rare', mul: 1.7, sell: 40 }, { n: 'Epic', mul: 2.6, sell: 120 }, { n: 'Legendary', mul: 4, sell: 400 }];
+const RADJ = ['', 'Shiny ', 'Ancient ', 'Legendary '];
+const ITEMS = {
+  weapon: { slot: 'Weapon', bases: [['Grip Tape', '🩹'], ['Lucky Marble', '🔮'], ['Rubber Band', '➰'], ['Sidewalk Chalk', '🖍️'], ['Fresh Batteries', '🔋'], ['Garden Twine', '🧵']] },
+  armor:  { slot: 'Armor',  bases: [['Thinking Cap', '🧢', 'cap'], ['Sweater Vest', '🦺', 'vest'], ['Big Glasses', '👓', 'glasses'], ['Dad Watch', '⌚', 'watch']] },
+  book:   { slot: 'Book',   bases: [['Field Guide', '📗', 'ring'], ['Joke Book', '📙', 'crit'], ['Atlas', '📘', 'ring'], ['Dictionary', '📕', 'quick'], ['Comic', '📔', 'coin'], ['Encyclopedia', '📚', 'quick']] },
+};
+const STAT = { pow: ['Power', '%'], quick: ['Quick', '%'], pat: ['Patience', ''], ring: ['Ring', ''], coin: ['Coins', '%'], crit: ['Crit', '%'] };
+let uidN = 0;
+function makeItem(type, rar) {
+  const T = ITEMS[type], base = pick(T.bases), mul = RAR[rar].mul;
+  const it = { uid: Date.now().toString(36) + (uidN++).toString(36), type, rar, name: RADJ[rar] + base[0], em: base[1] };
+  if (type === 'weapon') { it.stat = 'pow'; it.val = Math.round(6 * mul); }
+  else if (type === 'armor') { it.stat = 'pat'; it.val = Math.round(8 * mul); it.look = base[2]; }
+  else { it.stat = base[2]; it.val = { ring: Math.round(12 * mul), crit: Math.round(3 * mul), quick: Math.round(4 * mul), coin: Math.round(6 * mul) }[it.stat]; }
+  return it;
+}
+// rarity roll: later stages and better chests tilt toward the good stuff
+function rollRar(bonus = 0, min = 0) { const r = Math.random() + bonus; return Math.max(min, r > 1.15 ? 3 : r > .92 ? 2 : r > .6 ? 1 : 0); }
+const randItem = (bonus = 0, min = 0) => makeItem(pick(['weapon', 'armor', 'book']), rollRar(bonus, min));
+const itemDesc = it => `+${it.val}${STAT[it.stat][1]} ${STAT[it.stat][0]}`;
+
 /* ───────── save ───────── */
-const SAVE_KEY = 'whydad.defender.v2';
-let save = { unlocked: 0, cleared: [], facts: [], busted: 0, know: 0, weapon: 'glass', wep: {}, chars: {}, party: [] };
+const SAVE_KEY = 'whydad.defender.v3';
+let save = { unlocked: 0, cleared: [], facts: [], busted: 0, coins: 0, gems: 0, tix: 0, weapon: 'glass', wep: {}, chars: {}, party: [], items: [], equip: {}, daily: { last: '', streak: 0 }, pity: 0 };
 try {
   let s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-  if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, know: (v1.know || 0) + 100, wep: v1.wep }; }
+  if (!s) { const v2 = JSON.parse(localStorage.getItem('whydad.defender.v2') || 'null'); if (v2) { s = v2; s.coins = v2.know || 0; s.gems = 30; s.tix = 1; } }
+  if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || [];
+save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
 const ownedW = id => !!WEAPONS[id].own || wep(id).own;
 const chr = id => save.chars[id] || (save.chars[id] = { own: id === 'dad', pow: 0, quick: 0, ring: 0, pat: 0 });
-const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22;
-function setKnow(n) { save.know = Math.max(0, Math.round(n)); persist(); $$('.knowN').forEach(e => e.textContent = save.know); }
+const itemBy = uid => save.items.find(i => i.uid === uid);
+const equipOf = id => save.equip[id] || (save.equip[id] = {});
+// what a character gets from its three item slots
+function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) g[it.stat] += it.val; } return g; }
+// the party-wide stats, summed over everyone who's coming
+function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } return g; }
+const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
+function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!ownedW(save.weapon)) save.weapon = 'glass';
 save.party = save.party.filter(id => CHARS[id] && chr(id).own).slice(0, MAX_COMPANIONS);
 
 /* ───────── run state ───────── */
 let G = null, last = 0, mode = 'title';
 function newRun(stage) {
-  const maxhp = 100 + chr('dad').pat * 20;
+  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat;
   const party = [{ id: 'dad', x: CX, y: CY }, ...save.party.map((id, i) => ({ id, x: CX + SPOTS[i][0], y: CY + SPOTS[i][1] }))];
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   G = {
@@ -456,11 +569,11 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08;
-const cdMul = m => 1 / (1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06);
+const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100);
+const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) return;
-  const crit = Math.random() < rankOf('webster', 'eyes') * .06;
+  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + partyGear().crit / 100;
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10) d *= 1 + glow * .06;
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
@@ -654,7 +767,7 @@ function update(dt) {
   const song = rankOf('hopper', 'song'); if (song) G.hp = Math.min(G.maxhp, G.hp + song * .3 * dt);
   if (G.hp <= 0) { gameOver(); return; }
   // orbs
-  const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1;
+  const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + partyGear().coin / 100;
   for (const o of G.orbs) {
     const d = dist(o, dad); if (d < mag) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
@@ -724,8 +837,48 @@ function drawDadAt(c, x, y, h, face, pose, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face, 1);
   if (opts.alpha != null) c.globalAlpha = opts.alpha;
   c.drawImage(img, -w / 2, -h, w, h);
+  const worn = itemBy(equipOf('dad').armor); if (worn) drawClothing(c, w, h, pose, worn.look, worn.rar);
   if (opts.item) { const A = HAND[pose] || HAND.pointing; drawHeldItem(c, [(A[0] - .5) * w, -h + A[1] * h], opts.item, opts.p); }
   c.restore(); c.globalAlpha = 1;
+}
+// where the clothes go on each sprite, as fractions of width / height
+const WEAR = {
+  wave:     { head: [.56, .17], glasses: [.56, .19], chest: [.50, .47], wrist: [.71, .52], hr: .19 },
+  pointing: { head: [.52, .17], glasses: [.52, .19], chest: [.52, .49], wrist: [.89, .68], hr: .19 },
+  amazed:   { head: [.50, .17], glasses: [.50, .19], chest: [.50, .51], wrist: [.76, .31], hr: .20 },
+  talking:  { head: [.52, .17], glasses: [.52, .19], chest: [.50, .50], wrist: [.22, .45], hr: .19 },
+};
+const RCOL = ['#7a4e2a', '#20525c', '#6b3f7a', '#cb382e'];
+// Dad's equipped armor, drawn over the sprite (origin at his feet, before the face flip is undone)
+function drawClothing(c, w, h, pose, look, rar) {
+  const A = WEAR[pose] || WEAR.wave, P = f => [(f[0] - .5) * w, -h + f[1] * h], col = RCOL[rar];
+  c.lineWidth = Math.max(2, h * .022); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round';
+  if (look === 'vest') {
+    const [cx, cy] = P(A.chest), sw = w * .21, top = cy - h * .11, bot = cy + h * .13;
+    c.fillStyle = col; c.beginPath();
+    c.moveTo(cx - sw, top); c.lineTo(cx - sw * .45, top); c.lineTo(cx, top + h * .075); c.lineTo(cx + sw * .45, top); c.lineTo(cx + sw, top);
+    c.quadraticCurveTo(cx + sw * .8, top + h * .06, cx + sw * .92, top + h * .11); c.lineTo(cx + sw * .98, bot); c.lineTo(cx - sw * .98, bot); c.lineTo(cx - sw * .92, top + h * .11);
+    c.quadraticCurveTo(cx - sw * .8, top + h * .06, cx - sw, top); c.closePath(); c.fill(); c.stroke();
+    c.lineWidth = h * .01; c.strokeStyle = 'rgba(58,44,32,.3)'; for (let i = 1; i <= 3; i++) { const yy = top + h * .09 + i * h * .035; c.beginPath(); c.moveTo(cx - sw * .9, yy); c.lineTo(cx + sw * .9, yy); c.stroke(); }
+    if (rar >= 2) { c.fillStyle = '#ecb23c'; c.beginPath(); c.arc(cx, bot - h * .04, h * .008, 0, 7); c.fill(); }
+  } else if (look === 'glasses') {
+    const [gx, gy] = P(A.glasses), r = w * (.07 + rar * .005), gap = w * .088;
+    c.lineWidth = Math.max(1.5, h * .013); c.strokeStyle = rar ? col : '#3a2c20'; c.fillStyle = ['rgba(190,230,245,.25)', 'rgba(190,230,245,.3)', 'rgba(220,190,255,.3)', 'rgba(255,220,140,.35)'][rar];
+    for (const s of [-1, 1]) { c.beginPath(); c.arc(gx + s * gap, gy, r, 0, 7); c.fill(); c.stroke(); }
+    c.beginPath(); c.moveTo(gx - gap + r, gy); c.lineTo(gx + gap - r, gy); c.stroke();
+  } else if (look === 'cap') {
+    const [hx, hy] = P(A.head), r = w * A.hr, base = hy - r * .78;
+    c.fillStyle = col;
+    c.beginPath(); c.moveTo(hx - r * 1.05, base + r * .12); c.quadraticCurveTo(hx - r * 1.1, base - r * 1.1, hx, base - r * 1.15); c.quadraticCurveTo(hx + r * 1.1, base - r * 1.1, hx + r * 1.05, base + r * .12); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(hx + r * .6, base + r * .02); c.quadraticCurveTo(hx + r * 1.7, base - r * .25, hx + r * 1.75, base + r * .22); c.quadraticCurveTo(hx + r * 1.3, base + r * .38, hx + r * .7, base + r * .3); c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(hx - r * 1.02, base + r * .1); c.quadraticCurveTo(hx, base + r * .3, hx + r * 1.02, base + r * .1); c.stroke();
+    c.beginPath(); c.arc(hx, base - r * 1.15, r * .12, 0, 7); c.fill(); c.stroke();
+    c.font = `700 ${Math.round(r * .7)}px Fredoka, Arial`; c.fillStyle = '#fff'; c.textAlign = 'center'; c.fillText(rar >= 3 ? '!' : '?', hx, base - r * .3);
+  } else if (look === 'watch') {
+    const [wx, wy] = P(A.wrist);
+    c.fillStyle = '#3a2c20'; c.fillRect(wx - w * .06, wy - h * .011, w * .12, h * .022);
+    c.fillStyle = ['#c0c0c0', '#5c8cbe', '#b48be6', '#ecb23c'][rar]; c.beginPath(); c.arc(wx, wy, w * .045, 0, 7); c.fill(); c.stroke();
+  }
 }
 // what's in the hand during a wind-up; p = 0..1 through the animation
 function drawHeldItem(c, [hx, hy], kind, p) {
@@ -960,33 +1113,40 @@ function loop(ts) {
 }
 
 /* ───────── flow ───────── */
-const SCREENS = ['#title', '#book', '#shop', '#partyScreen'];
+const SCREENS = ['#title', '#book', '#shop', '#partyScreen', '#items', '#store'];
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm']) $(m).hidden = true;
   setTimeout(() => { if (G && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
 }
-// Knowledge for the match: every pop counts, bosses and clears pay a bonus, leftover coins convert at half
+// coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 * (G.stage + 1) : 0); }
-function stats(el, know) {
-  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>💡 Knowledge earned</span><b>+${know}</b></div>`;
+function stats(el, coins, gems) {
+  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 First clear bonus</span><b>+${gems}</b></div>` : ''}`;
+}
+// random items at the end of a match; more and better for clears and later stages
+function dropLoot(el, n, bonus) {
+  const drops = []; for (let i = 0; i < n; i++) { const it = randItem(bonus); save.items.push(it); drops.push(it); }
+  persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
+  return drops;
 }
 function stageClear() {
   G.cleared = true; G.paused = true; collectAll();
-  if (!save.cleared.includes(G.stage)) save.cleared.push(G.stage);
+  const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
-  const k = payout(true); setKnow(save.know + k);
+  const k = payout(true), gems = first ? 20 + G.stage * 10 : 0; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) });
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), G.stage * .08 + .1);
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
   if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
   $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching from the tub and wants to help. ${CHARS[joined].name} joined the party!`;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every myth there is. Dad is very, very proud.' : `Every myth in ${G.S.name.slice(3).toLowerCase()} went pop.`;
-  $('#nextStage').hidden = last; stats($('#clearStats'), k); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
+  $('#nextStage').hidden = last; stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed'); $('#clearm').hidden = false;
 }
-function gameOver() { G.over = true; G.hp = 0; const k = payout(false); setKnow(save.know + k); stats($('#overStats'), k); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; }
+function gameOver() { G.over = true; G.hp = 0; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, G.stage * .05); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function goHome() { mode = 'title'; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
 function buildStagePick() {
@@ -1000,52 +1160,131 @@ function buildBook() {
   $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
 }
 function pips(n) { let s = '<div class="pips">'; for (let i = 0; i < MAX_RANK; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
-function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>💡 ${cost}</button>`; }
+function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
 function buildShop() {
   const box = $('#shopList'); box.innerHTML = '';
   for (const id in WEAPONS) {
     const D = WEAPONS[id], w = wep(id), own = ownedW(id), eq = save.weapon === id, d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked') + (eq ? ' inparty' : '');
     let html = `<div class="top"><div class="em">${D.em}</div><div><b>${D.name}</b><span class="d">${D.desc}</span></div>`;
-    if (!own) html += `<button class="btn small" data-buy="${id}" ${save.know >= D.price ? '' : 'disabled'}>Unlock 💡 ${D.price}</button>`;
+    if (!own) html += `<button class="btn small" data-buy="${id}" ${save.coins >= D.price ? '' : 'disabled'}>Unlock 🪙 ${D.price}</button>`;
     else html += eq ? `<button class="btn small green" disabled>Equipped</button>` : `<button class="btn small ghost" data-eq="${id}">Equip</button>`;
     html += '</div>';
-    if (own) { html += '<div class="ranks">'; for (const r in WRANKS) { const R = WRANKS[r], lv = w[r], cost = R.base + lv * R.step; html += `<div class="rank"><span class="nm">${R.name}</span>${pips(lv)}<span data-rank="${id}:${r}">${buyBtn(cost, save.know >= cost, lv >= MAX_RANK)}</span></div>`; } html += '</div>'; }
+    if (own) { html += '<div class="ranks">'; for (const r in WRANKS) { const R = WRANKS[r], lv = w[r], cost = R.base + lv * R.step; html += `<div class="rank"><span class="nm">${R.name}</span>${pips(lv)}<span data-rank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; } html += '</div>'; }
     d.innerHTML = html; box.appendChild(d);
   }
-  box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.know < WEAPONS[id].price) return; setKnow(save.know - WEAPONS[id].price); wep(id).own = true; save.weapon = id; persist(); buildShop(); });
+  box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.coins < WEAPONS[id].price) return; setWallet({ coins: save.coins - WEAPONS[id].price }); wep(id).own = true; save.weapon = id; persist(); buildShop(); });
   box.querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { save.weapon = b.dataset.eq; persist(); buildShop(); });
-  box.querySelectorAll('[data-rank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.rank.split(':'), w = wep(id), R = WRANKS[r], cost = R.base + w[r] * R.step; if (w[r] >= MAX_RANK || save.know < cost) return; setKnow(save.know - cost); w[r]++; persist(); buildShop(); });
+  box.querySelectorAll('[data-rank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.rank.split(':'), w = wep(id), R = WRANKS[r], cost = R.base + w[r] * R.step; if (w[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); w[r]++; persist(); buildShop(); });
 }
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
   for (const id in CHARS) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
     let html = `<div class="top"><canvas class="pc" data-c="${id}" width="112" height="112"></canvas><div><b>${C.name}</b><span class="d">${C.desc}</span></div>`;
-    if (!c.own) html += `<button class="btn small" data-buy="${id}" ${save.know >= C.price ? '' : 'disabled'}>Unlock 💡 ${C.price}</button>`;
+    if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Draw</button>`;
     else if (id === 'dad') html += `<button class="btn small green" disabled>Always</button>`;
     else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
     html += `<div class="abils">${C.abil.map(a => `<span>${abilEm(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
+      const eq = equipOf(id); html += '<div class="slots">';
+      for (const t in ITEMS) { const it = itemBy(eq[t]); html += it ? `<div class="slotb r${it.rar}" data-slot="${id}:${t}"><span class="ie">${it.em}</span>${itemDesc(it)}</div>` : `<div class="slotb empty" data-slot="${id}:${t}"><span class="ie">➕</span>${ITEMS[t].slot}</div>`; }
+      html += '</div>';
       const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
-      for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.know >= cost, lv >= MAX_RANK)}</span></div>`; }
+      for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
       html += '</div>';
-    } else if (C.freeAfter != null && !save.cleared.includes(C.freeAfter)) html += `<div class="ranks"><div class="rank"><span>…or free after clearing ${STAGES[C.freeAfter].name.slice(3)}</span></div></div>`;
+    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free after clearing ${STAGES[C.freeAfter].name.slice(3)}, or from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
-  box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.know < CHARS[id].price) return; setKnow(save.know - CHARS[id].price); chr(id).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(id); persist(); buildParty(); });
+  box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
+  box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
   box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) return; save.party.push(b.dataset.join); persist(); buildParty(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
-  box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.know < cost) return; setKnow(save.know - cost); c[r]++; persist(); buildParty(); });
+  box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r]++; persist(); buildParty(); });
   drawStatics();
+}
+
+/* ───────── equip picker ───────── */
+let pickFor = null;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${it.name}</b><span>${RAR[it.rar].n} ${ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span></div>${btn}</div>`;
+function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
+function openPick(id, t) {
+  pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
+  const list = save.items.filter(i => i.type === t).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
+  $('#pickSub').textContent = list.length ? 'Tap one to wear it.' : `No ${ITEMS[t].slot.toLowerCase()}s in the bag yet. They drop at the end of every match.`;
+  $('#pickList').innerHTML = list.map(it => itemRow(it, it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`)).join('');
+  $('#pickUnequip').hidden = !cur;
+  $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; persist(); $('#pickm').hidden = true; buildParty(); });
+  $('#pickm').hidden = false;
+}
+$('#pickUnequip').onclick = () => { delete equipOf(pickFor.id)[pickFor.t]; persist(); $('#pickm').hidden = true; buildParty(); };
+$('#pickClose').onclick = () => $('#pickm').hidden = true;
+
+/* ───────── the bag ───────── */
+function buildItems() {
+  const box = $('#itemList'), list = [...save.items].sort((a, b) => b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
+  box.innerHTML = list.length ? list.map(it => itemRow(it, wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`)).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
+  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); setWallet({ coins: save.coins + RAR[it.rar].sell }); buildItems(); });
+}
+
+/* ───────── the store ───────── */
+const OFFERS = [
+  { em: '🍱', name: 'Lunchbox', desc: 'One item. Usually something ordinary, sometimes not.', cost: ['coins', 300], run: () => [randItem(.1)] },
+  { em: '🎒', name: 'Backpack', desc: 'Three items, at least Rare, with a good shot at better.', cost: ['gems', 60], run: () => [randItem(.3, 1), randItem(.3, 1), randItem(.3, 1)] },
+  { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
+  { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
+  { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
+  { em: '💎', name: 'Gem Pack', desc: 'Real-money gems arrive with the App Store version.', cost: ['soon', 0], run: () => [] },
+];
+function buildStore() {
+  const box = $('#storeList'); box.innerHTML = OFFERS.map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1]) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+}
+
+/* ───────── library card draws ───────── */
+const PITY = 5;
+function openDraw() { $('#reveal').innerHTML = ''; $('#cardback').classList.remove('flip'); updateDraw(); $('#drawm').hidden = false; }
+function updateDraw() {
+  const left = Object.keys(CHARS).filter(id => !chr(id).own);
+  $('#pity').textContent = left.length ? `${left.length} friend${left.length > 1 ? 's' : ''} still out there. A new one is guaranteed within ${PITY - (save.pity % PITY)} draw${PITY - (save.pity % PITY) > 1 ? 's' : ''}.` : 'Everyone has joined! Draws now give Epic or better items.';
+  $('#draw1').disabled = save.tix < 1; $('#draw1').textContent = `Draw · 🎟️ 1  (have ${save.tix})`;
+}
+$('#draw1').onclick = () => {
+  if (save.tix < 1) return; setWallet({ tix: save.tix - 1 });
+  const left = Object.keys(CHARS).filter(id => !chr(id).own); save.pity++;
+  let html;
+  if (left.length && (save.pity % PITY === 0 || Math.random() < .3)) {
+    const id = pick(left); chr(id).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(id); save.pity = 0;
+    html = `<div class="lootc big r3"><span class="ie">${CHARS[id].em}</span>${CHARS[id].name}<br><small>joined the party!</small></div>`;
+  } else { const it = randItem(.25, left.length ? 1 : 2); save.items.push(it); html = `<div class="lootc big r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`; }
+  persist(); const cb = $('#cardback'); cb.classList.add('flip'); $('#reveal').innerHTML = '';
+  setTimeout(() => { cb.classList.remove('flip'); $('#reveal').innerHTML = html; updateDraw(); if (!$('#partyScreen').hidden) buildParty(); drawStatics(); }, 400);
+};
+$('#drawClose').onclick = () => $('#drawm').hidden = true;
+
+/* ───────── daily rewards ───────── */
+const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { tix: 1 }], ['💎', '20 gems', { gems: 20 }], ['🪙', '200 coins', { coins: 200 }], ['🎟️', '1 card', { tix: 1 }], ['💎', '40 gems', { gems: 40 }], ['🎁', '100 gems + card', { gems: 100, tix: 1 }]];
+const today = () => new Date().toISOString().slice(0, 10);
+function checkDaily() {
+  if (save.daily.last === today()) return;
+  const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+  if (save.daily.last !== yesterday) save.daily.streak = 0;
+  const day = save.daily.streak % 7;
+  $('#dailySub').textContent = save.daily.streak ? `Day ${save.daily.streak + 1} in a row. Keep it up!` : 'A little something for coming by.';
+  $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
+  $('#dailyClaim').onclick = () => { const r = DAILY[day][2]; setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
+  $('#dailym').hidden = false;
 }
 
 $('#play').onclick = () => startGame(pickStage);
 $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
+$('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
+$('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
+$('#openDraw').onclick = openDraw;
 $$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });
 $('#openHow').onclick = () => $('#howm').hidden = false;
 $('#closeHow').onclick = () => $('#howm').hidden = true;
@@ -1067,8 +1306,8 @@ cv.addEventListener('pointerdown', ev => {
   G.focus = best; if (best) text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 15, .8);
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist };
-setKnow(save.know); buildStagePick(); showScreen('#title'); drawStatics();
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem };
+setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 })();
 </script>
