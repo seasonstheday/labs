@@ -17,6 +17,7 @@ import base64, json, os, subprocess, sys, time, urllib.request
 KEY = os.environ.get('GEMINI_API_KEY', '')  # may be empty when a proxy adds the key header itself
 MODEL = os.environ.get('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image')
 HERE = os.path.dirname(os.path.abspath(__file__)); ASSETS = os.path.join(HERE, '..', 'assets')
+RAW = os.environ.get('GEN_ART_RAW')  # optional directory that keeps the untouched model output
 
 STYLE = ("Children's picture-book cartoon, clean thick dark-brown outlines, flat cheerful colours with one soft shadow "
          "and one highlight, big friendly eyes with a white catchlight, in the style of a modern preschool TV show mascot. "
@@ -42,24 +43,25 @@ ARENAS = [
     'a library with wooden floorboards, a round red rug in the middle and bookshelves around the edge',
     'a sandy beach with gentle waves along the top edge, shells and a sandcastle',
     'a desert with dune ripples, a few cacti and bleached rocks',
-    'snowy arctic ground with pale blue ice cracks, snow drifts and a small igloo',
+    'pale blue-white snowy arctic ground with soft blue shadows, ice cracks, snow drifts and a small igloo',
     'a jungle floor crowded with big leaves and vines around the edge',
     'a night-time lawn under a starry sky with a telescope and a picnic blanket',
 ]
 MAPS = [
-    'a sunny backyard with a red garden shed, a picket fence and flower beds',
+    'a backyard on a bright day with a red garden shed, a picket fence and flower beds',
     'a pond with reeds, lily pads and a duck, willow trees behind',
     'the inside of a cosy library with tall bookshelves and a round red rug',
     'a beach with a small sailing boat and a whale spout out at sea',
-    'a desert with pyramids, cacti and a big sun',
+    'a desert with pyramids and cacti under a clear blue sky',
     'a snowy arctic landscape with an igloo, a snowman and ice floes',
     'a dense green jungle with a monkey in a tree and a parrot',
     'a starry night sky over a dark lawn with a telescope and a crescent moon',
 ]
 
-def call(prompt):
+def call(prompt, aspect='1:1'):
     url = f'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent'
-    body = json.dumps({'contents': [{'parts': [{'text': prompt}]}], 'generationConfig': {'responseModalities': ['IMAGE']}}).encode()
+    body = json.dumps({'contents': [{'parts': [{'text': prompt}]}],
+                       'generationConfig': {'responseModalities': ['IMAGE'], 'imageConfig': {'aspectRatio': aspect}}}).encode()
     headers = {'Content-Type': 'application/json'}
     if KEY: headers['x-goog-api-key'] = KEY
     req = urllib.request.Request(url, data=body, headers=headers)
@@ -74,25 +76,28 @@ def call(prompt):
             print('  retry after', e); time.sleep(3 * (attempt + 1))
 
 def sprite_fix(path, size):
-    # white background -> transparent, trim to the drawing, pad to a square with the feet at the bottom
-    subprocess.run(['convert', path, '-fuzz', '6%', '-transparent', 'white', '-trim', '+repage',
+    # white background -> transparent (flood fill from the edges, so white eyes, bellies and cards stay white),
+    # trim to the drawing, pad to a square with the feet at the bottom
+    subprocess.run(['convert', path, '-alpha', 'set', '-bordercolor', 'white', '-border', '1', '-fuzz', '6%', '-fill', 'none',
+                    '-draw', 'matte 0,0 floodfill', '-shave', '1x1', '-trim', '+repage',
                     '-resize', f'{size}x{size}', '-background', 'none', '-gravity', 'south', '-extent', f'{size}x{size}', path], check=True)
 
 def make(name, prompt, kind):
     out = os.path.join(ASSETS, name + '.png'); print(name, '...', flush=True)
-    png = call(prompt); tmp = out + '.tmp.png'
+    png = call(prompt, {'arena': '9:16', 'map': '21:9'}.get(kind, '1:1')); tmp = out + '.tmp.png'
     with open(tmp, 'wb') as f: f.write(png)
+    if RAW: open(os.path.join(RAW, name + '.png'), 'wb').write(png)  # keep the model's output for re-processing
     if kind == 'pet': sprite_fix(tmp, 400)
     elif kind == 'kid': sprite_fix(tmp, 800)
     elif kind == 'arena': subprocess.run(['convert', tmp, '-resize', '480x800^', '-gravity', 'center', '-extent', '480x800', tmp], check=True)
-    elif kind == 'map': subprocess.run(['convert', tmp, '-resize', '880x400^', '-gravity', 'center', '-extent', '880x400', tmp], check=True)
+    elif kind == 'map': subprocess.run(['convert', tmp, '-resize', '928x422^', '-gravity', 'center', '-extent', '880x400', tmp], check=True)  # a little overscan trims any margin the model paints
     os.replace(tmp, out); print('  ->', os.path.relpath(out))
 
 def jobs():
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
     yield 'kid', STYLE + ' ' + KID + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'kid', 'kid'
-    for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} No characters. Keep the middle of the picture empty and simple. Portrait orientation, 3:5.', 'arena', 'arenas'
-    for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} No characters. Landscape orientation, wider than it is tall, about 11:5.', 'map', 'maps'
+    for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
+    for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'
 
 if __name__ == '__main__':
     if not KEY: print('GEMINI_API_KEY is not set; relying on the network to add it (a proxy secret), otherwise requests will fail with 401')
