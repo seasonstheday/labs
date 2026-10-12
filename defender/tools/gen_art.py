@@ -49,9 +49,9 @@ ARENAS = [
 ]
 MAPS = [
     'a backyard with a red garden shed, a picket fence and flower beds, under a plain blue sky with a few clouds and no sun',
-    'a pond with reeds, lily pads and a duck, willow trees behind',
+    'a pond with reeds, lily pads and a duck, willow trees behind, under a plain blue sky with no sun',
     'the inside of a cosy library with tall bookshelves and a round red rug',
-    'a beach with a small sailing boat and a whale spout out at sea',
+    'a beach with a small sailing boat and a whale spout out at sea, under a plain blue daytime sky with no sun and no moon',
     'a desert with pyramids, rolling sand dunes and a small palm oasis, under a plain clear blue sky with no sun',
     'a snowy arctic landscape with an igloo, a snowman and ice floes, under a plain pale sky with no sun or moon',
     'a dense green jungle with a monkey in a tree and a parrot',
