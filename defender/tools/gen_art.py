@@ -9,11 +9,12 @@
 Output goes to defender/assets/ with the names the game looks for (see ART.md). Sprites are
 asked for on a flat white background, then the white is made transparent and the image is
 trimmed, so the game can place them by their feet. Needs only python3 and ImageMagick.
-Nothing but the prompt and the key leaves this machine.
+Nothing but the prompt and the key leaves this machine. The key goes in the x-goog-api-key header; leave
+GEMINI_API_KEY unset when a proxy adds that header for you.
 """
 import base64, json, os, subprocess, sys, time, urllib.request
 
-KEY = os.environ.get('GEMINI_API_KEY')
+KEY = os.environ.get('GEMINI_API_KEY', '')  # may be empty when a proxy adds the key header itself
 MODEL = os.environ.get('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image')
 HERE = os.path.dirname(os.path.abspath(__file__)); ASSETS = os.path.join(HERE, '..', 'assets')
 
@@ -57,9 +58,11 @@ MAPS = [
 ]
 
 def call(prompt):
-    url = f'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}'
+    url = f'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent'
     body = json.dumps({'contents': [{'parts': [{'text': prompt}]}], 'generationConfig': {'responseModalities': ['IMAGE']}}).encode()
-    req = urllib.request.Request(url, data=body, headers={'Content-Type': 'application/json'})
+    headers = {'Content-Type': 'application/json'}
+    if KEY: headers['x-goog-api-key'] = KEY
+    req = urllib.request.Request(url, data=body, headers=headers)
     for attempt in range(4):
         try:
             with urllib.request.urlopen(req, timeout=120) as r: data = json.load(r)
@@ -92,7 +95,7 @@ def jobs():
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} No characters. Landscape orientation, wider than it is tall, about 11:5.', 'map', 'maps'
 
 if __name__ == '__main__':
-    if not KEY: sys.exit('GEMINI_API_KEY is not set')
+    if not KEY: print('GEMINI_API_KEY is not set; relying on the network to add it (a proxy secret), otherwise requests will fail with 401')
     args = [a for a in sys.argv[1:] if not a.startswith('--')]; force = '--force' in sys.argv
     os.makedirs(ASSETS, exist_ok=True); n = 0
     for name, prompt, kind, group in jobs():
