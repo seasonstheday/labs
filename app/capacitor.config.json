@@ -1,0 +1,21 @@
+{
+  "appId": "com.whydad.defender",
+  "appName": "Why, Dad? Defender",
+  "webDir": "www",
+  "backgroundColor": "#fbf3df",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#fbf3df",
+    "preferredContentMode": "mobile",
+    "scheme": "whydad"
+  },
+  "android": {
+    "backgroundColor": "#fbf3df",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "AdMob": {
+      "note": "App IDs live in Info.plist (GADApplicationIdentifier) and AndroidManifest (com.google.android.gms.ads.APPLICATION_ID). Ad unit IDs live in src/native.js."
+    }
+  }
+}
