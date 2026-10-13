@@ -338,7 +338,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 15</div>
+    <div class="build">build 16</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -617,7 +617,9 @@ const IMG = {};
 for (const n of ['wave', 'pointing', 'amazed', 'talking', 'webster']) { const i = new Image(); i.src = n === 'webster' ? 'assets/webster.png' : `assets/mascot_${n}.png`; i.onload = drawStatics; IMG[n] = i; }
 // optional art overrides, see ART.md: pet_<id>.png (friend facing right, feet at the bottom), kid.png, arena_<chapter>.png, map_<chapter>.png
 const ART = {};
-function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.png`; } return ART[key] || null; }
+function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); if (!$('#map').hidden) drawMap(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.png`; } return ART[key] || null; }
+// ask for every drop-in up front, so the first arena, map and quiz already have them (missing files just fall back)
+['kid', ...'webster sparky hopper puddles dusty pip scuttle nilla luna'.split(' ').map(p => 'pet_' + p), ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(n => ['arena_' + n, 'map_' + n])].forEach(k => art(k));
 const ready = i => i && i.complete && i.naturalWidth;
 // where Dad's hand is on each sprite, as fractions of its width / height
 const HAND = { wave: [.12, .34], pointing: [.08, .33] };
@@ -1972,8 +1974,10 @@ function drawTitleParty() {
 function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
+// where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
+const KID_CARD = { x: -.20, y: -.63, s: .065 };
 function drawKid(c, x, y, h, holding) {
-  const png = art('kid'); if (ready(png)) { const w = h * png.naturalWidth / png.naturalHeight; c.drawImage(png, x - w / 2, y - h, w, h); if (holding) kidCard(c, x, y, h); return; }
+  const png = art('kid'); if (ready(png)) { const w = h * png.naturalWidth / png.naturalHeight; c.drawImage(png, x - w / 2, y - h, w, h); if (holding) kidMark(c, x, y, h); return; }
   c.save(); c.translate(x, y); c.lineWidth = Math.max(2, h * .028); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round'; c.lineCap = 'round';
   const r = h * .2;
   // shoes, legs, shorts
@@ -1995,6 +1999,7 @@ function drawKid(c, x, y, h, holding) {
   c.restore();
   if (holding) kidCard(c, x, y, h);
 }
+function kidMark(c, x, y, h) { c.save(); c.fillStyle = '#3a2c20'; c.font = `700 ${Math.round(h * KID_CARD.s)}px Fredoka, Arial`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', x + h * KID_CARD.x, y + h * KID_CARD.y); c.restore(); }
 function kidCard(c, x, y, h) { c.save(); c.translate(x + h * .3, y - h * .66); c.rotate(.12); c.lineWidth = Math.max(2, h * .028); c.strokeStyle = '#3a2c20'; c.fillStyle = '#fff'; c.beginPath(); c.roundRect(-h * .13, -h * .16, h * .26, h * .3, h * .02); c.fill(); c.stroke(); c.fillStyle = '#3a2c20'; c.font = `700 ${Math.round(h * .16)}px Fredoka, Arial`; c.textAlign = 'center'; c.fillText('?', 0, h * .06); c.restore(); }
 
 /* ───────── the Reading Room ───────── */

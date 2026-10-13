@@ -16,7 +16,17 @@ drawn version.
 
 Equipped hats, vests, glasses and watches are drawn on top of sprites using anchor points
 in `WEAR_PET` (head, chest, foot, hand). If a PNG's head is somewhere else, adjust that one
-line.
+line. The Kid's "?" is drawn onto the blank card in `kid.png` at `KID_CARD` (x and y from the
+feet, in units of the Kid's height); move it if a new Kid holds the card somewhere else.
+
+## Generating with the script
+
+`python3 defender/tools/gen_art.py` makes every missing file with the Gemini image model
+(see the docstring for the key and the one-file / one-group forms). It asks for 9:16 arenas
+and 21:9 map strips so the model does not paint a framed card inside a square, and it clears
+sprite backgrounds with a flood fill from the edges so white eyes, bellies and the card stay
+opaque. The model likes to put faces on suns, flowers and shells; the prompts ask for an
+"empty stage" instead, and a file that still comes back with faces is worth one more try.
 
 ## Style
 
