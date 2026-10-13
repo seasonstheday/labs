@@ -22,6 +22,14 @@
   #frame.big .btn { font-size: 20px; }
   #frame.calm * { animation-duration: .01s !important; }
   #frame.calm .starrow span, #frame.calm .lootc, #frame.calm .panel { animation: none !important; }
+  /* grown-ups only: the gate and the real-money shelf (native builds only) */
+  #gatem .panel { text-align: center; }
+  #gatem input { width: 120px; font: 700 28px/1 "Fredoka", Arial, sans-serif; text-align: center; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px; margin: 8px 0; background: #fff; }
+  #gatem .q { font: 700 26px/1.2 "Fredoka", Arial, sans-serif; margin: 6px 0; }
+  .iaphead { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 16px 0 4px; display: flex; align-items: center; gap: 8px; }
+  .iaphead small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .offer.owned { background: #e8f3df; }
+  .offer .price { font: 700 15px/1 "Fredoka", Arial, sans-serif; }
   .privacy { font: 400 14px/1.3 "Patrick Hand", cursive; color: var(--muted); margin: 10px 0 0; text-align: left; }
   .privacy b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   #fps { position: absolute; left: 8px; bottom: 4px; font: 700 11px/1 monospace; color: #fff; background: rgba(0,0,0,.4); padding: 2px 5px; border-radius: 6px; pointer-events: none; display: none; }
@@ -338,7 +346,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 16</div>
+    <div class="build">build 17</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -427,6 +435,18 @@
     <div class="list" id="storeList"></div>
   </section>
 
+  <!-- ───────── the grown-up gate: a sum, typed by an adult, before any ad or purchase ───────── -->
+  <div class="modal" id="gatem" hidden>
+    <div class="panel">
+      <h2 class="display">Ask a grown-up</h2>
+      <p class="sub hand" id="gateWhy">This part is for adults. Hand the phone to one.</p>
+      <div class="q" id="gateQ">What is 7 × 8?</div>
+      <input id="gateIn" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off">
+      <p class="hand" id="gateMsg" style="min-height:1.3em;margin:0 0 8px;color:var(--red)"></p>
+      <div class="row"><button class="btn ghost" id="gateNo">Not now</button><button class="btn" id="gateOk">That's right ✓</button></div>
+    </div>
+  </div>
+
   <!-- ───────── HUD ───────── -->
   <div id="hud" hidden>
     <div class="top">
@@ -480,6 +500,7 @@
       <div class="joined" id="grew" hidden></div>
       <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
       <div class="row" id="quizRow" hidden><button class="btn ghost small" id="popQuiz">🙋 The Kid has a question (optional, +🪙)</button></div>
+      <div class="row" id="adRow" hidden><button class="btn ghost small" id="adDouble">📺 Watch a short video: double the coins (grown-up says yes)</button></div>
     </div>
   </div>
 
@@ -529,7 +550,7 @@
       <h2 class="display">Settings</h2>
       <p class="sub hand">Change these any time, even mid-match.</p>
       <div class="toggles" id="settingToggles"></div>
-      <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no ads, no tracking, and it works with no signal once it has loaded.</p>
+      <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no tracking, and it works with no signal once it has loaded. On the web there are no ads at all. In the app, a short video is only ever offered behind a grown-up check, and the Pass turns them off.</p>
       <div class="row"><button class="btn" id="closeSettings">Done</button></div>
     </div>
   </div>
@@ -993,7 +1014,7 @@ const equipOf = id => save.equip[id] || (save.equip[id] = {});
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { g[it.stat] += it.val; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) if (!it.marks && it.type !== 'mark') it.marks = [];
 save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal'; save.comics = save.comics || [];
-save.factDate = save.factDate || {}; save.catCards = save.catCards || []; save.paidFacts = save.paidFacts || []; save.traits = save.traits || [];
+save.iap = save.iap || []; save.factDate = save.factDate || {}; save.catCards = save.catCards || []; save.paidFacts = save.paidFacts || []; save.traits = save.traits || [];
 // friends who were already in the party before levels existed start at level 6 with everything they had
 for (const id in save.chars) { const c = save.chars[id]; if (c.own && c.xp == null) c.xp = save.cleared.length ? 25 * (1 + 2 + 3) : 0; c.sk = c.sk || {}; }
 const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
@@ -2017,11 +2038,11 @@ function openRoom() {
     const oldest = save.room.used[0]; $('#roomTimer').textContent = left > 0 ? `${left} visit${left > 1 ? 's' : ''} left` : `All used up. Another opens in ${fmtWait(oldest + ROOM_WINDOW - Date.now())}.`;
     $('#roomGo').hidden = false; $('#roomGo').disabled = left <= 0;
   }
-  $('#roomAdRow').hidden = !(window.rewardedAd && left <= 0);
+  $('#roomAdRow').hidden = !(window.rewardedAd && left <= 0 && !hasPass());
   $('#roomm').hidden = false;
 }
 $('#openRoom').onclick = openRoom; $('#roomClose').onclick = () => $('#roomm').hidden = true;
-$('#roomAd').onclick = () => { if (!window.rewardedAd) return; window.rewardedAd().then(ok => { if (ok) { save.room.bonus = (save.room.bonus || 0) + 1; persist(); openRoom(); } }); };
+$('#roomAd').onclick = () => watchAd('One more Reading Room visit, if a grown-up says yes.').then(ok => { if (ok) { save.room.bonus = (save.room.bonus || 0) + 1; persist(); openRoom(); } });
 $('#roomGo').onclick = () => { if (roomRunsLeft() <= 0) return; if (save.room.bonus > 0) save.room.bonus--; else save.room.used.push(Date.now()); persist(); $('#roomm').hidden = true; startRoom(); };
 function startRoom() {
   const stage = Math.min(save.unlocked, STAGES.length - 1);
@@ -2149,6 +2170,7 @@ function stageClear() {
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
+  $('#adRow').hidden = !(window.rewardedAd && !hasPass() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
   if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
 // every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
@@ -2168,6 +2190,7 @@ function payFacts() {
   WORLDS.forEach((W, w) => { if (mastered(w) && !save.traits.includes(w)) { save.traits.push(w); toastLine(`${TRAITS[w][0]} Chapter mastered: ${TRAITS[w][1]}. ${TRAITS[w][2]}, for good.`); } });
   persist(); return gems;
 }
+const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
 function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
@@ -2382,6 +2405,36 @@ function buildItems() {
 }
 
 /* ───────── the store ───────── */
+/* ───────── grown-ups only: the gate, and the real-money shelf the native build adds ─────────
+   Nothing here exists on the web. The native shell (app/src/native.js) sets window.rewardedAd and window.iap;
+   the game only ever shows those buttons when it finds them, and every tap goes through the gate first. */
+let gateUntil = 0, gateCb = null, gateAns = 0;
+function adultGate(why, cb) {
+  if (Date.now() < gateUntil) return cb();
+  const a = 3 + Math.floor(Math.random() * 7), b = 4 + Math.floor(Math.random() * 6); gateAns = a * b; gateCb = cb;
+  $('#gateQ').textContent = `What is ${a} × ${b}?`; $('#gateWhy').textContent = why; $('#gateIn').value = ''; $('#gateMsg').textContent = '';
+  $('#gatem').hidden = false; setTimeout(() => $('#gateIn').focus(), 50);
+}
+$('#gateOk').onclick = () => { if (+$('#gateIn').value === gateAns) { $('#gatem').hidden = true; gateUntil = Date.now() + 10 * 60e3; const f = gateCb; gateCb = null; if (f) f(); } else { $('#gateMsg').textContent = 'Not quite. Try again, or ask a grown-up.'; $('#gateIn').value = ''; } };
+$('#gateNo').onclick = () => { $('#gatem').hidden = true; gateCb = null; };
+$('#gateIn').onkeydown = e => { if (e.key === 'Enter') $('#gateOk').onclick(); };
+// a rewarded video, behind the gate; resolves true only when it was watched through
+function watchAd(why) { return new Promise(res => { if (!window.rewardedAd) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
+// what real money can buy: always deterministic, never a draw. Prices come from the store itself.
+const IAP = {
+  'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'Every friend joins the party today, and the video offers go away for good.', grant: () => { for (const id in CHARS) chr(id).own = true; } },
+  'com.whydad.defender.closet': { em: '🧥', name: "Dad's Closet", desc: 'Four Legendary outfits: a cap, a vest, glasses and a watch, with three bookmark slots each.', grant: () => { for (const base of ITEMS.armor.bases) { const it = makeItem('armor', 3); it.name = 'Legendary ' + base[0]; it.em = base[1]; it.look = base[2]; save.items.push(it); } } },
+};
+const hasPass = () => save.iap.includes('com.whydad.defender.pass');
+function grantIap(id) { if (!IAP[id] || save.iap.includes(id)) return; save.iap.push(id); IAP[id].grant(); persist(); }
+async function buildIap() {
+  const box = $('#iapList'); if (!box) return;
+  if (!window.iap) { box.innerHTML = ''; return; }
+  let prices = {}; try { for (const p of await window.iap.products()) prices[p.id] = p.price; } catch (e) {}
+  box.innerHTML = `<div class="iaphead">🔒 Grown-ups only <small>Real money. Each one is a fixed thing, never a draw.</small></div>` + Object.keys(IAP).map(id => { const P = IAP[id], own = save.iap.includes(id); return `<div class="offer ${own ? 'owned' : ''}"><div class="em">${P.em}</div><div class="txt"><b>${P.name}</b><span>${P.desc}</span></div>${own ? '<button class="btn small green" disabled>Owned</button>' : `<button class="btn small" data-iap="${id}"><span class="price">${prices[id] || 'Buy'}</span></button>`}</div>`; }).join('') + `<div class="offer"><div class="em">♻️</div><div class="txt"><b>Restore purchases</b><span>Bought it on another phone? Get it back here.</span></div><button class="btn small ghost" id="iapRestore">Restore</button></div>`;
+  box.querySelectorAll('[data-iap]').forEach(b => b.onclick = () => adultGate('Buying things is for grown-ups.', async () => { b.disabled = true; try { if (await window.iap.buy(b.dataset.iap)) { grantIap(b.dataset.iap); drawStatics(); } } catch (e) {} buildIap(); }));
+  const r = $('#iapRestore'); if (r) r.onclick = () => adultGate('Restoring purchases is for grown-ups.', async () => { try { for (const id of await window.iap.restore()) grantIap(id); } catch (e) {} buildIap(); drawStatics(); });
+}
 const OFFERS = [
   { em: '🍱', name: 'Lunchbox', desc: 'One item. Usually something ordinary, sometimes not.', cost: ['coins', 300], run: () => [randItem(.1)] },
   { em: '🎒', name: 'Backpack', desc: 'Three items, at least Rare, with a good shot at better.', cost: ['gems', 60], run: () => [randItem(.3, 1), randItem(.3, 1), randItem(.3, 1)] },
@@ -2393,8 +2446,10 @@ const OFFERS = [
   { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
 function buildStore() {
-  const box = $('#storeList'); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || window.rewardedAd).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
-  box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; if (!window.rewardedAd) return; window.rewardedAd().then(ok => { if (ok) { o.run(); buildStore(); } }); });
+  const box = $('#storeList'); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
+  if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
+  $('#store .intro').textContent = window.iap ? 'Coins come from every match. Gems come from daily visits and first-time clears. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from every match. Gems come from daily visits and first-time clears. Nothing here costs real money.';
   box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1]) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
@@ -2470,7 +2525,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();

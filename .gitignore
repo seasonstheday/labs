@@ -2,3 +2,7 @@ Thumbs.db
 .DS_Store
 *_precleanup*
 __pycache__/
+app/node_modules/
+app/www/
+app/ios/
+app/android/
