@@ -70,15 +70,29 @@ window.load = async (url, animUrls) => {
   R = Math.max(size.x, size.y, size.z); root.position.x -= c.x; root.position.z -= c.z; root.position.y -= box.min.y; groundY = 0;
   toonify(root); scene.add(root);
   root.traverse(o => { if (o.isBone) bones.push(o); });
-  cam = new THREE.OrthographicCamera(-R * .56, R * .56, R * 1.04, -R * .08, .01, R * 20);
+  // a generous frustum first; window.fit() below measures the drawn pixels from every direction and tightens it
+  cam = new THREE.OrthographicCamera(-R * 1.6, R * 1.6, R * 2.1, -R * 1.1, .01, R * 20); window.fitBox = { span: R * 3.2, mid: R * .5 };
   if (clips.length) mixer = new THREE.AnimationMixer(root);
   return { R, size: [size.x, size.y, size.z], clips: clips.map(k => ({ name: k.name, dur: k.clip.duration })), bones: bones.map(b => b.name) };
 };
 let active = null;
+const gl = renderer.getContext();
+// measure the opaque pixels over a set of (angle, time) views and shrink the frustum to fit them with a margin
+window.fit = (angles, times) => {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity; const px = new Uint8Array(${SIZE} * ${SIZE} * 4);
+  for (const a of angles) for (const t of times) { window.shot(a, t); gl.readPixels(0, 0, ${SIZE}, ${SIZE}, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    for (let y = 0; y < ${SIZE}; y++) for (let x = 0; x < ${SIZE}; x++) if (px[(y * ${SIZE} + x) * 4 + 3] > 8) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } }
+  if (x0 === Infinity) return null;
+  const w = cam.right - cam.left, h = cam.top - cam.bottom, u = w / ${SIZE}; // world units per pixel (readPixels is bottom-up)
+  const wx0 = cam.left + x0 * u, wx1 = cam.left + (x1 + 1) * u, wy0 = cam.bottom + y0 * (h / ${SIZE}), wy1 = cam.bottom + (y1 + 1) * (h / ${SIZE});
+  const span = Math.max(wx1 - wx0, wy1 - wy0) * 1.08, mid = (wy0 + wy1) / 2;
+  cam.left = -span / 2; cam.right = span / 2; cam.top = mid + span / 2; cam.bottom = mid - span / 2; cam.updateProjectionMatrix();
+  return { span, mid, px: [x0, x1, y0, y1] };
+};
 window.play = name => { if (!mixer) return false; const k = clips.find(x => x.name === name) || clips[0]; if (active) active.stop(); active = mixer.clipAction(k.clip); active.play(); mixer.setTime(0); return k.clip.duration; };
 const v = new THREE.Vector3();
 window.shot = (angle, t) => {
-  const d = R * 6; cam.position.set(Math.sin(angle) * Math.cos(${ELEV}) * d, Math.sin(${ELEV}) * d + R * .45, Math.cos(angle) * Math.cos(${ELEV}) * d); cam.lookAt(0, R * .45, 0); cam.updateMatrixWorld();
+  const d = R * 6; cam.position.set(Math.sin(angle) * Math.cos(${ELEV}) * d, Math.sin(${ELEV}) * d + R * .5, Math.cos(angle) * Math.cos(${ELEV}) * d); cam.lookAt(0, R * .5, 0); cam.updateMatrixWorld();
   if (mixer && t != null) mixer.setTime(t); root.updateMatrixWorld(true);
   renderer.render(scene, cam);
   const anchors = {}; for (const b of bones) { if (!/head|neck|hand|wrist|arm|spine|chest|torso|foot|toe|hip|pelvis|root/i.test(b.name)) continue; b.getWorldPosition(v); const depth = v.clone().sub(cam.position).dot(cam.getWorldDirection(new THREE.Vector3())); v.project(cam); anchors[b.name] = [Math.round((v.x + 1) / 2 * ${SIZE}), Math.round((1 - v.y) / 2 * ${SIZE}), +(-depth / R).toFixed(3)]; }
@@ -94,6 +108,8 @@ await p.goto(`http://127.0.0.1:${port}/`); await p.waitForFunction(() => window.
 const info = await p.evaluate(([m, a]) => window.load(m, a), ['/' + MODEL, ANIMS.map(a => [a.name, '/' + a.file])]);
 console.log('loaded', MODEL, 'R', info.R.toFixed(3), 'clips', info.clips.map(c => `${c.name} ${c.dur.toFixed(2)}s`).join(', ') || 'none', '| bones', info.bones.length);
 const plan = info.clips.length ? info.clips : [{ name: 'idle', dur: 0 }];
+{ const d0 = info.clips.length ? await p.evaluate(n => window.play(n), plan[0].name) : 0; const angs = Array.from({ length: DIRS }, (_, i) => FACE + i / DIRS * Math.PI * 2), ts = d0 ? [0, d0 * .25, d0 * .5, d0 * .75] : [null];
+  const fit = await p.evaluate(([a, t]) => window.fit(a, t), [angs, ts]); console.log('fit', fit && fit.span.toFixed(3), fit && fit.px.join(',')); }
 const meta = { name: NAME, size: SIZE, dirs: DIRS, anims: {}, anchors: {}, bones: info.bones };
 // compose sheets in the page itself (an offscreen canvas) so no image library is needed here
 await p.evaluate(() => { window.sheet = document.createElement('canvas'); });
