@@ -198,6 +198,10 @@ checked against a reputable source before shipping; the Fact Book cites it.
    Never a gate, never mid-wave, always skippable, questions only about things the
    player has already seen. Ships after D so the question bank matches the worlds.
 
+## Phase G — 3D characters (in progress)
+
+**Decision (2026-10-14): go 3D.** Bodies come from Meshy image-to-3D of the game's own art (`defender/tools/meshy_test.py`), rendered to toon-outlined sprite sheets with per-frame bone anchors (`defender/tools/render_sheet.mjs`, assets in `defender/assets/3d/`). One body per character; hats, glasses and weapons are drawn by the game at the head and hand anchors, so gear fits every pose. Dad and the Kid are rigged (idle, walk, throw); the nine friends are static models animated by the code's hop, bob and squash. Shipped in PR 17: the pipeline, the player and the first full set. Still to do: tune gear sizes per character, a vest tint on the body, weapon props as rendered sprites instead of 2D drawings, and a walk for Dad if he ever moves.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
