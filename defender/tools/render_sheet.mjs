@@ -4,7 +4,7 @@
 //
 //   cd defender/tools && npm install
 //   node render_sheet.mjs meshy_out/mascot_wave --name dad --out ../assets/3d \
-//        --anims "walking.glb:walk,running.glb:run" --dirs 8 --frames 8 --size 192 --outline 0.012 --elev 25
+//        --anims "walking.glb:walk,running.glb:run,throw.glb:throw:16" --dirs 8 --frames 8 --size 192 --outline 0.012 --elev 25
 //
 // Writes <out>/<name>_<anim>.png (rows = directions, columns = frames) and <out>/<name>.json:
 //   { size, dirs, anims: { walk: { frames, dur } }, anchors: { walk: [dir][frame]{ boneName: [x, y, z] } }, bones: [...] }
@@ -24,7 +24,7 @@ const OUTLINE = +opt('outline', .012), ELEV = +opt('elev', 25) * Math.PI / 180, 
 const animArg = opt('anims', ''); // "file.glb:name,..." ; empty = clips inside the main model, or a static idle
 const MODEL = existsSync(join(dir, 'rigged.glb')) && animArg ? 'rigged.glb' : 'model.glb';
 if (!existsSync(join(dir, MODEL))) { console.error('no', MODEL, 'in', dir); process.exit(1); }
-const ANIMS = animArg ? animArg.split(',').map(s => { const [f, n] = s.split(':'); return { file: f, name: n || f.replace(/\.glb$/, '') }; }) : [];
+const ANIMS = animArg ? animArg.split(',').map(s => { const [f, n, fr] = s.split(':'); return { file: f, name: n || f.replace(/\.glb$/, ''), frames: fr ? +fr : 0 }; }) : []; // "file:name:frames" overrides --frames for one clip
 mkdirSync(OUT, { recursive: true });
 const three = dirname(dirname(fileURLToPath(import.meta.resolve('three'))));
 const MIME = { '.js': 'text/javascript', '.glb': 'model/gltf-binary', '.html': 'text/html' };
@@ -63,7 +63,7 @@ function toonify(obj) {
   }
 }
 window.load = async (url, animUrls) => {
-  const g = await new GLTFLoader().loadAsync(url); root = g.scene; clips = (g.animations || []).map(c => ({ name: c.name || 'clip', clip: c }));
+  const g = await new GLTFLoader().loadAsync(url); root = g.scene; clips = animUrls.length ? [] : (g.animations || []).map(c => ({ name: c.name || 'clip', clip: c })); // a rigged GLB carries a tiny bind-pose clip; ignore it when real clips are given
   for (const [name, u] of animUrls) { const a = await new GLTFLoader().loadAsync(u); if (a.animations && a.animations.length) { if (!clips.length && !animUrls.length) root = a.scene; clips.push({ name, clip: a.animations[0] }); } }
   // size from the bind pose, before any animation moves it
   const box = new THREE.Box3().setFromObject(root), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
@@ -120,7 +120,7 @@ const meta = { name: NAME, size: SIZE, dirs: DIRS, anims: {}, anchors: {}, bones
 // compose sheets in the page itself (an offscreen canvas) so no image library is needed here
 await p.evaluate(() => { window.sheet = document.createElement('canvas'); });
 for (const k of plan) {
-  const frames = k.dur ? FRAMES : 1, dur = k.dur ? await p.evaluate(n => window.play(n), k.name) : 0;
+  const frames = k.dur ? ((ANIMS.find(a => a.name === k.name) || {}).frames || FRAMES) : 1, dur = k.dur ? await p.evaluate(n => window.play(n), k.name) : 0;
   await p.evaluate(([w, h]) => { window.sheet.width = w; window.sheet.height = h; window.sheet.getContext('2d').clearRect(0, 0, w, h); }, [SIZE * frames, SIZE * DIRS]);
   meta.anims[k.name] = { frames, dur }; meta.anchors[k.name] = [];
   for (let d = 0; d < DIRS; d++) {
