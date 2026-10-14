@@ -346,7 +346,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 18</div>
+    <div class="build">build 19</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1580,7 +1580,7 @@ function sheet(id) {
   fetch(`assets/3d/${id}.json`).then(r => r.ok ? r.json() : null).then(meta => {
     if (!meta) { SHEETS[id] = false; return; }
     const S = { meta, img: {}, ok: false, bones: {} }; let left = Object.keys(meta.anims).length;
-    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.png`; S.img[a] = i; }
+    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { if (!(meta.bones || []).length) measureAnchors(S); S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.png`; S.img[a] = i; }
     // which bones to pin things to, by name pattern; a `map` in the JSON overrides
     const names = meta.bones || [], find = re => names.filter(n => re.test(n)).pop() || null;
     const hands = names.filter(n => /hand|wrist/i.test(n)), side = (list, re) => list.filter(n => re.test(n)).pop() || null;
@@ -1588,6 +1588,18 @@ function sheet(id) {
     SHEETS[id] = S;
   }).catch(() => { SHEETS[id] = false; });
   return null;
+}
+// a static model has no bones: find the top of the head, the middle and the front edge of every cell from its alpha
+function measureAnchors(S) {
+  const size = S.meta.size, cv = document.createElement('canvas'); cv.width = size; cv.height = size; const x = cv.getContext('2d', { willReadFrequently: true });
+  for (const a in S.meta.anims) { const an = S.meta.anims[a], img = S.img[a]; S.meta.anchors[a] = S.meta.anchors[a] || [];
+    for (let row = 0; row < S.meta.dirs; row++) { S.meta.anchors[a][row] = S.meta.anchors[a][row] || [];
+      for (let f = 0; f < an.frames; f++) { x.clearRect(0, 0, size, size); x.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); const d = x.getImageData(0, 0, size, size).data;
+        let x0 = size, x1 = -1, y0 = size, y1 = -1, tx = 0, tn = 0; for (let y = 0; y < size; y++) for (let xx = 0; xx < size; xx++) if (d[(y * size + xx) * 4 + 3] > 8) { x0 = Math.min(x0, xx); x1 = Math.max(x1, xx); y0 = Math.min(y0, y); y1 = Math.max(y1, y); if (y <= y0 + 3) { tx += xx; tn++; } }
+        const anc = S.meta.anchors[a][row][f] = S.meta.anchors[a][row][f] || {}; if (x1 < 0) continue;
+        const phi = Math.PI / 2 + row / S.meta.dirs * Math.PI * 2, right = Math.cos(phi) > .01, left = Math.cos(phi) < -.01;
+        anc.__top = [Math.round(tn ? tx / tn : (x0 + x1) / 2), y0, 0]; anc.__mid = [Math.round((x0 + x1) / 2), Math.round((y0 + y1) / 2), 0]; anc.__front = [right ? x1 : left ? x0 : Math.round((x0 + x1) / 2), Math.round((y0 + y1) / 2), .5]; anc.__ground = anc.__ground || [Math.round((x0 + x1) / 2), y1, 0];
+      } } }
 }
 // facing on screen (radians, 0 = right, down = toward the viewer) -> row of the sheet. Row 0 faces the viewer; rows go clockwise.
 const dirRow = (S, phi) => { const n = S.meta.dirs; return ((Math.round((phi - Math.PI / 2) / (Math.PI * 2) * n) % n) + n) % n; };
@@ -1599,21 +1611,33 @@ function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   c.save(); if (opts.alpha != null) c.globalAlpha = opts.alpha;
   if (opts.lean || opts.squash || opts.stretch) { c.translate(x, y); c.rotate(opts.lean || 0); const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14); c.translate(-x, -y); }
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
-  const back = []; if (opts.props) for (const pr of opts.props) { const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
+  const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
-  if (opts.props) for (const pr of opts.props) { const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
+  const tint = opts.props && opts.props.find(pr => pr.tint), tq = tint && at(tint.bone);
+  if (tq) { // copy the frame, colour a band around the chest with source-atop (alpha-masked), draw the copy
+    const tc = tintCanvas(size), tx = tc.getContext('2d'); tx.clearRect(0, 0, size, size); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size);
+    const px = (tq.x - cx) / sc, py = (tq.y - cy) / sc, bw = size * .22, bh = size * .13; tx.save(); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = .55; tx.fillStyle = tint.tint; tx.beginPath(); tx.ellipse(px, py, bw, bh, 0, 0, 7); tx.fill(); tx.restore();
+    c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc);
+  } else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
+  if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
   c.restore(); c.globalAlpha = 1;
   return { row, frame: f, at };
 }
 const S3meta = q => q.size;
+let TINTC = null; const tintCanvas = n => { if (!TINTC || TINTC.width !== n) { TINTC = document.createElement('canvas'); TINTC.width = TINTC.height = n; } return TINTC; };
 // a hand that is further from the camera than the body's middle is drawn behind it
 const behindBody = (q, row) => row >= 3 && row <= 5;
 // Dad's gear as sheet props: the equipped armor at the head, the weapon in the right hand on a wind-up
+// how big a hat or pair of glasses is on each character (fraction of the sheet cell) and where it sits relative to the anchor
+const GEAR3D = { dad: { r: .085, dy: 0 }, kid: { r: .08, dy: 0 }, webster: { r: .11, dy: .09 }, sparky: { r: .07, dy: .05 }, hopper: { r: .11, dy: .08 }, puddles: { r: .075, dy: .05 }, dusty: { r: .08, dy: .06 }, pip: { r: .07, dy: .1 }, scuttle: { r: .085, dy: .14 }, nilla: { r: .1, dy: .07 }, luna: { r: .055, dy: .12 } };
 function dadProps(item, p) {
   const worn = itemBy(equipOf('dad').armor), props = [];
-  if (worn) props.push({ bone: worn.look === 'glasses' ? 'face' : 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + (worn.look === 'glasses' ? -q.sc * S3meta(q) * .02 : 0), q.sc * S3meta(q) * .1, worn.look, worn.rar, row) });
-  if (item) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { c.save(); c.translate(0, 0); drawHeldItem(c, [q.x, q.y], item, p); c.restore(); } });
+  const G3 = GEAR3D.dad;
+  if (worn && worn.look === 'vest') props.push({ bone: 'chest', tint: RCOL[worn.rar] });
+  else if (worn && worn.look === 'watch') props.push({ bone: 'handL', draw: (c, q) => drawHeadGear(c, q.x, q.y, q.sc * q.size * .06, 'watch', worn.rar, 0) });
+  else if (worn) props.push({ bone: worn.look === 'glasses' ? 'face' : 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + (worn.look === 'glasses' ? -q.sc * q.size * .02 : q.sc * q.size * G3.dy), q.sc * q.size * G3.r, worn.look, worn.rar, row) });
+  // the held item drawings were sized for the 2D Dad; the 3D hand is smaller, so scale them to the figure
+  if (item) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { c.save(); c.translate(q.x, q.y); const k = q.sc * q.size * .92 / DAD_H * .62; c.scale(k, k); drawHeldItem(c, [0, 0], item, p); c.restore(); } });
   return props;
 }
 // cap / glasses / vest-as-scarf / watch drawn around a head anchor, scaled by r (head radius in px), fading when the head faces away
@@ -1623,15 +1647,17 @@ function drawHeadGear(c, hx, hy, r, look, rar, row) {
     if (!away) { c.beginPath(); c.moveTo(hx + r * .55, base + r * .05); c.quadraticCurveTo(hx + r * 1.7, base - r * .2, hx + r * 1.75, base + r * .25); c.quadraticCurveTo(hx + r * 1.3, base + r * .4, hx + r * .7, base + r * .32); c.closePath(); c.fill(); c.stroke(); }
     c.fillStyle = '#fff'; c.beginPath(); c.arc(hx, base - r * 1.05, r * .12, 0, 7); c.fill(); c.stroke(); }
   else if (look === 'glasses' && !away) { const gr = r * .36, gap = r * .42; c.strokeStyle = rar ? col : '#3a2c20'; c.fillStyle = 'rgba(190,230,245,.3)'; for (const sg of [-1, 1]) { c.beginPath(); c.arc(hx + sg * gap, hy + r * .05, gr, 0, 7); c.fill(); c.stroke(); } c.beginPath(); c.moveTo(hx - gap + gr, hy + r * .05); c.lineTo(hx + gap - gr, hy + r * .05); c.stroke(); }
-  else if (look === 'vest') { c.fillStyle = col; c.beginPath(); c.ellipse(hx, hy + r * 1.15, r * 1.1, r * .32, 0, 0, 7); c.fill(); c.stroke(); } // a scarf at the neck: the vest itself is a tint on the body
-  else if (look === 'watch') { c.fillStyle = ['#c0c0c0', '#5c8cbe', '#b48be6', '#ecb23c'][rar]; c.beginPath(); c.arc(hx + r * 1.3, hy + r * 2.4, r * .28, 0, 7); c.fill(); c.stroke(); }
+  else if (look === 'watch') { c.fillStyle = '#3a2c20'; c.beginPath(); c.ellipse(hx, hy, r * 1.1, r * .5, 0, 0, 7); c.fill(); c.fillStyle = ['#c0c0c0', '#5c8cbe', '#b48be6', '#ecb23c'][rar]; c.beginPath(); c.arc(hx, hy, r * .55, 0, 7); c.fill(); c.stroke(); }
   c.restore();
 }
 // companions: one idle frame per direction, animated by the code's hop / bob / squash, with gear at the same anchors
 function petProps(id, held) {
   const worn = itemBy(equipOf(id).armor), props = [];
-  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + q.sc * S3meta(q) * .08, q.sc * S3meta(q) * .09, worn.look, worn.rar, row) });
-  const V = cweapOf(id); if (V && held != null && held < .7) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { const wind = held < .33 ? held / .33 : 1, fade = held > .4 ? 1 - (held - .4) / .3 : 1; c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `16px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
+  const G3 = GEAR3D[id] || { r: .09, dy: .07 };
+  if (worn && worn.look === 'vest') props.push({ bone: 'chest', tint: RCOL[worn.rar] });
+  else if (worn && worn.look === 'watch') props.push({ bone: 'handR', draw: (c, q) => drawHeadGear(c, q.x, q.y + q.sc * q.size * .12, q.sc * q.size * .045, 'watch', worn.rar, 0) });
+  else if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + q.sc * q.size * G3.dy, q.sc * q.size * G3.r, worn.look, worn.rar, row) });
+  const V = cweapOf(id); if (V && held != null && held < .7) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { const wind = held < .33 ? held / .33 : 1, fade = held > .4 ? 1 - (held - .4) / .3 : 1; c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `${Math.round(q.sc * q.size * .11)}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
   return props;
 }
 
@@ -1848,7 +1874,7 @@ function drawMember(m) {
     if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
       const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
       const TH = S3.meta.anims.throw, tt = a && TH ? (p < .33 ? p / .33 * 6 : 6 + (p - .33) / .67 * 6.9) / TH.frames * TH.dur : G.t;
-      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.15, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : null, p) });
+      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : null, p) });
       return;
     }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
@@ -2604,7 +2630,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();
