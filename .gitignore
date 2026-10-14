@@ -8,3 +8,4 @@ app/ios/
 app/android/
 defender/tools/node_modules/
 defender/tools/meshy_out/
+defender/tools/logs/
