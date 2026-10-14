@@ -33,6 +33,17 @@ Left/Right Shoulder, Arm, ForeArm, **Hand**, UpLeg, Leg, Foot, ToeBase. "Right" 
 character's own right. Hats go on `Head`/`head_end`, glasses on `headfront`, a thrown
 item in `RightHand`.
 
+## Props (props.png, props.json)
+
+Hand-held things, modelled from primitives in `tools/render_props.mjs` (no Meshy credits):
+Dad's seven weapons and the Dad Joke drum, and one prop per friend's weapon line
+(fangs, jar lantern, lily pad, feather, spectacles, shell, horn, talons, candle). One
+column per prop, 8 direction rows like the bodies, `u` pixels per body unit and the
+grip point per row in the JSON. The game pins them to the hand anchor (`drawProp`),
+scaled by the body's height and `GEAR3D[id].pk`. Re-render after editing a prop:
+
+    cd defender/tools && node render_props.mjs --out ../assets/3d --size 96
+
 ## Credits
 
 Balance 1030 before, 672 after: 358 Meshy credits. 11 image-to-3D models, 2 rigs
