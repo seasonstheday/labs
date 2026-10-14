@@ -12,7 +12,8 @@ Nothing but the image and the key leaves this machine.
 """
 import base64, json, os, sys, time, urllib.request
 
-KEY = os.environ.get('MESHY_API_KEY'); API = 'https://api.meshy.ai'
+KEY = os.environ.get('MESHY_API_KEY') or 'proxy-injected'  # cloud sessions inject the real key at the egress proxy
+API = 'https://api.meshy.ai'
 HERE = os.path.dirname(os.path.abspath(__file__)); ASSETS = os.path.join(HERE, '..', 'assets'); OUT = os.path.join(HERE, 'meshy_out')
 
 def call(method, path, body=None):
@@ -34,7 +35,7 @@ def fetch(url, dest):
     print('  ->', os.path.relpath(dest))
 
 def main():
-    if not KEY: sys.exit('MESHY_API_KEY is not set')
+    if KEY == 'proxy-injected': print('MESHY_API_KEY not set; relying on the proxy to inject it', flush=True)
     args = [a for a in sys.argv[1:] if not a.startswith('--')]; name = args[0] if args else 'mascot_wave'; rig = '--no-rig' not in sys.argv
     src = os.path.join(ASSETS, name + '.png'); out = os.path.join(OUT, name); os.makedirs(out, exist_ok=True)
     if not os.path.exists(src): sys.exit(f'no such image: {src}')
