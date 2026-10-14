@@ -6,3 +6,5 @@ app/node_modules/
 app/www/
 app/ios/
 app/android/
+defender/tools/node_modules/
+defender/tools/meshy_out/

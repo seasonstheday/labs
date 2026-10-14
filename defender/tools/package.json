@@ -1,0 +1,7 @@
+{
+  "name": "whydad-defender-tools",
+  "private": true,
+  "type": "module",
+  "description": "Art tooling for Why, Dad? Defender: Gemini image generation (gen_art.py), Meshy image-to-3D trial (meshy_test.py) and a headless GLB turntable renderer (render_glb.mjs).",
+  "dependencies": { "three": "^0.170.0", "playwright": "1.56.0" }
+}
