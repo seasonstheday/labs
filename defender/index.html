@@ -1584,7 +1584,7 @@ function sheet(id) {
     // which bones to pin things to, by name pattern; a `map` in the JSON overrides
     const names = meta.bones || [], find = re => names.filter(n => re.test(n)).pop() || null;
     const hands = names.filter(n => /hand|wrist/i.test(n)), side = (list, re) => list.filter(n => re.test(n)).pop() || null;
-    S.bones = names.length ? Object.assign({ head: find(/head/i), handR: side(hands, /(right|_r\b|\br_|\.r\b|r$|R\b)/) || hands.pop() || null, handL: side(hands, /(left|_l\b|\bl_|\.l\b|l$|L\b)/), chest: find(/spine|chest|torso/i) }, meta.map || {}) : Object.assign({ head: '__top', chest: '__mid', handR: '__front' }, meta.map || {});
+    S.bones = names.length ? Object.assign({ head: names.includes('Head') ? 'Head' : find(/head/i), face: names.includes('headfront') ? 'headfront' : null, top: names.includes('head_end') ? 'head_end' : null, handR: side(hands, /(right|_r\b|\br_|\.r\b|r$|R\b)/) || hands.pop() || null, handL: side(hands, /(left|_l\b|\bl_|\.l\b|l$|L\b)/), chest: find(/spine|chest|torso/i) }, names.includes('RightHand') ? { handR: 'RightHand', handL: 'LeftHand' } : {}, meta.map || {}) : Object.assign({ head: '__top', top: '__top', chest: '__mid', handR: '__front' }, meta.map || {});
     SHEETS[id] = S;
   }).catch(() => { SHEETS[id] = false; });
   return null;
@@ -1608,11 +1608,11 @@ function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
 }
 const S3meta = q => q.size;
 // a hand that is further from the camera than the body's middle is drawn behind it
-const behindBody = (q, row) => row >= 3 && row <= 5 ? q.z < 0 : false;
+const behindBody = (q, row) => row >= 3 && row <= 5;
 // Dad's gear as sheet props: the equipped armor at the head, the weapon in the right hand on a wind-up
 function dadProps(item, p) {
   const worn = itemBy(equipOf('dad').armor), props = [];
-  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y, q.sc * S3meta(q) * .1, worn.look, worn.rar, row) });
+  if (worn) props.push({ bone: worn.look === 'glasses' ? 'face' : 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + (worn.look === 'glasses' ? -q.sc * S3meta(q) * .02 : 0), q.sc * S3meta(q) * .1, worn.look, worn.rar, row) });
   if (item) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { c.save(); c.translate(0, 0); drawHeldItem(c, [q.x, q.y], item, p); c.restore(); } });
   return props;
 }
@@ -1630,7 +1630,7 @@ function drawHeadGear(c, hx, hy, r, look, rar, row) {
 // companions: one idle frame per direction, animated by the code's hop / bob / squash, with gear at the same anchors
 function petProps(id, held) {
   const worn = itemBy(equipOf(id).armor), props = [];
-  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y, q.sc * S3meta(q) * .09, worn.look, worn.rar, row) });
+  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y + q.sc * S3meta(q) * .08, q.sc * S3meta(q) * .09, worn.look, worn.rar, row) });
   const V = cweapOf(id); if (V && held != null && held < .7) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { const wind = held < .33 ? held / .33 : 1, fade = held > .4 ? 1 - (held - .4) / .3 : 1; c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `16px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
   return props;
 }
@@ -1847,7 +1847,8 @@ function drawMember(m) {
     const S3 = sheet('dad');
     if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
       const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
-      drawSheet(ctx, S3, a ? 'throw' : 'idle', phi, a ? p * (S3.meta.anims.throw ? S3.meta.anims.throw.dur : 1) : G.t, m.x + step, m.y + 30 - hop, DAD_H * 1.15, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : null, p) });
+      const TH = S3.meta.anims.throw, tt = a && TH ? (p < .33 ? p / .33 * 6 : 6 + (p - .33) / .67 * 6.9) / TH.frames * TH.dur : G.t;
+      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.15, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : null, p) });
       return;
     }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
@@ -2064,7 +2065,7 @@ function portrait(id, pose) {
 }
 function drawTitleParty() {
   const c = $('#titleParty'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, 300);
-  drawDadAt(x, 220, 290, 236, 1, 'wave');
+  const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, performance.now() / 1000, 220, 290, 250, { props: dadProps(null, 0) }); else drawDadAt(x, 220, 290, 236, 1, 'wave');
   // companions in an arc in front of Dad, each with its own clear patch of lawn
   const SPOT = [[118, 284, 1.5, 1], [330, 284, 1.5, -1], [40, 262, 1.25, 1]];
   save.party.forEach((id, i) => { const [sx, sy, sc, f] = SPOT[i]; drawCompanionAt(x, id, sx, sy, sc, f, performance.now() / 1000, { gear: true }); });
