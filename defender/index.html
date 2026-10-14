@@ -346,7 +346,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 17</div>
+    <div class="build">build 18</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1172,7 +1172,7 @@ function handPos(m) {
 }
 // wind up (lean, item in hand), then do the real thing from the hand at the release moment
 function windup(m, kind, tgt, release) {
-  if (tgt) m.face = tgt.x < m.x ? -1 : 1;
+  if (tgt) { m.face = tgt.x < m.x ? -1 : 1; m.aim = Math.atan2(tgt.y - m.y, tgt.x - m.x); }
   m.anim = { kind, t: 0, dur: .42 };
   G.pending.push({ at: G.t + .14, fn: release });
 }
@@ -1570,6 +1570,71 @@ function makeArena(w) {
   return { c, w };
 }
 
+/* ───────── 3D sprite sheets: rendered from Meshy models by tools/render_sheet.mjs, optional like every other drop-in.
+   assets/3d/<id>.json describes <id>_<anim>.png: rows are facing directions, columns are frames, and every frame carries the
+   screen position of the head and hands, so hats, glasses and the weapon are pinned to the body instead of guessed. ───────── */
+const SHEETS = {};
+function sheet(id) {
+  if (SHEETS[id] !== undefined) return SHEETS[id] && SHEETS[id].ok ? SHEETS[id] : null;
+  SHEETS[id] = null;
+  fetch(`assets/3d/${id}.json`).then(r => r.ok ? r.json() : null).then(meta => {
+    if (!meta) { SHEETS[id] = false; return; }
+    const S = { meta, img: {}, ok: false, bones: {} }; let left = Object.keys(meta.anims).length;
+    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.png`; S.img[a] = i; }
+    // which bones to pin things to, by name pattern; a `map` in the JSON overrides
+    const names = meta.bones || [], find = re => names.filter(n => re.test(n)).pop() || null;
+    const hands = names.filter(n => /hand|wrist/i.test(n)), side = (list, re) => list.filter(n => re.test(n)).pop() || null;
+    S.bones = names.length ? Object.assign({ head: find(/head/i), handR: side(hands, /(right|_r\b|\br_|\.r\b|r$|R\b)/) || hands.pop() || null, handL: side(hands, /(left|_l\b|\bl_|\.l\b|l$|L\b)/), chest: find(/spine|chest|torso/i) }, meta.map || {}) : Object.assign({ head: '__top', chest: '__mid', handR: '__front' }, meta.map || {});
+    SHEETS[id] = S;
+  }).catch(() => { SHEETS[id] = false; });
+  return null;
+}
+// facing on screen (radians, 0 = right, down = toward the viewer) -> row of the sheet. Row 0 faces the viewer; rows go clockwise.
+const dirRow = (S, phi) => { const n = S.meta.dirs; return ((Math.round((phi - Math.PI / 2) / (Math.PI * 2) * n) % n) + n) % n; };
+// draw one frame with the feet at (x, y) and the figure about h tall; returns the frame's anchors in screen space
+function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
+  const A = S.meta.anims[anim] ? anim : Object.keys(S.meta.anims)[0], an = S.meta.anims[A], img = S.img[A], size = S.meta.size;
+  const f = an.frames > 1 ? Math.floor(((t / an.dur) % 1 + 1) % 1 * an.frames) : 0, row = dirRow(S, phi), anc = (S.meta.anchors[A][row] || [])[f] || {}, g = anc.__ground || [size / 2, size * .92, 0];
+  const sc = h / (size * .92), cx = x - size / 2 * sc, cy = y - g[1] * sc;
+  c.save(); if (opts.alpha != null) c.globalAlpha = opts.alpha;
+  if (opts.lean || opts.squash || opts.stretch) { c.translate(x, y); c.rotate(opts.lean || 0); const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14); c.translate(-x, -y); }
+  const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
+  const back = []; if (opts.props) for (const pr of opts.props) { const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
+  for (const [pr, q] of back) pr.draw(c, q, row);
+  c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
+  if (opts.props) for (const pr of opts.props) { const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
+  c.restore(); c.globalAlpha = 1;
+  return { row, frame: f, at };
+}
+const S3meta = q => q.size;
+// a hand that is further from the camera than the body's middle is drawn behind it
+const behindBody = (q, row) => row >= 3 && row <= 5 ? q.z < 0 : false;
+// Dad's gear as sheet props: the equipped armor at the head, the weapon in the right hand on a wind-up
+function dadProps(item, p) {
+  const worn = itemBy(equipOf('dad').armor), props = [];
+  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y, q.sc * S3meta(q) * .1, worn.look, worn.rar, row) });
+  if (item) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { c.save(); c.translate(0, 0); drawHeldItem(c, [q.x, q.y], item, p); c.restore(); } });
+  return props;
+}
+// cap / glasses / vest-as-scarf / watch drawn around a head anchor, scaled by r (head radius in px), fading when the head faces away
+function drawHeadGear(c, hx, hy, r, look, rar, row) {
+  const col = RCOL[rar], away = row >= 3 && row <= 5; c.save(); c.lineWidth = Math.max(1.5, r * .12); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round';
+  if (look === 'cap') { const base = hy - r * .5; c.fillStyle = col; c.beginPath(); c.moveTo(hx - r * 1.05, base + r * .15); c.quadraticCurveTo(hx - r * 1.1, base - r * 1.0, hx, base - r * 1.05); c.quadraticCurveTo(hx + r * 1.1, base - r * 1.0, hx + r * 1.05, base + r * .15); c.closePath(); c.fill(); c.stroke();
+    if (!away) { c.beginPath(); c.moveTo(hx + r * .55, base + r * .05); c.quadraticCurveTo(hx + r * 1.7, base - r * .2, hx + r * 1.75, base + r * .25); c.quadraticCurveTo(hx + r * 1.3, base + r * .4, hx + r * .7, base + r * .32); c.closePath(); c.fill(); c.stroke(); }
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(hx, base - r * 1.05, r * .12, 0, 7); c.fill(); c.stroke(); }
+  else if (look === 'glasses' && !away) { const gr = r * .36, gap = r * .42; c.strokeStyle = rar ? col : '#3a2c20'; c.fillStyle = 'rgba(190,230,245,.3)'; for (const sg of [-1, 1]) { c.beginPath(); c.arc(hx + sg * gap, hy + r * .05, gr, 0, 7); c.fill(); c.stroke(); } c.beginPath(); c.moveTo(hx - gap + gr, hy + r * .05); c.lineTo(hx + gap - gr, hy + r * .05); c.stroke(); }
+  else if (look === 'vest') { c.fillStyle = col; c.beginPath(); c.ellipse(hx, hy + r * 1.15, r * 1.1, r * .32, 0, 0, 7); c.fill(); c.stroke(); } // a scarf at the neck: the vest itself is a tint on the body
+  else if (look === 'watch') { c.fillStyle = ['#c0c0c0', '#5c8cbe', '#b48be6', '#ecb23c'][rar]; c.beginPath(); c.arc(hx + r * 1.3, hy + r * 2.4, r * .28, 0, 7); c.fill(); c.stroke(); }
+  c.restore();
+}
+// companions: one idle frame per direction, animated by the code's hop / bob / squash, with gear at the same anchors
+function petProps(id, held) {
+  const worn = itemBy(equipOf(id).armor), props = [];
+  if (worn) props.push({ bone: 'head', draw: (c, q, row) => drawHeadGear(c, q.x, q.y, q.sc * S3meta(q) * .09, worn.look, worn.rar, row) });
+  const V = cweapOf(id); if (V && held != null && held < .7) props.push({ bone: 'handR', behind: behindBody, draw: (c, q) => { const wind = held < .33 ? held / .33 : 1, fade = held > .4 ? 1 - (held - .4) / .3 : 1; c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `16px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
+  return props;
+}
+
 /* ───────── draw: characters ───────── */
 // Dad standing with his feet at (x, y), `h` tall
 function drawDadAt(c, x, y, h, face, pose, opts = {}) {
@@ -1642,8 +1707,14 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face * s, s);
   const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14);
   c.strokeStyle = '#3a2c20'; c.lineWidth = 2.5; c.lineJoin = 'round'; c.lineCap = 'round';
-  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id);
+  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = sheet(id);
   c.save();
+  if (S3) { // the 3D friend: one frame per direction, the squash and lean already applied above
+    c.scale(face, 1); // undo the flip: the sheet has real left and right sides
+    const phi = opts.aim != null ? opts.aim : (face > 0 ? .35 : Math.PI - .35);
+    drawSheet(c, S3, 'idle', phi, t, 0, bob * .3, (PET_H[id] || 48) * 1.1, { props: opts.gear ? petProps(id, opts.held) : null });
+    c.restore(); c.restore(); return;
+  }
   if (ready(png)) { const h = PET_H[id] || 48, w = h * png.naturalWidth / png.naturalHeight; c.drawImage(png, -w / 2, -h + bob * .3, w, h); }
   else switch (id) {
     case 'webster': { // the real spider from episode 20 (sprite faces left)
@@ -1773,6 +1844,12 @@ function drawMember(m) {
     const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * m.face : 0;
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
+    const S3 = sheet('dad');
+    if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
+      const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
+      drawSheet(ctx, S3, a ? 'throw' : 'idle', phi, a ? p * (S3.meta.anims.throw ? S3.meta.anims.throw.dur : 1) : G.t, m.x + step, m.y + 30 - hop, DAD_H * 1.15, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : null, p) });
+      return;
+    }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
     return;
   }
@@ -1787,7 +1864,7 @@ function drawMember(m) {
   const lean = a ? (p < .33 ? -.22 * (p / .33) : .18 * (1 - Math.min(1, (p - .33) / .67)) - .03) * m.face : 0;
   if (m.land > 0) m.land -= 1 / 60;
   const step = a ? (p < .33 ? -5 * (p / .33) : 12 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 8 : 0;
-  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: hop / 8, gear: true, held: a ? p : null });
+  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: hop / 8, gear: true, held: a ? p : null, aim: m.aim });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
@@ -1998,6 +2075,7 @@ function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const 
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
 const KID_CARD = { x: -.20, y: -.63, s: .065 };
 function drawKid(c, x, y, h, holding) {
+  const S3 = sheet('kid'); if (S3) { drawSheet(c, S3, 'idle', Math.PI / 2, performance.now() / 1000, x, y, h); if (holding) kidCard(c, x, y, h); return; }
   const png = art('kid'); if (ready(png)) { const w = h * png.naturalWidth / png.naturalHeight; c.drawImage(png, x - w / 2, y - h, w, h); if (holding) kidMark(c, x, y, h); return; }
   c.save(); c.translate(x, y); c.lineWidth = Math.max(2, h * .028); c.strokeStyle = '#3a2c20'; c.lineJoin = 'round'; c.lineCap = 'round';
   const r = h * .2;
@@ -2525,7 +2603,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP };
+if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();

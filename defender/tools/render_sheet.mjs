@@ -96,6 +96,12 @@ window.shot = (angle, t) => {
   if (mixer && t != null) mixer.setTime(t); root.updateMatrixWorld(true);
   renderer.render(scene, cam);
   const anchors = {}; for (const b of bones) { if (!/head|neck|hand|wrist|arm|spine|chest|torso|foot|toe|hip|pelvis|root/i.test(b.name)) continue; b.getWorldPosition(v); const depth = v.clone().sub(cam.position).dot(cam.getWorldDirection(new THREE.Vector3())); v.project(cam); anchors[b.name] = [Math.round((v.x + 1) / 2 * ${SIZE}), Math.round((1 - v.y) / 2 * ${SIZE}), +(-depth / R).toFixed(3)]; }
+  // for static models with no bones: where the drawn pixels are, so the game can still pin a hat on top and a prop at the front
+  { const px = new Uint8Array(${SIZE} * ${SIZE} * 4); gl.readPixels(0, 0, ${SIZE}, ${SIZE}, gl.RGBA, gl.UNSIGNED_BYTE, px); let x0 = ${SIZE}, x1 = -1, y0 = ${SIZE}, y1 = -1, topx = 0, topn = 0;
+    for (let y = 0; y < ${SIZE}; y++) for (let x = 0; x < ${SIZE}; x++) if (px[(y * ${SIZE} + x) * 4 + 3] > 8) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    if (x1 >= 0) { const ty = y1; for (let x = x0; x <= x1; x++) for (let y = ty; y >= ty - 3; y--) if (px[(y * ${SIZE} + x) * 4 + 3] > 8) { topx += x; topn++; } // readPixels rows are bottom-up: y1 is the top of the figure
+      const T = ${SIZE} - 1; anchors.__top = [Math.round(topn ? topx / topn : (x0 + x1) / 2), T - y1, 0]; anchors.__mid = [Math.round((x0 + x1) / 2), Math.round(T - (y0 + y1) / 2), 0];
+      const facingRight = Math.sin(angle) < 0; anchors.__front = [facingRight ? x1 : x0, Math.round(T - (y0 + y1) / 2), .5]; } }
   const g0 = new THREE.Vector3(0, 0, 0).project(cam); anchors.__ground = [Math.round((g0.x + 1) / 2 * ${SIZE}), Math.round((1 - g0.y) / 2 * ${SIZE}), 0];
   return { png: canvas.toDataURL('image/png'), anchors };
 };
