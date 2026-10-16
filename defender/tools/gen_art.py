@@ -42,8 +42,8 @@ ARENAS = [
     'a pond with lily pads and reeds in a ring around a small grassy island',
     'a library with wooden floorboards, a round red rug in the middle and bookshelves around the edge',
     'a sandy beach with gentle waves along the top edge, and a few small shells only in the corners',
-    'a desert with dune ripples, a few cacti and bleached rocks',
-    'pale blue-white snowy arctic ground with soft blue shadows, ice cracks, snow drifts and a small igloo',
+    'a desert of smooth pale sand with soft dune ripples, and only a few small plain green cacti (ordinary plants with no eyes, no mouth and no face) and pebbles right at the edges of the picture',
+    'pale blue-white snowy arctic ground with soft blue shadows, faint ice cracks and low snow drifts along the edges, and only a tiny igloo far off in one top corner',
     'a jungle floor crowded with big leaves and vines around the edge',
     'a night-time lawn under a starry sky, dark blue-green grass with a soft silvery glow in the middle as if lit by moonlight from off the picture (the moon itself is not in the picture), a few tiny stars and fireflies, and only a tiny folded picnic blanket tucked into one bottom corner',
 ]
