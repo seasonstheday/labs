@@ -41,11 +41,11 @@ ARENAS = [
     'a backyard lawn with a white picket fence around the edge and flower beds',
     'a pond with lily pads and reeds in a ring around a small grassy island',
     'a library with wooden floorboards, a round red rug in the middle and bookshelves around the edge',
-    'a sandy beach with gentle waves along the top edge, shells and a sandcastle',
+    'a sandy beach with gentle waves along the top edge, and a few small shells only in the corners',
     'a desert with dune ripples, a few cacti and bleached rocks',
     'pale blue-white snowy arctic ground with soft blue shadows, ice cracks, snow drifts and a small igloo',
     'a jungle floor crowded with big leaves and vines around the edge',
-    'a night-time lawn under a starry sky with a telescope and a picnic blanket',
+    'a night-time lawn under a starry sky, dark blue-green grass with a soft silvery glow in the middle as if lit by moonlight from off the picture (the moon itself is not in the picture), a few tiny stars and fireflies, and only a tiny folded picnic blanket tucked into one bottom corner',
 ]
 MAPS = [
     'a backyard with a red garden shed, a picket fence and flower beds, under a plain blue sky with a few clouds and no sun',
