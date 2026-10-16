@@ -289,6 +289,7 @@
   .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
+  .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 12px; padding: 5px 8px; }
   .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
   .lootc { width: 64px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 10px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; }
@@ -354,7 +355,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 25</div>
+    <div class="build">build 26</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1053,17 +1054,33 @@ function makeItem(type, rar, named = true) {
   const legends = LEGENDS.filter(l => l.type === type);
   if (rar === 3 && named && legends.length && Math.random() < .5) { const l = pick(legends); Object.assign(it, { name: l.name, em: l.em, desc: l.desc, stats: { ...l.stats }, legend: true }); }
   else {
-    const base = pick(ITEMS[type].bases), main = base[2]; Object.assign(it, { name: RADJ[rar] + base[0], em: base[1], desc: base[3], stats: { [main]: Math.round(BASEVAL[main] * mul) } });
+    const base = pick(ITEMS[type].bases), main = base[2]; Object.assign(it, { base: base[0], name: RADJ[rar] + base[0], em: base[1], desc: base[3], stats: { [main]: Math.round(BASEVAL[main] * mul) } });
     const pool = Object.keys(BASEVAL).filter(k => k !== main); for (let i = 0; i < EXTRA_BY_RAR[rar]; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; it.stats[k] = Math.max(1, Math.round(BASEVAL[k] * mul * .5)); }
   }
   const main = Object.keys(it.stats)[0]; it.stat = main; it.val = it.stats[main]; // the main stat, for sorting
   return it;
 }
-// rarity roll: later stages and better chests tilt toward the good stuff
-function rollRar(bonus = 0, min = 0) { const r = Math.random() + bonus; return Math.max(min, r > 1.15 ? 3 : r > .92 ? 2 : r > .6 ? 1 : 0); }
+// rarity roll: bonus .1 (the first stage) to 1 (the last). Drops stop at Epic; Legendary is made by merging, or won from
+// chapter bosses and missions. Odds by bonus: Common 65%→25%, Rare 30%→50%, Epic 5%→25%.
+const rarOdds = bonus => { const t = clamp((bonus - .1) / .9, 0, 1); return [.65 - .4 * t, .30 + .2 * t, .05 + .2 * t]; };
+function rollRar(bonus = 0, min = 0) { const o = rarOdds(bonus), r = Math.random(); return Math.max(min, r < o[0] ? 0 : r < o[0] + o[1] ? 1 : 2); }
 const randItem = (bonus = 0, min = 0) => makeItem(pick(['weapon', 'armor', 'book']), rollRar(bonus, min));
-const itemStats = it => it.stats || { [it.stat]: it.val };
+const itemOf = rar => makeItem(pick(['weapon', 'armor', 'book']), rar);
+const itOfBoss = big => itemOf(big ? (Math.random() < .35 ? 3 : 2) : (Math.random() < .5 ? 2 : 1)); // chapter boss: Epic, 35% Legendary; mid-boss: Rare or Epic
+// polish: +1 to +5, each step +10% to every stat; the cost per step rises with rarity
+const POLISH = [[20, 40, 60, 80, 100], [40, 80, 120, 160, 200], [60, 120, 180, 240, 300], [100, 200, 300, 400, 500]], POLISH_MAX = 5;
+const itemStats = it => { const st = it.stats || { [it.stat]: it.val }, lv = it.lv || 0; if (!lv) return st; const o = {}; for (const k in st) o[k] = Math.round(st[k] * (1 + lv * .1)); return o; };
+// merge: three items of one slot and rarity become one of the next rarity; the chosen one keeps its name, look and bookmarks
+function mergeInto(it) {
+  const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
+  for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
+  const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
+  it.stats = st; it.rar = nr; if (!it.legend) { const b = it.base || it.name.replace(/^(Shiny |Ancient |Legendary )/, ''); it.base = b; it.name = RADJ[nr] + b; }
+  const main = Object.keys(st)[0]; it.stat = main; it.val = st[main];
+}
 const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STAT[k][1]} ${STAT[k][0]}`).join(' · ');
+function missionTick(kind, n = 1) { if (typeof missionAdd === 'function') missionAdd(kind, n); }
+const itemName = it => it.name + (it.lv ? ` +${it.lv}` : '');
 
 /* ───────── save ───────── */
 const SAVE_KEY = 'whydad.defender.v3';
@@ -2383,7 +2400,8 @@ function stageClear() {
   const hardFirst = save.diff === 'hard' && prev === 0;
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
-  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
+  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
   const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
@@ -2598,7 +2616,7 @@ function buildParty() {
 /* ───────── equip picker ───────── */
 let pickFor = null;
 const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${it.name}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
 function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
 function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
@@ -2615,9 +2633,21 @@ $('#pickClose').onclick = () => $('#pickm').hidden = true;
 /* ───────── the bag ───────── */
 function buildItems() {
   const box = $('#itemList'), list = [...save.items].sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
-  box.innerHTML = list.length ? list.map(it => itemRow(it, wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`)).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
-  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">🔖 Bookmarks tuck into an item\'s slots (more slots on rarer items). Tap an empty slot to add one.</p>');
-  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); setWallet({ coins: save.coins + RAR[it.rar].sell }); buildItems(); });
+  const twins = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && !wornBy(o.uid));
+  const btns = it => { if (it.type === 'mark') return `<div class="ibtns"><button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button></div>`;
+    const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twins(it).length : 0;
+    return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔀 Merge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
+  box.innerHTML = list.length ? list.map(it => itemRow(it, btns(it))).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
+  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">✨ <b>Polish</b> makes an item 10% stronger per step, up to +5. 🔀 <b>Merge</b> three items of the same kind and colour into one of the next colour: the one you tap keeps its name and bookmarks. 🔖 Bookmarks tuck into an item\'s slots.</p>');
+  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); buildItems(); });
+  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (!it) return; const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); buildItems(); });
+  box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => {
+    const it = itemBy(b.dataset.merge); if (!it) return; const use = twins(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
+    pickFor = null; $('#pickTitle').textContent = `Merge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n}. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
+    $('#pickList').innerHTML = use.map(o => itemRow(o, '')).join('') + `<button class="btn green" id="mergeGo">🔀 Merge</button>`;
+    $('#mergeGo').onclick = () => { let refund = 0; for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) save.items.push(mk); } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); setWallet({ coins: save.coins + refund }); missionTick('merge'); persist(); $('#pickm').hidden = true; buildItems(); $('#storeLoot') && 0; };
+    $('#pickm').hidden = false;
+  });
   // bookmarks: tap an empty slot to pick one from the bag, tap a placed one to take it off (20 coins)
   box.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
     const it = itemBy(b.dataset.addmark), marks = save.items.filter(i => i.type === 'mark').sort((a, c) => c.rar - a.rar || c.val - a.val);
@@ -2661,12 +2691,12 @@ async function buildIap() {
   const r = $('#iapRestore'); if (r) r.onclick = () => adultGate('Restoring purchases is for grown-ups.', async () => { try { for (const id of await window.iap.restore()) grantIap(id); } catch (e) {} buildIap(); drawStatics(); });
 }
 const OFFERS = [
-  { em: '🍱', name: 'Lunchbox', desc: 'One item. Usually something ordinary, sometimes not.', cost: ['coins', 300], run: () => [randItem(.1)] },
-  { em: '🎒', name: 'Backpack', desc: 'Three items, at least Rare, with a good shot at better.', cost: ['gems', 60], run: () => [randItem(.3, 1), randItem(.3, 1), randItem(.3, 1)] },
+  { em: '🍱', name: 'Lunchbox', desc: 'One item: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 300], run: () => [randItem(.1)] },
+  { em: '🎒', name: 'Backpack', desc: 'Exactly one Epic and two Rare items.', cost: ['gems', 60], run: () => [itemOf(2), itemOf(1), itemOf(1)] },
   { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
-  { em: '🔖', name: 'Bookmark', desc: 'One random bookmark for an item slot.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
+  { em: '🔖', name: 'Bookmark', desc: 'One bookmark of a random colour: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
   // rewarded-ad hooks: only rendered when the native build provides window.rewardedAd (never in the web build), and only behind the adult gate
   { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
