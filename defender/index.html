@@ -199,6 +199,13 @@
   #prog { position: absolute; left: 10px; right: 10px; top: 60px; height: 14px; border: 3px solid #3a2c20; border-radius: 10px; background: rgba(58,44,32,.5); overflow: hidden; }
   #prog div { height: 100%; width: 0; background: var(--water); transition: width .3s; }
   #prog div.boss { background: var(--red); }
+  #wstrip { position: absolute; left: 10px; top: 150px; width: 16px; height: 200px; border: 3px solid #3a2c20; border-radius: 10px; background: rgba(58,44,32,.5); }
+  #wstrip .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--water); border-radius: 0 0 7px 7px; transition: height .3s; }
+  #wstrip.boss .fill { background: var(--red); }
+  #wstrip .marks span { position: absolute; left: 50%; width: 8px; height: 8px; margin-left: -4px; margin-top: -4px; border-radius: 50%; background: #fff; border: 2px solid #3a2c20; box-sizing: border-box; }
+  #wstrip .marks span.done { background: var(--gold); }
+  #wstrip .top { position: absolute; left: 50%; top: -18px; transform: translate(-50%, -50%); font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 0 #3a2c20); }
+  #wstrip .cnt { position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; white-space: nowrap; }
   #hud .coins { position: absolute; left: 10px; top: 82px; display: flex; gap: 6px; flex-direction: column; }
   #hud .coins .pill { align-self: flex-start; font-size: 14px; padding: 6px 10px; }
   #bossbar { position: absolute; left: 60px; right: 60px; top: 84px; }
@@ -347,7 +354,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 22</div>
+    <div class="build">build 23</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -456,6 +463,7 @@
       <button class="btn icon" id="pause">❚❚</button>
     </div>
     <div id="prog"><div></div></div>
+    <div id="wstrip" hidden><div class="fill"></div><div class="marks"></div><div class="top"></div><div class="cnt"></div></div>
     <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
     <div id="bossbar" hidden><div class="nm" id="bossName"></div><div class="bar"><div id="bossHp"></div></div></div>
     <div id="hint" hidden></div>
@@ -1142,7 +1150,7 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1)), dur = 10 + w * 1.2;
+    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1)), dur = (10 + w * 1.2) * .8;
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -1162,6 +1170,7 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
+  if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
@@ -1258,7 +1267,7 @@ function useAbility(m, a) {
       return true; }
     case 'trap': {
       if (!G.enemies.length) return false;
-      windup(m, 'trap', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = rnd(0, 7), R = G.radius * rnd(.45, .9); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 34 + rk * 3 + sk('webster', 'trap') * 6, t: 0, life: 8 + rk }); } });
+      windup(m, 'trap', tgt, () => { for (let i = 0; i < D.n[L]; i++) { const a2 = rnd(0, 7), R = G.radius * rnd(.45, .9); G.traps.push({ x: CX + Math.cos(a2) * R, y: CY + Math.sin(a2) * R * .9, r: 42 + rk * 4 + sk('webster', 'trap') * 7, t: 0, life: 8 + rk }); } });
       return true; }
     case 'zap': {
       if (!tgt) return false;
@@ -1388,7 +1397,7 @@ function updateShots(dt) {
         break;
       case 'balloon': {
         const p = Math.min(1, s.t / s.life); s.x = s.sx + (s.tx - s.sx) * p; s.y = s.sy + (s.ty - s.sy) * p; s.z = Math.sin(p * Math.PI) * 120;
-        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, s.knock || 60, s.m ? { x: s.tx, y: s.ty, id: s.m.id } : { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, s.slowOn || .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.shake = .12; }
+        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, s.knock || 60, s.m ? { x: s.tx, y: s.ty, id: s.m.id } : { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, s.slowOn || .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.traps.push({ x: s.tx, y: s.ty, r: s.R * .9, t: 0, life: 3.5, mul: .55, puddle: true, col: s.col === '#5c8cbe' ? 'rgba(120,180,230,.55)' : 'rgba(220,235,255,.5)' }); G.shake = .12; }
         break; }
     }
   }
@@ -1407,7 +1416,7 @@ function update(dt) {
   else if (G.breakT > 0) { G.breakT -= dt; if (G.breakT <= 0) startWave(); }
   else {
     G.waveT += dt;
-    while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 40) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
+    while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 70) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
     if (!G.toSpawn.length && !G.enemies.length) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = 1.6; collectAll(); }
   }
   // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
@@ -1566,6 +1575,8 @@ function refreshHud(force) {
   const S = G.S;
   const wavesDone = G.wave + (G.breakT > 0 ? 0 : clamp(G.waveT / (10 + G.wave), 0, .95));
   const pb = $('#prog div'); pb.style.width = (wavesDone / S.waves * 100) + '%'; pb.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0);
+  const ws = $('#wstrip'); ws.hidden = !!G.room; if (!G.room) { if (ws.dataset.n !== S.waves + ':' + (S.boss || '')) { ws.dataset.n = S.waves + ':' + (S.boss || ''); ws.querySelector('.marks').innerHTML = Array.from({ length: S.waves }, (_, i) => `<span style="top:${(1 - (i + 1) / S.waves) * 100}%"></span>`).join(''); ws.querySelector('.top').textContent = S.boss ? MYTHS[S.boss].em : '🏁'; }
+    ws.querySelector('.fill').style.height = (wavesDone / S.waves * 100) + '%'; ws.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0); ws.querySelectorAll('.marks span').forEach((m, i) => m.classList.toggle('done', i < G.wave)); ws.querySelector('.cnt').textContent = `${Math.min(S.waves, G.wave + 1)}/${S.waves}`; }
   $('#patience div').style.width = clamp(G.hp / G.maxhp * 100, 0, 100) + '%'; $('#patience').classList.toggle('low', G.hp < G.maxhp * .3);
   $('#patience span').textContent = `Patience ${Math.max(0, Math.ceil(G.hp))} / ${G.maxhp}`;
   $('#xp div').style.width = clamp(G.xp / G.next * 100, 0, 100) + '%'; $('#lvl').textContent = 'Lv ' + G.lvl;
@@ -1702,14 +1713,17 @@ function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
   const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  if (opts.tint || opts.flash) { const tc = tintCanvas(size), tx = tc.getContext('2d'); tx.clearRect(0, 0, size, size); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.save(); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); tx.restore(); c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
+  if (opts.tint || opts.flash) { // a tinted copy of the frame, kept per sheet / frame / colour so a crowd of forty costs one draw each
+    const key = `${S.meta.name}:${A}:${row}:${f}:${opts.flash ? 'flash' : opts.tint}`; let tc = TINTED.get(key);
+    if (!tc) { if (TINTED.size > 600) TINTED.clear(); tc = document.createElement('canvas'); tc.width = tc.height = size; const tx = tc.getContext('2d'); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); TINTED.set(key, tc); }
+    c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
   else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
   if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
   c.restore(); c.globalAlpha = 1;
   return { row, frame: f, at };
 }
 const S3meta = q => q.size;
-const TINTC = {}; const tintCanvas = n => { if (!TINTC[n]) { TINTC[n] = document.createElement('canvas'); TINTC[n].width = TINTC[n].height = n; } return TINTC[n]; };
+const TINTED = new Map(); const TINTC = {}; const tintCanvas = n => { if (!TINTC[n]) { TINTC[n] = document.createElement('canvas'); TINTC[n].width = TINTC[n].height = n; } return TINTC[n]; };
 // the hand-held props (tools/render_props.mjs): one atlas, a column per prop, 8 direction rows, the grip at a known point
 let PROPS;
 function props3() {
@@ -2138,7 +2152,9 @@ function draw() {
   // silk traps
   for (const t of G.traps) { const p = t.t / t.life; ctx.save(); ctx.translate(t.x, t.y); ctx.globalAlpha = p > .8 ? (1 - p) / .2 : 1;
     if (t.shell) { ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; for (const [sx, sy, sr] of [[-t.r * .5, 4, 10], [0, -6, 12], [t.r * .5, 5, 10]]) { ctx.fillStyle = '#f0a070'; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); for (let a = 0; a < 7; a += .4) { const rr = a * sr / 7; ctx.lineTo(sx + Math.cos(a) * rr, sy + Math.sin(a) * rr); } ctx.stroke(); } ctx.restore(); continue; }
-    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.5; for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * t.r, Math.sin(a) * t.r * .7); ctx.stroke(); } for (let k = 1; k <= 3; k++) { ctx.beginPath(); for (let i = 0; i <= 8; i++) { const a = i / 8 * Math.PI * 2, rr = t.r * k / 3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .7); } ctx.stroke(); } ctx.restore(); }
+    if (t.puddle) { ctx.fillStyle = t.col || 'rgba(120,180,230,.5)'; ctx.strokeStyle = 'rgba(58,44,32,.55)'; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i <= 10; i++) { const a = i / 10 * Math.PI * 2, rr = t.r * (1 + Math.sin(a * 3 + t.x) * .12); ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .62); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(-t.r * .3, -t.r * .15, t.r * .25, t.r * .1, 0, 0, 7); ctx.fill(); ctx.restore(); continue; }
+    ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.ellipse(0, 0, t.r, t.r * .7, 0, 0, 7); ctx.fill(); ctx.strokeStyle = 'rgba(58,44,32,.5)'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2.5; for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * t.r, Math.sin(a) * t.r * .7); ctx.stroke(); } for (let k = 1; k <= 3; k++) { ctx.beginPath(); for (let i = 0; i <= 8; i++) { const a = i / 8 * Math.PI * 2, rr = t.r * k / 3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .7); } ctx.stroke(); } ctx.restore(); }
   // orbs
   for (const o of G.orbs) {
     ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
@@ -2156,7 +2172,7 @@ function draw() {
     else if (f.k === 'beam') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 9 - p * 7; ctx.beginPath(); ctx.moveTo(f.sx, f.sy); ctx.lineTo(f.x, f.y); ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3 - p * 2; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'lens') { ctx.globalAlpha = (1 - p) * .9; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(f.x, f.y, 10 + p * 14, 0, 7); ctx.fill(); ctx.globalAlpha = 1; }
     else if (f.k === 'swing') { ctx.globalAlpha = 1 - p; ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(dad.x, dad.y - 20); ctx.arc(dad.x, dad.y - 20, f.R, f.a - 1.3 + p * .8, f.a + .3 + p * .8); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.globalAlpha = 1; }
-    else if (f.k === 'splash') { ctx.globalAlpha = (1 - p); ctx.fillStyle = f.col; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.5 + p * .6), f.R * (.35 + p * .45), 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.globalAlpha = 1; }
+    else if (f.k === 'splash') { ctx.globalAlpha = (1 - p); ctx.fillStyle = f.col; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.6 + p * .7), f.R * (.42 + p * .5), 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 4; ctx.stroke(); ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.3 + p * 1.1), f.R * (.2 + p * .8), 0, 0, 7); ctx.stroke(); for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + f.x, d = f.R * (.6 + p * 1.2); ctx.fillStyle = f.col; ctx.beginPath(); ctx.arc(f.x + Math.cos(a) * d, f.y + Math.sin(a) * d * .7 - p * 30, 5 - p * 4, 0, 7); ctx.fill(); } ctx.globalAlpha = 1; }
     else if (f.k === 'ring') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.col; ctx.lineWidth = 6 - p * 5; ctx.beginPath(); ctx.arc(f.x, f.y, f.R * p, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'bolt') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#fff' : '#ffe36b'; ctx.lineWidth = f.big ? 5 : 3; ctx.beginPath(); ctx.moveTo(f.x1, f.y1); const n = 5; for (let i = 1; i < n; i++) { const q = i / n; ctx.lineTo(f.x1 + (f.x2 - f.x1) * q + rnd(-8, 8), f.y1 + (f.y2 - f.y1) * q + rnd(-8, 8)); } ctx.lineTo(f.x2, f.y2); ctx.stroke(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'tongue') { const ext = p < .5 ? p * 2 : (1 - p) * 2; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 11; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(f.a) * f.len * ext, f.y + Math.sin(f.a) * f.len * ext); ctx.stroke(); ctx.strokeStyle = '#e98a8a'; ctx.lineWidth = 7; ctx.stroke(); }
