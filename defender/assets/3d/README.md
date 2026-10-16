@@ -33,6 +33,16 @@ Left/Right Shoulder, Arm, ForeArm, **Hand**, UpLeg, Leg, Foot, ToeBase. "Right" 
 character's own right. Hats go on `Head`/`head_end`, glasses on `headfront`, a thrown
 item in `RightHand`.
 
+## Myths and bosses (creep_<kind>, boss_<id>)
+
+Concept images from Gemini (`tools/gen_creeps.py` → `tools/concepts/`), Meshy image-to-3D in a batch
+(`tools/meshy_batch.py`, static, no rig), sheets from `tools/render_all.sh` (creeps 160 px cells,
+bosses 192, one idle frame × 8 rows). The creeps are modelled in a neutral grey-beige and the game
+washes each myth's own colour over the body (`drawSheet` `tint`), with the myth's sticker at `__mid`.
+Kinds: normal, fast, tank, splitter (minis reuse it smaller), dasher, hardcover, flyer, rumour, healer,
+gossip, swarm. Bosses: wall, spiders, brain, bolt, boil, triangle, hot, penguin, flat (mirages reuse
+the boss). Bricks stay drawn.
+
 ## Props (props.png, props.json)
 
 Hand-held things, modelled from primitives in `tools/render_props.mjs` (no Meshy credits):

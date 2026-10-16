@@ -347,7 +347,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 20</div>
+    <div class="build">build 21</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1685,7 +1685,8 @@ function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
   const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
+  if (opts.tint || opts.flash) { const tc = tintCanvas(size), tx = tc.getContext('2d'); tx.clearRect(0, 0, size, size); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.save(); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .42); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); tx.restore(); c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
+  else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
   if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
   c.restore(); c.globalAlpha = 1;
   return { row, frame: f, at };
@@ -1984,7 +1985,23 @@ function drawEnemy(e) {
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
   if (e.known) { ctx.save(); ctx.globalAlpha = .7 + Math.sin(G.t * 6) * .3; ctx.fillStyle = '#8fd38a'; ctx.beginPath(); ctx.arc(x - r * .55, y - r * .1, r * .18, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - r * .62, y - r * .1); ctx.lineTo(x - r * .56, y - r * .03); ctx.lineTo(x - r * .46, y - r * .18); ctx.stroke(); ctx.restore(); }
   if (e.marked > 0) { ctx.font = `16px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📝', x + r * .8, y - r - 8 + Math.sin(G.t * 6) * 2); ctx.textBaseline = 'alphabetic'; }
-  switch (e.kind) {
+  const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : 'creep_' + e.kind);
+  if (S3) { // the 3D myth: faces the way it walks, tinted its own colour, with the code's bob, crouch and lean on top
+    const mv = Math.hypot(e.vx || 0, e.vy || 0), toDad = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), phi = big || e.kind === 'gossip' || mv < 6 ? toDad : Math.atan2(e.vy, e.vx), dir = Math.cos(toDad) >= 0 ? 1 : -1;
+    const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : 0, crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
+    const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : .18);
+    if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
+    const flipped = e.kind === 'hardcover' && e.flipped > 0;
+    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { tint: e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
+    if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
+    if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', x + Math.cos(a) * r * .7, y - r * 1.2 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
+    if (e.kind === 'dasher' && e.winding > 0) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(toDad) * 60, y + Math.sin(toDad) * 60); ctx.stroke(); ctx.setLineDash([]); }
+    if (e.kind === 'rumour' && !seen(e)) { ctx.globalAlpha = .5; ctx.font = `700 ${Math.round(r * .8)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('?', x, y - r * 1.2); }
+    if (e.kind === 'healer' && e.healT < .4 && inRing(e)) { ctx.strokeStyle = '#b48be6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, 95 * (1 - e.healT / .4), 0, 7); ctx.stroke(); }
+    if (e.kind === 'gossip') { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(x + r * 1.2, y - r * 1.5, r * .6, r * .4, 0, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#3a2c20'; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(x + r * .95 + i * r * .25, y - r * 1.5, r * .07, 0, 7); ctx.fill(); } }
+  }
+  else switch (e.kind) {
     case 'dasher': { // a thin paperback that leans forward and crouches before it charges
       const crouch = e.winding > 0 ? 1 - e.winding / .7 : 0, dash = e.charging > 0 ? 1 : 0, dir = e.x < G.dad.x ? 1 : -1;
       ctx.translate(x, y + crouch * 6); ctx.rotate(step * .05 + (dash ? .5 : crouch * -.25) * dir); ctx.scale(1 + crouch * .15, 1 - crouch * .2);
