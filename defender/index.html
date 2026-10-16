@@ -51,6 +51,13 @@
   .btn.icon { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
   .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
   .btn.big-icon small { font-size: 11px; }
+  .btn.big-icon { position: relative; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
+  .mis { background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
+  .mis h3 { margin: 0 0 6px; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; } .mis h3 small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .mrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; font: 400 15px/1.15 "Patrick Hand", cursive; } .mrow .em { font-size: 20px; width: 26px; text-align: center; } .mrow .t { flex: 1; } .mrow.done .t { text-decoration: line-through; opacity: .6; }
+  .mrow .bar { width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.12); overflow: hidden; } .mrow .bar div { height: 100%; background: var(--water); } .mrow.done .bar div { background: #6fbf5a; }
+  .mrow .n { font: 700 12px/1 "Fredoka", Arial, sans-serif; width: 52px; text-align: right; }
+  .chest { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 2px dashed var(--line); font: 400 14px/1.2 "Patrick Hand", cursive; } .chest .em { font-size: 28px; } .chest .t { flex: 1; }
   .pill { font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.88); padding: 9px 12px; border-radius: 999px; border: 3px solid #3a2c20; white-space: nowrap; }
   .pill.know { background: var(--teal); }
 
@@ -363,12 +370,13 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 27</div>
+    <div class="build">build 28</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
       <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
+      <button class="btn big-icon ghost" id="openMissions">📋<small>Missions</small><i class="dot" id="misDot" hidden></i></button>
     </div>
     <div class="side2">
       <button class="btn big-icon ghost" id="openDraw">🎟️<small>Cards</small></button>
@@ -439,6 +447,11 @@
   </section>
 
   <!-- ───────── items: the bag ───────── -->
+  <section id="missions" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Missions</h2><span class="pill tix">📄 <span id="blankN">0</span></span></div>
+    <p class="intro">Little jobs for every day and week, and big ones for keeps. They fill up as you play: no timers, and nothing is lost if you miss a day.</p>
+    <div class="list" id="missionList"></div>
+  </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
     <p class="intro">Everything you've found. Weapons add Power, armor adds Patience, books add a little of something clever. Equip from the Party screen; sell what you don't need.</p>
@@ -1106,7 +1119,54 @@ function mergeInto(it) {
   const main = Object.keys(st)[0]; it.stat = main; it.val = st[main];
 }
 const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STAT[k][1]} ${STAT[k][0]}`).join(' · ');
-function missionTick(kind, n = 1) { if (typeof missionAdd === 'function') missionAdd(kind, n); }
+// missions: three dailies and five weeklies, picked the same way for everyone on a given day or week, and one-time story goals
+const MPOOL_D = [
+  { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 60 }, { k: 'abil', em: '✨', t: 'Friends use their moves {n} times', n: 25 }, { k: 'fact', em: '💡', t: 'Learn a new fact, or get a quiz right', n: 1 },
+  { k: 'clear', em: '🏁', t: 'Clear any stage', n: 1 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 }, { k: 'elite', em: '👑', t: 'Pop {n} elites', n: 2 }, { k: 'coin', em: '🪙', t: 'Pick up {n} coins in matches', n: 40 },
+];
+const MPOOL_W = [
+  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'merge', em: '🔀', t: 'Merge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
+  { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 500 }, { k: 'fact', em: '💡', t: 'Learn {n} new facts', n: 5 }, { k: 'clear', em: '🏁', t: 'Clear {n} stages', n: 8 }, { k: 'star3', em: '⭐', t: 'Get 3 stars {n} times', n: 4 },
+];
+const MSTORY = [
+  { id: 'friends6', em: '🧑‍🤝‍🧑', t: 'Have 6 friends', done: () => Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own).length >= 6, pay: { blank: 8 } },
+  { id: 'star3', em: '⭐', t: 'Give any friend ★3', done: () => Object.keys(CHARS).some(id => fstars(id) >= 3), pay: { item: 2 } },
+  { id: 'star5', em: '🌟', t: 'Give any friend ★5', done: () => Object.keys(CHARS).some(id => fstars(id) >= 5), pay: { item: 3 } },
+  { id: 'yard', em: '🏡', t: 'Bust every myth in the Backyard', done: () => mastered(0), pay: { blank: 10, gems: 30 } },
+  { id: 'pond', em: '🪷', t: 'Bust every myth at the Pond', done: () => mastered(1), pay: { blank: 10, gems: 30 } },
+  { id: 'hard', em: '🌩️', t: 'Clear a stage on Hard', done: () => Object.keys(save.stars).some(k => k.endsWith(':hard')), pay: { blank: 5, tix: 1 } },
+  { id: 'legend', em: '🏆', t: 'Own a Legendary item', done: () => save.items.some(i => i.rar === 3), pay: { gems: 50 } },
+  { id: 'topics', em: '📔', t: 'Finish 3 Diary topics', done: () => (save.catCards || []).length >= 3, pay: { tix: 2 } },
+  { id: 'chapter4', em: '🌊', t: 'Reach the Ocean', done: () => save.unlocked >= 15, pay: { blank: 10 } },
+  { id: 'chapter8', em: '🌙', t: 'Reach the Night Sky', done: () => save.unlocked >= 35, pay: { blank: 15, gems: 50 } },
+];
+const weekKey = () => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+const seedPick = (pool, n, key) => { let h = 0; for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0; const a = pool.map((x, i) => i), out = []; while (out.length < n) { h = (h * 1103515245 + 12345) >>> 0; out.push(pool[a.splice(h % a.length, 1)[0]]); } return out; };
+function misState() {
+  const M = save.mis = save.mis || {};
+  if (M.day !== today()) { const wasDay = M.day; M.day = today(); M.d = seedPick(MPOOL_D, 3, 'd' + M.day).map(x => ({ ...x, have: 0 })); M.dGot = false; if (wasDay !== undefined) M.newDay = true; }
+  if (M.week !== weekKey()) { M.week = weekKey(); M.w = seedPick(MPOOL_W, 5, 'w' + M.week).map(x => ({ ...x, have: 0 })); M.wGot = false; M.days = []; }
+  if (!(M.days || (M.days = [])).includes(M.day)) { M.days.push(M.day); for (const x of M.w) if (x.k === 'days') x.have = Math.min(x.n, x.have + 1); }
+  M.story = M.story || []; return M;
+}
+function missionAdd(kind, n = 1) { const M = misState(); for (const x of [...M.d, ...M.w]) if (x.k === kind && x.have < x.n) x.have = Math.min(x.n, x.have + n); }
+function missionTick(kind, n = 1) { missionAdd(kind, n); persist(); misDot(); }
+const misReady = () => { const M = misState(); return (!M.dGot && M.d.every(x => x.have >= x.n)) || (!M.wGot && M.w.every(x => x.have >= x.n)) || MSTORY.some(x => !M.story.includes(x.id) && x.done()); };
+function misDot() { const d = $('#misDot'); if (d) d.hidden = !misReady(); }
+function payPrize(pay) { const got = []; if (pay.coins) { setWallet({ coins: save.coins + pay.coins }); got.push(`🪙 ${pay.coins}`); } if (pay.gems) { setWallet({ gems: save.gems + pay.gems }); got.push(`💎 ${pay.gems}`); } if (pay.tix) { setWallet({ tix: save.tix + pay.tix }); got.push(`🎟️ ${pay.tix}`); } if (pay.blank) { save.blank = (save.blank || 0) + pay.blank; got.push(`📄 ${pay.blank} Blank pages`); } if (pay.item != null) { const it = itemOf(pay.item); save.items.push(it); got.push(`${it.em} ${it.name}`); } if (pay.mark) { const mk = makeMark(rollRar(.4)); save.items.push(mk); got.push(`${mk.em} ${mk.name}`); } persist(); return got.join(' · '); }
+const DCHEST = { coins: 150, blank: 2 }, WCHEST = { gems: 60, blank: 8, item: 2 };
+function buildMissions() {
+  const M = misState(), box = $('#missionList'), row = x => { const done = x.have >= x.n; return `<div class="mrow ${done ? 'done' : ''}"><span class="em">${done ? '✅' : x.em}</span><span class="t">${x.t.replace('{n}', x.n)}</span><div class="bar"><div style="width:${Math.round(x.have / x.n * 100)}%"></div></div><span class="n">${x.have}/${x.n}</span></div>`; };
+  const prize = p => [p.coins && `🪙 ${p.coins}`, p.gems && `💎 ${p.gems}`, p.tix && `🎟️ ${p.tix}`, p.blank && `📄 ${p.blank} Blank`, p.item != null && `${RAR[p.item].n} item`].filter(Boolean).join(' · ');
+  const chest = (all, got, p, key) => `<div class="chest"><span class="em">${got ? '📭' : all ? '🎁' : '📦'}</span><span class="t">${prize(p)}</span>${got ? '<button class="btn small" disabled>Opened</button>' : `<button class="btn small ${all ? 'green' : ''}" data-chest="${key}" ${all ? '' : 'disabled'}>${all ? 'Open!' : 'Finish all'}</button>`}</div>`;
+  const dAll = M.d.every(x => x.have >= x.n), wAll = M.w.every(x => x.have >= x.n);
+  box.innerHTML = `<div class="mis"><h3>Today <small>new ones tomorrow</small></h3>${M.d.map(row).join('')}${chest(dAll, M.dGot, DCHEST, 'd')}</div>`
+    + `<div class="mis"><h3>This week <small>new ones on Monday</small></h3>${M.w.map(row).join('')}${chest(wAll, M.wGot, WCHEST, 'w')}</div>`
+    + `<div class="mis"><h3>Big goals <small>for keeps</small></h3>${MSTORY.map(x => { const got = M.story.includes(x.id), ok = x.done(); return `<div class="mrow ${got ? 'done' : ''}"><span class="em">${got ? '✅' : x.em}</span><span class="t">${x.t}<br><small style="color:var(--muted)">${prize(x.pay)}</small></span>${got ? '' : `<button class="btn small ${ok ? 'green' : ''}" data-story="${x.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Not yet'}</button>`}</div>`; }).join('')}</div>`;
+  $('#blankN').textContent = save.blank || 0;
+  box.querySelectorAll('[data-chest]').forEach(b => b.onclick = () => { const k = b.dataset.chest; if (k === 'd' && !M.dGot && dAll) { M.dGot = true; toastMsg('🎁 ' + payPrize({ ...DCHEST, mark: Math.random() < .3 })); } if (k === 'w' && !M.wGot && wAll) { M.wGot = true; toastMsg('🎁 ' + payPrize(WCHEST)); } persist(); buildMissions(); misDot(); });
+  box.querySelectorAll('[data-story]').forEach(b => b.onclick = () => { const x = MSTORY.find(y => y.id === b.dataset.story); if (!x || M.story.includes(x.id) || !x.done()) return; M.story.push(x.id); toastMsg('🏆 ' + payPrize(x.pay)); buildMissions(); misDot(); });
+}
 const itemName = it => it.name + (it.lv ? ` +${it.lv}` : '');
 
 /* ───────── save ───────── */
@@ -1262,7 +1322,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0) kill(e);
 }
 function kill(e) {
-  G.busted++; save.busted++;
+  G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); }
   if (e.host) { e.host.muted = 0; e.host = null; }
@@ -1273,7 +1333,7 @@ function kill(e) {
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
@@ -1553,7 +1613,7 @@ function update(dt) {
     for (const a of CHARS[m.id].abil) {
       if (!m.ranks[a] || ABIL[a].passive) continue;
       m.cds[a] -= dt;
-      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; if (useAbility(m, a)) m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m); else m.cds[a] = .15; }
+      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; if (useAbility(m, a) && (m.id === 'dad' || missionAdd('abil') || true)) m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m); else m.cds[a] = .15; }
     }
   }
   for (const p of G.pending) if (G.t >= p.at) { p.done = true; p.fn(); }
@@ -2261,7 +2321,7 @@ function drawTitleParty() {
   const SPOT = [[118, 284, 1.5, 1], [330, 284, 1.5, -1], [40, 262, 1.25, 1]];
   save.party.forEach((id, i) => { const [sx, sy, sc, f] = SPOT[i]; drawCompanionAt(x, id, sx, sy, sc, f, performance.now() / 1000, { gear: true }); });
 }
-function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
+function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -2336,7 +2396,7 @@ function answerQuiz(saidFact) {
   const q = G.quiz, right = saidFact === q.isFact, M = MYTHS[q.id], b = G.boss;
   $('#ansMyth').disabled = $('#ansFact').disabled = true;
   if (right) G.right = (G.right || 0) + 1;
-  if (right) { $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
+  if (right) { missionAdd('fact'); $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
   else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
   setTimeout(() => {
     $('#quizm').hidden = true;
@@ -2374,7 +2434,7 @@ function loop(ts) {
 }
 
 /* ───────── flow ───────── */
-const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store'];
+const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store', '#missions'];
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
@@ -2428,6 +2488,7 @@ function stageClear() {
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
   const hardFirst = save.diff === 'hard' && prev === 0;
+  missionAdd('clear'); if (stars === 3) missionAdd('star3'); if (G.bossDown) missionAdd('boss'); if (G.coins) missionAdd('coin', G.coins);
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
@@ -2792,6 +2853,7 @@ $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
+$('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
 $$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });
