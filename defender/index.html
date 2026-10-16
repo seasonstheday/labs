@@ -347,7 +347,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 21</div>
+    <div class="build">build 22</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -769,6 +769,19 @@ const BOSSMOVE = {
   bolt:     { every: 11, tell: '"Lightning NEVER strikes twice."', note: 'The Storm marks spots and strikes them. Twice. Stun it during the tell.', go: b => { const spots = [G.dad, ...G.party.filter(m => m.id !== 'dad')].map(m => ({ x: m.x, y: m.y, who: m })); G.strikes = { spots, t: 0, hits: 0, by: b }; } },
   flat:     { every: 12, tell: '"The world is FLAT. See?"', note: 'The Flat Earth flips the whole backyard over for a moment. Dad never moves, so neither should you.', go: b => { G.flip = 3; text(CX, CY - 120, 'FLIP!', '#fff', 24, 1.2); } },
 };
+// each chapter's myths come with a twist of their own, so a Library book isn't a Backyard book with a new cover:
+// a colour the whole chapter shares (mixed into each myth's own) and one habit the player can read and play around
+const VARIANT = [
+  null,
+  { name: 'Soggy',     em: '💧', tint: '#4fa3c7', desc: 'Pond myths shrug off slows twice as fast.', slow: 2 },
+  { name: 'Well-read', em: '📖', tint: '#b08a5a', desc: 'Library myths are thicker, and worth an extra XP each.', hp: 1.15, xp: 1 },
+  { name: 'Salty',     em: '🧂', tint: '#3f7fb5', desc: 'Ocean myths are quick and hard to shove.', spd: 1.1, knock: .65 },
+  { name: 'Sunbaked',  em: '🌵', tint: '#d9a04a', desc: 'Desert myths dash the last stretch into the ring.', hurry: true },
+  { name: 'Frosty',    em: '❄️', tint: '#9fd3ea', desc: 'Arctic myths are slow but thick, and chill the friend that pops them.', hp: 1.15, spd: .9, chill: true },
+  { name: 'Wild',      em: '🌿', tint: '#4e9a4e', desc: 'Jungle myths come in fast and in bigger bunches.', spd: 1.12, more: 1.15 },
+  { name: 'Starry',    em: '✨', tint: '#5b4e9e', desc: 'Night Sky myths fade from sight outside the ring. Everything you learned, at once.', fade: true },
+];
+const mixCol = (a, b, t) => { const A = parseInt(a.slice(1), 16), B = parseInt(b.slice(1), 16), m = (x, y) => Math.round(x + (y - x) * t); return `rgb(${m(A >> 16, B >> 16)},${m((A >> 8) & 255, (B >> 8) & 255)},${m(A & 255, B & 255)})`; };
 const KIND_NOTE = { dasher: 'It stops, then charges. Stun it while it winds up.', hardcover: 'Armoured in front. Knock it back or stun it to flip it open.', flyer: 'Flies over webs and lullabies.', rumour: 'Hard to see until it gets close.', healer: 'Patches up its friends. Pop it first.', gossip: 'Jumps on a friend and talks their ear off. A Dad Joke shakes it off.', swarm: 'Lots of little ones.' };
 const DIFF = {
   easy:   { name: 'Easy',   em: '🌤️', hp: .72, spd: .9,  dmg: .7,  coin: .8,  desc: 'Slower, softer myths.' },
@@ -808,7 +821,7 @@ const STAGES = [];
 WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
   const prev = w ? WORLDS[w - 1].pool.slice(-2) : [], pool = [...W.pool.slice(0, Math.min(W.pool.length, 4 + i)), ...(i >= 2 ? prev : [])];
   STAGES.push({ w, idx: i, W, name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid,
-    desc: i === 4 ? `The chapter boss. ${W.desc}` : i === 2 ? (W.mid ? 'A boss of its own, before the chapter boss.' : 'A rough draft of the chapter boss: smaller, and it never gets to its second act.') : i === 0 ? W.desc : 'A page stage. It ends in a rush of two elites.',
+    desc: (i === 4 ? `The chapter boss. ${W.desc}` : i === 2 ? (W.mid ? 'A boss of its own, before the chapter boss.' : 'A rough draft of the chapter boss: smaller, and it never gets to its second act.') : i === 0 ? W.desc : 'A page stage. It ends in a rush of two elites.') + (VARIANT[w] ? ` ${VARIANT[w].em} ${VARIANT[w].name} myths: ${VARIANT[w].desc}` : ''),
     lawn: W.lawn, stone: W.stone, edge: W.edge });
 } });
 
@@ -1129,7 +1142,7 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * (save.diff === 'hard' ? 1.25 : 1)), dur = 10 + w * 1.2;
+    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1)), dur = 10 + w * 1.2;
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -1149,6 +1162,7 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
+  const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
@@ -1173,6 +1187,7 @@ const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m
 const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
+  if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
@@ -1188,12 +1203,13 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
   e.hp -= d; e.hit = .12;
-  text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 19 : 15, .7);
+  text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   if (e.hp <= 0) kill(e);
 }
 function kill(e) {
   G.busted++; save.busted++;
+  if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); }
   if (e.host) { e.host.muted = 0; e.host = null; }
   for (let i = 0; i < fxN(8); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
@@ -1428,7 +1444,8 @@ function update(dt) {
   G.radius = (G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
-    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1)); e.stun = Math.max(0, e.stun - dt);
+    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
+    if (e.V && e.V.hurry && !e.hurried && dist(e, G.dad) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
     if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
@@ -1685,7 +1702,7 @@ function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
   const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  if (opts.tint || opts.flash) { const tc = tintCanvas(size), tx = tc.getContext('2d'); tx.clearRect(0, 0, size, size); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.save(); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .42); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); tx.restore(); c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
+  if (opts.tint || opts.flash) { const tc = tintCanvas(size), tx = tc.getContext('2d'); tx.clearRect(0, 0, size, size); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.save(); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); tx.restore(); c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
   else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
   if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
   c.restore(); c.globalAlpha = 1;
@@ -1979,7 +1996,7 @@ function bossFront(id, r, col) {
   ctx.restore();
 }
 function drawEnemy(e) {
-  const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : e.M.col, step = Math.sin(e.walk);
+  const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill();
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
@@ -1992,7 +2009,8 @@ function drawEnemy(e) {
     const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : .18);
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
-    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { tint: e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
+    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
     if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', x + Math.cos(a) * r * .7, y - r * 1.2 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
@@ -2298,7 +2316,9 @@ function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#h
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
-  setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
+  const V = VARIANT[STAGES[stage].w]; save.seenVar = save.seenVar || [];
+  if (V && !save.seenVar.includes(V.name)) { save.seenVar.push(V.name); persist(); setTimeout(() => { if (G && !G.room) hint(`${V.em} ${V.name}: ${V.desc}`, 5); }, 2200); }
+  else setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
   const ck = G.S.w + ':in';
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
 }
