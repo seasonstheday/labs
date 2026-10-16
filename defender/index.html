@@ -137,6 +137,7 @@
   .stars { color: #ecb23c; font-size: 16px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .stars i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
   .tierrow .pg { white-space: nowrap; } .tierrow .pbar { flex: 1; min-width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.15); overflow: hidden; } .tierrow .pbar div { height: 100%; background: #ecb23c; }
   .pgbtns { display: flex; gap: 6px; margin: 4px 0; }
+  .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } .reacts span { font: 400 13px/1 "Patrick Hand", cursive; background: rgba(95,191,174,.15); border: 2px solid rgba(58,44,32,.25); border-radius: 999px; padding: 3px 8px; } .reacts .team { background: rgba(236,178,60,.25); border-color: #ecb23c; }
   .msgpop { position: absolute; left: 50%; top: 42%; transform: translateX(-50%); z-index: 60; background: #3a2c20; color: #fff; font: 700 17px/1.2 "Fredoka", Arial, sans-serif; padding: 10px 16px; border-radius: 14px; border: 3px solid #ecb23c; pointer-events: none; animation: msgup 2.6s ease forwards; white-space: nowrap; }
   @keyframes msgup { 0% { opacity: 0; transform: translate(-50%, 10px); } 12% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px); } }
   .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
@@ -370,7 +371,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 28</div>
+    <div class="build">build 29</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1004,6 +1005,37 @@ function addPages(id, n) {
 }
 function starUp(id) { const c = chr(id), st = fstars(id), cost = STAR_COST[st]; if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
 // the friend the story is building toward: the next one to join, in the order they used to join for free
+// elements: five on a wheel. A myth hit by one element and then, within a moment, by its neighbour on the wheel
+// sets off a reaction. Two friends of the same element in the party hit 10% harder together.
+const ELEM = {
+  water: { n: 'Water', em: '💧', col: '#4fa3e0' }, spark: { n: 'Spark', em: '⚡', col: '#e8b81c' }, wind: { n: 'Wind', em: '🌬️', col: '#5fbfae' },
+  earth: { n: 'Earth', em: '🪨', col: '#a07850' }, moon: { n: 'Moon', em: '🌙', col: '#8a7fd6' },
+};
+const WHEEL = ['water', 'spark', 'wind', 'earth', 'moon'];
+const REACT = { // keyed by the two elements in wheel order
+  'water+spark': { n: 'Fizz', em: '⚡💧', desc: 'the spark runs through the water and jumps to three more myths' },
+  'spark+wind':  { n: 'Storm', em: '⛈️', desc: 'a bolt from the sky hits it again, twice as hard' },
+  'wind+earth':  { n: 'Dust Devil', em: '🌪️', desc: 'a little whirlwind pulls the myths around it together and slows them' },
+  'earth+moon':  { n: 'Stone Sleep', em: '🪨🌙', desc: 'it drops off to sleep where it stands' },
+  'water+moon':  { n: 'Tide', em: '🌊', desc: 'a wave washes it and its neighbours back' },
+};
+const CELEM = { webster: 'earth', hopper: 'water', sparky: 'spark', puddles: 'wind', dusty: 'moon', pip: 'water', scuttle: 'earth', nilla: 'wind', luna: 'moon' };
+const WELEM = { glass: 'spark', yoyo: 'earth', bat: 'earth', plane: 'wind', frisbee: 'wind', bubble: 'water', balloon: 'water' };
+const elemOf = id => id === 'dad' ? WELEM[save.weapon] || null : CELEM[id] || null;
+const reactKey = (a, b) => { const i = WHEEL.indexOf(a), j = WHEEL.indexOf(b); if (i < 0 || j < 0 || a === b) return null; const adj = (i + 1) % 5 === j || (j + 1) % 5 === i; if (!adj) return null; return [a, b].sort((x, y) => WHEEL.indexOf(x) - WHEEL.indexOf(y)).join('+'); };
+const reactsWith = el => WHEEL.filter(o => reactKey(el, o)).map(o => ({ o, R: REACT[reactKey(el, o)] }));
+const teamBonus = id => { const el = CELEM[id]; if (!el || !G) return 1; return G.party.filter(m => m.id !== 'dad' && CELEM[m.id] === el).length >= 2 ? 1.1 : 1; };
+function react(e, key) {
+  const R = REACT[key], base = 10 + G.stage * 2.2; G.reactions = (G.reactions || 0) + 1; missionAdd('react');
+  text(e.x, e.y - e.r - 40, `${R.em} ${R.n.toUpperCase()}!`, '#fff', 20, 1.1);
+  if (!(save.seenReact || (save.seenReact = [])).includes(key)) { save.seenReact.push(key); persist(); hint(`${R.em} ${R.n}: ${key.split('+').map(k => ELEM[k].n).join(' and ')} together. ${R.desc[0].toUpperCase() + R.desc.slice(1)}.`, 4.5); }
+  const near = r => G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < r);
+  if (key === 'water+spark') { for (const o of near(130).slice(0, 3)) { G.fx.push({ k: 'bolt', x1: e.x, y1: e.y, x2: o.x, y2: o.y, t: 0, life: .3 }); hurt(o, base, 0, { x: e.x, y: e.y, id: 'react' }); } }
+  else if (key === 'spark+wind') { G.fx.push({ k: 'bolt', x1: e.x + rnd(-30, 30), y1: e.y - 260, x2: e.x, y2: e.y, t: 0, life: .35, big: true }); hurt(e, base * 2, 0, { x: e.x, y: e.y, id: 'react' }); G.shake = Math.max(G.shake, .12); }
+  else if (key === 'wind+earth') { G.fx.push({ k: 'ring', x: e.x, y: e.y, R: 110, t: 0, life: .6, col: '#d9c49a' }); for (const o of [e, ...near(110)]) { const a = Math.atan2(e.y - o.y, e.x - o.x); o.kx += Math.cos(a) * 90; o.ky += Math.sin(a) * 90; o.slow = Math.max(o.slow, 1.5); } hurt(e, base, 0, { x: e.x, y: e.y, id: 'react' }); }
+  else if (key === 'earth+moon') { e.stun = Math.max(e.stun, 1.4); text(e.x + 14, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.2); hurt(e, base * .6, 0, { x: e.x, y: e.y, id: 'react' }); }
+  else if (key === 'water+moon') { G.fx.push({ k: 'splash', x: e.x, y: e.y + 6, R: 70, t: 0, life: .45, col: '#8fc7f0' }); for (const o of [e, ...near(80)]) { o.slow = Math.max(o.slow, 1.2); hurt(o, base * .5, 120, { x: G.dad.x, y: G.dad.y, id: 'react' }); } }
+}
 const nextFriend = () => Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CHARS[a].freeAfter ?? 99) - (CHARS[b].freeAfter ?? 99))[0];
 // the permanent skill tree: abilities unlock with a friend's level, then each has three coin upgrades
 const UNLOCK_AT = [1, 2, 4], SYN_AT = 6, SK_MAX = 3;
@@ -1122,10 +1154,10 @@ const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STA
 // missions: three dailies and five weeklies, picked the same way for everyone on a given day or week, and one-time story goals
 const MPOOL_D = [
   { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 60 }, { k: 'abil', em: '✨', t: 'Friends use their moves {n} times', n: 25 }, { k: 'fact', em: '💡', t: 'Learn a new fact, or get a quiz right', n: 1 },
-  { k: 'clear', em: '🏁', t: 'Clear any stage', n: 1 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 }, { k: 'elite', em: '👑', t: 'Pop {n} elites', n: 2 }, { k: 'coin', em: '🪙', t: 'Pick up {n} coins in matches', n: 40 },
+  { k: 'clear', em: '🏁', t: 'Clear any stage', n: 1 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 }, { k: 'elite', em: '👑', t: 'Pop {n} elites', n: 2 }, { k: 'coin', em: '🪙', t: 'Pick up {n} coins in matches', n: 40 }, { k: 'react', em: '🌪️', t: 'Set off {n} element reactions', n: 8 },
 ];
 const MPOOL_W = [
-  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'merge', em: '🔀', t: 'Merge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
+  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'react', em: '⚡💧', t: 'Set off {n} element reactions', n: 30 }, { k: 'merge', em: '🔀', t: 'Merge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
   { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 500 }, { k: 'fact', em: '💡', t: 'Learn {n} new facts', n: 5 }, { k: 'clear', em: '🏁', t: 'Clear {n} stages', n: 8 }, { k: 'star3', em: '⭐', t: 'Get 3 stars {n} times', n: 4 },
 ];
 const MSTORY = [
@@ -1135,6 +1167,7 @@ const MSTORY = [
   { id: 'yard', em: '🏡', t: 'Bust every myth in the Backyard', done: () => mastered(0), pay: { blank: 10, gems: 30 } },
   { id: 'pond', em: '🪷', t: 'Bust every myth at the Pond', done: () => mastered(1), pay: { blank: 10, gems: 30 } },
   { id: 'hard', em: '🌩️', t: 'Clear a stage on Hard', done: () => Object.keys(save.stars).some(k => k.endsWith(':hard')), pay: { blank: 5, tix: 1 } },
+  { id: 'reacts', em: '🌈', t: 'Set off all five reactions', done: () => (save.seenReact || []).length >= 5, pay: { blank: 10, gems: 40 } },
   { id: 'legend', em: '🏆', t: 'Own a Legendary item', done: () => save.items.some(i => i.rar === 3), pay: { gems: 50 } },
   { id: 'topics', em: '📔', t: 'Finish 3 Diary topics', done: () => (save.catCards || []).length >= 3, pay: { tix: 2 } },
   { id: 'chapter4', em: '🌊', t: 'Reach the Ocean', done: () => save.unlocked >= 15, pay: { blank: 10 } },
@@ -1306,7 +1339,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
-  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
+  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind); d *= teamBonus(who);
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
@@ -1319,6 +1352,8 @@ function hurt(e, d, knock = 0, from = G.dad) {
   e.hp -= d; e.hit = .12;
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
+  const el = who === 'react' ? null : elemOf(who);
+  if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < 2.5 ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
   if (e.hp <= 0) kill(e);
 }
 function kill(e) {
@@ -2233,6 +2268,7 @@ function drawEnemy(e) {
   }
   ctx.restore();
   if (e.weak > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 5; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.arc(x, y, r * 1.25 + Math.sin(G.t * 8) * 4, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('WEAK SPOT', x, y + r + 28); }
+  if (e.tag && G.t - e.tag.t < 2.5 && e.hp > 0) { ctx.save(); ctx.globalAlpha = 1 - (G.t - e.tag.t) / 2.5 * .6; ctx.font = `14px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(ELEM[e.tag.el].em, x - r * .9, y - r - 6); ctx.restore(); }
   if (e.elite) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', x, y - r - 6); ctx.textBaseline = 'alphabetic'; ctx.strokeStyle = 'rgba(236,178,60,.8)'; ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(x, y, r * 1.15, G.t * 2, G.t * 2 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.4)'; ctx.beginPath(); ctx.arc(x, y, r * 1.1, 0, 7); ctx.fill(); }
   if (e.stun > 0) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.textAlign = 'center'; const sx = x + Math.cos(G.t * 6) * r * .5, sy = y - r - 8 + Math.sin(G.t * 6) * 3; ctx.strokeText('?', sx, sy); ctx.fillText('?', sx, sy); }
@@ -2670,7 +2706,8 @@ function buildParty() {
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
-      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      const EL = ELEM[CELEM[id]];
+      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
       if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
     const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
     if (c.own) {
@@ -2679,6 +2716,8 @@ function buildParty() {
       html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
         if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Upgrade it in the Garage.</em></span></div></div>`;
         return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on && S ? `<span><em>${S[0]}:</em> ${S[1]}</span>` : on ? '' : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div>${on && S ? `${pips(r, SK_MAX)}<span data-sk="${id}:${a}">${r >= SK_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>`}</span>` : ''}</div>`; }).join('') + '</div>';
+      if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
+      if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
       const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
       // what all of it adds up to
       const g = gear(id), V = cweapOf(id), parts = [];
