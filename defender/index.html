@@ -125,6 +125,13 @@
   .study .btn { flex: none; }
   #studym .fact { margin-bottom: 8px; }
   /* skill tree on the party screen */
+  .tierrow { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; flex-wrap: wrap; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  .tier { color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 3px 9px; font: 700 12px/1 "Fredoka", Arial, sans-serif; }
+  .stars { color: #ecb23c; font-size: 16px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .stars i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
+  .tierrow .pg { white-space: nowrap; } .tierrow .pbar { flex: 1; min-width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.15); overflow: hidden; } .tierrow .pbar div { height: 100%; background: #ecb23c; }
+  .pgbtns { display: flex; gap: 6px; margin: 4px 0; }
+  .msgpop { position: absolute; left: 50%; top: 42%; transform: translateX(-50%); z-index: 60; background: #3a2c20; color: #fff; font: 700 17px/1.2 "Fredoka", Arial, sans-serif; padding: 10px 16px; border-radius: 14px; border: 3px solid #ecb23c; pointer-events: none; animation: msgup 2.6s ease forwards; white-space: nowrap; }
+  @keyframes msgup { 0% { opacity: 0; transform: translate(-50%, 10px); } 12% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px); } }
   .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   .xpbar .bar { flex: 1; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: #fff; overflow: hidden; }
   .xpbar .bar div { height: 100%; background: var(--water); }
@@ -289,6 +296,7 @@
   .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
+  .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 12px; padding: 5px 8px; }
   .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
   .lootc { width: 64px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 10px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; }
@@ -306,6 +314,7 @@
   .cardback { width: 150px; height: 200px; margin: 0 auto 12px; border: 4px solid #3a2c20; border-radius: 16px; background: repeating-linear-gradient(45deg, #20525c 0 12px, #2a6a76 12px 24px); display: grid; place-items: center; font-size: 60px; box-shadow: var(--shadow); transition: transform .4s; }
   .cardback.flip { transform: rotateY(180deg); }
   .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
+  .lootc.shelf { cursor: pointer; font-family: inherit; } .lootc.shelf:disabled { opacity: .55; cursor: default; } .lootc.shelf:not(:disabled):active { transform: scale(.96); }
   .pity { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 4px 0 8px; }
   .nope { margin-top: 10px; display: flex; justify-content: center; }
   .cls { display: inline-flex; align-items: center; gap: 6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; background: var(--teal); border: 2px solid #3a2c20; border-radius: 999px; padding: 5px 10px; margin-top: 6px; }
@@ -354,7 +363,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 25</div>
+    <div class="build">build 27</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -362,7 +371,7 @@
       <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
     </div>
     <div class="side2">
-      <button class="btn big-icon ghost" id="openDraw">🎟️<small>Draw</small></button>
+      <button class="btn big-icon ghost" id="openDraw">🎟️<small>Cards</small></button>
       <button class="btn big-icon ghost" id="openStore">🏪<small>Store</small></button>
       <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
       <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
@@ -425,7 +434,7 @@
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Dad can bring three backyard friends. Each has one weapon and three abilities you rank up mid-match. Equip items, and spend coins to make them stronger for good. New friends come from Library Card draws.</p>
+    <p class="intro">Dad can bring three backyard friends. Each has one weapon and three abilities you rank up mid-match. Fill a friend's storybook with 📄 pages to have them join, then keep collecting pages to give them stars. Pages come from first clears, Library Cards, the daily gift and missions, and 📄 Blank pages work for anyone.</p>
     <div class="list" id="partyList"></div>
   </section>
 
@@ -536,8 +545,8 @@
 
   <div class="modal" id="drawm" hidden>
     <div class="panel" style="text-align:center">
-      <h2 class="display">Library Card Draw</h2>
-      <p class="sub hand">A new friend, or something for the bag. About 3 in 10 draws is a friend, and never more than 5 draws go by without one.</p>
+      <h2 class="display">Library Card</h2>
+      <p class="sub hand">Three things on the shelf. You can see them all: spend a card on the one you want. The shelf restocks after you take one.</p>
       <div class="cardback" id="cardback">📇</div>
       <div class="reveal" id="reveal"></div>
       <p class="pity" id="pity"></p>
@@ -964,6 +973,25 @@ const ABIL = {
   moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Dad\'s Bedtime Story reaches 15% further per rank, and Patience trickles back.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
+// friends come in tiers: rarer ones take more pages to join and hit a little harder. Pages also raise stars once a
+// friend has joined (★1 to ★5, +4% Power and Quick each). Pages are earned in play, never sold.
+const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 25, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 40, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 80, mul: 1.2 }];
+const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2 };
+const STAR_COST = [0, 10, 20, 30, 40], STAR_MAX = 5; // pages to go from ★n to ★n+1, by current star
+const tierOf = id => TIER[CTIER[id] || 0];
+const pagesOf = id => (save.pages || {})[id] || 0;
+const fstars = id => { const c = chr(id); return c.own ? (c.star || 1) : 0; };
+const charMul = id => id === 'dad' ? 1 : tierOf(id).mul * (1 + .04 * Math.max(0, fstars(id) - 1));
+const starQuick = id => id === 'dad' ? 1 : 1 + .04 * Math.max(0, fstars(id) - 1);
+// pages for a friend: a locked friend joins when the book is full; a joined one banks them for stars. Returns true if they joined.
+function addPages(id, n) {
+  save.pages = save.pages || {}; save.pages[id] = pagesOf(id) + n; const c = chr(id);
+  if (!c.own && save.pages[id] >= tierOf(id).pages) { save.pages[id] -= tierOf(id).pages; c.own = true; c.star = 1; if (save.party.length < MAX_COMPANIONS && !save.party.includes(id)) save.party.push(id); persist(); return true; }
+  persist(); return false;
+}
+function starUp(id) { const c = chr(id), st = fstars(id), cost = STAR_COST[st]; if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
+// the friend the story is building toward: the next one to join, in the order they used to join for free
+const nextFriend = () => Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CHARS[a].freeAfter ?? 99) - (CHARS[b].freeAfter ?? 99))[0];
 // the permanent skill tree: abilities unlock with a friend's level, then each has three coin upgrades
 const UNLOCK_AT = [1, 2, 4], SYN_AT = 6, SK_MAX = 3;
 const SKILL = {
@@ -1053,17 +1081,33 @@ function makeItem(type, rar, named = true) {
   const legends = LEGENDS.filter(l => l.type === type);
   if (rar === 3 && named && legends.length && Math.random() < .5) { const l = pick(legends); Object.assign(it, { name: l.name, em: l.em, desc: l.desc, stats: { ...l.stats }, legend: true }); }
   else {
-    const base = pick(ITEMS[type].bases), main = base[2]; Object.assign(it, { name: RADJ[rar] + base[0], em: base[1], desc: base[3], stats: { [main]: Math.round(BASEVAL[main] * mul) } });
+    const base = pick(ITEMS[type].bases), main = base[2]; Object.assign(it, { base: base[0], name: RADJ[rar] + base[0], em: base[1], desc: base[3], stats: { [main]: Math.round(BASEVAL[main] * mul) } });
     const pool = Object.keys(BASEVAL).filter(k => k !== main); for (let i = 0; i < EXTRA_BY_RAR[rar]; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; it.stats[k] = Math.max(1, Math.round(BASEVAL[k] * mul * .5)); }
   }
   const main = Object.keys(it.stats)[0]; it.stat = main; it.val = it.stats[main]; // the main stat, for sorting
   return it;
 }
-// rarity roll: later stages and better chests tilt toward the good stuff
-function rollRar(bonus = 0, min = 0) { const r = Math.random() + bonus; return Math.max(min, r > 1.15 ? 3 : r > .92 ? 2 : r > .6 ? 1 : 0); }
+// rarity roll: bonus .1 (the first stage) to 1 (the last). Drops stop at Epic; Legendary is made by merging, or won from
+// chapter bosses and missions. Odds by bonus: Common 65%→25%, Rare 30%→50%, Epic 5%→25%.
+const rarOdds = bonus => { const t = clamp((bonus - .1) / .9, 0, 1); return [.65 - .4 * t, .30 + .2 * t, .05 + .2 * t]; };
+function rollRar(bonus = 0, min = 0) { const o = rarOdds(bonus), r = Math.random(); return Math.max(min, r < o[0] ? 0 : r < o[0] + o[1] ? 1 : 2); }
 const randItem = (bonus = 0, min = 0) => makeItem(pick(['weapon', 'armor', 'book']), rollRar(bonus, min));
-const itemStats = it => it.stats || { [it.stat]: it.val };
+const itemOf = rar => makeItem(pick(['weapon', 'armor', 'book']), rar);
+const itOfBoss = big => itemOf(big ? (Math.random() < .35 ? 3 : 2) : (Math.random() < .5 ? 2 : 1)); // chapter boss: Epic, 35% Legendary; mid-boss: Rare or Epic
+// polish: +1 to +5, each step +10% to every stat; the cost per step rises with rarity
+const POLISH = [[20, 40, 60, 80, 100], [40, 80, 120, 160, 200], [60, 120, 180, 240, 300], [100, 200, 300, 400, 500]], POLISH_MAX = 5;
+const itemStats = it => { const st = it.stats || { [it.stat]: it.val }, lv = it.lv || 0; if (!lv) return st; const o = {}; for (const k in st) o[k] = Math.round(st[k] * (1 + lv * .1)); return o; };
+// merge: three items of one slot and rarity become one of the next rarity; the chosen one keeps its name, look and bookmarks
+function mergeInto(it) {
+  const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
+  for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
+  const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
+  it.stats = st; it.rar = nr; if (!it.legend) { const b = it.base || it.name.replace(/^(Shiny |Ancient |Legendary )/, ''); it.base = b; it.name = RADJ[nr] + b; }
+  const main = Object.keys(st)[0]; it.stat = main; it.val = st[main];
+}
 const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STAT[k][1]} ${STAT[k][0]}`).join(' · ');
+function missionTick(kind, n = 1) { if (typeof missionAdd === 'function') missionAdd(kind, n); }
+const itemName = it => it.name + (it.lv ? ` +${it.lv}` : '');
 
 /* ───────── save ───────── */
 const SAVE_KEY = 'whydad.defender.v3';
@@ -1086,6 +1130,7 @@ const equipOf = id => save.equip[id] || (save.equip[id] = {});
 function gear(id) { const g = { pow: 0, quick: 0, pat: 0, ring: 0, coin: 0, crit: 0 }; const eq = equipOf(id); for (const sl in eq) { const it = itemBy(eq[sl]); if (it) { for (const k in itemStats(it)) g[k] += itemStats(it)[k]; for (const mk of it.marks || []) g[mk.stat] += mk.val; } } return g; }
 for (const it of save.items) { if (!it.marks && it.type !== 'mark') it.marks = []; if (!it.stats && it.type !== 'mark') it.stats = { [it.stat]: it.val }; }
 save.cweap = save.cweap || {}; save.room = save.room || { used: [] }; save.stars = save.stars || {}; if (!DIFF[save.diff]) save.diff = 'normal'; save.comics = save.comics || [];
+save.pages = save.pages || {}; save.blank = save.blank || 0; for (const id in save.chars) if (save.chars[id].own && !save.chars[id].star && id !== 'dad') save.chars[id].star = 1;
 save.iap = save.iap || []; save.factDate = save.factDate || {}; save.catCards = save.catCards || []; save.paidFacts = save.paidFacts || []; save.traits = save.traits || [];
 // friends who were already in the party before levels existed start at level 6 with everything they had
 for (const id in save.chars) { const c = save.chars[id]; if (c.own && c.xp == null) c.xp = save.cleared.length ? 25 * (1 + 2 + 3) : 0; c.sk = c.sk || {}; }
@@ -1192,8 +1237,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => charMul(m.id) * (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / (starQuick(m.id) * (1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -1234,6 +1279,8 @@ function kill(e) {
   $('#bustN').textContent = G.busted;
 }
 let toastT = 0;
+// a small note that floats up over any screen for a moment
+function toastMsg(txt) { const f = $('#frame'), d = document.createElement('div'); d.className = 'msgpop'; d.textContent = txt; f.appendChild(d); say(txt); setTimeout(() => d.remove(), 2600); }
 function toast(M) {
   const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = `Busted: "${M.myth}"`; t.querySelector('p').textContent = M.fact;
   say(`Busted! ${M.fact}`);
@@ -2383,12 +2430,14 @@ function stageClear() {
   const hardFirst = save.diff === 'hard' && prev === 0;
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
-  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1); if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
+  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
-  const joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own);
-  if (joined) { chr(joined).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(joined); persist(); }
-  $('#joined').hidden = !joined; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`;
+  let joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own), pageNote = '';
+  if (joined) addPages(joined, Math.max(0, tierOf(joined).pages - pagesOf(joined))); // the story never makes a friend wait longer than it used to
+  else if (first) { const nf = nextFriend(); if (nf) { const n = 2 + (G.S.boss ? 2 : 0); if (addPages(nf, n)) joined = nf; else pageNote = `📄 +${n} pages for ${CHARS[nf].em} ${CHARS[nf].name} (${pagesOf(nf)}/${tierOf(nf).pages}).`; } }
+  $('#joined').hidden = !joined && !pageNote; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`; else if (pageNote) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
   $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
@@ -2554,11 +2603,14 @@ function buildParty() {
   for (const id in CHARS) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
     let html = `<div class="top"><canvas class="pc" data-c="${id}" width="112" height="112"></canvas><div><b>${C.name}</b><span class="d">${C.desc}</span></div>`;
-    if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Draw</button>`;
+    if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Card</button>`;
     else if (id === 'dad') html += `<button class="btn small green" disabled>Always</button>`;
     else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
+    if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
+      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
     const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
     if (c.own) {
       const lv = charLevel(c.xp || 0);
@@ -2583,11 +2635,13 @@ function buildParty() {
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
       else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — change it in the Garage</span></div>`; }
       html += '</div>';
-    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins free when you clear ${STAGES[C.freeAfter].name}, or sooner from a Library Card draw.` : 'Comes from a Library Card draw.'}</span></div></div>`;
+    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins for sure when you clear ${STAGES[C.freeAfter].name}. Pages from first clears, Library Cards, gifts and Blank pages bring them sooner.` : 'Pages come from Library Cards, gifts and missions.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
   box.querySelectorAll('[data-sk] button').forEach(b => b.onclick = () => { const [id, a] = b.parentElement.dataset.sk.split(':'), c = chr(id), r = sk(id, a), cost = skCost(r); if (r >= SK_MAX || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c.sk[a] = r + 1; persist(); buildParty(); });
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
+  box.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { if (starUp(b.dataset.star)) { toastMsg(`${CHARS[b.dataset.star].em} ${CHARS[b.dataset.star].name} is now ★${fstars(b.dataset.star)}!`); buildParty(); } });
+  box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
   box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) return; save.party.push(b.dataset.join); persist(); buildParty(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
@@ -2598,7 +2652,7 @@ function buildParty() {
 /* ───────── equip picker ───────── */
 let pickFor = null;
 const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${it.name}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
 function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
 function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
@@ -2615,9 +2669,21 @@ $('#pickClose').onclick = () => $('#pickm').hidden = true;
 /* ───────── the bag ───────── */
 function buildItems() {
   const box = $('#itemList'), list = [...save.items].sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
-  box.innerHTML = list.length ? list.map(it => itemRow(it, wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`)).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
-  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">🔖 Bookmarks tuck into an item\'s slots (more slots on rarer items). Tap an empty slot to add one.</p>');
-  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); setWallet({ coins: save.coins + RAR[it.rar].sell }); buildItems(); });
+  const twins = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && !wornBy(o.uid));
+  const btns = it => { if (it.type === 'mark') return `<div class="ibtns"><button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button></div>`;
+    const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twins(it).length : 0;
+    return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔀 Merge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
+  box.innerHTML = list.length ? list.map(it => itemRow(it, btns(it))).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
+  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">✨ <b>Polish</b> makes an item 10% stronger per step, up to +5. 🔀 <b>Merge</b> three items of the same kind and colour into one of the next colour: the one you tap keeps its name and bookmarks. 🔖 Bookmarks tuck into an item\'s slots.</p>');
+  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); buildItems(); });
+  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (!it) return; const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); buildItems(); });
+  box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => {
+    const it = itemBy(b.dataset.merge); if (!it) return; const use = twins(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
+    pickFor = null; $('#pickTitle').textContent = `Merge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n}. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
+    $('#pickList').innerHTML = use.map(o => itemRow(o, '')).join('') + `<button class="btn green" id="mergeGo">🔀 Merge</button>`;
+    $('#mergeGo').onclick = () => { let refund = 0; for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) save.items.push(mk); } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); setWallet({ coins: save.coins + refund }); missionTick('merge'); persist(); $('#pickm').hidden = true; buildItems(); $('#storeLoot') && 0; };
+    $('#pickm').hidden = false;
+  });
   // bookmarks: tap an empty slot to pick one from the bag, tap a placed one to take it off (20 coins)
   box.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
     const it = itemBy(b.dataset.addmark), marks = save.items.filter(i => i.type === 'mark').sort((a, c) => c.rar - a.rar || c.val - a.val);
@@ -2661,12 +2727,12 @@ async function buildIap() {
   const r = $('#iapRestore'); if (r) r.onclick = () => adultGate('Restoring purchases is for grown-ups.', async () => { try { for (const id of await window.iap.restore()) grantIap(id); } catch (e) {} buildIap(); drawStatics(); });
 }
 const OFFERS = [
-  { em: '🍱', name: 'Lunchbox', desc: 'One item. Usually something ordinary, sometimes not.', cost: ['coins', 300], run: () => [randItem(.1)] },
-  { em: '🎒', name: 'Backpack', desc: 'Three items, at least Rare, with a good shot at better.', cost: ['gems', 60], run: () => [randItem(.3, 1), randItem(.3, 1), randItem(.3, 1)] },
+  { em: '🍱', name: 'Lunchbox', desc: 'One item: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 300], run: () => [randItem(.1)] },
+  { em: '🎒', name: 'Backpack', desc: 'Exactly one Epic and two Rare items.', cost: ['gems', 60], run: () => [itemOf(2), itemOf(1), itemOf(1)] },
   { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
-  { em: '🔖', name: 'Bookmark', desc: 'One random bookmark for an item slot.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
+  { em: '🔖', name: 'Bookmark', desc: 'One bookmark of a random colour: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
   // rewarded-ad hooks: only rendered when the native build provides window.rewardedAd (never in the web build), and only behind the adult gate
   { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
@@ -2680,34 +2746,43 @@ function buildStore() {
 
 /* ───────── library card draws ───────── */
 const PITY = 5;
-function openDraw() { $('#reveal').innerHTML = ''; $('#cardback').classList.remove('flip'); updateDraw(); $('#drawm').hidden = false; }
-function updateDraw() {
-  const left = Object.keys(CHARS).filter(id => !chr(id).own);
-  $('#pity').textContent = left.length ? `${left.length} friend${left.length > 1 ? 's' : ''} still out there. A new one is guaranteed within ${PITY - (save.pity % PITY)} draw${PITY - (save.pity % PITY) > 1 ? 's' : ''}.` : 'Everyone has joined! Draws now give Epic or better items.';
-  $('#draw1').disabled = save.tix < 1; $('#draw1').textContent = `Draw · 🎟️ 1  (have ${save.tix})`;
+function openDraw() { updateDraw(); $('#drawm').hidden = false; }
+// three face-up offers kept in the save, so closing and reopening never reshuffles them
+function makeShelf() {
+  const locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own), growing = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && fstars(id) < STAR_MAX), sh = [];
+  const f = locked.length ? (Math.random() < .6 && nextFriend() ? nextFriend() : pick(locked)) : growing.length ? pick(growing) : null;
+  if (f) sh.push({ k: 'pages', id: f, n: TIER[CTIER[f] || 0].pages >= 40 ? 8 : 5 });
+  sh.push({ k: 'blank', n: 3 });
+  sh.push(Math.random() < .5 ? { k: 'item', rar: Math.random() < .2 ? 2 : 1 } : { k: 'coins', n: 250 });
+  return sh;
 }
-$('#draw1').onclick = () => {
-  if (save.tix < 1) return; setWallet({ tix: save.tix - 1 });
-  const left = Object.keys(CHARS).filter(id => !chr(id).own); save.pity++;
-  let html;
-  if (left.length && (save.pity % PITY === 0 || Math.random() < .3)) {
-    const id = pick(left); chr(id).own = true; if (save.party.length < MAX_COMPANIONS) save.party.push(id); save.pity = 0;
-    html = `<div class="lootc big r3"><span class="ie">${CHARS[id].em}</span>${CHARS[id].name}<br><small>joined the party!</small></div>`;
-  } else { const it = randItem(.25, left.length ? 1 : 2); save.items.push(it); html = `<div class="lootc big r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`; }
-  persist(); const cb = $('#cardback'); cb.classList.add('flip'); $('#reveal').innerHTML = '';
-  setTimeout(() => { cb.classList.remove('flip'); $('#reveal').innerHTML = html; updateDraw(); if (!$('#partyScreen').hidden) buildParty(); drawStatics(); }, 400);
-};
+function updateDraw() {
+  if (!save.shelf) { save.shelf = makeShelf(); persist(); }
+  $('#cardback').hidden = true;
+  $('#reveal').innerHTML = save.shelf.map((o, i) => { const lab = o.k === 'pages' ? [CHARS[o.id].em, `${o.n} pages`, `${CHARS[o.id].name} · ${chr(o.id).own ? 'for stars' : `${pagesOf(o.id)}/${tierOf(o.id).pages}`}`, 3] : o.k === 'blank' ? ['📄', `${o.n} Blank pages`, 'for any friend', 2] : o.k === 'item' ? ['🎁', `${RAR[o.rar].n} item`, 'a random slot', o.rar] : ['🪙', `${o.n} coins`, 'pocket money', 0];
+    return `<button class="lootc big shelf r${lab[3]}" data-take="${i}" ${save.tix < 1 ? 'disabled' : ''}><span class="ie">${lab[0]}</span>${lab[1]}<br><small>${lab[2]}</small></button>`; }).join('');
+  $('#pity').textContent = save.tix < 1 ? 'No cards right now. They come from first clears, the daily gift, Diary topics and the Store.' : `You have 🎟️ ${save.tix}. Tap one to take it.`;
+  $('#draw1').hidden = true;
+  $('#reveal').querySelectorAll('[data-take]').forEach(b => b.onclick = () => {
+    if (save.tix < 1) return; const o = save.shelf[+b.dataset.take]; setWallet({ tix: save.tix - 1 }); let msg = '';
+    if (o.k === 'pages') msg = addPages(o.id, o.n) ? `${CHARS[o.id].em} ${CHARS[o.id].name} joined the party!` : `📄 +${o.n} pages for ${CHARS[o.id].name}`;
+    else if (o.k === 'blank') { save.blank = (save.blank || 0) + o.n; msg = `📄 +${o.n} Blank pages`; }
+    else if (o.k === 'item') { const it = itemOf(o.rar); save.items.push(it); msg = `🎁 ${it.name}`; }
+    else { setWallet({ coins: save.coins + o.n }); msg = `🪙 +${o.n} coins`; }
+    save.shelf = makeShelf(); persist(); toastMsg(msg); updateDraw(); if (!$('#partyScreen').hidden) buildParty(); drawStatics();
+  });
+}
 $('#drawClose').onclick = () => $('#drawm').hidden = true;
 
 /* ───────── daily rewards ───────── */
-const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { tix: 1 }], ['💎', '20 gems', { gems: 20 }], ['🪙', '200 coins', { coins: 200 }], ['🎟️', '1 card', { tix: 1 }], ['💎', '40 gems', { gems: 40 }], ['🎁', '100 gems + card', { gems: 100, tix: 1 }]];
+const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '3 Blank pages', { blank: 3 }], ['🪙', '200 coins', { coins: 200 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '5 Blank pages', { blank: 5 }], ['🎁', '100 gems + card', { gems: 100, tix: 1 }]];
 const today = () => new Date().toISOString().slice(0, 10);
 function checkDaily() {
   if (save.daily.last === today()) return;
   const day = save.daily.streak % 7;
   $('#dailySub').textContent = save.daily.streak ? `Day ${day + 1} of 7. Come back any day for the next one.` : 'A little something for coming by.';
   $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
-  $('#dailyClaim').onclick = () => { const r = DAILY[day][2]; setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
+  $('#dailyClaim').onclick = () => { const r = DAILY[day][2]; save.blank = (save.blank || 0) + (r.blank || 0); setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
   $('#dailym').hidden = false;
 }
 
