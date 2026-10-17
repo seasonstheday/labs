@@ -345,6 +345,20 @@
   .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 400 15px/1.1 "Patrick Hand", cursive; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
   .monthpill b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
+  .sframe { position: relative; aspect-ratio: 4 / 3; border: 4px solid #3a2c20; border-radius: 16px; overflow: hidden; background: #e9dcc0; box-shadow: 0 5px 0 rgba(58,44,32,.35); }
+  .sframe img { width: 100%; height: 100%; object-fit: cover; display: block; animation: kenburns 9s ease-out both; }
+  .sframe img.fade { animation: sfade .45s ease-out both, kenburns 9s ease-out both; }
+  @keyframes kenburns { from { transform: scale(1.0); } to { transform: scale(1.07) translate(-1%, -1%); } }
+  @keyframes sfade { from { opacity: 0; } }
+  .sbig { position: absolute; left: 0; right: 0; bottom: 10%; text-align: center; font: 700 34px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 3px 0 #3a2c20, 0 0 18px rgba(0,0,0,.4); animation: pop .5s .3s backwards; }
+  .sbig small { display: block; font-size: 20px; color: #ffd76a; margin-bottom: 4px; }
+  #strip .sline { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; animation: noteUp .35s ease-out backwards; }
+  #strip .sline .face { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 2.5px solid #3a2c20; overflow: hidden; background: #f3d2b0; }
+  #strip .sline .face img { width: 100%; height: 100%; object-fit: cover; }
+  #strip .sline .bub { flex: 1; background: #fff; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 7px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
+  #strip .sline .bub b { display: block; font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+  #strip .sline.kid { flex-direction: row-reverse; } #strip .sline.kid .bub { background: #eef6ff; }
+  #strip .sline.narr .bub { background: transparent; border: 0; text-align: center; font-size: 18px; font-style: italic; color: #5a4a3a; padding: 4px 6px; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -480,7 +494,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 47</div>
+    <div class="build">build 48</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -528,6 +542,7 @@
   <div class="modal" id="comicm" hidden>
     <div class="panel">
       <h2 class="display" id="comicTitle" style="font-size:22px;text-align:center;margin-bottom:8px">Chapter 1</h2>
+      <div class="sframe"><img id="storyImg" alt=""><div class="sbig" id="storyBig" hidden></div></div>
       <div id="strip"></div>
       <div class="tap" id="comicTap">tap to continue</div>
       <div class="row"><button class="btn ghost small" id="comicSkip">Skip</button><button class="btn" id="comicGo" hidden>Let's go ▶</button></div>
@@ -547,7 +562,7 @@
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Kid's Diary</h2><span class="pill" id="bookCount"></span></div>
-    <div class="seg"><button id="bookRoom">📚 Reading Room</button></div>
+    <div class="seg"><button id="bookRoom">📚 Reading Room</button><button id="bookStory">📖 The story so far</button></div>
     <div class="dtabs"><button class="on" data-dt="topic">By topic</button><button data-dt="chapter">By chapter</button></div>
     <div class="cats" id="cats"></div>
     <div class="study" id="study" hidden><div style="flex:1"><b>📖 Study time</b><span id="studyTxt"></span></div><button class="btn small" id="studyGo">Read</button></div>
@@ -3264,24 +3279,39 @@ function startGame(stage, how = {}) { music(STAGES[stage].w);
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
 }
 /* ───────── comics: three panels, tap through, always skippable ───────── */
-let comicDone = null, comicPanels = [], comicAt = 0;
-function showComic(W, which, done) {
-  comicDone = done; comicPanels = W.comic[which]; comicAt = 0;
-  $('#comicTitle').textContent = `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`;
-  $('#strip').innerHTML = ''; $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false;
-  comicNext();
+// the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
+// is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
+let comicDone = null, frames = [], fi = 0, li = 0;
+const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png' };
+function chapterFrames(W, which) {
+  const n = WORLDS.indexOf(W) + 1, L = W.comic[which];
+  if (n === 1 && which === 'in') return [
+    { img: 'story_p1', lines: [['n', 'In the window of the town library sits the Big Book of Wrong. Every silly thing anyone ever believed is written inside it.']] },
+    { img: 'story_p2', lines: [['n', 'One evening it burst open, and every wrong page ran off on its own, still sure it was right.']] },
+    { img: 'story_1_in', lines: [L[0], L[1]] }, { img: 'story_p3', lines: [L[2]] },
+    { img: 'story_p4', lines: [['n', 'Dad, the Kid and a backyard full of friends. Every page they pop turns back into a true fact.']], big: '<small>Why, Dad?</small>Defender' }];
+  return [{ img: `story_${n}_${which}`, lines: L }];
 }
+function showComic(W, which, done) { showFrames(chapterFrames(W, which), WORLDS.indexOf(W) === 0 && which === 'in' ? '📖 The Big Book of Wrong' : `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`, done); }
+function showFrames(list, title, done) {
+  comicDone = done; frames = list; fi = 0; li = 0; $('#comicTitle').textContent = title;
+  for (const f of list) { const im = new Image(); im.src = `assets/${f.img}.jpg`; } // warm the next pictures
+  $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false; showFrame(); comicNext();
+}
+function showFrame() { const f = frames[fi], im = $('#storyImg'); im.classList.remove('fade'); void im.offsetWidth; im.src = `assets/${f.img}.jpg`; im.classList.add('fade'); $('#storyBig').hidden = !f.big; if (f.big) $('#storyBig').innerHTML = f.big; $('#strip').innerHTML = ''; }
 function comicNext() {
-  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; return; }
-  const [who, line] = comicPanels[comicAt++], d = document.createElement('div'); d.className = 'cpanel ' + (who === 'd' ? 'dad' : 'kid');
-  d.innerHTML = `<canvas width="156" height="192"></canvas><div class="bub"><b>${who === 'd' ? 'DAD' : 'THE KID'}</b>${line}</div>`;
-  $('#strip').appendChild(d); const c = d.querySelector('canvas'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0);
-  if (who === 'd') drawDadAt(x, 39, 94, 90, 1, comicAt === 1 ? 'talking' : comicAt === 2 ? 'pointing' : 'amazed'); else drawKid(x, 39, 94, 86, false);
-  say(line);
-  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; }
+  if (li >= frames[fi].lines.length) { if (fi + 1 >= frames.length) return; fi++; li = 0; showFrame(); sfx("book"); }
+  const [who, line] = frames[fi].lines[li++], d = document.createElement('div');
+  d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : 'narr');
+  d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${who === 'd' ? 'DAD' : 'THE KID'}</b>`}${line}</div>`;
+  $('#strip').appendChild(d); say(line);
+  const end = fi + 1 >= frames.length && li >= frames[fi].lines.length; $('#comicGo').hidden = !end; $('#comicTap').hidden = end;
 }
+// the Diary can play everything seen so far, from the prologue on
+function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
 function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && speechSynthesis.cancel(); } catch (e) {} const f = comicDone; comicDone = null; if (f) f(); }
-$('#comicm').onclick = e => { if (e.target.closest('button')) return; if (comicAt < comicPanels.length) comicNext(); };
+$('#comicm').onclick = e => { if (e.target.closest('button')) return; comicNext(); };
+$('#bookStory').onclick = playStory;
 $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
@@ -3712,7 +3742,7 @@ $('#drawClose').onclick = () => $('#drawm').hidden = true;
 const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '3 Blank pages', { blank: 3 }], ['🪙', '200 coins', { coins: 200 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '5 Blank pages', { blank: 5 }], ['🎁', '100 gems + card', { gems: 100, tix: 1 }]];
 const today = () => new Date().toISOString().slice(0, 10);
 function checkDaily() {
-  if (save.daily.last === today()) return;
+  if (save.daily.last === today() || !save.cleared.length) return; // a brand-new player sees the story first, gifts after
   const day = save.daily.streak % 7;
   $('#dailySub').textContent = save.daily.streak ? `Day ${day + 1} of 7. Come back any day for the next one.` : 'A little something for coming by.';
   $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
