@@ -51,6 +51,13 @@
   .btn.icon { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
   .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
   .btn.big-icon small { font-size: 11px; }
+  .btn.big-icon { position: relative; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
+  .mis { background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
+  .mis h3 { margin: 0 0 6px; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; } .mis h3 small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .mrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; font: 400 15px/1.15 "Patrick Hand", cursive; } .mrow .em { font-size: 20px; width: 26px; text-align: center; } .mrow .t { flex: 1; } .mrow.done .t { text-decoration: line-through; opacity: .6; }
+  .mrow .bar { width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.12); overflow: hidden; } .mrow .bar div { height: 100%; background: var(--water); } .mrow.done .bar div { background: #6fbf5a; }
+  .mrow .n { font: 700 12px/1 "Fredoka", Arial, sans-serif; width: 52px; text-align: right; }
+  .chest { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 2px dashed var(--line); font: 400 14px/1.2 "Patrick Hand", cursive; } .chest .em { font-size: 28px; } .chest .t { flex: 1; }
   .pill { font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.88); padding: 9px 12px; border-radius: 999px; border: 3px solid #3a2c20; white-space: nowrap; }
   .pill.know { background: var(--teal); }
 
@@ -130,6 +137,7 @@
   .stars { color: #ecb23c; font-size: 16px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .stars i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
   .tierrow .pg { white-space: nowrap; } .tierrow .pbar { flex: 1; min-width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.15); overflow: hidden; } .tierrow .pbar div { height: 100%; background: #ecb23c; }
   .pgbtns { display: flex; gap: 6px; margin: 4px 0; }
+  .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } .reacts span { font: 400 13px/1 "Patrick Hand", cursive; background: rgba(95,191,174,.15); border: 2px solid rgba(58,44,32,.25); border-radius: 999px; padding: 3px 8px; } .reacts .team { background: rgba(236,178,60,.25); border-color: #ecb23c; }
   .msgpop { position: absolute; left: 50%; top: 42%; transform: translateX(-50%); z-index: 60; background: #3a2c20; color: #fff; font: 700 17px/1.2 "Fredoka", Arial, sans-serif; padding: 10px 16px; border-radius: 14px; border: 3px solid #ecb23c; pointer-events: none; animation: msgup 2.6s ease forwards; white-space: nowrap; }
   @keyframes msgup { 0% { opacity: 0; transform: translate(-50%, 10px); } 12% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px); } }
   .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
@@ -363,12 +371,13 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 27</div>
+    <div class="build">build 30</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
       <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
+      <button class="btn big-icon ghost" id="openMissions">📋<small>Missions</small><i class="dot" id="misDot" hidden></i></button>
     </div>
     <div class="side2">
       <button class="btn big-icon ghost" id="openDraw">🎟️<small>Cards</small></button>
@@ -439,6 +448,11 @@
   </section>
 
   <!-- ───────── items: the bag ───────── -->
+  <section id="missions" class="screen list-screen" hidden>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Missions</h2><span class="pill tix">📄 <span id="blankN">0</span></span></div>
+    <p class="intro">Little jobs for every day and week, and big ones for keeps. They fill up as you play: no timers, and nothing is lost if you miss a day.</p>
+    <div class="list" id="missionList"></div>
+  </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
     <p class="intro">Everything you've found. Weapons add Power, armor adds Patience, books add a little of something clever. Equip from the Party screen; sell what you don't need.</p>
@@ -878,6 +892,13 @@ const CLASS = {
   pip:     { name: 'Keeper',    em: '🐚', role: 'Holds the line. Shells that stop a rush.', strong: ['dasher', 'tank'], weak: ['flyer'] },
   scuttle: { name: 'Scout',     em: '🔭', role: 'Sees further. Pops up where you least expect.', strong: ['rumour', 'swarm'], weak: ['hardcover'] },
   nilla:   { name: 'Sage',      em: '🌙', role: 'Quiet and far-seeing. Picks off the big one.', strong: ['flyer', 'rumour'], weak: ['tank'] },
+  shelly:  { name: 'Guard',     em: '🛡️', role: 'Stands firm and bowls over anything that gets close.', strong: ['dasher', 'swarm'], weak: ['flyer'] },
+  goldie:  { name: 'Splasher',  em: '💦', role: 'Bubbles and puddles that slow a crowd.', strong: ['healer', 'swarm'], weak: ['hardcover'] },
+  prickles:{ name: 'Brawler',   em: '📍', role: 'Quills in every direction.', strong: ['flyer', 'gossip'], weak: ['tank'] },
+  jelly:   { name: 'Stinger',   em: '🪼', role: 'Freezes one myth at a time, and makes it glow.', strong: ['dasher', 'rumour'], weak: ['tank'] },
+  echo:    { name: 'Seeker',    em: '🦇', role: 'Hears everything in the ring and hits it all.', strong: ['rumour', 'flyer'], weak: ['hardcover'] },
+  inky:    { name: 'Grappler',  em: '🐙', role: 'Eight arms, eight myths. Ink to stop a rush.', strong: ['swarm', 'tank'], weak: [] },
+  chroma:  { name: 'Trickster', em: '🌈', role: 'Every colour at once. Sets off reactions with anyone.', strong: ['hardcover', 'healer'], weak: [] },
   luna:    { name: 'Dreamer',   em: '💤', role: 'Gathers the crowd and sends it to sleep.', strong: ['swarm', 'gossip'], weak: ['dasher'] },
 };
 const KNAME = { normal: 'Books', fast: 'Beetles', tank: 'Backpacks', splitter: 'Sticky notes', dasher: 'Dashers', hardcover: 'Hardcovers', flyer: 'Flyers', rumour: 'Rumours', healer: 'Thesauruses', gossip: 'Gossips', swarm: 'Swarms', boss: 'Bosses' };
@@ -938,6 +959,13 @@ const CHARS = {
   pip:     { name: 'Pip',     em: '🦀', desc: 'A hermit crab who keeps changing shells. Very hard to knock over.', abil: ['shell', 'shellwall', 'thickshell'], freeAfter: 17 },
   scuttle: { name: 'Scuttle', em: '🪲', desc: 'A desert beetle. Feels footsteps from across the lawn.', abil: ['roll', 'dig', 'antennae'], freeAfter: 22 },
   nilla:   { name: 'Nilla',   em: '🦉', desc: 'A snowy owl. Says little, misses nothing.', abil: ['hoot', 'swoop', 'nighteyes'], freeAfter: 27 },
+  shelly:  { name: 'Shelly',  em: '🐢', desc: 'A pond turtle. Slow, steady, and has never once left her shell behind.', abil: ['spin', 'snap', 'steady'] },
+  goldie:  { name: 'Goldie',  em: '🐠', desc: 'A goldfish whose memory lasts for months, thank you very much.', abil: ['bubbles', 'splash', 'memory'] },
+  prickles:{ name: 'Prickles', em: '🦔', desc: 'A hedgehog. Has never carried an apple on its spines, though it did try once.', abil: ['quills', 'rollup', 'static'] },
+  jelly:   { name: 'Jelly',   em: '🪼', desc: 'A jellyfish with no brain and no worries. Glows when it is happy.', abil: ['sting', 'drift', 'shine'] },
+  echo:    { name: 'Echo',    em: '🦇', desc: 'A bat. Not blind at all, and can hear you thinking.', abil: ['sonar', 'dive', 'echoes'] },
+  inky:    { name: 'Inky',    em: '🐙', desc: 'An octopus with three hearts and nine brains. Opens jars for fun.', abil: ['arms', 'ink', 'clever'] },
+  chroma:  { name: 'Chroma',  em: '🦎', desc: 'A chameleon. Changes colour to show how it feels, not to hide.', abil: ['flick', 'colours', 'camo'] },
   luna:    { name: 'Luna',    em: '🦋', desc: 'A luna moth who followed the porch light home.', abil: ['dust', 'lamp', 'moonlight'], freeAfter: 37 },
 };
 const ABIL = {
@@ -970,13 +998,34 @@ const ABIL = {
   nighteyes: { name: 'Night Eyes', em: '👁️', desc: 'Rumours show up sooner, and +4% critical hits for everyone per rank.', passive: true },
   dust:   { name: 'Dust Puff',     em: '✨', desc: 'A puff of sleepy dust that bursts on the first myth it meets.', cd: [1.7, 1.55, 1.4, 1.25, 1.1], dmg: [12, 16, 20, 25, 32] },
   lamp:   { name: 'Lamp Dance',    em: '🏮', desc: 'Every myth in the ring is drawn to the light.', cd: [9, 8, 7, 6, 5] },
+  spin:    { name: 'Shell Spin',    em: '🌀', desc: 'Shelly spins and bowls over every myth close by.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [16, 21, 27, 34, 42] },
+  snap:    { name: 'Snap',          em: '🐢', desc: 'A slow, mighty bite. The myth stops right where it is.', cd: [6, 5.5, 5, 4.5, 4], dmg: [40, 52, 66, 84, 105] },
+  steady:  { name: 'Slow and Steady', em: '🐌', desc: 'Myths near Shelly move 6% slower per rank.', passive: true },
+  bubbles: { name: 'Bubble Blow',   em: '🫧', desc: 'Floaty bubbles that slow whatever they pop on.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [10, 13, 16, 20, 25], n: [2, 2, 3, 3, 4] },
+  splash:  { name: 'Big Splash',    em: '💦', desc: 'A splash on the crowd that leaves a slippery puddle.', cd: [7, 6.5, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
+  memory:  { name: 'Long Memory',   em: '🧠', desc: 'Goldfish remember for months! Myths you already know take 5% more damage per rank.', passive: true },
+  quills:  { name: 'Quill Burst',   em: '📍', desc: 'Prickles puffs up and shoots quills at the myths around.', cd: [1.8, 1.6, 1.45, 1.3, 1.15], dmg: [11, 14, 18, 22, 28], n: [3, 3, 4, 4, 5] },
+  rollup:  { name: 'Roll Up',       em: '🦔', desc: 'Prickles curls into a ball and bowls into a crowd.', cd: [8, 7, 6, 5, 4.5], dmg: [22, 28, 36, 45, 57] },
+  static:  { name: 'Static',        em: '⚡', desc: 'Spark hits from the whole party do 4% more per rank.', passive: true },
+  sting:   { name: 'Sting',         em: '🪼', desc: 'A quick sting that freezes a myth for a moment.', cd: [1.2, 1.1, 1, .9, .8], dmg: [11, 14, 18, 22, 28] },
+  drift:   { name: 'Drift',         em: '🌊', desc: 'Jelly floats over a crowd and stings everything below.', cd: [8, 7, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
+  shine:   { name: 'Glow Sting',    em: '💡', desc: 'Stung myths glow for a while and take 4% more damage per rank from everyone.', passive: true },
+  sonar:   { name: 'Sonar',         em: '🦇', desc: 'A squeak that bounces off every myth in the ring.', cd: [2.4, 2.2, 2, 1.8, 1.6], dmg: [8, 10, 13, 16, 20] },
+  dive:    { name: 'Night Dive',    em: '🌌', desc: 'Echo dives straight through a line of myths.', cd: [7, 6.5, 6, 5, 4.5], dmg: [26, 33, 42, 53, 66] },
+  echoes:  { name: 'Echoes',        em: '🔁', desc: '15% chance per rank that a squeak bounces back for a second hit.', passive: true },
+  arms:    { name: 'Eight Arms',    em: '🐙', desc: 'Inky grabs up to eight myths at once.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [12, 15, 19, 24, 30], n: [4, 5, 6, 7, 8] },
+  ink:     { name: 'Ink Cloud',     em: '🖤', desc: 'A cloud of ink on a crowd. Myths inside stop, and take 20% more damage for a while.', cd: [9, 8, 7, 6, 5] },
+  clever:  { name: 'Clever Arms',   em: '🪙', desc: 'Each grab has a 5% chance per rank to pull out a coin.', passive: true },
+  flick:   { name: 'Rainbow Flick', em: '🌈', desc: 'A long tongue flick in whichever colour sets off a reaction.', cd: [1.4, 1.25, 1.1, 1, .9], dmg: [16, 20, 25, 31, 39] },
+  colours: { name: 'Colour Swap',   em: '🎨', desc: 'Chroma flashes its colours and gives every myth in the ring an element.', cd: [10, 9, 8, 7, 6] },
+  camo:    { name: 'Camouflage',    em: '🦎', desc: 'Reactions do 8% more damage per rank, and Gossips can\'t find Chroma.', passive: true },
   moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Dad\'s Bedtime Story reaches 15% further per rank, and Patience trickles back.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // friends come in tiers: rarer ones take more pages to join and hit a little harder. Pages also raise stars once a
 // friend has joined (★1 to ★5, +4% Power and Quick each). Pages are earned in play, never sold.
 const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 25, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 40, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 80, mul: 1.2 }];
-const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2 };
+const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2, shelly: 0, goldie: 0, prickles: 1, jelly: 1, echo: 2, inky: 3, chroma: 3 };
 const STAR_COST = [0, 10, 20, 30, 40], STAR_MAX = 5; // pages to go from ★n to ★n+1, by current star
 const tierOf = id => TIER[CTIER[id] || 0];
 const pagesOf = id => (save.pages || {})[id] || 0;
@@ -991,6 +1040,37 @@ function addPages(id, n) {
 }
 function starUp(id) { const c = chr(id), st = fstars(id), cost = STAR_COST[st]; if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
 // the friend the story is building toward: the next one to join, in the order they used to join for free
+// elements: five on a wheel. A myth hit by one element and then, within a moment, by its neighbour on the wheel
+// sets off a reaction. Two friends of the same element in the party hit 10% harder together.
+const ELEM = {
+  water: { n: 'Water', em: '💧', col: '#4fa3e0' }, spark: { n: 'Spark', em: '⚡', col: '#e8b81c' }, wind: { n: 'Wind', em: '🌬️', col: '#5fbfae' },
+  earth: { n: 'Earth', em: '🪨', col: '#a07850' }, moon: { n: 'Moon', em: '🌙', col: '#8a7fd6' }, rainbow: { n: 'Rainbow', em: '🌈', col: '#d65fa0' },
+};
+const WHEEL = ['water', 'spark', 'wind', 'earth', 'moon'];
+const REACT = { // keyed by the two elements in wheel order
+  'water+spark': { n: 'Fizz', em: '⚡💧', desc: 'the spark runs through the water and jumps to three more myths' },
+  'spark+wind':  { n: 'Storm', em: '⛈️', desc: 'a bolt from the sky hits it again, twice as hard' },
+  'wind+earth':  { n: 'Dust Devil', em: '🌪️', desc: 'a little whirlwind pulls the myths around it together and slows them' },
+  'earth+moon':  { n: 'Stone Sleep', em: '🪨🌙', desc: 'it drops off to sleep where it stands' },
+  'water+moon':  { n: 'Tide', em: '🌊', desc: 'a wave washes it and its neighbours back' },
+};
+const CELEM = { webster: 'earth', hopper: 'water', sparky: 'spark', puddles: 'wind', dusty: 'moon', pip: 'water', scuttle: 'earth', nilla: 'wind', luna: 'moon', shelly: 'earth', goldie: 'water', prickles: 'spark', jelly: 'spark', echo: 'wind', inky: 'moon', chroma: 'rainbow' };
+const WELEM = { glass: 'spark', yoyo: 'earth', bat: 'earth', plane: 'wind', frisbee: 'wind', bubble: 'water', balloon: 'water' };
+const elemOf = id => id === 'dad' ? WELEM[save.weapon] || null : CELEM[id] || null;
+const reactKey = (a, b) => { const i = WHEEL.indexOf(a), j = WHEEL.indexOf(b); if (i < 0 || j < 0 || a === b) return null; const adj = (i + 1) % 5 === j || (j + 1) % 5 === i; if (!adj) return null; return [a, b].sort((x, y) => WHEEL.indexOf(x) - WHEEL.indexOf(y)).join('+'); };
+const reactsWith = el => el === 'rainbow' ? WHEEL.map(o => ({ o, R: { n: 'any reaction', em: ELEM[o].em, desc: 'Chroma matches whatever is needed' } })).slice(0, 0).concat([{ o: 'rainbow', R: { n: 'Every reaction', em: '🌈', desc: 'Chroma turns into whichever colour sets one off' } }]) : WHEEL.filter(o => reactKey(el, o)).map(o => ({ o, R: REACT[reactKey(el, o)] }));
+const teamBonus = id => { const el = CELEM[id]; if (!el || !G) return 1; return G.party.filter(m => m.id !== 'dad' && CELEM[m.id] === el).length >= 2 ? 1.1 : 1; };
+function react(e, key) {
+  const R = REACT[key], base = (10 + G.stage * 2.2) * (1 + rankOf('chroma', 'camo') * .08 + sk('chroma', 'camo') * .03); G.reactions = (G.reactions || 0) + 1; missionAdd('react');
+  text(e.x, e.y - e.r - 40, `${R.em} ${R.n.toUpperCase()}!`, '#fff', 20, 1.1);
+  if (!(save.seenReact || (save.seenReact = [])).includes(key)) { save.seenReact.push(key); persist(); hint(`${R.em} ${R.n}: ${key.split('+').map(k => ELEM[k].n).join(' and ')} together. ${R.desc[0].toUpperCase() + R.desc.slice(1)}.`, 4.5); }
+  const near = r => G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < r);
+  if (key === 'water+spark') { for (const o of near(130).slice(0, 3)) { G.fx.push({ k: 'bolt', x1: e.x, y1: e.y, x2: o.x, y2: o.y, t: 0, life: .3 }); hurt(o, base, 0, { x: e.x, y: e.y, id: 'react' }); } }
+  else if (key === 'spark+wind') { G.fx.push({ k: 'bolt', x1: e.x + rnd(-30, 30), y1: e.y - 260, x2: e.x, y2: e.y, t: 0, life: .35, big: true }); hurt(e, base * 2, 0, { x: e.x, y: e.y, id: 'react' }); G.shake = Math.max(G.shake, .12); }
+  else if (key === 'wind+earth') { G.fx.push({ k: 'ring', x: e.x, y: e.y, R: 110, t: 0, life: .6, col: '#d9c49a' }); for (const o of [e, ...near(110)]) { const a = Math.atan2(e.y - o.y, e.x - o.x); o.kx += Math.cos(a) * 90; o.ky += Math.sin(a) * 90; o.slow = Math.max(o.slow, 1.5); } hurt(e, base, 0, { x: e.x, y: e.y, id: 'react' }); }
+  else if (key === 'earth+moon') { e.stun = Math.max(e.stun, 1.4); text(e.x + 14, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.2); hurt(e, base * .6, 0, { x: e.x, y: e.y, id: 'react' }); }
+  else if (key === 'water+moon') { G.fx.push({ k: 'splash', x: e.x, y: e.y + 6, R: 70, t: 0, life: .45, col: '#8fc7f0' }); for (const o of [e, ...near(80)]) { o.slow = Math.max(o.slow, 1.2); hurt(o, base * .5, 120, { x: G.dad.x, y: G.dad.y, id: 'react' }); } }
+}
 const nextFriend = () => Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CHARS[a].freeAfter ?? 99) - (CHARS[b].freeAfter ?? 99))[0];
 // the permanent skill tree: abilities unlock with a friend's level, then each has three coin upgrades
 const UNLOCK_AT = [1, 2, 4], SYN_AT = 6, SK_MAX = 3;
@@ -1004,6 +1084,13 @@ const SKILL = {
   shell: ['Bigger shell', 'The splash is 8 wider per rank.'], shellwall: ['Sturdier wall', 'Shells last 2s longer per rank.'], thickshell: ['Thicker shell', '2% less Patience lost per rank.'],
   roll: ['Heavier ball', 'Knocks 20 harder per rank.'], dig: ['Wider hole', 'Pops up 12 wider per rank.'], antennae: ['Longer feelers', 'The ring grows 4 more per rank.'],
   hoot: ['Colder hoot', 'The chill lasts 0.4s longer per rank.'], swoop: ['Harder swoop', '+15% swoop damage per rank.'], nighteyes: ['Keener eyes', '+1% critical hits per rank.'],
+  spin: ['Wider spin', 'The spin reaches 10 further per rank.'], snap: ['Firmer bite', 'The myth stays stopped 0.3s longer per rank.'], steady: ['Steadier', 'The slow reaches 15 further per rank.'],
+  bubbles: ['More bubbles', 'One more bubble per rank.'], splash: ['Wetter splash', 'The puddle lasts 1s longer per rank.'], memory: ['Sharper memory', '+2% per rank on myths you know.'],
+  quills: ['More quills', 'One more quill per rank.'], rollup: ['Bigger ball', 'The landing is 12 wider per rank.'], static: ['More static', '+2% Spark damage per rank.'],
+  sting: ['Stiffer sting', 'The freeze lasts 0.1s longer per rank.'], drift: ['Longer drift', '+15% drift damage per rank.'], shine: ['Brighter glow', 'The glow lasts 1s longer per rank.'],
+  sonar: ['Louder squeak', '+10% sonar damage per rank.'], dive: ['Longer dive', 'The dive reaches 30 further per rank.'], echoes: ['Clearer echo', '+5% echo chance per rank.'],
+  arms: ['Stronger grip', '+10% grab damage per rank.'], ink: ['Bigger cloud', 'The cloud is 15 wider per rank.'], clever: ['Cleverer', '+2% coin chance per rank.'],
+  flick: ['Longer tongue', 'The flick reaches 30 further per rank.'], colours: ['Brighter colours', 'Every myth in the ring stays primed 0.5s longer per rank.'], camo: ['Better hiding', '+3% reaction damage per rank.'],
   dust: ['Bigger puff', 'The puff bursts 10 wider per rank.'], lamp: ['Longer dance', 'Myths stay drawn 0.4s longer per rank.'], moonlight: ['Fuller moon', 'The story reaches 5% further per rank.'],
 };
 const skCost = r => 80 + r * 70;
@@ -1106,7 +1193,55 @@ function mergeInto(it) {
   const main = Object.keys(st)[0]; it.stat = main; it.val = st[main];
 }
 const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STAT[k][1]} ${STAT[k][0]}`).join(' · ');
-function missionTick(kind, n = 1) { if (typeof missionAdd === 'function') missionAdd(kind, n); }
+// missions: three dailies and five weeklies, picked the same way for everyone on a given day or week, and one-time story goals
+const MPOOL_D = [
+  { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 60 }, { k: 'abil', em: '✨', t: 'Friends use their moves {n} times', n: 25 }, { k: 'fact', em: '💡', t: 'Learn a new fact, or get a quiz right', n: 1 },
+  { k: 'clear', em: '🏁', t: 'Clear any stage', n: 1 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 }, { k: 'elite', em: '👑', t: 'Pop {n} elites', n: 2 }, { k: 'coin', em: '🪙', t: 'Pick up {n} coins in matches', n: 40 }, { k: 'react', em: '🌪️', t: 'Set off {n} element reactions', n: 8 },
+];
+const MPOOL_W = [
+  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'react', em: '⚡💧', t: 'Set off {n} element reactions', n: 30 }, { k: 'merge', em: '🔀', t: 'Merge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
+  { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 500 }, { k: 'fact', em: '💡', t: 'Learn {n} new facts', n: 5 }, { k: 'clear', em: '🏁', t: 'Clear {n} stages', n: 8 }, { k: 'star3', em: '⭐', t: 'Get 3 stars {n} times', n: 4 },
+];
+const MSTORY = [
+  { id: 'friends6', em: '🧑‍🤝‍🧑', t: 'Have 6 friends', done: () => Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own).length >= 6, pay: { blank: 8 } },
+  { id: 'star3', em: '⭐', t: 'Give any friend ★3', done: () => Object.keys(CHARS).some(id => fstars(id) >= 3), pay: { item: 2 } },
+  { id: 'star5', em: '🌟', t: 'Give any friend ★5', done: () => Object.keys(CHARS).some(id => fstars(id) >= 5), pay: { item: 3 } },
+  { id: 'yard', em: '🏡', t: 'Bust every myth in the Backyard', done: () => mastered(0), pay: { blank: 10, gems: 30 } },
+  { id: 'pond', em: '🪷', t: 'Bust every myth at the Pond', done: () => mastered(1), pay: { blank: 10, gems: 30 } },
+  { id: 'hard', em: '🌩️', t: 'Clear a stage on Hard', done: () => Object.keys(save.stars).some(k => k.endsWith(':hard')), pay: { blank: 5, tix: 1 } },
+  { id: 'reacts', em: '🌈', t: 'Set off all five reactions', done: () => (save.seenReact || []).length >= 5, pay: { blank: 10, gems: 40 } },
+  { id: 'legend', em: '🏆', t: 'Own a Legendary item', done: () => save.items.some(i => i.rar === 3), pay: { gems: 50 } },
+  { id: 'topics', em: '📔', t: 'Finish 3 Diary topics', done: () => (save.catCards || []).length >= 3, pay: { tix: 2 } },
+  { id: 'chapter4', em: '🌊', t: 'Reach the Ocean', done: () => save.unlocked >= 15, pay: { blank: 10 } },
+  { id: 'chapter8', em: '🌙', t: 'Reach the Night Sky', done: () => save.unlocked >= 35, pay: { blank: 15, gems: 50 } },
+];
+const weekKey = () => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+const seedPick = (pool, n, key) => { let h = 0; for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0; const a = pool.map((x, i) => i), out = []; while (out.length < n) { h = (h * 1103515245 + 12345) >>> 0; out.push(pool[a.splice(h % a.length, 1)[0]]); } return out; };
+function misState() {
+  const M = save.mis = save.mis || {};
+  if (M.day !== today()) { const wasDay = M.day; M.day = today(); M.d = seedPick(MPOOL_D, 3, 'd' + M.day).map(x => ({ ...x, have: 0 })); M.dGot = false; if (wasDay !== undefined) M.newDay = true; }
+  if (M.week !== weekKey()) { M.week = weekKey(); M.w = seedPick(MPOOL_W, 5, 'w' + M.week).map(x => ({ ...x, have: 0 })); M.wGot = false; M.days = []; }
+  if (!(M.days || (M.days = [])).includes(M.day)) { M.days.push(M.day); for (const x of M.w) if (x.k === 'days') x.have = Math.min(x.n, x.have + 1); }
+  M.story = M.story || []; return M;
+}
+function missionAdd(kind, n = 1) { const M = misState(); for (const x of [...M.d, ...M.w]) if (x.k === kind && x.have < x.n) x.have = Math.min(x.n, x.have + n); }
+function missionTick(kind, n = 1) { missionAdd(kind, n); persist(); misDot(); }
+const misReady = () => { const M = misState(); return (!M.dGot && M.d.every(x => x.have >= x.n)) || (!M.wGot && M.w.every(x => x.have >= x.n)) || MSTORY.some(x => !M.story.includes(x.id) && x.done()); };
+function misDot() { const d = $('#misDot'); if (d) d.hidden = !misReady(); }
+function payPrize(pay) { const got = []; if (pay.coins) { setWallet({ coins: save.coins + pay.coins }); got.push(`🪙 ${pay.coins}`); } if (pay.gems) { setWallet({ gems: save.gems + pay.gems }); got.push(`💎 ${pay.gems}`); } if (pay.tix) { setWallet({ tix: save.tix + pay.tix }); got.push(`🎟️ ${pay.tix}`); } if (pay.blank) { save.blank = (save.blank || 0) + pay.blank; got.push(`📄 ${pay.blank} Blank pages`); } if (pay.item != null) { const it = itemOf(pay.item); save.items.push(it); got.push(`${it.em} ${it.name}`); } if (pay.mark) { const mk = makeMark(rollRar(.4)); save.items.push(mk); got.push(`${mk.em} ${mk.name}`); } persist(); return got.join(' · '); }
+const DCHEST = { coins: 150, blank: 2 }, WCHEST = { gems: 60, blank: 8, item: 2 };
+function buildMissions() {
+  const M = misState(), box = $('#missionList'), row = x => { const done = x.have >= x.n; return `<div class="mrow ${done ? 'done' : ''}"><span class="em">${done ? '✅' : x.em}</span><span class="t">${x.t.replace('{n}', x.n)}</span><div class="bar"><div style="width:${Math.round(x.have / x.n * 100)}%"></div></div><span class="n">${x.have}/${x.n}</span></div>`; };
+  const prize = p => [p.coins && `🪙 ${p.coins}`, p.gems && `💎 ${p.gems}`, p.tix && `🎟️ ${p.tix}`, p.blank && `📄 ${p.blank} Blank`, p.item != null && `${RAR[p.item].n} item`].filter(Boolean).join(' · ');
+  const chest = (all, got, p, key) => `<div class="chest"><span class="em">${got ? '📭' : all ? '🎁' : '📦'}</span><span class="t">${prize(p)}</span>${got ? '<button class="btn small" disabled>Opened</button>' : `<button class="btn small ${all ? 'green' : ''}" data-chest="${key}" ${all ? '' : 'disabled'}>${all ? 'Open!' : 'Finish all'}</button>`}</div>`;
+  const dAll = M.d.every(x => x.have >= x.n), wAll = M.w.every(x => x.have >= x.n);
+  box.innerHTML = `<div class="mis"><h3>Today <small>new ones tomorrow</small></h3>${M.d.map(row).join('')}${chest(dAll, M.dGot, DCHEST, 'd')}</div>`
+    + `<div class="mis"><h3>This week <small>new ones on Monday</small></h3>${M.w.map(row).join('')}${chest(wAll, M.wGot, WCHEST, 'w')}</div>`
+    + `<div class="mis"><h3>Big goals <small>for keeps</small></h3>${MSTORY.map(x => { const got = M.story.includes(x.id), ok = x.done(); return `<div class="mrow ${got ? 'done' : ''}"><span class="em">${got ? '✅' : x.em}</span><span class="t">${x.t}<br><small style="color:var(--muted)">${prize(x.pay)}</small></span>${got ? '' : `<button class="btn small ${ok ? 'green' : ''}" data-story="${x.id}" ${ok ? '' : 'disabled'}>${ok ? 'Claim' : 'Not yet'}</button>`}</div>`; }).join('')}</div>`;
+  $('#blankN').textContent = save.blank || 0;
+  box.querySelectorAll('[data-chest]').forEach(b => b.onclick = () => { const k = b.dataset.chest; if (k === 'd' && !M.dGot && dAll) { M.dGot = true; toastMsg('🎁 ' + payPrize({ ...DCHEST, mark: Math.random() < .3 })); } if (k === 'w' && !M.wGot && wAll) { M.wGot = true; toastMsg('🎁 ' + payPrize(WCHEST)); } persist(); buildMissions(); misDot(); });
+  box.querySelectorAll('[data-story]').forEach(b => b.onclick = () => { const x = MSTORY.find(y => y.id === b.dataset.story); if (!x || M.story.includes(x.id) || !x.done()) return; M.story.push(x.id); toastMsg('🏆 ' + payPrize(x.pay)); buildMissions(); misDot(); });
+}
 const itemName = it => it.name + (it.lv ? ` +${it.lv}` : '');
 
 /* ───────── save ───────── */
@@ -1246,7 +1381,11 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
-  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind);
+  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind); d *= teamBonus(who);
+  if (e.known) d *= 1 + rankOf('goldie', 'memory') * .05 + sk('goldie', 'memory') * .02;
+  if (elemOf(who) === 'spark') d *= 1 + rankOf('prickles', 'static') * .04 + sk('prickles', 'static') * .02;
+  if (e.stung > G.t) d *= 1 + rankOf('jelly', 'shine') * .04;
+  if (e.inked > G.t) d *= 1.2;
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
@@ -1259,10 +1398,13 @@ function hurt(e, d, knock = 0, from = G.dad) {
   e.hp -= d; e.hit = .12;
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
+  const el = who === 'react' ? null : elemOf(who);
+  if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
+  else if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < (tg.long || 2.5) ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
   if (e.hp <= 0) kill(e);
 }
 function kill(e) {
-  G.busted++; save.busted++;
+  G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); }
   if (e.host) { e.host.muted = 0; e.host = null; }
@@ -1273,7 +1415,7 @@ function kill(e) {
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
@@ -1379,6 +1521,61 @@ function useAbility(m, a) {
       const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6 * (1 + sk('puddles', 'quack') * .15)) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
       windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15 + sk('puddles', 'echo') * .05) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap && synOn(SYNERGY[3])) { sp.cds.zap = 0; } } }); });
       return true; }
+    case 'spin': {
+      const R = 75 + sk('shelly', 'spin') * 10, near = G.enemies.filter(e => e.hp > 0 && dist(e, m) < R + e.r); if (!near.length) return false;
+      windup(m, 'spin', near[0], () => { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < R + e.r) hurt(e, D.dmg[L] * mul, 70, m); G.fx.push({ k: 'ring', x: m.x, y: m.y, R: R + 10, t: 0, life: .4, col: '#a07850' }); });
+      return true; }
+    case 'snap': {
+      if (!tgt) return false;
+      windup(m, 'snap', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 30, m); t.stun = Math.max(t.stun, .8 + sk('shelly', 'snap') * .3); text(t.x, t.y - t.r - 20, 'SNAP!', '#fff', 18, .7); G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: Math.atan2(t.y - m.y, t.x - m.x), len: dist(t, m), t: 0, life: .25 }); });
+      return true; }
+    case 'bubbles': {
+      if (!tgt) return false;
+      windup(m, 'bubbles', tgt, () => { const hp = handPos(m); for (let i = 0; i < D.n[L] + sk('goldie', 'bubbles'); i++) { const a2 = Math.atan2(tgt.y - hp.y, tgt.x - hp.x) + rnd(-.5, .5); G.shots.push({ k: 'bubble', x: hp.x, y: hp.y, vx: Math.cos(a2) * rnd(70, 100), vy: Math.sin(a2) * rnd(70, 100), dmg: D.dmg[L] * mul, t: 0, life: 4, r: rnd(9, 13), m }); } });
+      return true; }
+    case 'splash': {
+      if (!tgt) return false;
+      windup(m, 'splash', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; G.fx.push({ k: 'splash', x: t.x, y: t.y, R: 70, t: 0, life: .45, col: '#8fc7f0' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, t) < 70 + e.r) { hurt(e, D.dmg[L] * mul, 40, { x: t.x, y: t.y, id: 'goldie' }); e.slow = Math.max(e.slow, 1.5); } G.traps.push({ x: t.x, y: t.y, r: 60, t: 0, life: 4 + sk('goldie', 'splash'), mul: .55, puddle: true, col: 'rgba(120,180,230,.55)' }); });
+      return true; }
+    case 'quills': {
+      const list = G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e)).sort((x, y) => dist(x, m) - dist(y, m)).slice(0, D.n[L] + sk('prickles', 'quills')); if (!list.length) return false;
+      windup(m, 'quills', list[0], () => { for (const e of list) { if (e.hp <= 0) continue; hurt(e, D.dmg[L] * mul, 15, m); G.fx.push({ k: 'bolt', x1: m.x, y1: m.y - 14, x2: e.x, y2: e.y, t: 0, life: .18 }); } });
+      return true; }
+    case 'rollup': case 'drift': {
+      if (!tgt || m.jump) return false;
+      m.face = tgt.x < m.x ? -1 : 1; m.jump = { kind: a === 'drift' ? 'swoop' : 'hop', from: { x: m.x, y: m.y }, to: { x: tgt.x, y: tgt.y }, t: 0, dur: a === 'drift' ? .7 : .5, back: false, dmg: D.dmg[L] * mul * (a === 'drift' ? 1 + sk('jelly', 'drift') * .15 : 1) };
+      return true; }
+    case 'sting': {
+      if (!tgt) return false;
+      windup(m, 'sting', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 0, m); t.stun = Math.max(t.stun, .35 + sk('jelly', 'sting') * .1); t.stung = G.t + 3 + sk('jelly', 'shine'); G.fx.push({ k: 'bolt', x1: m.x, y1: m.y - 14, x2: t.x, y2: t.y, t: 0, life: .2 }); });
+      return true; }
+    case 'sonar': {
+      if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
+      const ping = (k) => { G.fx.push({ k: 'ring', x: m.x, y: m.y, R: G.radius + 20, t: 0, life: .5, col: '#c9c2ff' }); for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { hurt(e, D.dmg[L] * mul * k * (1 + sk('echo', 'sonar') * .1), 0, m); if (e.kind === 'rumour') e.revealed = 2; } };
+      windup(m, 'sonar', tgt, () => { ping(1); if (Math.random() < rankOf('echo', 'echoes') * .15 + sk('echo', 'echoes') * .05) G.pending.push({ at: G.t + .35, fn: () => { ping(.6); text(m.x, m.y - 50, 'squeak...', '#c9c2ff', 14, .7); } }); });
+      return true; }
+    case 'dive': {
+      if (!tgt) return false;
+      windup(m, 'dive', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 260 + sk('echo', 'dive') * 30;
+        for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2), off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); if (proj > 0 && proj < len && off < e.r + 22) hurt(e, D.dmg[L] * mul, 50, m); }
+        G.fx.push({ k: 'beam', sx: m.x, sy: m.y - 14, x: m.x + Math.cos(a2) * len, y: m.y - 14 + Math.sin(a2) * len, t: 0, life: .3 }); });
+      return true; }
+    case 'arms': {
+      const list = G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e)).sort((x, y) => dist(x, m) - dist(y, m)).slice(0, D.n[L]); if (!list.length) return false;
+      windup(m, 'arms', list[0], () => { for (const e of list) { if (e.hp <= 0) continue; hurt(e, D.dmg[L] * mul * (1 + sk('inky', 'arms') * .1), 25, m); G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: Math.atan2(e.y - m.y, e.x - m.x), len: dist(e, m), t: 0, life: .28 }); if (Math.random() < rankOf('inky', 'clever') * .05 + sk('inky', 'clever') * .02) G.orbs.push({ k: 'coin', x: e.x, y: e.y, v: 1 }); } });
+      return true; }
+    case 'ink': {
+      if (!tgt) return false;
+      windup(m, 'ink', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const R = 80 + sk('inky', 'ink') * 15; G.fx.push({ k: 'splash', x: t.x, y: t.y, R, t: 0, life: .6, col: '#3a2c40' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, t) < R + e.r) { e.stun = Math.max(e.stun, 1.5); e.inked = G.t + 4; } text(t.x, t.y - 50, 'INK!', '#fff', 20, .8); });
+      return true; }
+    case 'flick': {
+      if (!tgt) return false;
+      windup(m, 'flick', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 20, m); G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: Math.atan2(t.y - m.y, t.x - m.x), len: dist(t, m), t: 0, life: .25 }); });
+      return true; }
+    case 'colours': {
+      if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
+      windup(m, 'colours', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && inRing(e)) e.tag = { el: pick(WHEEL), t: G.t, long: 2.5 + sk('chroma', 'colours') * .5 }; G.fx.push({ k: 'ring', x: m.x, y: m.y, R: G.radius, t: 0, life: .6, col: '#d65fa0' }); text(m.x, m.y - 50, '🌈', '#fff', 26, .9); });
+      return true; }
   }
   return false;
 }
@@ -1431,7 +1628,7 @@ function updateShots(dt) {
       case 'bubble':
         s.x += s.vx * dt; s.y += (s.vy - 14) * dt; s.vx *= .995;
         if (s.t > s.life) s.dead = true;
-        for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + s.r) { hurt(e, s.dmg); e.slow = 2; s.dead = true; G.fx.push({ k: 'puff', x: s.x, y: s.y, vx: 0, vy: -20, t: 0, life: .3, col: '#dff3ff', r: s.r }); break; }
+        for (const e of G.enemies) if (e.hp > 0 && dist(e, s) < e.r + s.r) { hurt(e, s.dmg, 0, s.m || G.dad); e.slow = 2; s.dead = true; G.fx.push({ k: 'puff', x: s.x, y: s.y, vx: 0, vy: -20, t: 0, life: .3, col: '#dff3ff', r: s.r }); break; }
         break;
       case 'mark': case 'hoot': case 'roll': {
         s.x += s.vx * dt; s.y += s.vy * dt; s.spin = (s.spin || 0) + dt * 10; if (s.k === 'roll') s.r = Math.min(24, s.r + dt * 8);
@@ -1505,6 +1702,7 @@ function update(dt) {
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
     if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
+    { const sh = rankOf('shelly', 'steady'); if (sh) { const sm = G.party.find(m => m.id === 'shelly'); if (sm && dist(e, sm) < 90 + sk('shelly', 'steady') * 15) sp *= 1 - sh * .06; } }
     const flies = e.kind === 'flyer';
     if (story && !flies && dist(e, dad) < storyR) sp *= 1 - story * .09;
     if (!flies) for (const t of G.traps) if (dist(e, t) < t.r + e.r * .3) { sp *= t.mul || .4; break; }
@@ -1520,9 +1718,9 @@ function update(dt) {
     // gossip: jumps onto the nearest companion and mutes it; pops itself when it's done talking
     if (e.kind === 'gossip') {
       if (e.host) { e.x = e.host.x + 14; e.y = e.host.y - 30; e.talk -= dt; e.host.muted = e.talk; if (e.talk <= 0) { e.host.muted = 0; e.host = null; e.hp = 0; kill(e); } continue; }
-      for (const m of G.party) if (m.id !== 'dad' && !(m.muted > 0) && dist(e, m) < 40) { e.host = m; e.talk = 2; m.muted = 2; text(m.x, m.y - 50, '"Did you hear…"', '#fff', 14, 1.2); break; }
+      for (const m of G.party) if (m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0) && dist(e, m) < 40) { e.host = m; e.talk = 2; m.muted = 2; text(m.x, m.y - 50, '"Did you hear…"', '#fff', 14, 1.2); break; }
       if (e.host) continue;
-      const tgtM = G.party.filter(m => m.id !== 'dad' && !(m.muted > 0)).sort((p1, p2) => dist(p1, e) - dist(p2, e))[0];
+      const tgtM = G.party.filter(m => m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0)).sort((p1, p2) => dist(p1, e) - dist(p2, e))[0];
       if (tgtM) { const a2 = Math.atan2(tgtM.y - e.y, tgtM.x - e.x); if (e.stun <= 0) { e.x += Math.cos(a2) * sp * dt; e.y += Math.sin(a2) * sp * dt; e.walk += dt * 14; } e.x += e.kx * dt; e.y += e.ky * dt; const kd2 = Math.exp(-dt * 9); e.kx *= kd2; e.ky *= kd2; continue; }
     }
     if (e.stun > 0 || e.winding > 0 || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
@@ -1553,7 +1751,7 @@ function update(dt) {
     for (const a of CHARS[m.id].abil) {
       if (!m.ranks[a] || ABIL[a].passive) continue;
       m.cds[a] -= dt;
-      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; if (useAbility(m, a)) m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m); else m.cds[a] = .15; }
+      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; if (useAbility(m, a) && (m.id === 'dad' || missionAdd('abil') || true)) m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m); else m.cds[a] = .15; }
     }
   }
   for (const p of G.pending) if (G.t >= p.at) { p.done = true; p.fn(); }
@@ -1956,12 +2154,13 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
       for (const sg of [-1, 1]) { c.beginPath(); c.moveTo(sg * 2, -16); c.quadraticCurveTo(sg * 8, -26, sg * 12, -24); c.stroke(); }
       c.fillStyle = '#3a2c20'; for (const sg of [-1, 1]) { c.beginPath(); c.arc(sg * 2.5, -14, 1.5, 0, 7); c.fill(); }
       break; }
+    default: { c.save(); c.scale(face, 1); c.font = `36px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(CHARS[id] ? CHARS[id].em : '❓', 0, -22 + bob * .3); c.restore(); }
   }
   c.restore();
   if (opts.gear) drawPetGear(c, id, opts.held);
   c.restore();
 }
-const PET_H = { webster: 44, sparky: 46, hopper: 40, puddles: 46, dusty: 44, pip: 40, scuttle: 36, nilla: 44, luna: 50 };
+const PET_H = { webster: 44, sparky: 46, hopper: 40, puddles: 46, dusty: 44, pip: 40, scuttle: 36, nilla: 44, luna: 50, shelly: 40, goldie: 42, prickles: 38, jelly: 50, echo: 46, inky: 50, chroma: 42 };
 // where things sit on each friend: head centre, head radius, chest centre, front foot, hand (the wind-up spot), in sprite units facing right
 const WEAR_PET = {
   webster: { head: [8, -28], hr: 9, chest: [-4, -16], foot: [12, -2], hand: [16, -22] }, sparky: { head: [13, -27], hr: 7, chest: [2, -26], foot: [8, -14], hand: [20, -22] },
@@ -2173,6 +2372,7 @@ function drawEnemy(e) {
   }
   ctx.restore();
   if (e.weak > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 5; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.arc(x, y, r * 1.25 + Math.sin(G.t * 8) * 4, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('WEAK SPOT', x, y + r + 28); }
+  if (e.tag && G.t - e.tag.t < 2.5 && e.hp > 0) { ctx.save(); ctx.globalAlpha = 1 - (G.t - e.tag.t) / 2.5 * .6; ctx.font = `14px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(ELEM[e.tag.el].em, x - r * .9, y - r - 6); ctx.restore(); }
   if (e.elite) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', x, y - r - 6); ctx.textBaseline = 'alphabetic'; ctx.strokeStyle = 'rgba(236,178,60,.8)'; ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(x, y, r * 1.15, G.t * 2, G.t * 2 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.4)'; ctx.beginPath(); ctx.arc(x, y, r * 1.1, 0, 7); ctx.fill(); }
   if (e.stun > 0) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.textAlign = 'center'; const sx = x + Math.cos(G.t * 6) * r * .5, sy = y - r - 8 + Math.sin(G.t * 6) * 3; ctx.strokeText('?', sx, sy); ctx.fillText('?', sx, sy); }
@@ -2261,7 +2461,7 @@ function drawTitleParty() {
   const SPOT = [[118, 284, 1.5, 1], [330, 284, 1.5, -1], [40, 262, 1.25, 1]];
   save.party.forEach((id, i) => { const [sx, sy, sc, f] = SPOT[i]; drawCompanionAt(x, id, sx, sy, sc, f, performance.now() / 1000, { gear: true }); });
 }
-function drawStatics() { drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
+function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -2336,7 +2536,7 @@ function answerQuiz(saidFact) {
   const q = G.quiz, right = saidFact === q.isFact, M = MYTHS[q.id], b = G.boss;
   $('#ansMyth').disabled = $('#ansFact').disabled = true;
   if (right) G.right = (G.right || 0) + 1;
-  if (right) { $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
+  if (right) { missionAdd('fact'); $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
   else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
   setTimeout(() => {
     $('#quizm').hidden = true;
@@ -2374,7 +2574,7 @@ function loop(ts) {
 }
 
 /* ───────── flow ───────── */
-const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store'];
+const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store', '#missions'];
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
@@ -2428,6 +2628,7 @@ function stageClear() {
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
   const hardFirst = save.diff === 'hard' && prev === 0;
+  missionAdd('clear'); if (stars === 3) missionAdd('star3'); if (G.bossDown) missionAdd('boss'); if (G.coins) missionAdd('coin', G.coins);
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
@@ -2609,7 +2810,8 @@ function buildParty() {
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
-      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      const EL = ELEM[CELEM[id]];
+      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
       if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
     const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
     if (c.own) {
@@ -2618,6 +2820,8 @@ function buildParty() {
       html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
         if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Upgrade it in the Garage.</em></span></div></div>`;
         return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on && S ? `<span><em>${S[0]}:</em> ${S[1]}</span>` : on ? '' : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div>${on && S ? `${pips(r, SK_MAX)}<span data-sk="${id}:${a}">${r >= SK_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>`}</span>` : ''}</div>`; }).join('') + '</div>';
+      if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
+      if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
       const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
       // what all of it adds up to
       const g = gear(id), V = cweapOf(id), parts = [];
@@ -2792,6 +2996,7 @@ $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
+$('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
 $$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });

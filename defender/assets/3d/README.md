@@ -54,6 +54,14 @@ scaled by the body's height and `GEAR3D[id].pk`. Re-render after editing a prop:
 
     cd defender/tools && node render_props.mjs --out ../assets/3d --size 96
 
+## New friends (October 2026)
+
+Inky and Chroma (the two Legendaries) are 3D: Meshy image-to-3D of their Gemini sprites
+(`assets/pet_inky.png`, `pet_chroma.png`), static, 160 px cells, 60 credits. Shelly, Goldie,
+Prickles, Jelly and Echo use their Gemini sprites until the monthly credits reset on 6 November;
+then `python3 tools/meshy_test.py pet_<id> --no-rig` and `node tools/render_sheet.mjs
+tools/meshy_out/pet_<id> --name <id> --out assets/3d --size 160` for each (about 150 credits).
+
 ## Credits
 
 Balance 1030 before, 672 after: 358 Meshy credits. 11 image-to-3D models, 2 rigs

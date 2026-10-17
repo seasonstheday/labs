@@ -34,6 +34,13 @@ PETS = {
     'scuttle': 'a round dark-blue scarab beetle with long antennae and six little legs',
     'nilla':   'a fluffy white snowy owl with big yellow eyes and faint grey speckles',
     'luna':    'a pale green luna moth seen from above with long wing tails and feathery antennae, hovering',
+    'shelly':  'a small friendly pond turtle with a rounded olive-green shell with hexagon plates, a calm smile and sleepy eyes',
+    'goldie':  'a round orange goldfish with big shiny eyes and flowing fins, floating inside a small water bubble just above the floor',
+    'prickles':'a small round brown hedgehog with soft-looking spines, a pointy pink nose and a cheerful face',
+    'jelly':   'a little pink-and-lilac jellyfish with a round glowing bell and short wavy tentacles, floating just above the floor',
+    'echo':    'a small fuzzy brown bat with big ears, wings half open and a friendly toothy grin, hovering just above the floor',
+    'inky':    'a cheerful purple octopus with big curious eyes, eight curly arms spread on the floor, one arm waving',
+    'chroma':  'a small chameleon with a curly tail and big swivelling eyes, its skin shading through rainbow colours from head to tail',
 }
 KID = ('a seven-year-old child with short brown hair, a blue striped t-shirt, green shorts and red sneakers, standing and '
        'smiling, holding up a white blank card in one hand, facing the viewer')
