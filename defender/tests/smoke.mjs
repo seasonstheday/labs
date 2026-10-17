@@ -39,6 +39,13 @@ async function play(p, ms) {
     if (await p.isVisible('#quizm')) await p.click('#ansMyth', { timeout: 300 }).catch(() => {}); }
 }
 
+// end a match on purpose: close whatever card is up (a Myth Check can be open on a slow machine), run out of Patience,
+// and wait for the game-over screen
+async function endMatch(p, wave) {
+  await p.evaluate(w => { const G = dbg.G; for (const id of ['#quizm', '#levelup', '#notem', '#comicm']) document.querySelector(id).hidden = true;
+    G.check = null; G.pendingCheck = null; G.freePicks = 0; G.paused = false; if (w != null) G.wave = w; G.hp = 0; }, wave);
+  await p.waitForSelector('#overm', { state: 'visible', timeout: 8000 });
+}
 const results = [];
 async function test(name, fn) {
   const t0 = Date.now(); let ok = true, msg = '';
@@ -124,9 +131,9 @@ await test('Daily Myth and the Endless Stacks', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   expect(await p.isVisible('#dailyBtn') && await p.isVisible('#endlessBtn'), 'both mode buttons');
   await p.click('#dailyBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => !!dbg.G.twist), 'a twist'); await play(p, 3000);
-  await p.evaluate(() => { const G = dbg.G; G.freePicks = 0; document.querySelector('#levelup').hidden = true; G.paused = false; G.hp = 0; }); await p.waitForTimeout(600); await p.click('#overHome'); await p.waitForTimeout(400);
+  await endMatch(p); await p.click('#overHome'); await p.waitForTimeout(400);
   await p.click('#endlessBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => dbg.G.endless), 'endless mode');
-  await p.evaluate(() => { const G = dbg.G; G.freePicks = 0; document.querySelector('#levelup').hidden = true; G.paused = false; G.wave = 6; G.hp = 0; }); await p.waitForTimeout(600);
+  await endMatch(p, 6);
   expect(await p.evaluate(() => dbg.save.endlessBest === 7), 'the best wave saved'); await close(); return errs;
 });
 
