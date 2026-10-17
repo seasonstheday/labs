@@ -338,6 +338,9 @@
   .pow { display: inline-flex; align-items: center; gap: 3px; font: 700 13px/1 "Fredoka", Arial, sans-serif; background: #3a2c20; color: #ffd76a; border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
   .pow.big { font-size: 16px; padding: 6px 11px; }
   .fcard .pow { font-size: 11px; padding: 2px 6px; margin-top: 3px; }
+  .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 13px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
+  .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
+  #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -473,7 +476,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 41</div>
+    <div class="build">build 42</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -502,6 +505,7 @@
     <div class="mapcard">
       <h3 id="mapName">The Backyard</h3>
       <div class="d" id="mapDesc"></div>
+      <div id="mapPow"></div>
       <div class="diffs" id="diffs"></div>
       <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
     </div>
@@ -3236,7 +3240,7 @@ function buildMap(scroll = true) {
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
-  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc;
+  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
   if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
   $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
@@ -3559,7 +3563,12 @@ $('#homeMissions').onclick = () => $('#openMissions').onclick(); $('#homeHow').o
 $('#bookRoom').onclick = () => openRoom();
 // Play: straight into the next stage; the World Map is for choosing
 function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
-function updateQuickPlay() { const b = $('#quickPlay'); if (!b) return; const st = STAGES[nextStage()]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>`; }
+// suggested Power for a stage: what a team that clears it with random picks has (from the simulator), a little more for
+// chapter bosses, and a third more on Hard
+function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
+function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
+  return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
+function updateQuickPlay() { const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
@@ -3595,7 +3604,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();
