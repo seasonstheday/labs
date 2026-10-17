@@ -1216,7 +1216,7 @@ const elemOf = id => id === 'dad' ? WELEM[save.weapon] || null : CELEM[id] || nu
 const reactKey = (a, b) => { const i = WHEEL.indexOf(a), j = WHEEL.indexOf(b); if (i < 0 || j < 0 || a === b) return null; const adj = (i + 1) % 5 === j || (j + 1) % 5 === i; if (!adj) return null; return [a, b].sort((x, y) => WHEEL.indexOf(x) - WHEEL.indexOf(y)).join('+'); };
 const reactsWith = el => el === 'rainbow' ? WHEEL.map(o => ({ o, R: { n: 'any reaction', em: ELEM[o].em, desc: 'Chroma matches whatever is needed' } })).slice(0, 0).concat([{ o: 'rainbow', R: { n: 'Every reaction', em: '🌈', desc: 'Chroma turns into whichever colour sets one off' } }]) : WHEEL.filter(o => reactKey(el, o)).map(o => ({ o, R: REACT[reactKey(el, o)] }));
 const teamBonus = id => { const el = CELEM[id]; if (!el || !G) return 1; return G.party.filter(m => m.id !== 'dad' && CELEM[m.id] === el).length >= 2 ? 1.1 : 1; };
-function react(e, key) {
+function react(e, key) { sfx('zap');
   const R = REACT[key], base = (10 + G.stage * 2.2) * (1 + rankOf('chroma', 'camo') * .08 + sk('chroma', 'camo') * .03); G.reactions = (G.reactions || 0) + 1; missionAdd('react');
   text(e.x, e.y - e.r - 40, `${R.em} ${R.n.toUpperCase()}!`, '#fff', 20, 1.1);
   if (!(save.seenReact || (save.seenReact = [])).includes(key)) { save.seenReact.push(key); persist(); hint(`${R.em} ${R.n}: ${key.split('+').map(k => ELEM[k].n).join(' and ')} together. ${R.desc[0].toUpperCase() + R.desc.slice(1)}.`, 4.5); }
@@ -1530,7 +1530,7 @@ const itOfBoss = big => itemOf(big ? (Math.random() < .35 ? 3 : 2) : (Math.rando
 const POLISH = [[20, 40, 60, 80, 100], [40, 80, 120, 160, 200], [60, 120, 180, 240, 300], [100, 200, 300, 400, 500]], POLISH_MAX = 5;
 const itemStats = it => { const st = it.stats || { [it.stat]: it.val }, lv = it.lv || 0; if (!lv) return st; const o = {}; for (const k in st) o[k] = Math.round(st[k] * (1 + lv * .1)); return o; };
 // merge: three items of one slot and rarity become one of the next rarity; the chosen one keeps its name, look and bookmarks
-function mergeInto(it) {
+function mergeInto(it) { sfx('forge'); buzz('HEAVY');
   const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
   for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
   const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
@@ -1602,7 +1602,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
@@ -1682,7 +1682,7 @@ function famMoves(dt) {
   const live = G.fam || []; G.famT = G.famT || {}; const base = 8 + G.stage * 1.6;
   for (const { k, F, full } of live) { if (!full || !F.mv.every) continue; G.famT[k] = (G.famT[k] || 0) + dt; if (G.famT[k] < F.mv.every) continue; G.famT[k] = 0;
     const dad = G.dad, inR = G.enemies.filter(e => e.hp > 0 && inRing(e)), src = { x: dad.x, y: dad.y, id: 'react' };
-    text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3);
+    text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3); sfx('move');
     if (k === 'bugs') { G.fx.push({ k: 'buzz', x: dad.x, y: dad.y, R: G.radius, t: 0, life: 1.1 }); for (const e of inR) { e.slow = Math.max(e.slow, 1.5); hurt(e, base, 0, src); } }
     else if (k === 'pond') { G.fx.push({ k: 'splash', x: dad.x, y: dad.y + 10, R: 150, t: 0, life: .6, col: '#8fc7f0' }); G.fx.push({ k: 'ring', x: dad.x, y: dad.y, R: 190, t: 0, life: .5, col: '#bfe6f5' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, dad) < 190) hurt(e, base * .6, 160, src); G.hp = Math.min(G.maxhp, G.hp + 5); }
     else if (k === 'sky') { for (const e of inR.sort(() => Math.random() - .5).slice(0, 8)) { hurt(e, base * .8, 0, src); for (let q = 0; q < fxN(3); q++) G.fx.push({ k: 'paper', x: e.x + rnd(-10, 10), y: e.y - 60, vx: rnd(-40, 40), vy: rnd(40, 120), rot: rnd(0, 6), vr: rnd(-6, 6), t: 0, life: .7 }); } }
@@ -1717,9 +1717,74 @@ const OPTS = [
   ['calm', '🫧', 'Calm screen', 'No flashing, no blinking, fewer sparkles. Good for sensitive eyes.'],
   ['big', '🔠', 'Bigger text', 'Larger words on every screen for early readers.'],
   ['labels', '🗣️', 'Read buttons aloud', 'Every button says its name when you press it.'],
+  ['music', '🎵', 'Music', 'A gentle tune for every chapter.'],
+  ['sfx', '🔔', 'Sound effects', 'Pops, chimes and bonks.'],
+  ['buzz', '📳', 'Buzz', 'A little tap in your hand on big moments (on phones that can).'],
   ['autopick', '⏱️', 'Pick tricks for me', 'If nobody picks a trick within 5 seconds, Dad picks the best one.'],
 ];
-function applyOpts() { frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
+
+/* ───────── sound: every effect and the music are synthesised, so there are no files to load ───────── */
+const SND = { ctx: null, sfx: null, mus: null, last: {} };
+function audio() {
+  if (SND.ctx) return SND.ctx; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+  const c = SND.ctx = new AC(), master = c.createGain(); master.connect(c.destination);
+  SND.sfx = c.createGain(); SND.sfx.connect(master); SND.mus = c.createGain(); SND.mus.connect(master); volumes(); return c;
+}
+function volumes() { if (!SND.ctx) return; SND.sfx.gain.value = save.opt.sfx ? .8 : 0; SND.mus.gain.value = save.opt.music ? .34 : 0; }
+// phones keep audio silent until the first touch; the music starts then too
+document.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('button')) { setTimeout(() => sfx('tap'), 0); buzz('LIGHT'); } }, { capture: true });
+document.addEventListener('pointerdown', () => { const c = audio(); if (!c) return; if (c.state === 'suspended') c.resume(); if (musKey == null) music(G && G.S ? G.S.w : 'home'); }, { capture: true });
+document.addEventListener('visibilitychange', () => { if (SND.ctx) document.hidden ? SND.ctx.suspend() : SND.ctx.resume(); });
+function tone(f, d, { type = 'sine', vol = .3, at = 0, slide = 0, attack = .005, out } = {}) {
+  const c = SND.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f * slide), t + d);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0008, t + d);
+  o.connect(g); g.connect(out || SND.sfx); o.start(t); o.stop(t + d + .03);
+}
+let NOISE = null;
+function noise(d, { vol = .3, at = 0, f = 2000, q = 1, type = 'bandpass' } = {}) {
+  const c = SND.ctx; if (!NOISE) { NOISE = c.createBuffer(1, c.sampleRate, c.sampleRate); const ch = NOISE.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+  const t = c.currentTime + at, src = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(); src.buffer = NOISE; fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0008, t + d); src.connect(fl); fl.connect(g); g.connect(SND.sfx); src.start(t, Math.random() * .5); src.stop(t + d + .03);
+}
+const SFX = {
+  pop:   big => { const p = rnd(.9, 1.15); tone(520 * p, .12, { type: 'triangle', vol: .3, slide: .45 }); noise(.06, { vol: .16, f: 3000 }); if (big) { tone(170, .4, { vol: .45, slide: .5 }); noise(.3, { vol: .22, f: 900 }); } },
+  hit:   () => noise(.035, { vol: .07, f: 2500 + Math.random() * 1500 }),
+  crit:  () => { tone(1320, .16, { type: 'square', vol: .06 }); tone(1980, .22, { vol: .12, at: .03 }); },
+  bonk:  () => { tone(140, .25, { vol: .5, slide: .6 }); noise(.12, { vol: .22, f: 400, type: 'lowpass' }); },
+  level: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .26, { type: 'triangle', vol: .2, at: i * .08 })),
+  coin:  () => { tone(1568, .07, { type: 'square', vol: .05 }); tone(2093, .12, { type: 'square', vol: .05, at: .06 }); },
+  xp:    () => tone(880 + Math.random() * 220, .06, { vol: .045 }),
+  book:  () => { noise(.18, { vol: .18, f: 1800, q: .7 }); [784, 988, 1175, 1568].forEach((f, i) => tone(f, .4, { vol: .13, at: .15 + i * .07 })); },
+  forge: () => { noise(.08, { vol: .32, f: 3500, q: 3 }); [1200, 1810, 2650].forEach(f => tone(f, .7, { vol: .06, at: .01 })); },
+  shine: () => [1319, 1760, 2349].forEach((f, i) => tone(f, .25, { vol: .08, at: i * .05 })),
+  zap:   () => tone(900, .18, { type: 'sawtooth', vol: .05, slide: 2.4 }),
+  tap:   () => tone(660, .04, { vol: .07 }),
+  boss:  () => { tone(80, .9, { vol: .5, slide: .7 }); noise(.6, { vol: .18, f: 200, type: 'lowpass' }); },
+  win:   () => [523, 659, 784, 659, 784, 1047].forEach((f, i) => tone(f, i === 5 ? .6 : .18, { type: 'triangle', vol: .18, at: i * .11 })),
+  lose:  () => [392, 349, 311, 262].forEach((f, i) => tone(f, .35, { type: 'triangle', vol: .14, at: i * .2 })),
+  move:  () => { noise(.3, { vol: .14, f: 600, q: .5 }); tone(330, .4, { type: 'triangle', vol: .11, slide: 1.5 }); },
+};
+// play an effect, at most so often per kind, so a crowd of pops stays a crowd and not a roar
+function sfx(k, arg) { if (!save.opt.sfx || !SND.ctx || SND.ctx.state !== 'running') return; const now = SND.ctx.currentTime, gap = { pop: .035, hit: .03, xp: .05, coin: .05, crit: .06, zap: .08 }[k] || 0; if (gap && now - (SND.last[k] || 0) < gap) return; SND.last[k] = now; try { SFX[k](arg); } catch (e) {} }
+// a tap on the phone: the native app's haptics, or a short vibration on Android browsers
+function buzz(style = 'LIGHT') { if (!save.opt.buzz) return; try { if (window.native && window.native.haptic) window.native.haptic(style); else if (navigator.vibrate) navigator.vibrate(style === 'HEAVY' ? 28 : style === 'MEDIUM' ? 16 : 6); } catch (e) {} }
+// music: a gentle loop per chapter (and one for home) from its own key, scale and tempo, played on two soft voices
+const SONGS = { home: [196, [0, 2, 4, 7, 9], 84, 'sine'], 0: [262, [0, 2, 4, 7, 9], 104, 'triangle'], 1: [233, [0, 2, 4, 5, 7, 9], 96, 'sine'], 2: [220, [0, 2, 3, 5, 7, 10], 92, 'triangle'],
+  3: [247, [0, 2, 4, 7, 9], 108, 'triangle'], 4: [208, [0, 1, 4, 5, 7, 8], 100, 'triangle'], 5: [294, [0, 2, 4, 7, 9], 88, 'sine'], 6: [196, [0, 3, 5, 7, 10], 112, 'triangle'], 7: [175, [0, 2, 4, 7, 9, 11], 80, 'sine'] };
+let musKey = null, musT = 0, musNext = 0, musStep = 0, musPat = null;
+function music(which) {
+  if (musKey === which) return; musKey = which; clearInterval(musT); musT = 0; if (which == null || !audio()) return;
+  const [root, sc, bpm, wave] = SONGS[which] || SONGS.home, step = 60 / bpm / 2, seed = n => ((n * 9301 + String(which).length * 49297 + (+which || 7) * 233) % 233280) / 233280;
+  musPat = Array.from({ length: 32 }, (_, i) => seed(i + 1) < (i % 4 === 0 ? .9 : .45) ? sc[Math.floor(seed(i + 50) * sc.length)] + (seed(i + 90) < .2 ? 12 : 0) : null);
+  musStep = 0; musNext = SND.ctx.currentTime + .1;
+  musT = setInterval(() => { const c = SND.ctx; if (!c || c.state !== 'running' || !save.opt.music) { musNext = c ? c.currentTime + .1 : 0; return; }
+    while (musNext < c.currentTime + .35) { const i = musStep % 32, at = musNext - c.currentTime, n = musPat[i];
+      if (n != null) tone(root * 2 ** (n / 12), step * 1.6, { type: wave, vol: .16, at, attack: .02, out: SND.mus });
+      if (i % 8 === 0) tone(root / 2 * 2 ** ((i % 16 ? 7 : 0) / 12), step * 7, { type: 'sine', vol: .2, at, attack: .03, out: SND.mus });
+      musStep++; musNext += step; } }, 100);
+}
+function applyOpts() { volumes(); frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
 function buildToggles(el) {
   el.innerHTML = OPTS.map(o => `<div class="tog ${save.opt[o[0]] ? 'on' : ''}" data-opt="${o[0]}"><div class="em">${o[1]}</div><div class="txt"><b>${o[2]}</b><span>${o[3]}</span></div><div class="sw"></div></div>`).join('');
   el.querySelectorAll('[data-opt]').forEach(t => t.onclick = () => { save.opt[t.dataset.opt] = !save.opt[t.dataset.opt]; persist(); buildToggles(el); applyOpts(); if (t.dataset.opt === 'labels' && save.opt.labels) sayNow('Read buttons aloud. On.'); if (t.dataset.opt === 'voice' && save.opt.voice) say('Hi! I\'m Dad. I\'ll read the facts to you.'); });
@@ -1777,7 +1842,7 @@ function spawn(id, at = null, q = {}) {
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
@@ -1822,6 +1887,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
   e.hp -= d; e.hit = .12;
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
+  sfx(crit ? 'crit' : 'hit');
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
@@ -1841,6 +1907,7 @@ function kill(e) {
   for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(.6, 1) });
   for (let i = 0; i < fxN(2 * big); i++) G.fx.push({ k: 'star', x: e.x + rnd(-e.r, e.r), y: e.y - e.r + rnd(-8, 8), t: 0, life: rnd(.35, .55), s: rnd(8, 13) });
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
+  sfx('pop', e.elite || e.kind === 'boss'); if (e.kind === 'boss') buzz('HEAVY');
   text(e.x, e.y - 10, e.kind === 'brick' ? 'CRUMBLE' : 'POP!', '#cb382e', 22, .8);
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
@@ -2162,7 +2229,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); if (G.famSpiky) { hurt(e, 10 + G.stage * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.stage * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -2205,7 +2272,7 @@ function update(dt) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
@@ -2219,7 +2286,7 @@ function update(dt) {
 function collectAll() { for (const o of G.orbs) o.pull = true; }
 
 /* ───────── level up & cards ───────── */
-function levelUp() { G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
+function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
@@ -2267,7 +2334,7 @@ function offerCards(free = 0) {
 // Dad's Notebook: dropped by every third elite and by a boss at half health. One to three free trick upgrades.
 function dropNote(e) { G.orbs.push({ k: 'note', x: e.x, y: e.y - 10, v: 0, t: 0 }); text(e.x, e.y - e.r - 46, '📒 NOTEBOOK!', '#ecb23c', 20, 1.2); }
 let noteT = 0;
-function openNotebook() {
+function openNotebook() { sfx('book'); buzz('MEDIUM');
   const opts = trickOpts(), r = Math.random(), n = Math.min(opts.length, r < .6 ? 1 : r < .9 ? 2 : 3), got = [];
   while (got.length < n) got.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
   $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><div class="e">${abilEm(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : 'Rank ' + o.lvl}${willEvolve(o) ? ' ✨' : ''}</i></div>`).join('')
@@ -3115,7 +3182,7 @@ const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null;
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
   if (on) { navDots(); updateQuickPlay(); } }
-function startGame(stage) {
+function startGame(stage) { music(STAGES[stage].w);
   newRun(stage);
   G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famPow = famStat('pow'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
   if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
@@ -3160,7 +3227,7 @@ function dropLoot(el, n, bonus) {
   persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
-function stageClear() {
+function stageClear() { sfx('win'); buzz('HEAVY');
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -3216,8 +3283,8 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
+function gameOver() { sfx('lose'); G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
 // the map is one long scroll: chapter 1 at the bottom, chapter 8 at the top. Pins zigzag up through each band.
@@ -3437,7 +3504,7 @@ $('#pickClose').onclick = () => $('#pickm').hidden = true;
 
 /* ───────── the bag ───────── */
 const twinsOf = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && (it.type !== 'weapon' || o.owner === it.owner) && !wornBy(o.uid));
-function polishItem(it) { const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return false; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); return true; }
+function polishItem(it) { const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return false; sfx('shine'); it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); return true; }
 function forgeFlow(it, after) {
   const use = twinsOf(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
   pickFor = null; $('#pickTitle').textContent = `Forge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n} and keeps its look. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
@@ -3636,7 +3703,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();

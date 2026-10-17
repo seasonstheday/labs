@@ -67,7 +67,7 @@
 
   window.native = {
     platform,
-    haptic: async () => { try { const H = cap.Plugins && cap.Plugins.Haptics; if (H) await H.impact({ style: 'LIGHT' }); } catch (e) {} },
+    haptic: async (style = 'LIGHT') => { try { const H = cap.Plugins && cap.Plugins.Haptics; if (H) await H.impact({ style }); } catch (e) {} }, // LIGHT, MEDIUM or HEAVY
   };
 
   document.addEventListener('deviceready', setupStore, { once: true });
