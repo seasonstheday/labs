@@ -63,7 +63,10 @@
 
   /* ───────── screens ───────── */
   .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
-  #title { background: linear-gradient(#bfe0ea 0 48%, #8fc27a 48% 52%, #6fa85e 52%); align-items: center; text-align: center; }
+  #title { background: url(assets/home_bg.png) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
+  #title .sun, #title .cloud, #title .fence { display: none; }
+  #title::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 200px; background: linear-gradient(rgba(127,174,90,0), #7fae5a 55%); pointer-events: none; }
+  #title .menu, #title .corner-r, #title .wallet, #title .build { z-index: 2; }
   #title .sun { position: absolute; right: 36px; top: 46px; width: 90px; height: 90px; border-radius: 50%; background: #ffe08a; border: 4px solid #3a2c20; box-shadow: 0 0 0 14px rgba(255,224,138,.35); }
   #title .cloud { position: absolute; width: 120px; height: 40px; background: #fff; border: 4px solid #3a2c20; border-radius: 40px; animation: cloud 24s linear infinite; }
   #title .cloud::before { content: ""; position: absolute; left: 24px; top: -24px; width: 54px; height: 54px; background: #fff; border: 4px solid #3a2c20; border-bottom: 0; border-radius: 50% 50% 0 0; }
@@ -72,10 +75,12 @@
   #title h1 { position: relative; margin: 48px 0 0; font-size: 60px; line-height: .92; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.3); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
   #title h1 small { display: block; font-size: 26px; color: var(--gold); }
   #title .tag { position: relative; margin: 8px 0 0; font-size: 22px; color: #3a2c20; }
-  #titleParty { position: absolute; left: 0; top: 33%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
+  #titleParty { position: absolute; left: 0; top: 226px; width: 440px; height: 330px; z-index: 1; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
   #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 86px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #title .menu .btn.ghost.small { background: rgba(255,250,238,.92); }
+  #title h1 { z-index: 1; } #title .tag { z-index: 1; text-shadow: 0 2px 0 rgba(255,255,255,.6); }
   #title .menu .btn.play { width: 300px; font-size: 22px; line-height: 1.1; padding: 14px 16px; } #title .menu .btn.play small { display: block; font-size: 13px; opacity: .85; }
   #title .corner-l { position: absolute; left: 12px; top: 58px; } #title .corner-r { position: absolute; right: 12px; top: 12px; display: flex; gap: 8px; }
   #title .corner-l .btn, #title .corner-r .btn { position: relative; }
@@ -397,8 +402,8 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 33</div>
-    <canvas id="titleParty" width="880" height="600"></canvas>
+    <div class="build">build 34</div>
+    <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -2547,12 +2552,19 @@ function portrait(id, pose) {
   drawDadAt(x, c.width / 2, c.height - 6, c.height - 12, 1, pose);
 }
 function drawTitleParty() {
-  const c = $('#titleParty'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, 300);
-  const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, performance.now() / 1000, 220, 290, 250, { props: dadProps(save.weapon, null) }); else drawDadAt(x, 220, 290, 236, 1, 'wave');
-  // companions in an arc in front of Dad, each with its own clear patch of lawn
-  const SPOT = [[118, 284, 1.5, 1], [330, 284, 1.5, -1], [40, 262, 1.25, 1]];
-  save.party.forEach((id, i) => { const [sx, sy, sc, f] = SPOT[i]; drawCompanionAt(x, id, sx, sy, sc, f, performance.now() / 1000, { gear: true }); });
+  const c = $('#titleParty'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, 330);
+  const shadow = (cx, cy, w) => { x.save(); x.fillStyle = 'rgba(40,60,20,.22)'; x.beginPath(); x.ellipse(cx, cy, w, w * .26, 0, 0, 7); x.fill(); x.restore(); };
+  // spots: [x, feet y, scale, facing (screen angle; down = toward us)], left to right, the third friend in front
+  const n = save.party.length, L = Math.PI / 2 - .45, R = Math.PI / 2 + .45, SPOT = n === 1 ? [[106, 312, 1.95, L]] : n === 2 ? [[96, 312, 1.95, L], [344, 312, 1.95, R]]
+    : [[84, 300, 1.85, L], [356, 300, 1.85, R], [220, 324, 1.85, Math.PI / 2]];
+  const t = performance.now() / 1000, items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
+  for (const it of items) {
+    if (it.id === 'dad') { shadow(214, 297, 46); const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); else drawDadAt(x, 214, 298, 224, 1, 'wave'); continue; }
+    const [sx, sy, sc, phi] = SPOT[it.i]; shadow(sx, sy - 1, 30); drawCompanionAt(x, it.id, sx, sy, sc, phi <= Math.PI / 2 ? 1 : -1, save.opt.calm ? 0 : t, { gear: true, aim: phi, bob: it.i * 2.1 });
+  }
 }
+// the home scene breathes while it's on screen (Dad's idle, the friends' bob); still in Calm mode
+setInterval(() => { if (mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); }, 66);
 function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */

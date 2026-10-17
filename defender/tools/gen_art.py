@@ -100,9 +100,15 @@ def make(name, prompt, kind):
     elif kind == 'map': subprocess.run(['convert', tmp, '-resize', '928x422^', '-gravity', 'center', '-extent', '880x400', tmp], check=True)  # a little overscan trims any margin the model paints
     os.replace(tmp, out); print('  ->', os.path.relpath(out))
 
+HOME = ('A cosy suburban backyard at golden hour, seen from the side at a child\'s eye height, as the backdrop of a game\'s home screen. '
+        'The top third is a calm warm sky, soft peach to pale blue, with two or three soft clouds and no sun disc. '
+        'The middle has a low wooden picket fence, a big leafy tree on the left edge and the corner of a house porch with a warm lit window on the right edge. '
+        'The lower half is a soft green lawn with a gently worn, empty, lighter patch of grass in the centre where characters will stand, '
+        'and a few small flowers only along the very bottom edge. Soft long shadows, gentle light. Nothing has eyes or a face, no people, no animals, no text.')
 def jobs():
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
     yield 'kid', STYLE + ' ' + KID + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'kid', 'kid'
+    yield 'home_bg', HOME + ' ' + STYLE, 'arena', 'home'
     for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'
 
