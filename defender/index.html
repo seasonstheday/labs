@@ -51,7 +51,7 @@
   .btn.icon { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
   .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
   .btn.big-icon small { font-size: 11px; }
-  .btn.big-icon { position: relative; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
+  .btn.big-icon { position: relative; } .dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; box-sizing: border-box; pointer-events: none; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
   .mis { background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .mis h3 { margin: 0 0 6px; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; } .mis h3 small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
   .mrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; font: 400 15px/1.15 "Patrick Hand", cursive; } .mrow .em { font-size: 20px; width: 26px; text-align: center; } .mrow .t { flex: 1; } .mrow.done .t { text-decoration: line-through; opacity: .6; }
@@ -75,8 +75,31 @@
   #titleParty { position: absolute; left: 0; top: 33%; width: 440px; height: 300px; filter: drop-shadow(0 10px 10px rgba(0,0,0,.3)); animation: idle 2.4s ease-in-out infinite; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
   #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
-  #title .menu { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  #title .menu .btn.play { width: 240px; font-size: 24px; }
+  #title .menu { position: absolute; left: 0; right: 0; bottom: 86px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #title .menu .btn.play { width: 300px; font-size: 22px; line-height: 1.1; padding: 14px 16px; } #title .menu .btn.play small { display: block; font-size: 13px; opacity: .85; }
+  #title .corner-l { position: absolute; left: 12px; top: 58px; } #title .corner-r { position: absolute; right: 12px; top: 12px; display: flex; gap: 8px; }
+  #title .corner-l .btn, #title .corner-r .btn { position: relative; }
+  #tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: #3a2c20; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 0 4px calc(4px + env(safe-area-inset-bottom, 0px)); z-index: 6; }
+  #tabbar button { position: relative; appearance: none; border: 0; background: none; color: #f1e4c8; font: 700 12px/1 "Fredoka", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0 6px; border-radius: 14px 14px 0 0; cursor: pointer; min-height: 60px; justify-content: flex-end; }
+  #tabbar button .ti { font-size: 24px; line-height: 1; }
+  #tabbar button.on { background: var(--paper); color: #3a2c20; }
+  #tabbar .playtab .ti { width: 54px; height: 54px; margin-top: -22px; border-radius: 50%; background: var(--gold); border: 4px solid #3a2c20; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #3a2c20; box-shadow: 0 4px 0 #2a1f16; }
+  #tabbar .playtab.on { background: none; color: #f1e4c8; } #tabbar .playtab.on .ti { background: #fff3c4; }
+  #tabbar .dot { position: absolute; top: 4px; right: 22%; } #tabbar .playtab .dot { top: -18px; right: 18%; }
+  #frame.tabs-on .list-screen .list { padding-bottom: 86px; } #frame.tabs-on #title .build { bottom: 76px; }
+  .seg { display: flex; gap: 6px; padding: 0 14px 8px; } .seg button { flex: 1; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; padding: 9px 0; cursor: pointer; color: #3a2c20; } .seg button.on { background: var(--gold); }
+  .pgrid-h { font: 700 15px/1 "Fredoka", Arial, sans-serif; margin: 6px 2px 2px; display: flex; justify-content: space-between; align-items: baseline; } .pgrid-h small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .pslots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .fcard { position: relative; background: #fff; border: 3px solid #3a2c20; border-top-width: 8px; border-radius: 14px; padding: 4px 4px 6px; text-align: center; cursor: pointer; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .fcard canvas { width: 76px; height: 76px; display: block; margin: 0 auto; } .fcard.locked canvas { filter: grayscale(1) brightness(.75); opacity: .7; }
+  .fcard .el { position: absolute; top: 4px; left: 6px; font-size: 14px; } .fcard .inp { position: absolute; top: 2px; right: 6px; color: #4f8a5b; font-size: 15px; }
+  .fcard .st { color: #ecb23c; font-size: 12px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .fcard .st i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
+  .fcard .pb { height: 7px; margin: 4px 6px 0; border: 2px solid #3a2c20; border-radius: 5px; background: rgba(58,44,32,.12); overflow: hidden; } .fcard .pb div { height: 100%; background: #ecb23c; }
+  .fcard small { display: block; font: 400 12px/1.1 "Patrick Hand", cursive; color: var(--muted); margin-top: 2px; }
+  .fcard .dot { position: absolute; top: -6px; right: -6px; }
+  .pslot { background: rgba(58,44,32,.08); border: 3px dashed rgba(58,44,32,.35); border-radius: 14px; min-height: 96px; display: flex; align-items: center; justify-content: center; font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); text-align: center; padding: 4px; }
+  .backrow { display: flex; gap: 8px; } .backrow .btn { flex: 1; }
   /* ───────── world map ───────── */
   #map { background: #d9c49a; }
   #map .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
@@ -374,23 +397,25 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 32</div>
+    <div class="build">build 33</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
-    <div class="side">
+    <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
+    <div class="side" hidden>
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
       <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
       <button class="btn big-icon ghost" id="openMissions">📋<small>Missions</small><i class="dot" id="misDot" hidden></i></button>
     </div>
-    <div class="side2">
+    <div class="side2" hidden>
       <button class="btn big-icon ghost" id="openDraw">🎟️<small>Cards</small></button>
       <button class="btn big-icon ghost" id="openStore">🏪<small>Store</small></button>
       <button class="btn big-icon ghost" id="openShop">🧰<small>Garage</small></button>
       <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
     </div>
     <div class="menu">
-      <button class="btn play" id="play">🗺️ World Map</button>
-      <div style="display:flex; gap:8px"><button class="btn ghost small" id="openHow">❓ How to play</button><button class="btn ghost small" id="openSettings">⚙️ Settings</button></div>
+      <button class="btn play" id="quickPlay">▶ Play</button>
+      <button class="btn ghost small" id="play">🗺️ World Map</button>
+      <div hidden><button id="openHow"></button><button id="openSettings"></button></div>
     </div>
   </section>
 
@@ -407,6 +432,13 @@
   </section>
 
   <!-- ───────── comics: Dad and the Kid, three panels ───────── -->
+  <nav id="tabbar" hidden>
+    <button data-tab="shop"><span class="ti">🏪</span>Shop<i class="dot" hidden></i></button>
+    <button data-tab="friends"><span class="ti">🧑‍🤝‍🧑</span>Friends<i class="dot" hidden></i></button>
+    <button data-tab="play" class="playtab"><span class="ti">▶</span>Play<i class="dot" hidden></i></button>
+    <button data-tab="bag"><span class="ti">🎒</span>Bag<i class="dot" hidden></i></button>
+    <button data-tab="diary"><span class="ti">📔</span>Diary<i class="dot" hidden></i></button>
+  </nav>
   <div class="modal" id="comicm" hidden>
     <div class="panel">
       <h2 class="display" id="comicTitle" style="font-size:22px;text-align:center;margin-bottom:8px">Chapter 1</h2>
@@ -429,6 +461,7 @@
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Kid's Diary</h2><span class="pill" id="bookCount"></span></div>
+    <div class="seg"><button id="bookRoom">📚 Reading Room</button></div>
     <div class="dtabs"><button class="on" data-dt="topic">By topic</button><button data-dt="chapter">By chapter</button></div>
     <div class="cats" id="cats"></div>
     <div class="study" id="study" hidden><div style="flex:1"><b>📖 Study time</b><span id="studyTxt"></span></div><button class="btn small" id="studyGo">Read</button></div>
@@ -438,7 +471,8 @@
   <!-- ───────── garage: dad's weapon ───────── -->
   <section id="shop" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro" id="shopIntro">Everyone has one weapon. Collect its versions from matches, hold the one you like, polish it, and forge three of the same colour into a stronger one.</p>
+    <div class="seg"><button data-seg="friends">🧑‍🤝‍🧑 Friends</button><button data-seg="weapons" class="on">⚔️ Weapons</button></div>
+    <p class="intro" id="shopIntro">Everyone has one weapon. Hold a version you like, ✨ polish it, or 🔨 forge three of a colour into a stronger one.</p>
     <div class="tabs" id="shopTabs"></div>
     <div class="list" id="shopList"></div>
   </section>
@@ -446,26 +480,27 @@
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Dad can bring three backyard friends. Each has one weapon and three abilities you rank up mid-match. Fill a friend's storybook with 📄 pages to have them join, then keep collecting pages to give them stars. Pages come from first clears, Library Cards, the daily gift and missions, and 📄 Blank pages work for anyone.</p>
+    <div class="seg"><button data-seg="friends" class="on">🧑‍🤝‍🧑 Friends</button><button data-seg="weapons">⚔️ Weapons</button></div>
+    <p class="intro">Tap a friend to see their moves, weapon and stars. Fill a friend's book with 📄 pages and they join.</p>
     <div class="list" id="partyList"></div>
   </section>
 
   <!-- ───────── items: the bag ───────── -->
   <section id="missions" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Missions</h2><span class="pill tix">📄 <span id="blankN">0</span></span></div>
-    <p class="intro">Little jobs for every day and week, and big ones for keeps. They fill up as you play: no timers, and nothing is lost if you miss a day.</p>
+    <p class="intro">Little jobs that fill up as you play. No timers, and nothing is lost if you miss a day.</p>
     <div class="list" id="missionList"></div>
   </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Everything you've found. Weapons add Power, armor adds Patience, books add a little of something clever. Equip from the Party screen; sell what you don't need.</p>
+    <p class="intro">Everything you've found. ✨ Polish it, 🔨 forge three of a kind, or sell what you don't need.</p>
     <div class="list" id="itemList"></div>
   </section>
 
   <!-- ───────── store ───────── -->
   <section id="store" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Store</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
-    <p class="intro">Coins come from every match. Gems come from daily visits and first-time clears. Nothing here costs real money.</p>
+    <p class="intro">Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.</p>
     <div class="list" id="storeList"></div>
   </section>
 
@@ -2632,7 +2667,9 @@ function loop(ts) {
 
 /* ───────── flow ───────── */
 const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store', '#missions'];
-function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; }
+function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null;
+  const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
+  if (on) { navDots(); updateQuickPlay(); } }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
@@ -2843,9 +2880,25 @@ function buildShop() {
   box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) buildShop(); });
   box.querySelectorAll('[data-forge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.forge); if (it) forgeFlow(it, buildShop); });
 }
+let partySel = null;
+// a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
+const canGrow = id => { if (id === 'dad') return false; const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= STAR_COST[st] : pagesOf(id) >= tierOf(id).pages; };
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
-  for (const id in CHARS) {
+  if (!partySel) { // the grid: the party on top, then everyone
+    const card = id => { const C = CHARS[id], c = chr(id), T = id === 'dad' ? { col: '#3a2c20' } : tierOf(id), st = fstars(id), EL = ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
+      return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${id === 'dad' ? '<small>Always</small>' : c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
+    const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
+    const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
+    box.innerHTML = `<div class="pgrid-h">In the backyard <small>tap a friend to swap</small></div><div class="pslots">${card('dad')}${slots.map(id => id ? card(id) : '<div class="pslot">An empty spot</div>').join('')}</div>`
+      + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
+      + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
+    box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
+    drawStatics(); navDots(); return;
+  }
+  box.insertAdjacentHTML('beforeend', `<div class="backrow"><button class="btn small ghost" id="allFriends">← All friends</button>${CWEAP[partySel] || partySel === 'dad' ? `<button class="btn small" id="toRack">⚔️ ${partySel === 'dad' ? 'Lenses' : CWEAP[partySel].line}</button>` : ''}</div>`);
+  $('#allFriends').onclick = () => { partySel = null; buildParty(); }; if ($('#toRack')) $('#toRack').onclick = () => { shopTab = partySel; buildShop(); showScreen('#shop'); };
+  for (const id of [partySel]) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
     let html = `<div class="top"><canvas class="pc" data-c="${id}" width="112" height="112"></canvas><div><b>${C.name}</b><span class="d">${C.desc}</span></div>`;
     if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Card</button>`;
@@ -2891,7 +2944,7 @@ function buildParty() {
   box.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { if (starUp(b.dataset.star)) { toastMsg(`${CHARS[b.dataset.star].em} ${CHARS[b.dataset.star].name} is now ★${fstars(b.dataset.star)}!`); buildParty(); } });
   box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
-  box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) return; save.party.push(b.dataset.join); persist(); buildParty(); });
+  box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) { toastMsg('The backyard is full. Take someone out first.'); return; } save.party.push(b.dataset.join); persist(); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
   box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r]++; persist(); buildParty(); });
   drawStatics();
@@ -2931,7 +2984,6 @@ function buildItems() {
     const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twins(it).length : 0;
     return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
   box.innerHTML = list.length ? list.map(it => itemRow(it, btns(it))).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
-  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">✨ <b>Polish</b> makes an item 10% stronger per step, up to +5. 🔨 <b>Forge</b> three items of the same kind and colour into one of the next colour: the one you tap keeps its name, look and bookmarks. Weapons forge with weapons for the same character. 🔖 Bookmarks tuck into an item\'s slots.</p>');
   box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); buildItems(); });
   box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) buildItems(); });
   box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.merge); if (it) forgeFlow(it, buildItems); });
@@ -2980,7 +3032,7 @@ async function buildIap() {
 const OFFERS = [
   { em: '🍱', name: 'Lunchbox', desc: 'One item: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 300], run: () => [randItem(.1)] },
   { em: '🎒', name: 'Backpack', desc: 'Exactly one Epic and two Rare items.', cost: ['gems', 60], run: () => [itemOf(2), itemOf(1), itemOf(1)] },
-  { em: '🎟️', name: 'Library Card', desc: 'One draw for a new friend or a good item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
+  { em: '🎟️', name: 'Library Card', desc: 'Pick one of three: a friend\'s pages, Blank pages, or an item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
   { em: '🔖', name: 'Bookmark', desc: 'One bookmark of a random colour: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
@@ -2988,10 +3040,11 @@ const OFFERS = [
   { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
 function buildStore() {
-  const box = $('#storeList'); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  const box = $('#storeList');
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
-  $('#store .intro').textContent = window.iap ? 'Coins come from every match. Gems come from daily visits and first-time clears. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from every match. Gems come from daily visits and first-time clears. Nothing here costs real money.';
+  $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
   box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1]) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
@@ -3043,10 +3096,24 @@ $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
+// the tab bar: five places, always one tap away; Play is home. Dots only when there is something to do there.
+const TAB_OF = { '#title': 'play', '#missions': 'play', '#store': 'shop', '#partyScreen': 'friends', '#shop': 'friends', '#items': 'bag', '#book': 'diary' };
+function navDots() { const tb = $('#tabbar'); if (!tb) return; const set = (t, on) => { const d = tb.querySelector(`[data-tab="${t}"] .dot`); if (d) d.hidden = !on; };
+  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false);
+  const d2 = $('#misDot2'); if (d2) d2.hidden = !(() => { try { return misReady(); } catch (e) { return false; } })(); }
+$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab;
+  if (t === 'play') { showScreen('#title'); drawStatics(); } else if (t === 'shop') $('#openStore').onclick(); else if (t === 'friends') { partySel = null; $('#openParty').onclick(); } else if (t === 'bag') $('#openItems').onclick(); else if (t === 'diary') $('#openBook').onclick(); });
+$$('.seg [data-seg]').forEach(b => b.onclick = () => { if (b.dataset.seg === 'friends') { partySel = null; buildParty(); showScreen('#partyScreen'); } else { if (partySel && (CWEAP[partySel] || partySel === 'dad')) shopTab = partySel; buildShop(); showScreen('#shop'); } });
+$('#homeMissions').onclick = () => $('#openMissions').onclick(); $('#homeHow').onclick = () => $('#howm').hidden = false; $('#homeSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
+$('#bookRoom').onclick = () => openRoom();
+// Play: straight into the next stage; the World Map is for choosing
+function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
+function updateQuickPlay() { const b = $('#quickPlay'); if (!b) return; const st = STAGES[nextStage()]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>`; }
+$('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
-$$('.back').forEach(b => b.onclick = () => { showScreen('#title'); drawStatics(); });
+$$('.back').forEach(b => b.onclick = () => { if (b.closest('#shop')) { buildParty(); showScreen('#partyScreen'); return; } if (b.closest('#partyScreen') && partySel) { partySel = null; buildParty(); return; } showScreen('#title'); drawStatics(); });
 $('#openHow').onclick = () => $('#howm').hidden = false;
 $('#openSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
 $('#closeSettings').onclick = () => $('#settingsm').hidden = true;
