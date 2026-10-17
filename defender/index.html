@@ -1769,7 +1769,7 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp;
+  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .012); // the later chapters were easy for every team in the sim
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };

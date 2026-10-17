@@ -17,6 +17,8 @@ import base64, json, os, subprocess, sys, time, urllib.request
 KEY = os.environ.get('GEMINI_API_KEY', '')  # may be empty when a proxy adds the key header itself
 MODEL = os.environ.get('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image')
 HERE = os.path.dirname(os.path.abspath(__file__)); ASSETS = os.path.join(HERE, '..', 'assets')
+REFS = []      # --ref a.png,b.png: existing art sent with every prompt, so new pictures match it
+SUFFIX = ''    # --suffix _try: write <name>_try.png instead of replacing the real one
 RAW = os.environ.get('GEN_ART_RAW')  # optional directory that keeps the untouched model output
 
 STYLE = ("Children's picture-book cartoon, clean thick dark-brown outlines, flat cheerful colours with one soft shadow "
@@ -77,9 +79,11 @@ MAPS = [
     'a starry night sky over a dark lawn with a telescope and a crescent moon',
 ]
 
-def call(prompt, aspect='1:1'):
+def call(prompt, aspect='1:1', refs=()):
+    # refs: image files sent ahead of the prompt (a layout to paint over, or existing art to match)
     url = f'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent'
-    body = json.dumps({'contents': [{'parts': [{'text': prompt}]}],
+    parts = [{'inlineData': {'mimeType': 'image/png', 'data': base64.b64encode(open(r, 'rb').read()).decode()}} for r in refs]
+    body = json.dumps({'contents': [{'parts': parts + [{'text': prompt}]}],
                        'generationConfig': {'responseModalities': ['IMAGE'], 'imageConfig': {'aspectRatio': aspect}}}).encode()
     headers = {'Content-Type': 'application/json'}
     if KEY: headers['x-goog-api-key'] = KEY
@@ -102,8 +106,9 @@ def sprite_fix(path, size):
                     '-resize', f'{size}x{size}', '-background', 'none', '-gravity', 'south', '-extent', f'{size}x{size}', path], check=True)
 
 def make(name, prompt, kind):
-    out = os.path.join(ASSETS, name + '.png'); print(name, '...', flush=True)
-    png = call(prompt, {'arena': '9:16', 'map': '21:9'}.get(kind, '1:1')); tmp = out + '.tmp.png'
+    out = os.path.join(ASSETS, name + SUFFIX + '.png'); print(name + SUFFIX, '...', flush=True)
+    if REFS: prompt += f' Match the drawing style, outline weight, colours and shading of the reference picture{"s" if len(REFS) > 1 else ""} exactly, as if drawn by the same artist, but draw only the new character described.'
+    png = call(prompt, {'arena': '9:16', 'map': '21:9'}.get(kind, '1:1'), refs=REFS); tmp = out + '.tmp.png'
     with open(tmp, 'wb') as f: f.write(png)
     if RAW: open(os.path.join(RAW, name + '.png'), 'wb').write(png)  # keep the model's output for re-processing
     if kind == 'pet': sprite_fix(tmp, 400)
@@ -126,12 +131,15 @@ def jobs():
 
 if __name__ == '__main__':
     if not KEY: print('GEMINI_API_KEY is not set; relying on the network to add it (a proxy secret), otherwise requests will fail with 401')
-    args = [a for a in sys.argv[1:] if not a.startswith('--')]; force = '--force' in sys.argv
+    argv = sys.argv[1:]; opt = lambda k: argv[argv.index(k) + 1] if k in argv else None
+    if opt('--ref'): REFS = [os.path.join(ASSETS, r) if not os.path.exists(r) else r for r in opt('--ref').split(',')]
+    SUFFIX = opt('--suffix') or ''
+    args = [a for i, a in enumerate(argv) if not a.startswith('--') and (i == 0 or argv[i - 1] not in ('--ref', '--suffix'))]; force = '--force' in sys.argv
     os.makedirs(ASSETS, exist_ok=True); n = 0
     for name, prompt, kind, group in jobs():
         want = not args or name in args or group in args
         if not want: continue
         exists = os.path.exists(os.path.join(ASSETS, name + '.png'))
-        if exists and not force and name not in args: print(name, 'exists, skipping'); continue
+        if exists and not force and name not in args and not SUFFIX: print(name, 'exists, skipping'); continue
         make(name, prompt, kind); n += 1
     print(f'done, {n} image(s). Open defender/index.html?debug and check the Party screen, an arena and the map.')
