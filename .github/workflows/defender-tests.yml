@@ -1,0 +1,24 @@
+name: Defender smoke tests
+
+on:
+  pull_request:
+    paths: ['defender/**', '.github/workflows/defender-tests.yml']
+  push:
+    branches: [main]
+    paths: ['defender/**']
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: defender/tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm test

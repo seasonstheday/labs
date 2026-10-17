@@ -48,7 +48,7 @@ Two non-consumables, deterministic by design (research note: no real money into 
 
 | Product ID | What it gives |
 |---|---|
-| `com.whydad.defender.pass` | every friend joins now, and no more video offers |
+| `com.whydad.defender.pass` | no more video offers, and a gold cover for Dad's Diary (it no longer unlocks friends: buying progress is what regulators flag in children's games) |
 | `com.whydad.defender.closet` | four Legendary outfits for Dad |
 
 Create both in App Store Connect (In-App Purchases, Non-Consumable) and Play Console
@@ -60,6 +60,7 @@ validator in `src/native.js`.
 ## Store listing notes
 
 - Age rating 4+ (not the Kids Category, by decision, so ads and purchases stay possible).
+- The game is plainly made for children, so ad requests are child-directed, under the age of consent and capped at a General rating (`src/native.js`), and every ad and purchase sits behind the grown-up gate. Have whoever owns the listing confirm this against COPPA and Apple's guidelines 1.3 and 5.1.4.
 - Privacy: no account, no analytics, no data leaves the device apart from what AdMob needs to serve
   a non-personalised ad. Say so in the App Privacy questionnaire. Add Apple's privacy manifest for
   the AdMob SDK (it ships with the SDK; Xcode will tell you if it is missing).
