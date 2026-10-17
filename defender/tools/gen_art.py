@@ -41,6 +41,18 @@ PETS = {
     'echo':    'a small fuzzy brown bat with big ears, wings half open and a friendly toothy grin, hovering just above the floor',
     'inky':    'a cheerful purple octopus with big curious eyes, eight curly arms spread on the floor, one arm waving',
     'chroma':  'a small chameleon with a curly tail and big swivelling eyes, its skin shading through rainbow colours from head to tail',
+    'bumble':  'a round fuzzy bumblebee with black and yellow stripes, tiny wings and a big happy smile, hovering just above the floor',
+    'wiggles': 'a pink earthworm curled into a friendly S shape with a little smile and rosy cheeks',
+    'coco':    'a red squirrel with a big fluffy curled tail, holding an acorn in its paws',
+    'dot':     'a round red ladybird with black spots, a black head with big friendly eyes and little antennae',
+    'rosie':   'a pink flamingo standing on one leg with the other tucked up, a curved black-tipped beak and a proud little smile',
+    'gizmo':   'a raccoon with a black eye mask, a ringed bushy tail and clever little hands held together',
+    'bramble': 'a small red fox with a white-tipped bushy tail, pointy ears and a sly friendly grin, sitting',
+    'pinch':   'a small red lobster with two big claws raised, long feelers and a cheerful face',
+    'sol':     'a blue peacock with its tail fanned out wide in a circle of green and blue eye feathers, proud and happy',
+    'frost':   'a chubby polar bear cub with thick white fur, a black nose and round ears, sitting',
+    'bluey':   'a small round blue whale with a pale belly and a little water spout on top, floating just above the floor',
+    'uni':     'a small white unicorn with a golden spiral horn and a pastel rainbow mane and tail, prancing',
 }
 KID = ('a seven-year-old child with short brown hair, a blue striped t-shirt, green shorts and red sneakers, standing and '
        'smiling, holding up a white blank card in one hand, facing the viewer')

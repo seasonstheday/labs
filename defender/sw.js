@@ -1,11 +1,11 @@
 // Why, Dad? Defender: offline first. Everything the game needs is cached on first visit,
 // so it opens with no signal. Bump CACHE when the build changes.
-const CACHE = 'whydad-defender-b38';
+const CACHE = 'whydad-defender-b40';
 const CORE = ['./', './index.html', './manifest.json',
   './assets/mascot_wave.png', './assets/mascot_pointing.png', './assets/mascot_amazed.png', './assets/mascot_talking.png', './assets/webster.png',
   './assets/icon-192.png', './assets/home_bg.png', './assets/dad_face.png', './assets/icon-512.png',
   // the generated drop-ins (see ART.md)
-  './assets/pet_webster.png', './assets/pet_sparky.png', './assets/pet_hopper.png', './assets/pet_puddles.png', './assets/pet_dusty.png', './assets/pet_pip.png', './assets/pet_scuttle.png', './assets/pet_nilla.png', './assets/pet_luna.png', './assets/pet_shelly.png', './assets/pet_goldie.png', './assets/pet_prickles.png', './assets/pet_jelly.png', './assets/pet_echo.png', './assets/pet_inky.png', './assets/pet_chroma.png', './assets/kid.png',
+  './assets/pet_webster.png', './assets/pet_sparky.png', './assets/pet_hopper.png', './assets/pet_puddles.png', './assets/pet_dusty.png', './assets/pet_pip.png', './assets/pet_scuttle.png', './assets/pet_nilla.png', './assets/pet_luna.png', './assets/pet_shelly.png', './assets/pet_goldie.png', './assets/pet_prickles.png', './assets/pet_jelly.png', './assets/pet_echo.png', './assets/pet_inky.png', './assets/pet_chroma.png', './assets/pet_bumble.png', './assets/pet_wiggles.png', './assets/pet_coco.png', './assets/pet_dot.png', './assets/pet_rosie.png', './assets/pet_gizmo.png', './assets/pet_bramble.png', './assets/pet_pinch.png', './assets/pet_sol.png', './assets/pet_frost.png', './assets/pet_bluey.png', './assets/pet_uni.png', './assets/kid.png',
   './assets/arena_1.png', './assets/arena_2.png', './assets/arena_3.png', './assets/arena_4.png', './assets/arena_5.png', './assets/arena_6.png', './assets/arena_7.png', './assets/arena_8.png',
   './assets/map_1.png', './assets/map_2.png', './assets/map_3.png', './assets/map_4.png', './assets/map_5.png', './assets/map_6.png', './assets/map_7.png', './assets/map_8.png',
   // the 3D sprite sheets
