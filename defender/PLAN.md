@@ -218,6 +218,8 @@ From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item m
 
 **Build 38:** friends are earned only with pages. Webster, who teaches the first stage, is the one friend who still joins by himself. Each new stage cleared adds 3 pages to the next friend in the story (6 for a boss). Any clear has a 35% chance (55% at three stars) of 1 or 2 lucky pages for a random friend, weighted toward Common. A Power number for each character and for the team, with a note whenever a change outside a match moves it.
 
+**Build 40:** 12 more friends, 28 in all (10 Common, 9 Rare, 5 Epic, 4 Legendary): Bumble, Wiggles, Coco, Dot, Rosie, Gizmo, Bramble, Pinch, Sol, Frost, Bluey and Uni, each busting a myth about their own animal. Their moves are data played by one engine (`genAbil`: shot, burst, lob, chain, big, all) and their passives add to party-wide auras (Power, Quick, crit, guard, coins, Patience regen). Two new families, Sky High and Furry Friends, make six. Still to do: 3D models for the new friends after the Meshy reset (they use their drawings in battle meanwhile).
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.

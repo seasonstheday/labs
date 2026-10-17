@@ -459,7 +459,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 39</div>
+    <div class="build">build 40</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -1246,6 +1246,138 @@ const EVO = {
   web: ['Web Net', 'Three webs in a spread.'], zap: ['Thunderclap', 'The spark never stops jumping.'], tongue: ['Lasso', 'The tongue pulls myths back toward Hopper.'], quack: ['HONK', 'A honk that shoves everything in the ring.'],
   toss: ['Index Storm', 'Three bookmarks in a fan.'], shell: ['Conch Cannon', 'A much bigger splash.'], roll: ['Boulder', 'Big enough to send myths flying.'], hoot: ['WHO-WHO', 'The hoot goes through everything.'], dust: ['Dust Storm', 'The puff is a cloud now.'],
 };
+// ───────── the newer friends ─────────
+// Their moves are data: a kind (shot, burst, lob, chain, big, all) and a few numbers, played by genAbil.
+// Passives with an `aura` add to a party-wide stat: pow, quick, crit (percent), guard (less Patience lost), coin, regen (Patience a second).
+Object.assign(CHARS, {
+  bumble:  { name: 'Bumble',  em: '🐝', desc: 'A bumblebee. Somebody once said science says bees can\'t fly. Bumble flies just fine.', abil: ['buzzshot', 'pollen', 'hive'] },
+  wiggles: { name: 'Wiggles', em: '🪱', desc: 'An earthworm. Cut in half? No thank you. That only makes one very sad worm.', abil: ['wriggle', 'tunnel', 'compost'] },
+  coco:    { name: 'Coco',    em: '🐿️', desc: 'A red squirrel who finds nearly every nut she buries, and plants an oak with the rest.', abil: ['acorn', 'stash', 'hoard'] },
+  dot:     { name: 'Dot',     em: '🐞', desc: 'A ladybird. Her spots don\'t tell her age; she\'s had seven since the day she hatched.', abil: ['spots', 'lucky', 'luckspot'] },
+  rosie:   { name: 'Rosie',   em: '🦩', desc: 'A flamingo. Born grey and fluffy, pink from all the shrimp.', abil: ['peck', 'stomp', 'pink'] },
+  gizmo:   { name: 'Gizmo',   em: '🦝', desc: 'A raccoon. Not washing his food, just feeling it very carefully with wet paws.', abil: ['swipe', 'lid', 'nightpaws'] },
+  bramble: { name: 'Bramble', em: '🦊', desc: 'A red fox. Part of the dog family, with cat-like eyes and very sneaky paws.', abil: ['nip', 'pounce', 'sly'] },
+  pinch:   { name: 'Pinch',   em: '🦞', desc: 'A lobster. Lobsters can\'t scream; that whistle in the pot is just air.', abil: ['claw', 'slam', 'hardshell'] },
+  sol:     { name: 'Sol',     em: '🦚', desc: 'A peacock who can fly, thank you, right up into the trees at night.', abil: ['fan', 'display', 'pride'] },
+  frost:   { name: 'Frost',   em: '🐻‍❄️', desc: 'A polar bear cub. Black skin, see-through fur, and not white at all underneath.', abil: ['maul', 'floe', 'thickfur'] },
+  bluey:   { name: 'Bluey',   em: '🐋', desc: 'A blue whale calf. That spout is her breath, not water from inside.', abil: ['spout', 'whalesong', 'deep'] },
+  uni:     { name: 'Uni',     em: '🦄', desc: 'The only myth in the Big Book of Wrong who decided to help. Nobody knows how she got out.', abil: ['horn', 'wish', 'magic'] },
+});
+const GEN_ABIL = {
+  buzzshot: { name: 'Stinger Dart',  em: '🐝', desc: 'A quick buzzing dart at the nearest myth.', kind: 'shot', proj: '🐝', psize: 16, spd: 520, cd: [1.1, 1, .9, .8, .7], dmg: [9, 12, 15, 19, 24] },
+  pollen:   { name: 'Pollen Puff',   em: '🌼', desc: 'A cloud of pollen on a crowd. Myths inside slow right down.', kind: 'lob', R: 70, slow: 2, col: '#ffe58a', cd: [7, 6.5, 6, 5.5, 5], dmg: [14, 18, 23, 29, 36] },
+  hive:     { name: 'Hive Mind',     em: '🍯', desc: 'The whole party works 3% faster per rank.', passive: true, aura: 'quick', per: 3 },
+  wriggle:  { name: 'Wriggle Up',    em: '🪱', desc: 'Wiggles pops out of the ground under the nearest crowd.', kind: 'lob', R: 55, col: '#c9a27a', cd: [1.8, 1.65, 1.5, 1.35, 1.2], dmg: [13, 17, 21, 26, 33] },
+  tunnel:   { name: 'Tunnel Trip',   em: '🕳️', desc: 'Wiggles tunnels under the biggest myth in the ring and trips it up.', kind: 'big', stun: 1.2, shout: 'TRIPPED!', cd: [8, 7, 6, 5.5, 5], dmg: [30, 39, 50, 63, 80] },
+  compost:  { name: 'Compost',       em: '🌱', desc: 'Good soil, good mood: Dad gets 0.15 Patience back every second per rank.', passive: true, aura: 'regen', per: .15 },
+  acorn:    { name: 'Acorn Toss',    em: '🌰', desc: 'An acorn, thrown hard at the nearest myth.', kind: 'shot', proj: '🌰', spd: 460, knock: 25, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [12, 15, 19, 24, 30] },
+  stash:    { name: 'Nut Stash',     em: '🥜', desc: 'Coco empties the stash: a fan of nuts at the crowd.', kind: 'shot', proj: '🥜', n: [5, 5, 6, 6, 7], spread: .3, cd: [7, 6.5, 6, 5.5, 5], dmg: [12, 15, 19, 24, 30] },
+  hoard:    { name: 'Squirrel Away', em: '🪙', desc: '+4% coins per rank.', passive: true, aura: 'coin', per: 4 },
+  spots:    { name: 'Spot Shot',     em: '🔴', desc: 'Little spots fired in a spread.', kind: 'shot', proj: '🔴', psize: 12, n: [3, 3, 3, 4, 4], spread: .25, spd: 480, cd: [1.5, 1.35, 1.2, 1.1, 1], dmg: [6, 8, 10, 13, 16] },
+  lucky:    { name: 'Lucky Break',   em: '🍀', desc: 'A lucky hit on the biggest myth in the ring.', kind: 'big', shout: 'LUCKY!', cd: [7, 6.5, 6, 5.5, 5], dmg: [40, 52, 66, 84, 105] },
+  luckspot: { name: 'Lucky Spots',   em: '🐞', desc: '+2% critical hits for everyone per rank.', passive: true, aura: 'crit', per: 2 },
+  peck:     { name: 'Peck',          em: '🦩', desc: 'A sharp peck that jumps on to a second myth.', kind: 'chain', j: 1, col: '#ff8fb8', cd: [1.3, 1.2, 1.1, 1, .9], dmg: [14, 18, 23, 29, 36] },
+  stomp:    { name: 'Flamingo Stomp', em: '🦶', desc: 'Rosie stomps and sends every myth close by flying.', kind: 'burst', R: 85, knock: 110, col: '#ffb8d0', cd: [7, 6.5, 6, 5.5, 5], dmg: [22, 28, 36, 45, 57] },
+  pink:     { name: 'Pink Power',    em: '🦐', desc: 'Shrimp for breakfast: the whole party hits 3% harder per rank.', passive: true, aura: 'pow', per: 3 },
+  swipe:    { name: 'Swipe',         em: '🦝', desc: 'Quick paws that hit three myths in a row.', kind: 'chain', j: 2, col: '#c9c2ff', cd: [1.6, 1.45, 1.3, 1.15, 1], dmg: [11, 14, 18, 22, 28] },
+  lid:      { name: 'Bin Lid',       em: '🗑️', desc: 'A clanging bin lid on a crowd. Myths underneath see stars.', kind: 'lob', R: 70, stun: .9, col: '#b8b8c8', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
+  nightpaws:{ name: 'Night Paws',    em: '🌙', desc: '+2% critical hits for everyone per rank.', passive: true, aura: 'crit', per: 2 },
+  nip:      { name: 'Quick Nip',     em: '🦊', desc: 'A fast dart and nip at the nearest myth.', kind: 'shot', proj: '💨', spd: 600, cd: [1, .92, .84, .76, .68], dmg: [10, 13, 16, 20, 25] },
+  pounce:   { name: 'Pounce',        em: '🐾', desc: 'Bramble leaps on the biggest myth in the ring.', kind: 'big', stun: .6, knock: 40, shout: 'POUNCE!', cd: [7, 6.5, 6, 5.5, 5], dmg: [44, 57, 72, 90, 115] },
+  sly:      { name: 'Sly',           em: '🍂', desc: 'The whole party works 3% faster per rank.', passive: true, aura: 'quick', per: 3 },
+  claw:     { name: 'Claw Snap',     em: '🦞', desc: 'A snapping claw that goes through two myths.', kind: 'shot', proj: '🦞', rot: true, pierce: 1, spd: 400, cd: [1.5, 1.35, 1.2, 1.1, 1], dmg: [14, 18, 23, 29, 36] },
+  slam:     { name: 'Shell Slam',    em: '💥', desc: 'Pinch slams down and stuns every myth close by.', kind: 'burst', R: 80, stun: .8, knock: 60, col: '#e06a4a', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
+  hardshell:{ name: 'Hard Shell',    em: '🛡️', desc: 'Dad loses 3% less Patience per rank.', passive: true, aura: 'guard', per: 3 },
+  fan:      { name: 'Feather Fan',   em: '🪶', desc: 'Feathers in a wide fan.', kind: 'shot', proj: '🪶', rot: true, n: [5, 5, 6, 6, 7], spread: .2, spd: 500, cd: [1.6, 1.45, 1.3, 1.15, 1], dmg: [8, 10, 13, 16, 20] },
+  display:  { name: 'Grand Display', em: '🦚', desc: 'Sol fans out and every myth in the ring stops to stare.', kind: 'all', stun: 1.2, shout: 'TA-DA!', col: '#3fb0a0', cd: [11, 10, 9, 8, 7], dmg: [10, 13, 16, 20, 25] },
+  pride:    { name: 'Pride',         em: '👑', desc: 'The whole party hits 4% harder per rank.', passive: true, aura: 'pow', per: 4 },
+  maul:     { name: 'Big Paw',       em: '🐾', desc: 'A heavy swipe at everything close by.', kind: 'burst', R: 75, knock: 70, slow: 1, col: '#dff3ff', cd: [1.9, 1.75, 1.6, 1.45, 1.3], dmg: [16, 21, 27, 34, 42] },
+  floe:     { name: 'Ice Floe',      em: '🧊', desc: 'A slab of ice on a crowd. Myths underneath slip and slow.', kind: 'lob', R: 95, slow: 2.5, col: '#bfe6f5', cd: [8, 7, 6.5, 6, 5], dmg: [30, 39, 50, 63, 80] },
+  thickfur: { name: 'Thick Fur',     em: '❄️', desc: 'Dad loses 4% less Patience per rank.', passive: true, aura: 'guard', per: 4 },
+  spout:    { name: 'Spout',         em: '🐋', desc: 'A huge spout that comes down on a crowd and washes it back.', kind: 'lob', R: 85, knock: 90, col: '#8fc7f0', cd: [2, 1.85, 1.7, 1.55, 1.4], dmg: [20, 26, 33, 41, 52] },
+  whalesong:{ name: 'Whale Song',    em: '🎶', desc: 'A deep song: every myth in the ring slows right down, and Dad gets Patience back.', kind: 'all', slow: 2.5, heal: [6, 8, 10, 12, 15], shout: 'WHOOOOO!', col: '#4fa3e0', cd: [12, 11, 10, 9, 8], dmg: [12, 15, 19, 24, 30] },
+  deep:     { name: 'Deep Blue',     em: '🌊', desc: 'The whole party hits 5% harder per rank.', passive: true, aura: 'pow', per: 5 },
+  horn:     { name: 'Horn Beam',     em: '🦄', desc: 'A sparkling beam from the horn that goes through four myths.', kind: 'shot', proj: '✨', pierce: 3, spd: 700, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [18, 23, 29, 36, 45] },
+  wish:     { name: 'Make a Wish',   em: '🌠', desc: 'Every myth in the ring takes a shower of wishes.', kind: 'all', shout: 'WISH!', col: '#ffd76a', cd: [10, 9, 8, 7, 6], dmg: [36, 46, 58, 73, 92] },
+  magic:    { name: 'Real Magic',    em: '💫', desc: 'The whole party works 4% faster per rank.', passive: true, aura: 'quick', per: 4 },
+};
+for (const a in GEN_ABIL) { if (ABIL[a]) throw new Error('ability clash: ' + a); ABIL[a] = GEN_ABIL[a]; const D = GEN_ABIL[a];
+  SKILL[a] = D.passive ? ['Stronger', `+${D.per / 2}${D.aura === 'regen' ? ' Patience a second' : '%'} more per rank.`] : ['Sharper', '+8% damage per rank.']; }
+Object.assign(EVO, { buzzshot: ['Swarm Darts', 'Two more darts every time.'], wriggle: ['Earthquake', 'A much bigger patch of ground.'], acorn: ['Pine Cone Volley', 'Two more cones every throw.'],
+  spots: ['Polka Storm', 'Two more spots.'], peck: ['Peck Peck Peck', 'Jumps on to two more myths.'], swipe: ['Grab Bag', 'Jumps on to two more myths.'], nip: ['Fox Fire', 'Two more nips at once.'],
+  claw: ['Crusher', 'Goes through one more, and two more claws.'], fan: ['Peacock Storm', 'Two more feathers.'], maul: ['Avalanche', 'A much wider swipe.'], spout: ['Tsunami', 'A much bigger wave.'], horn: ['Rainbow Beam', 'Two more beams.'] });
+Object.assign(CLASS, {
+  bumble:  { name: 'Buzzer',    em: '🐝', role: 'Fast darts and pollen that slows a crowd.', strong: ['flyer', 'swarm'], weak: ['hardcover'] },
+  wiggles: { name: 'Digger',    em: '🪱', role: 'Pops up under crowds and trips the big ones.', strong: ['tank', 'dasher'], weak: ['flyer'] },
+  coco:    { name: 'Thrower',   em: '🌰', role: 'Acorns at range, and a stash for emergencies.', strong: ['healer', 'normal'], weak: ['tank'] },
+  dot:     { name: 'Lucky',     em: '🍀', role: 'Spreads spots and lands lucky hits.', strong: ['splitter', 'swarm'], weak: ['hardcover'] },
+  rosie:   { name: 'Dancer',    em: '🦩', role: 'Pecks that jump, stomps that scatter.', strong: ['gossip', 'splitter'], weak: ['flyer'] },
+  gizmo:   { name: 'Scavenger', em: '🦝', role: 'Quick paws on three at once. Bin lids that stun.', strong: ['healer', 'rumour'], weak: ['tank'] },
+  bramble: { name: 'Hunter',    em: '🦊', role: 'Fast nips and a pounce on the biggest myth.', strong: ['fast', 'dasher'], weak: ['swarm'] },
+  pinch:   { name: 'Bruiser',   em: '🦞', role: 'Claws that go through, slams that stun.', strong: ['hardcover', 'tank'], weak: ['flyer'] },
+  sol:     { name: 'Showoff',   em: '🦚', role: 'Feather fans, and a display that stops everyone.', strong: ['swarm', 'gossip'], weak: ['tank'] },
+  frost:   { name: 'Heavy',     em: '🐻‍❄️', role: 'Big paws up close, ice on a crowd.', strong: ['tank', 'dasher'], weak: ['rumour'] },
+  bluey:   { name: 'Giant',     em: '🐋', role: 'Spouts that wash crowds back. Songs that calm everything.', strong: ['swarm', 'tank'], weak: [] },
+  uni:     { name: 'Legend',    em: '🦄', role: 'The one myth on your side.', strong: ['rumour', 'hardcover'], weak: [] },
+});
+// each new friend's weapon line: a base, a heavy one and a quick one
+const wl = (line, b, h, q) => ({ line, v: { [b[0]]: { em: b[1], name: b[2], desc: b[3], pow: 1, rate: 1, fx: b[4], base: true }, [h[0]]: { em: h[1], name: h[2], desc: h[3], pow: 1.3, rate: .85, fx: h[4], gfx: h[5] }, [q[0]]: { em: q[1], name: q[2], desc: q[3], pow: .85, rate: 1.2, fx: q[4], gfx: q[5] } } });
+Object.assign(CWEAP, {
+  bumble:  wl('Stingers', ['honey', '🍯', 'Honey Stinger', 'A sweet little sting.', 'Buzz'], ['sharp', '📌', 'Sharp Stinger', 'Slower, but it really stings.', '+crit', 'crit'], ['sticky', '🌼', 'Pollen Stinger', 'Quick darts covered in pollen.', 'Slow', 'slow']),
+  wiggles: wl('Burrows', ['dirt', '🟫', 'Garden Dirt', 'Soft and easy to dig.', 'Wiggly'], ['clay', '🧱', 'Clay Burrow', 'Hard ground: myths fall right over.', 'Tiny stun', 'stun'], ['sand', '⏳', 'Sandy Burrow', 'Quick digging that leaves myths slipping.', 'Slow', 'slow']),
+  coco:    wl('Acorns', ['oak', '🌰', 'Oak Acorn', 'A good solid throw.', 'Bonk'], ['cone', '🌲', 'Pine Cone', 'Heavy and spiky.', 'Knockback', 'knock'], ['hazel', '🥜', 'Hazelnut', 'Small, fast and right on target.', '+crit', 'crit']),
+  dot:     wl('Spots', ['red', '🔴', 'Red Spots', 'The classic.', 'Spotty'], ['gold', '🟡', 'Gold Spots', 'Rare and very lucky.', '+crit', 'crit'], ['black', '⚫', 'Black Spots', 'Quick little spots that slow.', 'Slow', 'slow']),
+  rosie:   wl('Plumes', ['pink', '🩷', 'Pink Plume', 'Pretty and sharp.', 'Peck'], ['hot', '🔥', 'Hot Pink Plume', 'Pecks that push myths back.', 'Knockback', 'knock'], ['soft', '🪶', 'Soft Plume', 'Quick pecks that slow.', 'Slow', 'slow']),
+  gizmo:   wl('Paws', ['grabby', '🦝', 'Grabby Paws', 'Good at finding things.', 'Grab'], ['mitts', '🧤', 'Bin Mitts', 'Heavy paws that stun.', 'Tiny stun', 'stun'], ['sticky', '🍯', 'Sticky Paws', 'Quick, sticky, slowing.', 'Slow', 'slow']),
+  bramble: wl('Tails', ['brush', '🦊', 'Brush Tail', 'Fluffy and fast.', 'Nip'], ['flame', '🔥', 'Flame Tail', 'Fox fire: harder bites.', '+crit', 'crit'], ['swift', '💨', 'Swift Tail', 'Even quicker, and myths slow down.', 'Slow', 'slow']),
+  pinch:   wl('Claws', ['red', '🦞', 'Red Claws', 'Snap snap.', 'Snap'], ['crusher', '🪨', 'Crusher Claw', 'A slow, heavy pinch.', 'Knockback', 'knock'], ['nipper', '✂️', 'Nipper Claw', 'Quick little nips.', '+crit', 'crit']),
+  sol:     wl('Fans', ['blue', '🦚', 'Blue Fan', 'Showy and sharp.', 'Flutter'], ['golden', '👑', 'Golden Fan', 'The best feathers, the hardest hits.', '+crit', 'crit'], ['emerald', '💚', 'Emerald Fan', 'Quick flutters that dazzle.', 'Tiny stun', 'stun']),
+  frost:   wl('Paws', ['snow', '❄️', 'Snow Paws', 'Big and soft.', 'Swipe'], ['ice', '🧊', 'Ice Claws', 'Slow, heavy, sends them flying.', 'Knockback', 'knock'], ['fluffy', '☁️', 'Fluffy Paws', 'Quicker swipes that chill.', 'Slow', 'slow']),
+  bluey:   wl('Spouts', ['misty', '💨', 'Misty Spout', 'A gentle shower.', 'Splash'], ['geyser', '⛲', 'Geyser', 'A huge blast that sends myths back.', 'Knockback', 'knock'], ['bubbly', '🫧', 'Bubbly Spout', 'Quick and slippery.', 'Slow', 'slow']),
+  uni:     wl('Horns', ['pearl', '🦄', 'Pearl Horn', 'Softly sparkling.', 'Sparkle'], ['golden', '🌟', 'Golden Horn', 'The brightest beam.', '+crit', 'crit'], ['crystal', '💎', 'Crystal Horn', 'Quick beams that dazzle.', 'Tiny stun', 'stun']),
+});
+Object.assign(CTIER, { bumble: 0, wiggles: 0, coco: 0, dot: 0, rosie: 1, gizmo: 1, bramble: 1, pinch: 1, sol: 2, frost: 2, bluey: 3, uni: 3 });
+Object.assign(CELEM, { bumble: 'spark', wiggles: 'earth', coco: 'wind', dot: 'moon', rosie: 'water', gizmo: 'moon', bramble: 'earth', pinch: 'water', sol: 'wind', frost: 'wind', bluey: 'water', uni: 'spark' });
+Object.assign(HOME, { bumble: 4, coco: 10, wiggles: 15, dot: 20, rosie: 24, gizmo: 28, pinch: 33, bramble: 35, sol: 38, frost: 39 });
+// party-wide stats from the newer friends' passives
+function aura(st) { if (!G) return 0; let v = 0; for (const m of G.party) for (const a of CHARS[m.id].abil) { const D = ABIL[a]; if (D.aura === st && m.ranks[a]) v += m.ranks[a] * D.per + sk(m.id, a) * D.per / 2; } return v; }
+// play one of the newer friends' moves; false when there's nothing to aim at
+function genAbil(m, a, D, L, mul, tgt) {
+  const sb = 1 + sk(m.id, a) * .08, ev = evolved(m, a), dmg = (D.dmg ? D.dmg[L] : 0) * mul * sb;
+  const after = o => { if (D.slow) o.slow = Math.max(o.slow, D.slow); if (D.stun) o.stun = Math.max(o.stun, o.kind === 'boss' ? D.stun * .4 : D.stun); };
+  const ring = () => G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e));
+  switch (D.kind) {
+    case 'shot': { if (!tgt) return false;
+      windup(m, a, tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt, n = (D.n ? D.n[L] : 1) + (ev ? 2 : 0), a0 = Math.atan2(t.y - hp.y, t.x - hp.x);
+        for (let i = 0; i < n; i++) { const a2 = a0 + (i - (n - 1) / 2) * (D.spread || .2); G.shots.push({ k: 'gen', x: hp.x, y: hp.y, vx: Math.cos(a2) * (D.spd || 420), vy: Math.sin(a2) * (D.spd || 420), dmg, left: (D.pierce || 0) + (ev && D.pierce ? 1 : 0), life: 1.3, m, D, hits: new Set(), after }); } });
+      return true; }
+    case 'burst': { const R = (D.R || 70) * (ev ? 1.3 : 1); if (!G.enemies.some(e => e.hp > 0 && dist(e, m) < R + e.r)) return false;
+      windup(m, a, tgt, () => { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < R + e.r) { hurt(e, dmg, D.knock || 30, m); after(e); } G.fx.push({ k: 'ring', x: m.x, y: m.y, R: R + 10, t: 0, life: .4, col: D.col || '#fff' }); });
+      return true; }
+    case 'lob': { if (!tgt) return false;
+      windup(m, a, tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const R = (D.R || 70) * (ev ? 1.3 : 1), at = { x: t.x, y: t.y };
+        G.fx.push({ k: 'splash', x: at.x, y: at.y + 4, R, t: 0, life: .5, col: D.col || '#fff' }); text(at.x, at.y - 34, D.em, '#fff', 22, .6);
+        for (const e of G.enemies) if (e.hp > 0 && dist(e, at) < R + e.r) { hurt(e, dmg, D.knock || 20, at); after(e); } });
+      return true; }
+    case 'chain': { if (!tgt) return false;
+      windup(m, a, tgt, () => { let from = handPos(m), cur = tgt.hp > 0 ? tgt : nearest(m); const hit = new Set();
+        for (let k = 0; cur && k <= (D.j || 1) + (ev ? 2 : 0); k++) { hit.add(cur); G.fx.push({ k: 'bolt', x1: from.x, y1: from.y, x2: cur.x, y2: cur.y, t: 0, life: .25 }); hurt(cur, dmg * (k ? .8 : 1), 20, m); after(cur); from = cur;
+          cur = G.enemies.filter(e => e.hp > 0 && !hit.has(e) && dist(e, from) < 130).sort((x, y) => dist(x, from) - dist(y, from))[0]; } });
+      return true; }
+    case 'big': { const list = ring(); if (!list.length) return false; const t = list.sort((x, y) => y.hp - x.hp)[0];
+      windup(m, a, t, () => { if (t.hp <= 0) return; hurt(t, dmg * (ev ? 1.3 : 1), D.knock || 50, m); after(t); G.fx.push({ k: 'ring', x: t.x, y: t.y, R: t.r * 2.6, t: 0, life: .35, col: D.col || '#ffd76a' }); text(t.x, t.y - t.r - 28, D.shout || 'BAM!', '#ffd76a', 22, .9); });
+      return true; }
+    case 'all': { const list = ring(); if (!list.length) return false;
+      windup(m, a, list[0], () => { for (const e of ring()) { if (dmg) hurt(e, dmg, D.knock || 0, G.dad); after(e); } if (D.heal) G.hp = Math.min(G.maxhp, G.hp + D.heal[L]);
+        G.fx.push({ k: 'ring', x: G.dad.x, y: G.dad.y, R: G.radius, t: 0, life: .55, col: D.col || '#fff' }); text(G.dad.x, G.dad.y - 112, D.shout || D.name.toUpperCase() + '!', '#ffd76a', 22, 1); });
+      return true; }
+  }
+  return false;
+}
+function genShot(s, dt) {
+  s.x += s.vx * dt; s.y += s.vy * dt; if (s.t > s.life) { s.dead = true; return; }
+  for (const e of G.enemies) { if (e.hp <= 0 || s.hits.has(e) || dist(e, s) > e.r + 8) continue; s.hits.add(e); hurt(e, s.dmg, s.D.knock || 15, s.m); s.after(e); if (s.left-- <= 0) { s.dead = true; return; } }
+}
 const evolved = (m, a) => m.ranks[a] >= MAX_RANK && !!EVO[a === 'weapon' ? save.weapon : a];
 // pairs that work well together, shown on the party screen
 const SYNERGY = [
@@ -1462,10 +1594,12 @@ function famInfo(k) { const F = FAMILY[k]; toastMsg(`${F.em} ${F.n} (${F.ids.map
 // families: two of a kind in the party give everyone a little boost, three of a kind add a team move.
 // Chroma blends in with whichever family is closest to complete. A friend can belong to two families.
 const FAMILY = {
-  bugs:  { n: 'Bug Club',    em: '🐛', ids: ['webster', 'sparky', 'dusty', 'scuttle', 'luna'], two: { quick: 8 }, twoT: '+8% Quick for everyone', mv: { n: 'Buzz Swarm', em: '🐝', every: 10, d: 'Every 10 seconds a swarm sweeps the ring, nibbling and slowing every myth.' } },
-  pond:  { n: 'Pond Pals',   em: '💦', ids: ['hopper', 'puddles', 'goldie', 'jelly', 'shelly'], two: { pat: 15 }, twoT: '+15 Patience', mv: { n: 'Big Splash', em: '🌊', every: 12, d: 'Every 12 seconds a wave washes the myths near Dad back, and Dad gets 5 Patience back.' } },
-  night: { n: 'Night Shift', em: '🌙', ids: ['nilla', 'echo', 'luna', 'inky'], two: { crit: 5 }, twoT: '+5% critical hits', mv: { n: 'Lights Out', em: '💤', every: 14, d: 'Every 14 seconds the lights go out and every myth in the ring nods off for a second.' } },
-  shell: { n: 'Shell Squad', em: '🛡️', ids: ['shelly', 'pip', 'prickles', 'scuttle'], two: { guard: 10 }, twoT: 'Dad loses 10% less Patience', mv: { n: 'Spiky Hug', em: '🦔', every: 0, d: 'Any myth that bumps into Dad gets a prickly hit and bounces away.' } },
+  bugs:  { n: 'Bug Club',    em: '🐛', ids: ['webster', 'sparky', 'dusty', 'scuttle', 'luna', 'bumble', 'wiggles', 'dot'], two: { quick: 8 }, twoT: '+8% Quick for everyone', mv: { n: 'Buzz Swarm', em: '🐝', every: 10, d: 'Every 10 seconds a swarm sweeps the ring, nibbling and slowing every myth.' } },
+  pond:  { n: 'Pond Pals',   em: '💦', ids: ['hopper', 'puddles', 'goldie', 'jelly', 'shelly', 'rosie', 'bluey'], two: { pat: 15 }, twoT: '+15 Patience', mv: { n: 'Big Splash', em: '🌊', every: 12, d: 'Every 12 seconds a wave washes the myths near Dad back, and Dad gets 5 Patience back.' } },
+  night: { n: 'Night Shift', em: '🌙', ids: ['nilla', 'echo', 'luna', 'inky', 'gizmo', 'bramble'], two: { crit: 5 }, twoT: '+5% critical hits', mv: { n: 'Lights Out', em: '💤', every: 14, d: 'Every 14 seconds the lights go out and every myth in the ring nods off for a second.' } },
+  shell: { n: 'Shell Squad', em: '🛡️', ids: ['shelly', 'pip', 'prickles', 'scuttle', 'pinch'], two: { guard: 10 }, twoT: 'Dad loses 10% less Patience', mv: { n: 'Spiky Hug', em: '🦔', every: 0, d: 'Any myth that bumps into Dad gets a prickly hit and bounces away.' } },
+  sky:   { n: 'Sky High',    em: '🪶', ids: ['puddles', 'nilla', 'echo', 'bumble', 'rosie', 'sol'], two: { ring: 15 }, twoT: 'Dad\'s ring 15 bigger', mv: { n: 'Feather Rain', em: '🪶', every: 11, d: 'Every 11 seconds feathers rain down on eight myths in the ring.' } },
+  fur:   { n: 'Furry Friends', em: '🐾', ids: ['coco', 'gizmo', 'bramble', 'frost', 'uni'], two: { pow: 6 }, twoT: '+6% Power for everyone', mv: { n: 'Dogpile', em: '🐾', every: 12, d: 'Every 12 seconds the whole gang piles on the biggest myth in the ring.' } },
 };
 const famOf = id => Object.keys(FAMILY).filter(k => FAMILY[k].ids.includes(id));
 // how many of each family a party has: { bugs: 2, ... }
@@ -1486,12 +1620,14 @@ function famMoves(dt) {
     text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3);
     if (k === 'bugs') { G.fx.push({ k: 'buzz', x: dad.x, y: dad.y, R: G.radius, t: 0, life: 1.1 }); for (const e of inR) { e.slow = Math.max(e.slow, 1.5); hurt(e, base, 0, src); } }
     else if (k === 'pond') { G.fx.push({ k: 'splash', x: dad.x, y: dad.y + 10, R: 150, t: 0, life: .6, col: '#8fc7f0' }); G.fx.push({ k: 'ring', x: dad.x, y: dad.y, R: 190, t: 0, life: .5, col: '#bfe6f5' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, dad) < 190) hurt(e, base * .6, 160, src); G.hp = Math.min(G.maxhp, G.hp + 5); }
+    else if (k === 'sky') { for (const e of inR.sort(() => Math.random() - .5).slice(0, 8)) { hurt(e, base * .8, 0, src); for (let q = 0; q < fxN(3); q++) G.fx.push({ k: 'paper', x: e.x + rnd(-10, 10), y: e.y - 60, vx: rnd(-40, 40), vy: rnd(40, 120), rot: rnd(0, 6), vr: rnd(-6, 6), t: 0, life: .7 }); } }
+    else if (k === 'fur') { const t = inR.sort((x, y) => y.hp - x.hp)[0]; if (t) { hurt(t, base * 4, 80, src); t.stun = Math.max(t.stun, t.kind === 'boss' ? .5 : 1.2); G.fx.push({ k: 'ring', x: t.x, y: t.y, R: t.r * 3, t: 0, life: .4, col: '#ffd76a' }); text(t.x, t.y - t.r - 30, 'DOGPILE!', '#ffd76a', 22, 1); } }
     else if (k === 'night') { G.fx.push({ k: 'dim', t: 0, life: 1.1 }); for (const e of inR) { if (e.kind !== 'boss') e.stun = Math.max(e.stun, 1); else e.stun = Math.max(e.stun, .4); } for (const e of inR.slice(0, 4)) text(e.x, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.1); }
   }
 }
 // a friend's pair-up is live once they have the level for it and both halves are coming
 const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
-const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
+const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring + famStat('ring');
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!save.wv2) { // one weapon each (build 32)
   save.wv2 = true; const d = chr('dad'); let coins = 0, held = save.weapon;
@@ -1595,8 +1731,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + (G.famQuick || 0) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => (1 + (aura('pow') + (G && G.famPow || 0)) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick')) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -1613,7 +1749,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + famStat('crit') / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (famStat('crit') + aura('crit')) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -1674,6 +1810,7 @@ function windup(m, kind, tgt, release) {
 }
 function useAbility(m, a) {
   const rk = m.ranks[a], L = rk - 1, D = ABIL[a], mul = dmgMul(m), tgt = nearest(m);
+  if (D && D.kind) return genAbil(m, a, D, L, mul, tgt);
   switch (a) {
     case 'weapon': return fireWeapon(m, tgt);
     case 'joke': {
@@ -1835,6 +1972,7 @@ function updateShots(dt) {
   for (const s of G.shots) {
     s.t = (s.t || 0) + dt;
     switch (s.k) {
+      case 'gen': genShot(s, dt); break;
       case 'yoyo': {
         const ease = s.out ? .35 + .65 * (1 - s.d / s.max) : 1; s.d += (s.out ? 460 * ease : -520) * dt; s.spin += dt * (14 + ease * 10);
         if (s.d >= s.max) s.out = false;
@@ -1994,9 +2132,10 @@ function update(dt) {
     else { gameOver(); return; }
   }
   if (!G.room) famMoves(dt);
+  { const rg = aura('regen'); if (rg && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + rg * dt); }
   if (G.boss && !G.room && !G.boss.noted && G.boss.hp > 0 && G.boss.hp < G.boss.maxhp * .5) { G.boss.noted = true; dropNote(G.boss); }
   // orbs
-  const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
+  const mag = 70, coinMul = 1 + aura('coin') / 100 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
   for (const o of G.orbs) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
@@ -2333,7 +2472,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
     drawSheet(c, S3, 'idle', phi, t, 0, bob * .3, (PET_H[id] || 48) * 1.1, { props: opts.gear ? petProps(id, opts.held) : null });
     c.restore(); c.restore(); return;
   }
-  if (ready(png)) { const h = PET_H[id] || 48, w = h * png.naturalWidth / png.naturalHeight; c.drawImage(png, -w / 2, -h + bob * .3, w, h); }
+  if (ready(png)) { const h = PET_H[id] || 48, w = h * png.naturalWidth / png.naturalHeight; c.drawImage(unplate(png), -w / 2, -h + bob * .3, w, h); }
   else switch (id) {
     case 'webster': { // the real spider from episode 20 (sprite faces left)
       const img = IMG.webster; if (ready(img)) { const h = 44 + bob * .3, w = h * img.naturalWidth / img.naturalHeight; c.save(); c.scale(-1, 1); c.drawImage(img, -w / 2, -h, w, h); c.restore(); }
@@ -2428,7 +2567,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   if (opts.gear) drawPetGear(c, id, opts.held);
   c.restore();
 }
-const PET_H = { webster: 44, sparky: 46, hopper: 40, puddles: 46, dusty: 44, pip: 40, scuttle: 36, nilla: 44, luna: 50, shelly: 40, goldie: 42, prickles: 38, jelly: 50, echo: 46, inky: 50, chroma: 42 };
+const PET_H = { bumble: 40, wiggles: 34, coco: 44, dot: 34, rosie: 58, gizmo: 46, bramble: 46, pinch: 38, sol: 58, frost: 50, bluey: 50, uni: 56, webster: 44, sparky: 46, hopper: 40, puddles: 46, dusty: 44, pip: 40, scuttle: 36, nilla: 44, luna: 50, shelly: 40, goldie: 42, prickles: 38, jelly: 50, echo: 46, inky: 50, chroma: 42 };
 // where things sit on each friend: head centre, head radius, chest centre, front foot, hand (the wind-up spot), in sprite units facing right
 const WEAR_PET = {
   webster: { head: [8, -28], hr: 9, chest: [-4, -16], foot: [12, -2], hand: [16, -22] }, sparky: { head: [13, -27], hr: 7, chest: [2, -26], foot: [8, -14], hand: [20, -22] },
@@ -2709,6 +2848,7 @@ function drawShot(s) {
   ctx.save(); ctx.translate(s.x, s.y);
   const em = f => { ctx.font = `${f}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
   switch (s.k) {
+    case 'gen': { if (s.D.rot) ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.globalAlpha = .35; em(s.D.psize || 20); ctx.fillText(s.D.proj, -s.vx * .025, -s.vy * .025); ctx.globalAlpha = 1; ctx.fillText(s.D.proj, 0, 0); break; }
     case 'yoyo': { ctx.strokeStyle = 'rgba(255,246,194,.7)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s.ox - s.x, s.oy - s.y); ctx.stroke(); ctx.rotate(s.spin); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 7); ctx.stroke(); ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 3; ctx.stroke(); break; }
     case 'plane': { ctx.rotate(Math.atan2(s.vy, s.vx)); const g = ctx.createLinearGradient(-30, 0, 10, 0); g.addColorStop(0, 'rgba(255,246,194,0)'); g.addColorStop(1, '#fff6c2'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-30, -4); ctx.lineTo(10, 0); ctx.lineTo(-30, 4); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.arc(8, 0, 4, 0, 7); ctx.fill(); break; }
     case 'web': { ctx.rotate(s.t * 6); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI; ctx.beginPath(); ctx.moveTo(-Math.cos(a) * 11, -Math.sin(a) * 11); ctx.lineTo(Math.cos(a) * 11, Math.sin(a) * 11); ctx.stroke(); } ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(0, 0, 6, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.stroke(); break; }
@@ -2880,7 +3020,7 @@ function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#h
   if (on) { navDots(); updateQuickPlay(); } }
 function startGame(stage) {
   newRun(stage);
-  G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
+  G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famPow = famStat('pow'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
   if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
   mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
@@ -2913,7 +3053,7 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - (G.famGuard || 0) / 100);
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard')) / 100);
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
 }
@@ -3128,7 +3268,7 @@ function buildParty() {
       const EL = ELEM[CELEM[id]];
       html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
       if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
-    const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
+    const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b>${K.weak.length ? ` · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s>` : ''}</div>`;
     if (c.own) {
       const lv = charLevel(c.xp || 0);
       html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
