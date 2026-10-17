@@ -183,6 +183,36 @@ Keep 🪙 coins and 💎 gems. **Library Cards become a page currency only**: th
 2. **Can pages ever be bought?** I recommend never, so paying only ever buys the Pass and cosmetics. That's the cleanest line for a kids' game.
 3. **What happens to old saves.** Owned friends stay owned. Leftover Library Cards turn into Blank pages at one card to three pages. Any item above the new curve stays as it is.
 
+## Tuning pass (17 October 2026, build 31)
+
+What shipped first was far too generous. A model of a free player who plays every day, clears three new stages a day, finishes the daily and weekly missions and spends half their gems on Library Cards (`defender/tools/page_model.py`, 40 runs each) showed both Legendaries joining by day 10, before the story was over, and a favourite friend at ★5 in two weeks.
+
+**What changed**
+
+| | Before | After |
+|---|---|---|
+| Pages to join (Common / Rare / Epic / Legendary) | 10 / 25 / 40 / 80 | 10 / 30 / 60 / 120 |
+| Pages per star (★2 / ★3 / ★4 / ★5) | 10 / 20 / 30 / 40 | 6 / 10 / 14 / 20 |
+| Library Card from a first clear | every stage | boss stages only |
+| A friend's pages on a Library Card | 5, or 8 for Epic and up | 4, or 6 for Epic and up |
+| Who first-clear pages go to | story friends, then anyone | story friends and each chapter's new friend; never Legendaries |
+
+New friends now take turns in the story order: once the story friends ahead of them have joined, first clears fill Shelly's and Goldie's books around the end of the Backyard and the Pond, Prickles's in the Library, Jelly's around the Ocean and Echo's in the Jungle. Legendaries come only from cards, gifts, missions and Blank pages.
+
+**Result (median of 40 runs)**
+
+| | Before | After | Target |
+|---|---|---|---|
+| Shelly, Goldie (Common) | day 2 | day 2 | during the Pond |
+| Prickles, Jelly (Rare) | days 4–5 | days 4–5 | week 1 |
+| Echo (Epic) | day 7 | day 10 | week 2 |
+| Inky (Legendary) | day 8 | day 13 | weeks 2–3 |
+| Chroma (Legendary) | day 10 | day 23 | weeks 3–5 |
+| Favourite friend at ★5 | day 13 | day 31 | about a month |
+| Stars at day 90 (of 80) | 52 | 57 | a long tail |
+
+Stars got cheaper on purpose. A full ★1 to ★5 is now 50 pages instead of 100, because they are the long-term reason to come back once every friend has joined. Star power stays +4% Power and Quick per star.
+
 ## Sources
 
 - Archero fusion: [AllClash fusing guide](https://www.allclash.com/archero-fusing-guide-how-to-get-legendary-equipment-fast/), [LevelWinner](https://www.levelwinner.com/?p=25094), [AllClash hero evolution](https://www.allclash.com/archero-hero-evolution-guide-strategy-total-needed-to-max/)

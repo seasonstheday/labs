@@ -371,7 +371,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 30</div>
+    <div class="build">build 31</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -1024,9 +1024,9 @@ const ABIL = {
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // friends come in tiers: rarer ones take more pages to join and hit a little harder. Pages also raise stars once a
 // friend has joined (★1 to ★5, +4% Power and Quick each). Pages are earned in play, never sold.
-const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 25, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 40, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 80, mul: 1.2 }];
+const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 30, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 60, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 120, mul: 1.2 }];
 const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2, shelly: 0, goldie: 0, prickles: 1, jelly: 1, echo: 2, inky: 3, chroma: 3 };
-const STAR_COST = [0, 10, 20, 30, 40], STAR_MAX = 5; // pages to go from ★n to ★n+1, by current star
+const STAR_COST = [0, 6, 10, 14, 20], STAR_MAX = 5; // pages to go from ★n to ★n+1, by current star
 const tierOf = id => TIER[CTIER[id] || 0];
 const pagesOf = id => (save.pages || {})[id] || 0;
 const fstars = id => { const c = chr(id); return c.own ? (c.star || 1) : 0; };
@@ -1071,7 +1071,9 @@ function react(e, key) {
   else if (key === 'earth+moon') { e.stun = Math.max(e.stun, 1.4); text(e.x + 14, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.2); hurt(e, base * .6, 0, { x: e.x, y: e.y, id: 'react' }); }
   else if (key === 'water+moon') { G.fx.push({ k: 'splash', x: e.x, y: e.y + 6, R: 70, t: 0, life: .45, col: '#8fc7f0' }); for (const o of [e, ...near(80)]) { o.slow = Math.max(o.slow, 1.2); hurt(o, base * .5, 120, { x: G.dad.x, y: G.dad.y, id: 'react' }); } }
 }
-const nextFriend = () => Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CHARS[a].freeAfter ?? 99) - (CHARS[b].freeAfter ?? 99))[0];
+const HOME = { shelly: 6, goldie: 8, prickles: 14, jelly: 18, echo: 30 }; // the stage after which first clears start filling their book
+const storyKey = id => CHARS[id].freeAfter ?? HOME[id] ?? 99;
+const nextFriend = (story = false) => Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own && !(story && storyKey(id) === 99)).sort((a, b) => storyKey(a) - storyKey(b))[0];
 // the permanent skill tree: abilities unlock with a friend's level, then each has three coin upgrades
 const UNLOCK_AT = [1, 2, 4], SYN_AT = 6, SK_MAX = 3;
 const SKILL = {
@@ -1330,7 +1332,7 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1)), dur = (10 + w * 1.2) * .8;
+    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .8; // the Backyard is where everyone learns, so its waves are a little smaller
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -1671,9 +1673,9 @@ function update(dt) {
     if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.stage ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
     // its own move: a tell, then the move; a stun during the tell is a 'Nope!'
     const MV = BOSSMOVE[b.id]; if (MV && !b.rough) {
-      if (b.moveT == null) b.moveT = 7;
+      if (b.moveT == null) b.moveT = G.S.w === 0 ? 10 : 7;
       if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 15, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
-      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every; MV.go(b); } }
+      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1); MV.go(b); } }
     }
     if (b.sliding > 0) { b.sliding -= dt; b.x += b.sx * dt; b.y += b.sy * dt; b.walk += dt * 10; G.fx.push({ k: 'puff', x: b.x - b.sx * .05, y: b.y + b.r * .8, vx: rnd(-20, 20), vy: -20, t: 0, life: .4, col: '#eef6ff', r: 7 });
       if (dist(b, G.dad) < b.r + 40 && !b.slid.has('dad')) { b.slid.add('dad'); b.bonk = 1.6; G.hp -= patHit(b.dmg); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'WHOOSH', '#cb382e', 24, .9); }
@@ -2630,14 +2632,14 @@ function stageClear() {
   const hardFirst = save.diff === 'hard' && prev === 0;
   missionAdd('clear'); if (stars === 3) missionAdd('star3'); if (G.bossDown) missionAdd('boss'); if (G.coins) missionAdd('coin', G.coins);
   const factGems = payFacts();
-  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first ? 1 : 0) + (hardFirst ? 1 : 0) });
+  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
   if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
   let joined = Object.keys(CHARS).find(id => CHARS[id].freeAfter === G.stage && !chr(id).own), pageNote = '';
   if (joined) addPages(joined, Math.max(0, tierOf(joined).pages - pagesOf(joined))); // the story never makes a friend wait longer than it used to
-  else if (first) { const nf = nextFriend(); if (nf) { const n = 2 + (G.S.boss ? 2 : 0); if (addPages(nf, n)) joined = nf; else pageNote = `📄 +${n} pages for ${CHARS[nf].em} ${CHARS[nf].name} (${pagesOf(nf)}/${tierOf(nf).pages}).`; } }
+  else if (first) { const nf = nextFriend(true); if (nf) { const n = 2 + (G.S.boss ? 2 : 0); if (addPages(nf, n)) joined = nf; else pageNote = `📄 +${n} pages for ${CHARS[nf].em} ${CHARS[nf].name} (${pagesOf(nf)}/${tierOf(nf).pages}).`; } }
   $('#joined').hidden = !joined && !pageNote; if (joined) $('#joined').textContent = `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!`; else if (pageNote) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
@@ -2839,7 +2841,7 @@ function buildParty() {
       if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
       else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — change it in the Garage</span></div>`; }
       html += '</div>';
-    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins for sure when you clear ${STAGES[C.freeAfter].name}. Pages from first clears, Library Cards, gifts and Blank pages bring them sooner.` : 'Pages come from Library Cards, gifts and missions.'}</span></div></div>`;
+    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins for sure when you clear ${STAGES[C.freeAfter].name}. Pages from first clears, Library Cards, gifts and Blank pages bring them sooner.` : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
   box.querySelectorAll('[data-sk] button').forEach(b => b.onclick = () => { const [id, a] = b.parentElement.dataset.sk.split(':'), c = chr(id), r = sk(id, a), cost = skCost(r); if (r >= SK_MAX || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c.sk[a] = r + 1; persist(); buildParty(); });
@@ -2955,7 +2957,7 @@ function openDraw() { updateDraw(); $('#drawm').hidden = false; }
 function makeShelf() {
   const locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own), growing = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && fstars(id) < STAR_MAX), sh = [];
   const f = locked.length ? (Math.random() < .6 && nextFriend() ? nextFriend() : pick(locked)) : growing.length ? pick(growing) : null;
-  if (f) sh.push({ k: 'pages', id: f, n: TIER[CTIER[f] || 0].pages >= 40 ? 8 : 5 });
+  if (f) sh.push({ k: 'pages', id: f, n: (CTIER[f] || 0) >= 2 ? 6 : 4 });
   sh.push({ k: 'blank', n: 3 });
   sh.push(Math.random() < .5 ? { k: 'item', rar: Math.random() < .2 ? 2 : 1 } : { k: 'coins', n: 250 });
   return sh;
