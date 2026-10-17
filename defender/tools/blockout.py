@@ -36,7 +36,24 @@ def backyard():
     for i, (sx, sy) in enumerate([(240, 790), (226, 762)]): d.ellipse(r(sx - 16, sy - 10, sx + 16, sy + 10), fill=(185, 180, 170))
     return im
 
+# the visible part of the arena: the top bar covers about y < 170 and the Patience bar and tray about y > 650,
+# so the decoration lives in narrow strips down the two sides, between those, and stays small
+def backyard2():
+    im = Image.new('RGB', (W * S, H * S), (112, 165, 82)); r = lambda *b: [v * S for v in b]
+    glow = Image.new('L', im.size, 0); ImageDraw.Draw(glow).ellipse(r(CX - 225, CY - 290, CX + 225, CY + 290), fill=255)
+    im = Image.composite(Image.new('RGB', im.size, (140, 190, 100)), im, glow.filter(ImageFilter.GaussianBlur(60 * S))); d = ImageDraw.Draw(im)
+    for side in (0, W - 20):  # picket fences down both sides, the whole height
+        d.rectangle(r(side, 0, side + 20, H), fill=(120, 82, 50))
+        for y in range(6, H, 26): d.rectangle(r(side + 4, y, side + 16, y + 12), fill=(236, 226, 205))
+    d.rectangle(r(W - 92, 190, W - 20, 290), fill=(140, 120, 110)); d.line(r(W - 92, 240, W - 20, 240), fill=(100, 85, 78), width=4 * S)  # shed roof, right
+    d.ellipse(r(-10, 520, 92, 622), fill=(45, 100, 50))  # a tree canopy, left
+    for bx, by in [(44, 230), (446, 470)]: d.ellipse(r(bx - 24, by - 22, bx + 24, by + 22), fill=(60, 120, 55))  # two bushes
+    for bx, by, bw, bh in [(20, 330, 46, 120), (W - 66, 540, 46, 100)]:  # two narrow flower beds against the fences
+        d.rounded_rectangle(r(bx, by, bx + bw, by + bh), radius=12 * S, fill=(125, 90, 60))
+        for i in range(8): px, py = bx + 8 + (i * 17) % (bw - 16), by + 8 + (i * 29) % (bh - 16); d.ellipse(r(px, py, px + 9, py + 9), fill=[(220, 60, 60), (245, 200, 60), (240, 240, 240)][i % 3])
+    return im
+
 if __name__ == '__main__':
     name = sys.argv[1] if len(sys.argv) > 1 else 'backyard'
-    os.makedirs(OUT, exist_ok=True); im = {'backyard': backyard}[name]()
+    os.makedirs(OUT, exist_ok=True); im = {'backyard': backyard, 'backyard2': backyard2}[name]()
     im.save(os.path.join(OUT, name + '.png')); print('->', os.path.join('blockouts', name + '.png'), im.size)

@@ -132,7 +132,11 @@ def jobs():
 if __name__ == '__main__':
     if not KEY: print('GEMINI_API_KEY is not set; relying on the network to add it (a proxy secret), otherwise requests will fail with 401')
     argv = sys.argv[1:]; opt = lambda k: argv[argv.index(k) + 1] if k in argv else None
-    if opt('--ref'): REFS = [os.path.join(ASSETS, r) if not os.path.exists(r) else r for r in opt('--ref').split(',')]
+    if opt('--ref'):  # flattened on white: a transparent reference reads as black, and the model copies the black background
+        REFS = []
+        for r in opt('--ref').split(','):
+            src = os.path.join(ASSETS, r) if not os.path.exists(r) else r; flat = os.path.join('/tmp', 'ref_' + os.path.basename(src))
+            subprocess.run(['convert', src, '-background', 'white', '-alpha', 'remove', '-alpha', 'off', flat], check=True); REFS.append(flat)
     SUFFIX = opt('--suffix') or ''
     args = [a for i, a in enumerate(argv) if not a.startswith('--') and (i == 0 or argv[i - 1] not in ('--ref', '--suffix'))]; force = '--force' in sys.argv
     os.makedirs(ASSETS, exist_ok=True); n = 0
