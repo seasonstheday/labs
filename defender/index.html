@@ -791,7 +791,7 @@ const KIND = {
 // the tell cancels it, like the charge. Rough drafts (the stage-3 preview) don't have theirs yet.
 const BOSSMOVE = {
   wall:     { every: 11, tell: '"Nobody gets PAST my wall."', note: 'The Wall builds bricks in your ring. Pop them to see past.', go: b => { const a = Math.atan2(b.y - G.dad.y, b.x - G.dad.x); for (let i = -1; i <= 1; i++) { const aa = a + i * .32, R = G.radius * .82, e = spawn(b.id, { x: G.dad.x + Math.cos(aa) * R, y: G.dad.y + Math.sin(aa) * R }, { kindOf: 'brick' }); e.life = 9; e.nudge = G.t * 7; } text(b.x, b.y - b.r - 40, 'BRICK. BRICK. BRICK.', '#fff', 16, 1.2); G.shake = Math.max(G.shake, .2); } },
-  spiders:  { every: 9,  tell: '"Eight a year? Eight a SECOND."', note: 'Eight spiders at once. Something that hits a crowd clears them.', go: b => { for (let i = 0; i < 4; i++) spawnMini(b); text(b.x, b.y - b.r - 40, 'EIGHT!', '#fff', 18, 1.2); } },
+  spiders:  { every: 9,  tell: '"Eight a year? Eight a SECOND."', note: 'A rush of little spiders. Something that hits a crowd clears them.', go: b => { for (let i = 0; i < (G.party.length > 3 ? 4 : 3); i++) spawnMini(b); text(b.x, b.y - b.r - 40, 'EIGHT!', '#fff', 18, 1.2); } }, // six with two friends, eight with three
   boil:     { every: 12, tell: '"You won\'t even notice it getting warmer..."', note: 'The pot warms your ring. Hit the Frog to cool it off.', go: b => { G.heat = { t: 0, dur: 5.5, by: b }; text(G.dad.x, G.dad.y - 90, 'Getting warm...', '#f08a4b', 17, 1.4); } },
   brain:    { every: 11, tell: '"You only use TEN PERCENT!"', note: 'The Brain fogs your ring smaller for a while. Stun it mid-sentence to stop it.', go: b => { G.fog = 4.5; text(G.dad.x, G.dad.y - 90, 'FOG', '#b48be6', 22, 1.2); } },
   triangle: { every: 10, tell: '"Ships. Planes. Dads. All VANISH."', note: 'The Triangle blinks away and brings friends. It can\'t be hit while it fades.', go: b => { b.fade = .7; } },
@@ -1355,7 +1355,7 @@ function spawn(id, at = null, q = {}) {
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
+  if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) e.hp = e.maxhp = e.hp * .8; $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
