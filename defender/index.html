@@ -342,6 +342,8 @@
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
   #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
   .breaknote { border-color: #6fa8c8 !important; background: #eef7fb !important; }
+  .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 400 15px/1.1 "Patrick Hand", cursive; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
+  .monthpill b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
@@ -478,7 +480,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 46</div>
+    <div class="build">build 47</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -494,6 +496,7 @@
       <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
     </div>
     <div class="menu">
+      <button class="monthpill" id="monthPill"></button>
       <button class="btn play" id="quickPlay">▶ Play</button>
       <button class="btn ghost small" id="play">🗺️ World Map</button>
       <div class="hmodes"><button class="btn ghost small" id="dailyBtn" hidden>📅 Daily Myth</button><button class="btn ghost small" id="endlessBtn" hidden>♾️ Endless</button></div>
@@ -1856,6 +1859,7 @@ function spawn(id, at = null, q = {}) {
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
+  if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
@@ -3228,6 +3232,14 @@ const TWISTS = [
   { k: 'giant', em: '🦣', n: 'Giant Day', d: 'Fewer myths, but every one is crowned.' },
   { k: 'solo', em: '🧍', n: 'Just Two', d: 'Dad and your first friend only.' },
 ];
+// Myth of the Month: each month has a topic and a featured friend. Every stage cleared that month adds a page or two to the
+// friend's book, and myths from the topic drop more coins. Nothing to miss for good: every month comes round again next year.
+const MONTHS = [['space', 'uni'], ['body', 'frost'], ['weather', 'sol'], ['earth', 'rosie'], ['animals', 'gizmo'], ['food', 'coco'], ['science', 'inky'], ['history', 'bramble'], ['words', 'dusty'], ['animals', 'echo'], ['earth', 'pinch'], ['weather', 'bluey']];
+const MONTH_NAME = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function monthEv() { const m = new Date().getMonth(), [cat, id] = MONTHS[m]; return { cat, id, C: CATS[cat], name: MONTH_NAME[m] }; }
+function updateMonth() { const p = $('#monthPill'); if (!p) return; const E = monthEv(), c = chr(E.id), F = CHARS[E.id];
+  p.innerHTML = `${E.C[0]} <b>${E.C[1]} Month</b> · ${F.em} ${F.name} ${c.own ? `★${fstars(E.id)}` : `${pagesOf(E.id)}/${tierOf(E.id).pages} pages`}`;
+  p.onclick = () => toastMsg(`${E.C[0]} ${E.C[1]} Month, all of ${E.name}: every stage you clear adds a page to ${F.name}'s book (two for three stars), and ${E.C[1].toLowerCase()} myths drop more coins. If you don't finish, ${F.name} comes round again next year.`); }
 const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
 function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
 function updateModes() {
@@ -3238,7 +3250,7 @@ function updateModes() {
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
 function startGame(stage, how = {}) { music(STAGES[stage].w);
-  newRun(stage);
+  newRun(stage); G.monthCat = monthEv().cat;
   if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
   if (how.endless) { G.endless = true; G.S = { ...G.S, waves: 9999, boss: null }; $('#stageName').textContent = '♾️ The Endless Stacks'; $('#prog').hidden = true; }
   const pids = G.party.filter(m => m.id !== 'dad').map(m => m.id); G.fam = famLive(pids); G.famQuick = famStat('quick', pids); G.famGuard = famStat('guard', pids); G.famPow = famStat('pow', pids); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
@@ -3311,6 +3323,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   if (Math.random() < .35 + (stars === 3 ? .2 : 0)) { const pool = Object.keys(CHARS).filter(id => id !== 'dad' && (!chr(id).own || fstars(id) < STAR_MAX)), wt = id => [4, 2, 1, .35][CTIER[id] || 0];
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
+  { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
   if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
@@ -3729,7 +3742,7 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { updateModes(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
+function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
