@@ -447,7 +447,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 36</div>
+    <div class="build">build 37</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -2209,7 +2209,7 @@ function dadProps(item, p) {
 // companions: one idle frame per direction, animated by the code's hop / bob / squash, with gear at the same anchors
 function petProps(id, held) {
   const props = [], G3 = GEAR3D[id] || { pk: 2.4 };
-  const V = cweapOf(id); if (V && (held == null || held < .7 || held > .85)) props.push({ bone: 'handR', behind: behindBody, draw: (c, q, row) => {
+  const V = cweapOf(id); if (V && held != null && (held < .7 || held > .85)) props.push({ bone: 'handR', behind: behindBody, draw: (c, q, row) => {
     const k = q.sc * q.size * .92 * (G3.pk || 2.4), wind = held == null ? 0 : held < .33 ? held / .33 : 1, fade = held == null ? 1 : held > .85 ? (held - .85) / .15 : held > .4 ? 1 - (held - .4) / .3 : 1, vk = save.cweap[id];
     if (drawProp(c, id, row, q.x, q.y - k * .03 * wind, k, -.35 * wind * rowDir(row), Math.max(0, fade), VCOL[vk] || null)) return;
     c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `${Math.round(q.sc * q.size * .11)}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
@@ -2646,20 +2646,38 @@ function portrait(id, pose) {
   const c = $(id); if (!c) return; const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
   drawDadAt(x, c.width / 2, c.height - 6, c.height - 12, 1, pose);
 }
+// some friend drawings come with a pale grey floor disc baked in; on the grass it looks like a plate, so clear it once
+const PLATES = new Map();
+function unplate(img) {
+  if (PLATES.has(img)) return PLATES.get(img);
+  const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0);
+  try { const y0 = Math.floor(c.height * .8), d = x.getImageData(0, y0, c.width, c.height - y0); const p = d.data;
+    for (let i = 0; i < p.length; i += 4) { const mx = Math.max(p[i], p[i + 1], p[i + 2]), mn = Math.min(p[i], p[i + 1], p[i + 2]); if (mn > 150 && mx - mn < 28) p[i + 3] = 0; }
+    x.putImageData(d, 0, y0); } catch (e) { PLATES.set(img, img); return img; }
+  PLATES.set(img, c); return c;
+}
+// the home team photo: the hand-drawn Dad and friends, which match the painted backyard and face the camera.
+// The 3D sheets are rendered from above for the arena, so up close Dad looked down at his feet.
 function drawTitleParty() {
   const c = $('#titleParty'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, 330);
   const shadow = (cx, cy, w) => { x.save(); x.fillStyle = 'rgba(40,60,20,.22)'; x.beginPath(); x.ellipse(cx, cy, w, w * .26, 0, 0, 7); x.fill(); x.restore(); };
-  // spots: [x, feet y, scale, facing (screen angle; down = toward us)], left to right, the third friend in front
-  const n = save.party.length, L = Math.PI / 2 - .45, R = Math.PI / 2 + .45, SPOT = n === 1 ? [[106, 312, 1.95, L]] : n === 2 ? [[96, 312, 1.95, L], [344, 312, 1.95, R]]
-    : [[84, 300, 1.85, L], [356, 300, 1.85, R], [220, 324, 1.85, Math.PI / 2]];
-  const t = performance.now() / 1000, items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
+  const t = save.opt.calm ? 0 : performance.now() / 1000;
+  // spots: [x, feet y, height, facing (1 = right)], the third friend in front of Dad
+  const n = save.party.length, SPOT = n === 1 ? [[100, 312, 104, 1]] : n === 2 ? [[92, 312, 104, 1], [348, 312, 104, -1]]
+    : [[80, 300, 96, 1], [360, 300, 96, -1], [220, 326, 92, 1]];
+  // a png standing on its feet at (cx, cy), h tall, breathing a little; false if the art isn't loaded
+  const stand = (img0, cx, cy, h, face, ph, amp = 1) => { if (!ready(img0)) return false; const img = unplate(img0); const w = h * img0.naturalWidth / img0.naturalHeight, br = Math.sin(t * 2.2 + ph);
+    x.save(); x.translate(cx, cy); x.rotate(Math.sin(t * 1.1 + ph) * .015 * amp); x.scale(face * (1 - br * .012 * amp), 1 + br * .018 * amp); x.drawImage(img, -w / 2, -h, w, h); x.restore(); return true; };
+  const items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
   for (const it of items) {
-    if (it.id === 'dad') { shadow(214, 297, 46); const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); else drawDadAt(x, 214, 298, 224, 1, 'wave'); continue; }
-    const [sx, sy, sc, phi] = SPOT[it.i]; shadow(sx, sy - 1, 30); drawCompanionAt(x, it.id, sx, sy, sc, phi <= Math.PI / 2 ? 1 : -1, save.opt.calm ? 0 : t, { gear: true, aim: phi, bob: it.i * 2.1 });
+    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8)) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
+    const [sx, sy, h, face] = SPOT[it.i], ph = it.i * 2.1, hop = Math.max(0, Math.sin(t * 3 + ph * 1.7)) ** 6 * 10; // a little hop now and then
+    shadow(sx, sy - 1, 34);
+    if (!stand(art('pet_' + it.id), sx, sy - hop, h, face, ph)) drawCompanionAt(x, it.id, sx, sy, 1.85, face, t, { aim: face > 0 ? Math.PI / 2 - .45 : Math.PI / 2 + .45, bob: ph });
   }
 }
-// the home scene breathes while it's on screen (Dad's idle, the friends' bob); still in Calm mode
-setInterval(() => { if (mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); }, 66);
+// the home scene breathes while it's on screen, at the display's frame rate; still in Calm mode
+requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if (mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
 function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10, { props: dadProps(save.weapon, null) }); else drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0, { gear: true }); }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
