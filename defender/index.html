@@ -185,7 +185,10 @@
   /* in-match skill icons */
   #party .slot { height: 62px; }
   #party .slot .ap { gap: 4px; }
-  #party .slot .ab { position: relative; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #3a2c20; background: #fff; font-size: 12px; line-height: 17px; text-align: center; overflow: hidden; }
+  #party .slot .ab s { position: absolute; right: 0; bottom: 0; z-index: 1; font: 700 8px/1 "Fredoka", Arial, sans-serif; text-decoration: none; background: #3a2c20; color: #fff; border-radius: 4px 0 4px 0; padding: 1px 2px; }
+  #party .slot .ab.up { animation: abUp .9s ease-out; } @keyframes abUp { 0% { transform: scale(1.9); box-shadow: 0 0 0 4px var(--gold); } 100% { transform: none; } }
+  #party .slot.slot { border-top: 5px solid var(--ec, #3a2c20); }
+  #party .slot .ab { position: relative; width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid #3a2c20; background: #fff; font-size: 14px; line-height: 17px; text-align: center; overflow: hidden; }
   #party .slot .ab i { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(58,44,32,.35); height: 0; }
   #party .slot .ab.off { opacity: .35; } #party .slot .ab.r5 { border-color: var(--red); box-shadow: 0 0 0 1.5px var(--red); } #party .slot .ab.r3 { border-color: var(--gold); }
   .wh { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
@@ -294,6 +297,41 @@
   .card b em { font-style: normal; color: var(--teal); font-size: 13px; margin-left: 6px; }
   .card b em.new { color: var(--red); }
   .card span { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .cards.tall { flex-direction: row; gap: 8px; align-items: stretch; margin-top: 14px; }
+  .tcard { flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; background: linear-gradient(#fff 60%, color-mix(in srgb, var(--ec) 16%, #fff)); border: 3px solid #3a2c20; border-top: 9px solid var(--ec); border-radius: 16px; padding: 12px 5px 10px; cursor: pointer; overflow: visible; box-shadow: 0 5px 0 #3a2c20; font: inherit; color: inherit; animation: cardIn .4s cubic-bezier(.2,1.4,.4,1) backwards; }
+  .tcard:nth-child(2) { animation-delay: .08s; } .tcard:nth-child(3) { animation-delay: .16s; }
+  .tcard:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  @keyframes cardIn { from { transform: translateY(30px) scale(.85); opacity: 0; } }
+  .tcard .ic { position: relative; width: 62px; height: 62px; border-radius: 50%; border: 3px solid var(--ec); background: radial-gradient(#fff 55%, color-mix(in srgb, var(--ec) 30%, #fff)); display: grid; place-items: center; font-size: 34px; line-height: 1; flex: none; }
+  .tcard .ic small { position: absolute; right: -9px; bottom: -6px; width: 26px; height: 26px; border-radius: 50%; background: var(--card); border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; }
+  .tcard b { font: 700 15px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; }
+  .tcard .who { font: 700 11px/1 "Fredoka", Arial, sans-serif; color: var(--teal); } .tcard .who.new { color: var(--red); }
+  .tcard .pp { display: flex; gap: 3px; } .tcard .pp i { width: 9px; height: 9px; border-radius: 50%; background: #e4d9bd; border: 1.5px solid #3a2c20; } .tcard .pp i.on { background: var(--gold); } .tcard .pp i.nw { background: var(--gold); animation: pulse .8s infinite; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold); }
+  .tcard span { font: 400 13px/1.15 "Patrick Hand", cursive; color: var(--muted); }
+  .tcard .tag { position: absolute; z-index: 2; top: -17px; font-style: normal; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 700 11px/1 "Fredoka", Arial, sans-serif; background: var(--gold); border: 2px solid #3a2c20; border-radius: 999px; padding: 4px 7px; }
+  .tcard .tag.evo { background: #b48be6; color: #fff; }
+  .apbar { margin: 12px auto 0; height: 8px; border-radius: 6px; background: #e4d9bd; overflow: hidden; border: 2px solid #3a2c20; } .apbar div { height: 100%; background: var(--teal); animation: apdown linear forwards; }
+  @keyframes apdown { from { width: 100%; } to { width: 0; } }
+  .aplbl { text-align: center; font: 400 15px/1 "Patrick Hand", cursive; color: var(--muted); margin-top: 5px; }
+  #notem { background: rgba(20,14,10,.78); }
+  #notem .rays { position: absolute; left: 50%; top: 42%; width: 760px; height: 760px; margin: -380px 0 0 -380px; background: repeating-conic-gradient(rgba(255,236,170,.22) 0 9deg, transparent 9deg 22deg); border-radius: 50%; animation: spin 14s linear infinite; pointer-events: none; -webkit-mask: radial-gradient(closest-side, #000 30%, transparent); mask: radial-gradient(closest-side, #000 30%, transparent); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #notem .nb { position: relative; text-align: center; width: 100%; color: #fff; }
+  #notem h2 { font-size: 34px; margin: 0; color: var(--gold); text-shadow: 0 3px 0 #3a2c20; }
+  #notem .sub { color: #fbf3df; font-size: 19px; margin: 4px 0 6px; }
+  .book { position: relative; width: 230px; height: 150px; margin: 0 auto; display: flex; perspective: 600px; }
+  .book .pg { flex: 1; background: repeating-linear-gradient(#fffdf5 0 15px, #cfe3f2 15px 16px); border: 4px solid #3a2c20; }
+  .book .pg.l { border-radius: 14px 4px 4px 14px; border-right-width: 2px; box-shadow: inset -10px 0 14px -10px rgba(0,0,0,.35); }
+  .book .pg.r { border-radius: 4px 14px 14px 4px; border-left-width: 2px; transform-origin: left center; animation: flipOpen .7s .1s cubic-bezier(.3,1.3,.5,1) backwards; box-shadow: inset 10px 0 14px -10px rgba(0,0,0,.35); }
+  .book::before { content: ''; position: absolute; inset: 8px -10px -12px; background: #c0533f; border: 4px solid #3a2c20; border-radius: 16px; z-index: -1; }
+  @keyframes flipOpen { from { transform: rotateY(-170deg); } }
+  .notes { display: flex; justify-content: center; gap: 10px; margin: -112px auto 0; min-height: 132px; position: relative; flex-wrap: wrap; }
+  .snote { width: 100px; min-height: 112px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
+  .snote:nth-child(1) { --nc: #ffe58a; --rot: -5deg; animation-delay: .7s; } .snote:nth-child(2) { --nc: #ffc2d6; --rot: 3deg; animation-delay: 1s; } .snote:nth-child(3) { --nc: #bfe6f5; --rot: -2deg; animation-delay: 1.3s; }
+  @keyframes noteUp { from { transform: translateY(70px) rotate(0) scale(.4); opacity: 0; } }
+  .snote .e { font-size: 32px; line-height: 1; position: relative; } .snote .e small { position: absolute; right: -14px; bottom: -4px; font-size: 15px; }
+  .snote b { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; } .snote i { font: 700 11px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
+  #notem .btn { margin-top: 26px; min-width: 200px; animation: pop .3s 1.4s backwards; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
   .row .btn { flex: 1; }
   .stat { display: flex; justify-content: space-between; font: 400 20px/1.5 "Patrick Hand", cursive; border-bottom: 2px dashed var(--line); }
@@ -409,7 +447,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 35</div>
+    <div class="build">build 36</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -551,11 +589,22 @@
   <div id="fps"></div>
 
   <!-- ───────── modals ───────── -->
+  <div class="modal" id="notem" hidden>
+    <div class="rays"></div>
+    <div class="nb">
+      <h2 class="display">Dad's Notebook!</h2>
+      <p class="sub hand" id="noteSub">It fell out of the fight. Notes for the team:</p>
+      <div class="book"><div class="pg l"></div><div class="pg r"></div></div>
+      <div class="notes" id="noteList"></div>
+      <button class="btn" id="noteGo">📖 Read it!</button>
+    </div>
+  </div>
   <div class="modal" id="levelup" hidden>
     <div class="panel">
       <h2 class="display">Level up!</h2>
       <p class="sub hand">Someone learned a new trick. Pick one:</p>
       <div class="cards" id="cards"></div>
+      <div id="apwrap"></div>
       <div class="nope"><button class="btn ghost small" id="nope">🙅 Nope, show me others (2 left)</button></div>
     </div>
   </div>
@@ -1345,7 +1394,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
@@ -1397,6 +1446,7 @@ const OPTS = [
   ['calm', '🫧', 'Calm screen', 'No flashing, no blinking, fewer sparkles. Good for sensitive eyes.'],
   ['big', '🔠', 'Bigger text', 'Larger words on every screen for early readers.'],
   ['labels', '🗣️', 'Read buttons aloud', 'Every button says its name when you press it.'],
+  ['autopick', '⏱️', 'Pick tricks for me', 'If nobody picks a trick within 5 seconds, Dad picks the best one.'],
 ];
 function applyOpts() { frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
 function buildToggles(el) {
@@ -1510,7 +1560,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
 function kill(e) {
   G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
-  if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); }
+  if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
   if (e.host) { e.host.muted = 0; e.host = null; }
   for (let i = 0; i < fxN(8); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
@@ -1867,13 +1917,14 @@ function update(dt) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
   }
+  if (G.boss && !G.room && !G.boss.noted && G.boss.hp > 0 && G.boss.hp < G.boss.maxhp * .5) { G.boss.noted = true; dropNote(G.boss); }
   // orbs
   const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
   for (const o of G.orbs) {
-    const d = dist(o, dad); if (d < mag) o.pull = true;
+    const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'xp') { G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } }
@@ -1891,23 +1942,59 @@ function levelUp() { G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2)
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
+// every trick a friend could learn or rank up right now
+function trickOpts() { const o = []; for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) o.push({ m, a, lvl: m.ranks[a] + 1 }); return o; }
+// a new hitting trick from a friend whose element reacts with someone else's in the party
+function comboOf(o) {
+  if (o.lvl !== 1 || (o.a !== 'weapon' && ABIL[o.a].passive)) return null; const el = elemOf(o.m.id); if (!el) return null;
+  for (const p of G.party) { if (p === o.m) continue; const pe = elemOf(p.id); if (!pe) continue;
+    if (el === 'rainbow' || pe === 'rainbow') return { em: '🌈', n: 'Rainbow', who: CHARS[p.id].em };
+    const k = reactKey(el, pe); if (k) return { em: REACT[k].em, n: REACT[k].n, who: CHARS[p.id].em }; }
+  return null;
+}
+const willEvolve = o => o.lvl === MAX_RANK && !!EVO[o.a === 'weapon' ? save.weapon : o.a];
+// learn it: rank up, flash its icon in the tray, and celebrate an evolution
+function learn(o) {
+  o.m.ranks[o.a] = o.lvl; refreshHud(true);
+  const el = $(`#party .slot:nth-child(${G.party.indexOf(o.m) + 1}) .ab[data-a="${o.a}"]`); if (el) el.classList.add('up');
+  if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a);
+}
+let apT = 0;
 function offerCards(free = 0) {
-  const opts = [];
-  for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) opts.push({ m, a, lvl: m.ranks[a] + 1 });
+  clearTimeout(apT); $('#apwrap').innerHTML = '';
+  const opts = trickOpts();
   if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; $('#coinN').textContent = G.coins; return; }
   const chosen = []; while (chosen.length < 3 && opts.length) chosen.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
-  const box = $('#cards'); box.innerHTML = '';
+  const box = $('#cards'); box.innerHTML = ''; box.classList.add('tall');
+  const pick1 = o => { clearTimeout(apT); learn(o); $('#levelup').hidden = true; G.paused = false; if (free > 1) offerCards(free - 1); };
   for (const o of chosen) {
-    const b = document.createElement('button'); b.className = 'card';
-    const D = o.a === 'weapon' ? { ...WEAPONS[save.weapon], id: save.weapon } : ABIL[o.a].cd ? { ...ABIL[o.a], id: o.a } : null;
-    b.innerHTML = `<div class="em">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><div style="flex:1"><b>${abilName(o.a)}<em class="${o.lvl === 1 ? 'new' : ''}">${CHARS[o.m.id].name} · ${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}</em></b><span>${abilDesc(o.a)}</span>${D && D.dmg ? strip(D, o.lvl - 1) : ''}</div>`;
-    b.onclick = () => { o.m.ranks[o.a] = o.lvl; refreshHud(true); $('#levelup').hidden = true; G.paused = false; if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a); if (free > 1) offerCards(free - 1); };
+    const b = document.createElement('button'), el = elemOf(o.m.id), C = comboOf(o), ev = willEvolve(o);
+    b.className = 'tcard'; b.style.setProperty('--ec', el ? ELEM[el].col : '#3a2c20');
+    b.innerHTML = `${ev ? '<i class="tag evo">✨ Evolves</i>' : C ? `<i class="tag" title="${C.n} with ${C.who}">${C.em} ${C.n}!</i>` : ''}<div class="ic">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><b>${abilName(o.a)}</b><i class="who ${o.lvl === 1 ? 'new' : ''}">${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl} · ${CHARS[o.m.id].name}</i><div class="pp">${Array.from({ length: MAX_RANK }, (_, k) => `<i class="${k < o.lvl - 1 ? 'on' : k === o.lvl - 1 ? 'nw' : ''}"></i>`).join('')}</div><span>${abilDesc(o.a)}</span>`;
+    o.score = (ev ? 4 : 0) + (C ? 3 : 0) + (o.lvl === 1 ? 1 : 0) + o.lvl * .2 + Math.random() * .1;
+    b.onclick = () => pick1(o);
     box.appendChild(b);
   }
+  // Pick tricks for me: a five second bar, then the best card
+  if (save.opt.autopick) { $('#apwrap').innerHTML = '<div class="apbar"><div style="animation-duration:5s"></div></div><p class="aplbl">Dad picks in 5 seconds…</p>'; const best = chosen.slice().sort((x, y) => y.score - x.score)[0]; apT = setTimeout(() => { if (!$('#levelup').hidden) pick1(best); }, 5000); }
   $('#nope').textContent = `🙅 Nope, show me others (${G.nopes} left)`; $('#nope').disabled = G.nopes <= 0 || !!free; $('#nope').onclick = () => { if (G.nopes <= 0) return; G.nopes--; offerCards(free); };
   $('#levelup h2').textContent = free ? 'Everyone remembered a trick!' : 'Level up!';
   $('#levelup .sub').textContent = free ? `From last time. Pick one (${free} left):` : 'Someone learned a new trick. Pick one:';
   G.paused = true; $('#levelup').hidden = false;
+}
+
+// Dad's Notebook: dropped by every third elite and by a boss at half health. One to three free trick upgrades.
+function dropNote(e) { G.orbs.push({ k: 'note', x: e.x, y: e.y - 10, v: 0, t: 0 }); text(e.x, e.y - e.r - 46, '📒 NOTEBOOK!', '#ecb23c', 20, 1.2); }
+let noteT = 0;
+function openNotebook() {
+  const opts = trickOpts(), r = Math.random(), n = Math.min(opts.length, r < .6 ? 1 : r < .9 ? 2 : 3), got = [];
+  while (got.length < n) got.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
+  $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><div class="e">${abilEm(o.a)}<small>${CHARS[o.m.id].em}</small></div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : 'Rank ' + o.lvl}${willEvolve(o) ? ' ✨' : ''}</i></div>`).join('')
+    : '<div class="snote"><div class="e">🍪</div><b>Snack break</b><i>+30 Patience</i></div>';
+  $('#noteSub').textContent = got.length > 1 ? `${got.length} notes for the team!` : 'A note for the team!';
+  const done = () => { clearTimeout(noteT); if ($('#notem').hidden) return; $('#notem').hidden = true; if (got.length) got.forEach(learn); else G.hp = Math.min(G.maxhp, G.hp + 30); G.paused = false; };
+  $('#noteGo').onclick = done; G.paused = true; $('#notem').hidden = false; say(`Dad's notebook! ${got.map(o => abilName(o.a)).join(', ')}`);
+  clearTimeout(noteT); if (save.opt.autopick) noteT = setTimeout(done, 5000);
 }
 
 function evolveBanner(m, a) {
@@ -1936,7 +2023,7 @@ function refreshHud(force) {
     for (let i = 0; i <= MAX_COMPANIONS; i++) {
       const m = G.party[i], d = document.createElement('div');
       d.className = 'slot' + (m ? '' : ' empty');
-      if (m) { d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<div class="ab ${m.ranks[a] ? (m.ranks[a] >= 5 ? 'r5' : m.ranks[a] >= 3 ? 'r3' : '') : 'off'}" data-a="${a}" title="${abilName(a)}">${m.ranks[a] ? abilEm(a) : G.room || unlocked(m.id, a) ? '·' : '🔒'}<i></i></div>`).join('')}</div>`; }
+      if (m) { const el = elemOf(m.id); if (el) d.style.setProperty('--ec', ELEM[el].col); d.innerHTML = `<div class="face">${CHARS[m.id].em}</div><div class="ap">${CHARS[m.id].abil.map(a => `<div class="ab ${m.ranks[a] ? (m.ranks[a] >= 5 ? 'r5' : m.ranks[a] >= 3 ? 'r3' : '') : 'off'}" data-a="${a}" title="${abilName(a)}">${m.ranks[a] ? abilEm(a) + `<s>${m.ranks[a]}</s>` : G.room || unlocked(m.id, a) ? '·' : '🔒'}<i></i></div>`).join('')}</div>`; }
       g.appendChild(d);
     }
     hudAbs = $$('#party .ab');
@@ -2508,6 +2595,7 @@ function draw() {
     ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2.5; for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * t.r, Math.sin(a) * t.r * .7); ctx.stroke(); } for (let k = 1; k <= 3; k++) { ctx.beginPath(); for (let i = 0; i <= 8; i++) { const a = i / 8 * Math.PI * 2, rr = t.r * k / 3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .7); } ctx.stroke(); } ctx.restore(); }
   // orbs
   for (const o of G.orbs) {
+    if (o.k === 'note') { const bob = Math.sin(G.t * 6) * 4; ctx.save(); ctx.globalAlpha = .45; ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.arc(o.x, o.y + bob, 22 + Math.sin(G.t * 9) * 3, 0, 7); ctx.fill(); ctx.restore(); ctx.font = `28px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📒', o.x, o.y + bob); ctx.textBaseline = 'alphabetic'; continue; }
     ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
     ctx.fillStyle = o.k === 'xp' ? '#b48be6' : '#ecb23c'; ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = o.k === 'xp' ? '#fff' : '#3a2c20'; ctx.font = '700 9px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText(o.k === 'xp' ? '?' : '!', o.x, o.y + 3);
@@ -2691,7 +2779,7 @@ function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#h
   if (on) { navDots(); updateQuickPlay(); } }
 function startGame(stage) {
   newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
-  for (const m of ['#levelup', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
+  for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
   const V = VARIANT[STAGES[stage].w]; save.seenVar = save.seenVar || [];
   if (V && !save.seenVar.includes(V.name)) { save.seenVar.push(V.name); persist(); setTimeout(() => { if (G && !G.room) hint(`${V.em} ${V.name}: ${V.desc}`, 5); }, 2200); }
   else setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
@@ -2782,7 +2870,7 @@ const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
 function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
+function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
 // the map is one long scroll: chapter 1 at the bottom, chapter 8 at the top. Pins zigzag up through each band.
@@ -3182,7 +3270,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();

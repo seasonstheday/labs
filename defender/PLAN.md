@@ -212,6 +212,10 @@ checked against a reputable source before shipping; the Fact Book cites it.
 
 From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item merge and polish with a drop curve that stops at Epic (PR 23); friend tiers, Pages, stars and the pick-a-page Library Card (PR 23); daily, weekly and story missions; five elements with reactions and a team bonus; seven new friends (Shelly, Goldie, Prickles, Jelly, Echo, Inky, Chroma) across all four tiers, 16 in all. Still to do: 3D for Shelly, Goldie, Prickles, Jelly and Echo after the Meshy reset; Garage weapon lines and synergy pairs for the new friends; a tuning pass on page income and star power with the simulator.
 
+## Phase J — Tricks in the match
+
+**Shipped (build 36):** level-up picks are three tall cards with rank dots, an element-coloured edge, and a tag for a new trick that sets off a reaction with a teammate or one that will evolve. The trick tray shows each friend's element and every trick's rank, and flashes when one ranks up. Dad's Notebook drops from every third elite and from a boss at half health, and gives one to three free trick upgrades (60% one, 30% two, 10% three). A Settings switch, Pick tricks for me, picks the best card after five seconds and closes the notebook on its own.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
