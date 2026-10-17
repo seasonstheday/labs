@@ -341,6 +341,7 @@
   .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 13px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
   #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
+  .breaknote { border-color: #6fa8c8 !important; background: #eef7fb !important; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -657,6 +658,7 @@
       <div id="clearStats"></div>
       <div class="lootrow" id="clearLoot"></div>
       <div class="joined" id="joined" hidden></div>
+      <div class="joined breaknote" id="breakNote" hidden></div>
       <div class="joined" id="grew" hidden></div>
       <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
       <div class="row" id="quizRow" hidden><button class="btn ghost small" id="popQuiz">🙋 The Kid has a question (optional, +🪙)</button></div>
@@ -3227,7 +3229,8 @@ function dropLoot(el, n, bonus) {
   persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
-function stageClear() { sfx('win'); buzz('HEAVY');
+let sessionMatches = 0;
+function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -3570,7 +3573,7 @@ $('#gateIn').onkeydown = e => { if (e.key === 'Enter') $('#gateOk').onclick(); }
 function watchAd(why) { return new Promise(res => { if (!window.rewardedAd) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
 // what real money can buy: always deterministic, never a draw. Prices come from the store itself.
 const IAP = {
-  'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'Every friend joins the party today, and the video offers go away for good.', grant: () => { for (const id in CHARS) chr(id).own = true; } },
+  'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'The video offers go away for good, and Dad\'s Diary gets a gold cover. Friends are still met the usual way, page by page.', grant: () => { save.goldDiary = true; } },
   'com.whydad.defender.closet': { em: '🧥', name: "Dad's Closet", desc: 'Every named Legendary piece of armor, plus one more, with three bookmark slots each.', grant: () => { for (const l of LEGENDS.filter(l => l.type === 'armor')) { const it = makeItem('armor', 3, false); Object.assign(it, { name: l.name, em: l.em, desc: l.desc, stats: { ...l.stats }, legend: true, stat: Object.keys(l.stats)[0], val: Object.values(l.stats)[0] }); save.items.push(it); } save.items.push(makeItem('armor', 3, false)); } },
 };
 const hasPass = () => save.iap.includes('com.whydad.defender.pass');

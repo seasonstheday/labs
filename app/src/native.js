@@ -22,7 +22,8 @@
       const mod = cap.Plugins && cap.Plugins.AdMob ? cap.Plugins.AdMob : null; if (!mod) return;
       admob = mod;
       // a family game: no tracking prompt, child-directed treatment on, no personalised ads
-      await admob.initialize({ requestTrackingAuthorization: false, initializeForTesting: TESTING, testingDevices: [] });
+      // the game is made for children: every request is child-directed, under the age of consent, and rated General
+      await admob.initialize({ requestTrackingAuthorization: false, initializeForTesting: TESTING, testingDevices: [], tagForChildDirectedTreatment: true, tagForUnderAgeOfConsent: true, maxAdContentRating: 'General' });
       await admob.setApplicationMuted({ muted: false });
       await preload();
     } catch (e) { console.warn('ads off:', e); admob = null; }
