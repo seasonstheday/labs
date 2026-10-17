@@ -304,6 +304,9 @@
   .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
+  .rackh { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; margin: 12px 2px 6px; }
+  .variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+  .var { background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 6px; text-align: center; font: 400 12px/1.15 "Patrick Hand", cursive; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 12px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
   .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 12px; padding: 5px 8px; }
   .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
   .lootc { width: 64px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 10px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
@@ -371,7 +374,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 31</div>
+    <div class="build">build 32</div>
     <canvas id="titleParty" width="880" height="600"></canvas>
     <div class="side">
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
@@ -435,7 +438,7 @@
   <!-- ───────── garage: dad's weapon ───────── -->
   <section id="shop" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro" id="shopIntro">Everyone brings one thing into the backyard. Pick it here, and spend coins to make it permanently better.</p>
+    <p class="intro" id="shopIntro">Everyone has one weapon. Collect its versions from matches, hold the one you like, polish it, and forge three of the same colour into a stronger one.</p>
     <div class="tabs" id="shopTabs"></div>
     <div class="list" id="shopList"></div>
   </section>
@@ -858,13 +861,13 @@ WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
 
 /* ───────── dad's weapons (one at a time, chosen in the garage) ───────── */
 const WEAPONS = {
-  glass:   { em: '🔍', name: 'Magnifying Glass', desc: 'A beam of truth at the nearest myth.',      cd: [.8, .7, .62, .55, .48],   dmg: [18, 23, 28, 34, 42], n: [1, 1, 2, 2, 3],      own: true },
-  yoyo:    { em: '🪀', name: 'Yo-yo',            desc: 'Flies out, bonks everything, comes back.',   cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [18, 22, 27, 33, 40], n: [1, 1, 2, 2, 3],      own: true },
-  bat:     { em: '⚾', name: 'Baseball Bat',     desc: 'A big swing that knocks myths back.',        cd: [1.3, 1.2, 1.05, .9, .75], dmg: [26, 32, 38, 46, 56], n: [80, 88, 96, 106, 120], own: true },
-  plane:   { em: '✈️', name: 'Paper Airplanes',  desc: 'Zips through a whole line of myths.',       cd: [1.0, .9, .8, .7, .6],     dmg: [12, 15, 18, 22, 27],  n: [1, 2, 2, 3, 4],      own: true },
-  frisbee: { em: '🥏', name: 'Frisbee',          desc: 'Bounces from myth to myth to myth.',         cd: [1.8, 1.6, 1.45, 1.3, 1.1], dmg: [20, 24, 29, 35, 43], n: [3, 4, 5, 6, 8],      price: 120 },
-  bubble:  { em: '🫧', name: 'Bubble Wand',      desc: 'Drifting bubbles that slow myths down.',     cd: [.7, .62, .55, .48, .42],  dmg: [9, 11, 14, 17, 21],   n: [1, 1, 2, 2, 3],      price: 160 },
-  balloon: { em: '🎈', name: 'Water Balloons',   desc: 'Lobbed at a crowd. Splash!',                 cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [22, 27, 33, 41, 50], n: [60, 66, 72, 80, 92], price: 220 },
+  glass: { em: '🔍', name: 'Classic Lens', desc: 'A beam of truth at the nearest myth.', cd: [.8, .7, .62, .55, .48],   dmg: [18, 23, 28, 34, 42], n: [1, 1, 2, 2, 3] },
+  yoyo: { em: '💫', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [18, 22, 27, 33, 40], n: [1, 1, 2, 2, 3] },
+  bat: { em: '✨', name: 'Glare Lens', desc: 'A wide flash up close that knocks myths back.', cd: [1.3, 1.2, 1.05, .9, .75], dmg: [26, 32, 38, 46, 56], n: [80, 88, 96, 106, 120] },
+  plane: { em: '🔭', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [12, 15, 18, 22, 27],  n: [1, 2, 2, 3, 4] },
+  frisbee: { em: '🔆', name: 'Ricochet Lens', desc: 'A spot of light that bounces from myth to myth.', cd: [1.8, 1.6, 1.45, 1.3, 1.1], dmg: [20, 24, 29, 35, 43], n: [3, 4, 5, 6, 8] },
+  bubble: { em: '🫧', name: 'Bubble Lens', desc: 'Floaty bubbles that slow myths down.', cd: [.7, .62, .55, .48, .42],  dmg: [9, 11, 14, 17, 21],   n: [1, 1, 2, 2, 3] },
+  balloon: { em: '☀️', name: 'Burning Glass', desc: 'A hot sunspot lobbed at a crowd. Splash!', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [22, 27, 33, 41, 50], n: [60, 66, 72, 80, 92] },
 };
 
 // how each weapon reads on the stat strip
@@ -942,6 +945,34 @@ const CWEAP = {
     candle:  { em: '🕯️', name: 'Candle', desc: 'Sleepy dust, a puff at a time.', pow: 1, rate: 1, fx: 'Sleepy', own: true },
     lantern: { em: '🏮', name: 'Paper Lantern', desc: 'Softer puffs, but much bigger.', pow: .85, rate: 1.2, fx: 'Bigger puff', price: 170 },
     moonlamp:{ em: '🌕', name: 'Moon Lamp', desc: 'Slow and heavy. Myths doze off where they stand.', pow: 1.3, rate: .85, fx: 'Stun', price: 290 } } },
+  shelly:  { line: 'Shells', v: {
+    pond:    { em: '🐢', name: 'Pond Shell', desc: 'Smooth and sturdy.', pow: 1, rate: 1, fx: 'Steady', base: true },
+    spiky:   { em: '🦔', name: 'Spiky Shell', desc: 'Slower spins that send myths flying.', pow: 1.3, rate: .85, fx: 'Big knockback', gfx: 'knock' },
+    smooth:  { em: '🪨', name: 'River Shell', desc: 'Lighter and quicker. Myths slip on it.', pow: .85, rate: 1.2, fx: 'Slippery', gfx: 'slow' } } },
+  goldie:  { line: 'Fins', v: {
+    fan:     { em: '🐠', name: 'Fan Fin', desc: 'A good all-round splash.', pow: 1, rate: 1, fx: 'Splashy', base: true },
+    comet:   { em: '☄️', name: 'Comet Fin', desc: 'Faster bubbles that slow more.', pow: .85, rate: 1.25, fx: 'Slow', gfx: 'slow' },
+    veil:    { em: '🎀', name: 'Veil Fin', desc: 'Fewer, sharper bubbles.', pow: 1.3, rate: .85, fx: '+crit', gfx: 'crit' } } },
+  prickles:{ line: 'Quills', v: {
+    soft:    { em: '🦔', name: 'Soft Quills', desc: 'A friendly prickle.', pow: 1, rate: 1, fx: 'Prickly', base: true },
+    sharp:   { em: '📍', name: 'Sharp Quills', desc: 'They really sting.', pow: 1.3, rate: .85, fx: '+crit', gfx: 'crit' },
+    staticq: { em: '⚡', name: 'Static Quills', desc: 'A little zap with every quill.', pow: .85, rate: 1.2, fx: 'Tiny stun', gfx: 'stun' } } },
+  jelly:   { line: 'Tentacles', v: {
+    short:   { em: '🪼', name: 'Short Tentacles', desc: 'Quick little stings.', pow: 1, rate: 1, fx: 'Sting', base: true },
+    long:    { em: '〰️', name: 'Long Tentacles', desc: 'Lighter stings that slow.', pow: .85, rate: 1.2, fx: 'Slow', gfx: 'slow' },
+    glowing: { em: '💡', name: 'Glowing Tentacles', desc: 'Slower stings that stop myths cold.', pow: 1.3, rate: .85, fx: 'Stun', gfx: 'stun' } } },
+  echo:    { line: 'Squeaks', v: {
+    chirp:   { em: '🦇', name: 'Chirp', desc: 'A clear little squeak.', pow: 1, rate: 1, fx: 'Squeak', base: true },
+    screech: { em: '📢', name: 'Screech', desc: 'Loud enough to push myths back.', pow: 1.3, rate: .85, fx: 'Knockback', gfx: 'knock' },
+    whisper: { em: '🤫', name: 'Whisper', desc: 'Quiet, quick and very precise.', pow: .85, rate: 1.25, fx: '+crit', gfx: 'crit' } } },
+  inky:    { line: 'Arms', v: {
+    curly:   { em: '🐙', name: 'Curly Arms', desc: 'Eight good grips.', pow: 1, rate: 1, fx: 'Grab', base: true },
+    suction: { em: '🫧', name: 'Suction Arms', desc: 'Grips that slow myths down.', pow: 1.25, rate: .9, fx: 'Slow', gfx: 'slow' },
+    inkyarm: { em: '🖤', name: 'Inky Arms', desc: 'Quicker grabs that leave myths dazed.', pow: .9, rate: 1.2, fx: 'Tiny stun', gfx: 'stun' } } },
+  chroma:  { line: 'Tongues', v: {
+    sticky:  { em: '🦎', name: 'Sticky Tongue', desc: 'A long, accurate flick.', pow: 1, rate: 1, fx: 'Flick', base: true },
+    zappy:   { em: '⚡', name: 'Zappy Tongue', desc: 'Heavier flicks that stop myths.', pow: 1.3, rate: .85, fx: 'Stun', gfx: 'stun' },
+    rainbow: { em: '🌈', name: 'Rainbow Tongue', desc: 'Quick flicks in every colour.', pow: .85, rate: 1.25, fx: '+crit', gfx: 'crit' } } },
 };
 // bookmarks (our runes): colour = stat. Slots on an item come from its rarity.
 const MARKS = { red: ['🔴', 'Red', 'pow', 4], blue: ['🔵', 'Blue', 'quick', 3], green: ['🟢', 'Green', 'ring', 8], gold: ['🟡', 'Gold', 'coin', 5], purple: ['🟣', 'Purple', 'crit', 2], silver: ['⚪', 'Silver', 'pat', 6] };
@@ -950,7 +981,7 @@ function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS
 
 /* ───────── the party ───────── */
 const CHARS = {
-  dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has a magnifying glass, unless the garage says otherwise.', abil: ['weapon', 'story', 'joke'], price: 0 },
+  dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has his magnifying glass, and a drawer full of lenses for it.', abil: ['weapon', 'story', 'joke'], price: 0 },
   webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], freeAfter: 0 },
   sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], freeAfter: 2 },
   hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], freeAfter: 1 },
@@ -1103,7 +1134,7 @@ const unlocked = (id, a) => clv(id) >= UNLOCK_AT[CHARS[id].abil.indexOf(a)];
 const sk = (id, a) => { const c = save.chars[id]; return c && c.sk && c.sk[a] || 0; };
 // what rank 5 of a primary turns into
 const EVO = {
-  glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Yo-yo Storm', 'Twice the yo-yos, twice the bonks.'], bat: ['Grand Slam', 'A swing that circles all the way round.'], plane: ['Paper Squadron', 'A whole squadron, and they come back for more.'], frisbee: ['Boomerang', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Water Fight', 'Two balloons, bigger splashes.'],
+  glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Halo Storm', 'Twice the halos, twice the bonks.'], bat: ['Supernova', 'A flash that circles all the way round.'], plane: ['Light Volley', 'A whole volley of darts, and they come back for more.'], frisbee: ['Pinball', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Heatwave', 'Two sunspots, bigger splashes.'],
   web: ['Web Net', 'Three webs in a spread.'], zap: ['Thunderclap', 'The spark never stops jumping.'], tongue: ['Lasso', 'The tongue pulls myths back toward Hopper.'], quack: ['HONK', 'A honk that shoves everything in the ring.'],
   toss: ['Index Storm', 'Three bookmarks in a fan.'], shell: ['Conch Cannon', 'A much bigger splash.'], roll: ['Boulder', 'Big enough to send myths flying.'], hoot: ['WHO-WHO', 'The hoot goes through everything.'], dust: ['Dust Storm', 'The puff is a cloud now.'],
 };
@@ -1119,7 +1150,7 @@ const SYNERGY = [
   { ids: ['dad', 'luna'], name: 'Lights Out', desc: 'With Bedtime Story, Lamp Dance also puts myths to sleep.' },
 ];
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
-const DADRANKS = { ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
+const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
 const BASE_RADIUS = 170;
 const DAD_H = 102; // Dad's height in the arena
 // where each companion stands, relative to Dad
@@ -1153,9 +1184,9 @@ const ITEMS = {
 };
 // the named Legendary one-offs (each has its own stats instead of a roll)
 const LEGENDS = [
-  { type: 'weapon', name: "Great-Grandpa's Marble", em: '🔮', desc: 'Older than Dad. Luckier than everyone.', stats: { crit: 12, pow: 10 } },
-  { type: 'weapon', name: 'The Last Battery', em: '🔋', desc: 'The one from the back of the drawer. Somehow full.', stats: { quick: 16, pow: 8 } },
-  { type: 'weapon', name: 'Lightning in a Jar', em: '⚡', desc: 'Do not open it indoors.', stats: { pow: 22, crit: 6 } },
+  { type: 'weapon', variant: 'glass', name: "Great-Grandpa's Lens", em: '🧐', desc: 'Older than Dad. Sees more than everyone.', stats: { pow: 18, crit: 12 } },
+  { type: 'weapon', variant: 'plane', name: 'The Lighthouse Lens', em: '🗼', desc: 'From a real lighthouse. Reaches the far side of the yard.', stats: { pow: 16, quick: 16 } },
+  { type: 'weapon', variant: 'balloon', name: 'The Sun Catcher', em: '🌞', desc: 'Do not point it at your homework.', stats: { pow: 28, crit: 6 } },
   { type: 'armor', name: 'The Thinking Cap', em: '🎩', desc: 'The one Dad wears when he says "hmm".', stats: { pat: 32, ring: 16 } },
   { type: 'armor', name: 'Cosy Sunday Sweater', em: '🧶', desc: 'Nothing bad has ever happened in this sweater.', stats: { pat: 44 } },
   { type: 'armor', name: 'Boots of Puddle Jumping', em: '👢', desc: 'Every puddle. Every time.', stats: { ring: 30, quick: 8 } },
@@ -1165,8 +1196,20 @@ const LEGENDS = [
 ];
 const STAT = { pow: ['Power', '%'], quick: ['Quick', '%'], pat: ['Patience', ''], ring: ['Ring', ''], coin: ['Coins', '%'], crit: ['Crit', '%'] };
 const BASEVAL = { pow: 6, quick: 4, pat: 8, ring: 12, coin: 6, crit: 3 }, EXTRA_BY_RAR = [0, 1, 2, 2];
-function makeItem(type, rar, named = true) {
+// a weapon line: Dad's lenses, or a friend's own line
+const lineOf = id => id === 'dad' ? { line: 'Lenses', v: Object.fromEntries(Object.entries(WEAPONS).map(([k, D]) => [k, { em: D.em, name: D.name, desc: D.desc, pow: 1, rate: 1, fx: (WINFO[k] || {}).fx || '', base: k === 'glass' }])) } : CWEAP[id];
+const sing = w => w === 'Lenses' ? 'lens' : w.replace(/s$/, '').toLowerCase();
+const weaponOwners = () => ['dad', ...Object.keys(CWEAP).filter(id => chr(id).own)];
+function makeItem(type, rar, named = true, opt = {}) {
   const it = { uid: Date.now().toString(36) + (uidN++).toString(36), type, rar, marks: [] }, mul = RAR[rar].mul;
+  if (type === 'weapon') { // weapons are always someone's: party members' come up most
+    const owners = weaponOwners(), w = owners.map(id => id === 'dad' ? 3 : save.party.includes(id) ? 3 : 1); let r = Math.random() * w.reduce((a, b) => a + b, 0), owner = opt.owner || owners[owners.length - 1]; if (!opt.owner) for (let i = 0; i < owners.length; i++) { r -= w[i]; if (r < 0) { owner = owners[i]; break; } }
+    const Lw = lineOf(owner), keys = Object.keys(Lw.v), variant = opt.variant && Lw.v[opt.variant] ? opt.variant : pick(keys), V = Lw.v[variant];
+    const lg = owner === 'dad' && rar === 3 && named && !opt.variant && Math.random() < .5 ? pick(LEGENDS.filter(l => l.type === 'weapon')) : null;
+    Object.assign(it, { owner, variant: lg ? lg.variant : variant, base: (lg || V).name, name: lg ? lg.name : RADJ[rar] + V.name, em: lg ? lg.em : V.em, desc: lg ? lg.desc : V.desc, stats: lg ? { ...lg.stats } : { pow: Math.round(BASEVAL.pow * mul) }, legend: !!lg });
+    if (!lg) { const pool = Object.keys(BASEVAL).filter(k => k !== 'pow'); for (let i = 0; i < EXTRA_BY_RAR[rar]; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; it.stats[k] = Math.max(1, Math.round(BASEVAL[k] * mul * .5)); } }
+    it.stat = 'pow'; it.val = it.stats.pow || 0; return it;
+  }
   const legends = LEGENDS.filter(l => l.type === type);
   if (rar === 3 && named && legends.length && Math.random() < .5) { const l = pick(legends); Object.assign(it, { name: l.name, em: l.em, desc: l.desc, stats: { ...l.stats }, legend: true }); }
   else {
@@ -1201,7 +1244,7 @@ const MPOOL_D = [
   { k: 'clear', em: '🏁', t: 'Clear any stage', n: 1 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 }, { k: 'elite', em: '👑', t: 'Pop {n} elites', n: 2 }, { k: 'coin', em: '🪙', t: 'Pick up {n} coins in matches', n: 40 }, { k: 'react', em: '🌪️', t: 'Set off {n} element reactions', n: 8 },
 ];
 const MPOOL_W = [
-  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'react', em: '⚡💧', t: 'Set off {n} element reactions', n: 30 }, { k: 'merge', em: '🔀', t: 'Merge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
+  { k: 'boss', em: '👑', t: 'Beat a boss', n: 1 }, { k: 'react', em: '⚡💧', t: 'Set off {n} element reactions', n: 30 }, { k: 'merge', em: '🔨', t: 'Forge items {n} times', n: 2 }, { k: 'polish', em: '✨', t: 'Polish items {n} times', n: 3 }, { k: 'days', em: '📅', t: 'Play on {n} different days', n: 3 },
   { k: 'pop', em: '💥', t: 'Pop {n} myths', n: 500 }, { k: 'fact', em: '💡', t: 'Learn {n} new facts', n: 5 }, { k: 'clear', em: '🏁', t: 'Clear {n} stages', n: 8 }, { k: 'star3', em: '⭐', t: 'Get 3 stars {n} times', n: 4 },
 ];
 const MSTORY = [
@@ -1259,7 +1302,6 @@ save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
-const ownedW = id => !!WEAPONS[id].own || wep(id).own;
 const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
 const equipOf = id => save.equip[id] || (save.equip[id] = {});
@@ -1273,15 +1315,27 @@ save.iap = save.iap || []; save.factDate = save.factDate || {}; save.catCards = 
 for (const id in save.chars) { const c = save.chars[id]; if (c.own && c.xp == null) c.xp = save.cleared.length ? 25 * (1 + 2 + 3) : 0; c.sk = c.sk || {}; }
 const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
+// what each character is holding: the weapon item in their Weapon slot, or their line's first variant
+function syncWeapons() {
+  const d = itemBy(equipOf('dad').weapon); save.weapon = d && d.owner === 'dad' && WEAPONS[d.variant] ? d.variant : 'glass';
+  for (const id in CWEAP) { const it = itemBy(equipOf(id).weapon); save.cweap[id] = it && it.owner === id && CWEAP[id].v[it.variant] ? it.variant : Object.keys(CWEAP[id].v)[0]; }
+}
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
-const ownedCW = (id, k) => !!CWEAP[id].v[k].own || !!(save.cwown && save.cwown[id + ':' + k]);
 // the party-wide stats, summed over everyone who's coming
 function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
 // a friend's pair-up is live once they have the level for it and both halves are coming
 const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
 const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring;
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
-if (!ownedW(save.weapon)) save.weapon = 'glass';
+if (!save.wv2) { // one weapon each (build 32)
+  save.wv2 = true; const d = chr('dad'); let coins = 0, held = save.weapon;
+  for (const k in save.wep || {}) { d.pow = Math.max(d.pow || 0, save.wep[k].pow || 0); d.quick = Math.max(d.quick || 0, save.wep[k].quick || 0); }
+  for (const it of [...save.items]) if (it.type === 'weapon' && !it.owner) { coins += RAR[it.rar].sell + Math.round((it.spent || 0) / 2); for (const mk of it.marks || []) save.items.push(mk); save.items = save.items.filter(o => o !== it); const w = wornBy(it.uid); if (w) delete save.equip[w].weapon; }
+  for (const k in WEAPONS) if (k !== 'glass' && save.wep && save.wep[k] && save.wep[k].own) { const it = makeItem('weapon', 1, false, { owner: 'dad', variant: k }); save.items.push(it); if (held === k) equipOf('dad').weapon = it.uid; }
+  for (const key in save.cwown || {}) { const [id, k] = key.split(':'); if (CWEAP[id] && CWEAP[id].v[k]) { const it = makeItem('weapon', 1, false, { owner: id, variant: k }); save.items.push(it); if (save.cweap[id] === k) equipOf(id).weapon = it.uid; } }
+  save.coins = (save.coins || 0) + coins; save.wvNote = coins;
+}
+syncWeapons();
 save.party = save.party.filter(id => CHARS[id] && chr(id).own).slice(0, MAX_COMPANIONS);
 
 // read a line aloud for pre-readers (Web Speech; no network, no account)
@@ -1374,8 +1428,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => charMul(m.id) * (m.id === 'dad' ? 1 + wep(save.weapon).pow * .08 : 1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / (starQuick(m.id) * (1 + (m.id === 'dad' ? wep(save.weapon).quick : chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / (starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -1384,6 +1438,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind); d *= teamBonus(who);
+  const GV = who !== 'dad' && CWEAP[who] ? cweapOf(who) : null, gfx = GV && GV.gfx; if (gfx === 'knock') knock = Math.max(knock, 40) * 1.6;
   if (e.known) d *= 1 + rankOf('goldie', 'memory') * .05 + sk('goldie', 'memory') * .02;
   if (elemOf(who) === 'spark') d *= 1 + rankOf('prickles', 'static') * .04 + sk('prickles', 'static') * .02;
   if (e.stung > G.t) d *= 1 + rankOf('jelly', 'shine') * .04;
@@ -1391,13 +1446,13 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
-  e.hp -= d; e.hit = .12;
+  e.hp -= d; e.hit = .12; if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
@@ -1599,7 +1654,7 @@ function fireWeapon(m, tgt) {
     case 'bubble':
       windup(m, 'bubble', tgt, () => { const hp = handPos(m); for (let i = 0; i < D.n[L]; i++) { const a = tgt ? Math.atan2(tgt.y - hp.y, tgt.x - hp.x) + rnd(-.6, .6) : rnd(0, 7); G.shots.push({ k: 'bubble', x: hp.x, y: hp.y, vx: Math.cos(a) * rnd(50, 80), vy: Math.sin(a) * rnd(50, 80), dmg, t: 0, life: 5, r: rnd(9, 14) }); } }); break;
     case 'balloon':
-      windup(m, 'balloon', tgt, () => { const ts = nearest(m, null, 3); if (!ts.length) return; const t = pick(ts), hp = handPos(m); const lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .55, ty = t.y + Math.sin(lead) * t.spd * .55; G.shots.push({ k: 'balloon', x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .65, dmg, R: D.n[L], col: pick(['#5c8cbe', '#cb382e', '#4f8a5b', '#ecb23c']) }); }); break;
+      windup(m, 'balloon', tgt, () => { const ts = nearest(m, null, 3); if (!ts.length) return; const t = pick(ts), hp = handPos(m); const lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .55, ty = t.y + Math.sin(lead) * t.spd * .55; G.shots.push({ k: 'balloon', x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .65, dmg, R: D.n[L], col: '#f39a3c', sun: true }); }); break;
   }
   return true;
 }
@@ -1643,7 +1698,7 @@ function updateShots(dt) {
         break;
       case 'balloon': {
         const p = Math.min(1, s.t / s.life); s.x = s.sx + (s.tx - s.sx) * p; s.y = s.sy + (s.ty - s.sy) * p; s.z = Math.sin(p * Math.PI) * 120;
-        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, s.knock || 60, s.m ? { x: s.tx, y: s.ty, id: s.m.id } : { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, s.slowOn || .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.traps.push({ x: s.tx, y: s.ty, r: s.R * .9, t: 0, life: 3.5, mul: .55, puddle: true, col: s.col === '#5c8cbe' ? 'rgba(120,180,230,.55)' : 'rgba(220,235,255,.5)' }); G.shake = .12; }
+        if (p >= 1) { s.dead = true; for (const e of G.enemies) if (e.hp > 0 && dist(e, { x: s.tx, y: s.ty }) < e.r + s.R) { hurt(e, s.dmg, s.knock || 60, s.m ? { x: s.tx, y: s.ty, id: s.m.id } : { x: s.tx, y: s.ty }); e.slow = Math.max(e.slow, s.slowOn || .6); } G.fx.push({ k: 'splash', x: s.tx, y: s.ty, R: s.R, t: 0, life: .45, col: s.col }); G.traps.push({ x: s.tx, y: s.ty, r: s.R * .9, t: 0, life: 3.5, mul: .55, puddle: true, col: s.sun ? 'rgba(243,154,60,.4)' : 'rgba(120,180,230,.55)' }); G.shake = .12; }
         break; }
     }
   }
@@ -2010,7 +2065,7 @@ const behindBody = (q, row) => row >= 3 && row <= 5;
 // prop size per character (how big the weapon in the hand is, in body heights)
 const GEAR3D = { dad: { pk: 1 }, webster: { pk: 2.6 }, sparky: { pk: 2.4 }, hopper: { pk: 2.6 }, puddles: { pk: 2.6 }, dusty: { pk: 2.4 }, pip: { pk: 2.4 }, scuttle: { pk: 2.4 }, nilla: { pk: 2.6 }, luna: { pk: 2.4 } };
 function dadProps(item, p) {
-  const props = [], G3 = GEAR3D.dad;
+  const props = [], G3 = GEAR3D.dad; if (item) item = 'glass'; // one weapon: the lens changes, the glass doesn't
   if (item) props.push({ bone: 'handR', behind: behindBody, draw: (c, q, row) => {
     const k = q.sc * q.size * .92 * G3.pk, mo = propMotion(item, p, rowDir(row));
     if (drawProp(c, item, row, q.x, q.y - k * mo.lift, k, mo.rot, mo.alpha)) return;
@@ -2436,17 +2491,17 @@ function drawShot(s) {
   ctx.save(); ctx.translate(s.x, s.y);
   const em = f => { ctx.font = `${f}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
   switch (s.k) {
-    case 'yoyo': { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s.ox - s.x, s.oy - s.y); ctx.stroke(); ctx.rotate(s.spin); ctx.fillStyle = '#cb382e'; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, 7); ctx.fill(); break; }
-    case 'plane': ctx.rotate(Math.atan2(s.vy, s.vx) + Math.PI / 4 + Math.sin(s.wob) * .15); em(26); ctx.fillText('✈️', 0, 0); break;
+    case 'yoyo': { ctx.strokeStyle = 'rgba(255,246,194,.7)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s.ox - s.x, s.oy - s.y); ctx.stroke(); ctx.rotate(s.spin); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 7); ctx.stroke(); ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 3; ctx.stroke(); break; }
+    case 'plane': { ctx.rotate(Math.atan2(s.vy, s.vx)); const g = ctx.createLinearGradient(-30, 0, 10, 0); g.addColorStop(0, 'rgba(255,246,194,0)'); g.addColorStop(1, '#fff6c2'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-30, -4); ctx.lineTo(10, 0); ctx.lineTo(-30, 4); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.arc(8, 0, 4, 0, 7); ctx.fill(); break; }
     case 'web': { ctx.rotate(s.t * 6); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 4; i++) { const a = i / 4 * Math.PI; ctx.beginPath(); ctx.moveTo(-Math.cos(a) * 11, -Math.sin(a) * 11); ctx.lineTo(Math.cos(a) * 11, Math.sin(a) * 11); ctx.stroke(); } ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(0, 0, 6, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.stroke(); break; }
-    case 'frisbee': ctx.rotate(s.spin); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.ellipse(0, 0, 16, 11, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.beginPath(); ctx.ellipse(0, 0, 8, 5, 0, 0, 7); ctx.stroke(); break;
+    case 'frisbee': { const g = ctx.createRadialGradient(0, 0, 2, 0, 0, 16); g.addColorStop(0, '#fff'); g.addColorStop(.5, '#fff6c2'); g.addColorStop(1, 'rgba(236,178,60,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 16, 0, 7); ctx.fill(); break; }
     case 'bubble': ctx.globalAlpha = s.t > s.life - .6 ? (s.life - s.t) / .6 : 1; ctx.fillStyle = 'rgba(200,235,255,.5)'; ctx.beginPath(); ctx.arc(0, 0, s.r, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-s.r * .35, -s.r * .35, s.r * .25, 0, 7); ctx.fill(); break;
     case 'mark': ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.fillStyle = '#cb382e'; ctx.beginPath(); ctx.roundRect(-12, -4, 24, 8, 2); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(-20, -4); ctx.moveTo(-12, 0); ctx.lineTo(-20, 4); ctx.stroke(); break;
     case 'roll': ctx.rotate(s.spin); ctx.fillStyle = '#c9a06a'; ctx.beginPath(); ctx.arc(0, 0, s.r, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(0, 0, s.r * .6, 0, 7); ctx.stroke(); ctx.setLineDash([]); break;
     case 'hoot': ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.strokeStyle = '#cfe8ff'; ctx.lineWidth = 3; for (let i = 1; i <= 3; i++) { ctx.beginPath(); ctx.arc(-i * 6, 0, i * 7, -.9, .9); ctx.stroke(); } break;
     case 'dust': ctx.globalAlpha = .85; ctx.fillStyle = '#d8f0c0'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#fff'; for (let i = 0; i < 4; i++) { const a = s.t * 6 + i * 1.6; ctx.beginPath(); ctx.arc(Math.cos(a) * 14, Math.sin(a) * 14, 2.5, 0, 7); ctx.fill(); } break;
     case 'balloon': if (s.shell) { ctx.translate(0, -(s.z || 0)); ctx.rotate(s.t * 6); ctx.fillStyle = '#f0a070'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); for (let a = 0; a < 8; a += .4) { const rr = a * 1.3; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.stroke(); break; }
-      ctx.translate(0, -(s.z || 0)); ctx.rotate(s.t * 5); ctx.fillStyle = s.col; ctx.beginPath(); ctx.ellipse(0, 0, 11, 14, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); break;
+      ctx.translate(0, -(s.z || 0)); if (s.sun) { const g = ctx.createRadialGradient(0, 0, 2, 0, 0, 16); g.addColorStop(0, '#fff6c2'); g.addColorStop(.6, '#f39a3c'); g.addColorStop(1, 'rgba(243,154,60,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 16, 0, 7); ctx.fill(); break; } ctx.rotate(s.t * 5); ctx.fillStyle = s.col; ctx.beginPath(); ctx.ellipse(0, 0, 11, 14, 0, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); break;
   }
   ctx.restore(); ctx.globalAlpha = 1;
 }
@@ -2773,33 +2828,20 @@ function pips(n, max = MAX_RANK) { let s = '<div class="pips">'; for (let i = 0;
 function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
 let shopTab = 'dad';
 function buildShop() {
-  const tabs = $('#shopTabs'); tabs.innerHTML = ['dad', ...Object.keys(CWEAP).filter(id => chr(id).own)].map(id => `<button class="${shopTab === id ? 'on' : ''}" data-tab="${id}">${CHARS[id].em} ${id === 'dad' ? 'Dad\'s tools' : CHARS[id].name + '\'s ' + CWEAP[id].line.toLowerCase()}</button>`).join('');
+  const owners = weaponOwners(); if (!owners.includes(shopTab)) shopTab = 'dad';
+  const tabs = $('#shopTabs'); tabs.innerHTML = owners.map(id => `<button class="${shopTab === id ? 'on' : ''}" data-tab="${id}">${CHARS[id].em} ${id === 'dad' ? 'Dad\'s lenses' : CHARS[id].name + '\'s ' + CWEAP[id].line.toLowerCase()}</button>`).join('');
   tabs.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { shopTab = b.dataset.tab; buildShop(); });
-  const box = $('#shopList'); box.innerHTML = '';
-  if (shopTab !== 'dad') { buildCompanionShop(shopTab); return; }
-  for (const id in WEAPONS) {
-    const D = WEAPONS[id], w = wep(id), own = ownedW(id), eq = save.weapon === id, d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked') + (eq ? ' inparty' : '');
-    let html = `<div class="top"><div class="em">${D.em}</div><div><b>${D.name}</b><span class="d">${D.desc}</span>${strip({ ...D, id }, 0)}</div>`;
-    if (!own) html += `<button class="btn small" data-buy="${id}" ${save.coins >= D.price ? '' : 'disabled'}>Unlock 🪙 ${D.price}</button>`;
-    else html += eq ? `<button class="btn small green" disabled>Equipped</button>` : `<button class="btn small ghost" data-eq="${id}">Equip</button>`;
-    html += '</div>';
-    if (own) { html += '<div class="ranks">'; for (const r in WRANKS) { const R = WRANKS[r], lv = w[r], cost = R.base + lv * R.step; html += `<div class="rank"><span class="nm">${R.name}</span>${pips(lv)}<span data-rank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; } html += '</div>'; }
-    d.innerHTML = html; box.appendChild(d);
-  }
-  box.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => { const id = b.dataset.buy; if (save.coins < WEAPONS[id].price) return; setWallet({ coins: save.coins - WEAPONS[id].price }); wep(id).own = true; save.weapon = id; persist(); buildShop(); });
-  box.querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { save.weapon = b.dataset.eq; persist(); buildShop(); });
-}
-function buildCompanionShop(id) {
-  const box = $('#shopList'), L = CWEAP[id], cur = cweapOf(id);
-  for (const k in L.v) {
-    const V = L.v[k], own = ownedCW(id, k), eq = cur === V, d = document.createElement('div'); d.className = 'item' + (own ? '' : ' locked') + (eq ? ' inparty' : '');
-    const fx = `<div class="strip"><span><i>Power</i>${Math.round(V.pow * 100)}%</span><span><i>Rate</i>${Math.round(V.rate * 100)}%</span><span class="fx">${V.fx}</span></div>`;
-    d.innerHTML = `<div class="top"><div class="em">${V.em}</div><div><b>${V.name}</b><span class="d">${V.desc}</span>${fx}</div>${own ? (eq ? '<button class="btn small green" disabled>Equipped</button>' : `<button class="btn small ghost" data-ceq="${k}">Equip</button>`) : `<button class="btn small" data-cbuy="${k}" ${save.coins >= V.price ? '' : 'disabled'}>Unlock 🪙 ${V.price}</button>`}</div>`;
-    box.appendChild(d);
-  }
-  box.querySelectorAll('[data-ceq]').forEach(b => b.onclick = () => { save.cweap[id] = b.dataset.ceq; persist(); buildShop(); });
-  box.querySelectorAll('[data-cbuy]').forEach(b => b.onclick = () => { const k = b.dataset.cbuy, V = L.v[k]; if (save.coins < V.price) return; setWallet({ coins: save.coins - V.price }); save.cwown = save.cwown || {}; save.cwown[id + ':' + k] = true; save.cweap[id] = k; persist(); buildShop(); });
-  box.querySelectorAll('[data-rank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.rank.split(':'), w = wep(id), R = WRANKS[r], cost = R.base + w[r] * R.step; if (w[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); w[r]++; persist(); buildShop(); });
+  const id = shopTab, Lw = lineOf(id), box = $('#shopList'), eqUid = equipOf(id).weapon, cur = id === 'dad' ? save.weapon : save.cweap[id], mine = save.items.filter(i => i.type === 'weapon' && i.owner === id).sort((a, b) => b.rar - a.rar || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
+  let html = `<div class="item inparty"><div class="top"><div class="em">${Lw.v[cur].em}</div><div><b>Holding: ${eqUid && itemBy(eqUid) ? itemName(itemBy(eqUid)) : Lw.v[cur].name}</b><span class="d">${Lw.v[cur].desc}</span>${id === 'dad' ? strip({ ...WEAPONS[cur], id: cur }, 0) : `<div class="strip"><span><i>Power</i>${Math.round(Lw.v[cur].pow * 100)}%</span><span><i>Rate</i>${Math.round(Lw.v[cur].rate * 100)}%</span><span class="fx">${Lw.v[cur].fx}</span></div>`}</div></div></div>`;
+  html += `<h3 class="rackh">Every ${sing(Lw.line)} ${id === 'dad' ? 'Dad can find' : CHARS[id].name + ' can find'}</h3><div class="variants">${Object.entries(Lw.v).map(([k, V]) => { const n = mine.filter(i => i.variant === k).length; return `<div class="var ${n ? '' : 'none'} ${k === cur ? 'on' : ''}" title="${V.desc}"><span class="ie">${V.em}</span><b>${V.name}</b><small>${n ? `${n} in the bag` : 'not found yet'}</small><small class="fx">${V.fx}</small></div>`; }).join('')}</div>`;
+  html += `<h3 class="rackh">Your ${Lw.line.toLowerCase()}</h3>`;
+  html += mine.length ? mine.map(it => { const eq = it.uid === eqUid, lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0;
+    return itemRow(it, `<div class="ibtns">${eq ? '<button class="btn small green" disabled>Holding</button>' : `<button class="btn small" data-hold="${it.uid}">Hold</button>`}${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-forge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge ${Math.min(tw, 2) + 1}/3</button>` : ''}</div>`); }).join('')
+    : `<p class="intro">None yet. ${id === 'dad' ? 'Lenses' : CWEAP[id].line} drop at the end of matches, from bosses, Lunchboxes and Library Cards.</p>`;
+  box.innerHTML = html;
+  box.querySelectorAll('[data-hold]').forEach(b => b.onclick = () => { const uid = b.dataset.hold, prev = wornBy(uid); if (prev) delete save.equip[prev].weapon; equipOf(id).weapon = uid; syncWeapons(); persist(); buildShop(); });
+  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) buildShop(); });
+  box.querySelectorAll('[data-forge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.forge); if (it) forgeFlow(it, buildShop); });
 }
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
@@ -2827,7 +2869,7 @@ function buildParty() {
       const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
       // what all of it adds up to
       const g = gear(id), V = cweapOf(id), parts = [];
-      const powP = (id === 'dad' ? wep(save.weapon).pow * 8 : c.pow * 8) + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = (id === 'dad' ? wep(save.weapon).quick * 6 : c.quick * 6) + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
+      const powP = c.pow * 8 + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = c.quick * 6 + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
       if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
       const pat = (id === 'dad' ? c.pat * 20 : 0) + g.pat, ring = (id === 'dad' ? c.ring * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
       html += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items and buy ranks below.'}</div>`;
@@ -2838,8 +2880,8 @@ function buildParty() {
       html += '</div>';
       const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
       for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
-      if (id === 'dad') html += `<div class="rank"><span class="nm">Weapon</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — change it in the Garage</span></div>`;
-      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — change it in the Garage</span></div>`; }
+      if (id === 'dad') html += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — collect and forge lenses in the Garage</span></div>`;
+      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — collect and forge them in the Garage</span></div>`; }
       html += '</div>';
     } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !save.cleared.includes(C.freeAfter) ? `Joins for sure when you clear ${STAGES[C.freeAfter].name}. Pages from first clears, Library Cards, gifts and Blank pages bring them sooner.` : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
@@ -2858,38 +2900,41 @@ function buildParty() {
 /* ───────── equip picker ───────── */
 let pickFor = null;
 const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
 function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
 function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
-  const list = save.items.filter(i => i.type === t).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
+  const list = save.items.filter(i => i.type === t && (t !== 'weapon' || i.owner === id)).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
   $('#pickSub').textContent = list.length ? 'Tap one to wear it.' : `No ${ITEMS[t].slot.toLowerCase()}s in the bag yet. They drop at the end of every match.`;
   $('#pickList').innerHTML = list.map(it => itemRow(it, it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`)).join('');
   $('#pickUnequip').hidden = !cur;
-  $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; persist(); $('#pickm').hidden = true; buildParty(); });
+  $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; syncWeapons(); persist(); $('#pickm').hidden = true; buildParty(); });
   $('#pickm').hidden = false;
 }
-$('#pickUnequip').onclick = () => { delete equipOf(pickFor.id)[pickFor.t]; persist(); $('#pickm').hidden = true; buildParty(); };
+$('#pickUnequip').onclick = () => { delete equipOf(pickFor.id)[pickFor.t]; syncWeapons(); persist(); $('#pickm').hidden = true; if (!$('#shop').hidden) buildShop(); else buildParty(); };
 $('#pickClose').onclick = () => $('#pickm').hidden = true;
 
 /* ───────── the bag ───────── */
+const twinsOf = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && (it.type !== 'weapon' || o.owner === it.owner) && !wornBy(o.uid));
+function polishItem(it) { const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return false; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); return true; }
+function forgeFlow(it, after) {
+  const use = twinsOf(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
+  pickFor = null; $('#pickTitle').textContent = `Forge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n} and keeps its look. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = use.map(o => itemRow(o, '')).join('') + `<button class="btn green" id="mergeGo">🔨 Forge</button>`;
+  $('#mergeGo').onclick = () => { let refund = 0; for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) save.items.push(mk); } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); setWallet({ coins: save.coins + refund }); missionTick('merge'); persist(); $('#pickm').hidden = true; toastMsg(`🔨 ${itemName(it)}!`); after(); };
+  $('#pickm').hidden = false;
+}
 function buildItems() {
   const box = $('#itemList'), list = [...save.items].sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
-  const twins = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && !wornBy(o.uid));
+  const twins = twinsOf;
   const btns = it => { if (it.type === 'mark') return `<div class="ibtns"><button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button></div>`;
     const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twins(it).length : 0;
-    return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔀 Merge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
+    return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
   box.innerHTML = list.length ? list.map(it => itemRow(it, btns(it))).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
-  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">✨ <b>Polish</b> makes an item 10% stronger per step, up to +5. 🔀 <b>Merge</b> three items of the same kind and colour into one of the next colour: the one you tap keeps its name and bookmarks. 🔖 Bookmarks tuck into an item\'s slots.</p>');
+  box.insertAdjacentHTML('afterbegin', '<p class="intro" style="margin:0">✨ <b>Polish</b> makes an item 10% stronger per step, up to +5. 🔨 <b>Forge</b> three items of the same kind and colour into one of the next colour: the one you tap keeps its name, look and bookmarks. Weapons forge with weapons for the same character. 🔖 Bookmarks tuck into an item\'s slots.</p>');
   box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); buildItems(); });
-  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (!it) return; const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); buildItems(); });
-  box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => {
-    const it = itemBy(b.dataset.merge); if (!it) return; const use = twins(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
-    pickFor = null; $('#pickTitle').textContent = `Merge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n}. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
-    $('#pickList').innerHTML = use.map(o => itemRow(o, '')).join('') + `<button class="btn green" id="mergeGo">🔀 Merge</button>`;
-    $('#mergeGo').onclick = () => { let refund = 0; for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) save.items.push(mk); } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); setWallet({ coins: save.coins + refund }); missionTick('merge'); persist(); $('#pickm').hidden = true; buildItems(); $('#storeLoot') && 0; };
-    $('#pickm').hidden = false;
-  });
+  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) buildItems(); });
+  box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.merge); if (it) forgeFlow(it, buildItems); });
   // bookmarks: tap an empty slot to pick one from the bag, tap a placed one to take it off (20 coins)
   box.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
     const it = itemBy(b.dataset.addmark), marks = save.items.filter(i => i.type === 'mark').sort((a, c) => c.rar - a.rar || c.val - a.val);
