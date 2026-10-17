@@ -216,6 +216,8 @@ From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item m
 
 **Shipped (build 36):** level-up picks are three tall cards with rank dots, an element-coloured edge, and a tag for a new trick that sets off a reaction with a teammate or one that will evolve. The trick tray shows each friend's element and every trick's rank, and flashes when one ranks up. Dad's Notebook drops from every third elite and from a boss at half health, and gives one to three free trick upgrades (60% one, 30% two, 10% three). A Settings switch, Pick tricks for me, picks the best card after five seconds and closes the notebook on its own.
 
+**Build 38:** friends are earned only with pages. Webster, who teaches the first stage, is the one friend who still joins by himself. Each new stage cleared adds 3 pages to the next friend in the story (6 for a boss). Any clear has a 35% chance (55% at three stars) of 1 or 2 lucky pages for a random friend, weighted toward Common. A Power number for each character and for the team, with a note whenever a change outside a match moves it.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
