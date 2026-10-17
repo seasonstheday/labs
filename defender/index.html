@@ -1667,7 +1667,7 @@ function powWatch() {
 }
 // the Friends tab's family chips: lit when two are in the party, gold when three
 function famRow() {
-  const n = famCount();
+  if (!has('families')) return ''; const n = famCount();
   return `<div class="famrow">${Object.keys(FAMILY).map(k => { const F = FAMILY[k], c = Math.min(3, n[k]);
     return `<button class="fam ${c >= 3 ? 'full' : c >= 2 ? 'on' : ''}" data-fam="${k}"><b>${F.em} ${F.n}</b><span>${c}/3 · ${c >= 3 ? F.mv.em + ' ' + F.mv.n : c >= 2 ? F.twoT : F.ids.map(id => CHARS[id].em).join('')}</span></button>`; }).join('')}</div>`;
 }
@@ -3237,15 +3237,15 @@ const TWISTS = [
 const MONTHS = [['space', 'uni'], ['body', 'frost'], ['weather', 'sol'], ['earth', 'rosie'], ['animals', 'gizmo'], ['food', 'coco'], ['science', 'inky'], ['history', 'bramble'], ['words', 'dusty'], ['animals', 'echo'], ['earth', 'pinch'], ['weather', 'bluey']];
 const MONTH_NAME = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function monthEv() { const m = new Date().getMonth(), [cat, id] = MONTHS[m]; return { cat, id, C: CATS[cat], name: MONTH_NAME[m] }; }
-function updateMonth() { const p = $('#monthPill'); if (!p) return; const E = monthEv(), c = chr(E.id), F = CHARS[E.id];
+function updateMonth() { const p = $('#monthPill'); if (!p) return; p.hidden = !has('month'); if (p.hidden) return; const E = monthEv(), c = chr(E.id), F = CHARS[E.id];
   p.innerHTML = `${E.C[0]} <b>${E.C[1]} Month</b> · ${F.em} ${F.name} ${c.own ? `★${fstars(E.id)}` : `${pagesOf(E.id)}/${tierOf(E.id).pages} pages`}`;
   p.onclick = () => toastMsg(`${E.C[0]} ${E.C[1]} Month, all of ${E.name}: every stage you clear adds a page to ${F.name}'s book (two for three stars), and ${E.C[1].toLowerCase()} myths drop more coins. If you don't finish, ${F.name} comes round again next year.`); }
 const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
 function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
 function updateModes() {
   const D = dailyToday(), db = $('#dailyBtn'), eb = $('#endlessBtn'); if (!db) return;
-  db.hidden = !D; if (D) db.innerHTML = `${D.tw.em} Daily Myth${D.done ? ' ✔' : '<i class="dot"></i>'}`;
-  eb.hidden = !save.cleared.includes(4); eb.textContent = save.endlessBest ? `♾️ Endless · best ${save.endlessBest}` : '♾️ Endless';
+  db.hidden = !D || !has('daily'); if (D) db.innerHTML = `${D.tw.em} Daily Myth${D.done ? ' ✔' : '<i class="dot"></i>'}`;
+  eb.hidden = !save.cleared.includes(4) || !has('endless'); eb.textContent = save.endlessBest ? `♾️ Endless · best ${save.endlessBest}` : '♾️ Endless';
 }
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
@@ -3323,7 +3323,8 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   if (Math.random() < .35 + (stars === 3 ? .2 : 0)) { const pool = Object.keys(CHARS).filter(id => id !== 'dad' && (!chr(id).own || fstars(id) < STAR_MAX)), wt = id => [4, 2, 1, .35][CTIER[id] || 0];
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
-  { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
+  if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
+  if (first) notes.push(...newUnlocks().map(t => t.replace(/\.$/, '')));
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
   if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
@@ -3412,7 +3413,7 @@ function buildMap(scroll = true) {
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
-  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
+  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = !has('power') ? '' : powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
   if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
   $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
@@ -3567,7 +3568,7 @@ function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
   const list = save.items.filter(i => i.type === t && (t !== 'weapon' || i.owner === id)).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
   $('#pickSub').textContent = list.length ? 'Tap one to wear it.' : `No ${ITEMS[t].slot.toLowerCase()}s in the bag yet. They drop at the end of every match.`;
-  $('#pickList').innerHTML = list.map(it => itemRow(it, (it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`) + `<button class="btn small ghost" data-more="${it.uid}">✨ 🔨</button>`)).join('');
+  $('#pickList').innerHTML = list.map(it => itemRow(it, (it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`) + (has('polish') ? `<button class="btn small ghost" data-more="${it.uid}">✨${has('forge') ? ' 🔨' : ''}</button>` : ''))).join('');
   $('#pickList').querySelectorAll('[data-more]').forEach(b => b.onclick = () => itemSheet(b.dataset.more));
   $('#pickUnequip').hidden = !cur;
   $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; syncWeapons(); persist(); $('#pickm').hidden = true; buildParty(); });
@@ -3592,8 +3593,8 @@ const BAG_F = [['all', 'All'], ['weapon', '⚔️ Weapons'], ['armor', '🛡️ 
 function bagBtns(it) {
   if (it.type === 'mark') return `<div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
   const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0, w = wornBy(it.uid);
-  return `<div class="sheetbtns">${lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
-    + (it.rar < 3 ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
+  return `<div class="sheetbtns">${!has('polish') ? '' : lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
+    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
     + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
     + `</div><p class="sheethint">${it.type === 'weapon' ? `Hold it from ${CHARS[it.owner].name}'s weapon rack.` : 'Put it on from a friend\'s card in Friends.'}</p>`;
 }
@@ -3618,7 +3619,7 @@ function bindBag(root, after) {
 }
 function buildItems() {
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
-  const tile = it => { const w = wornBy(it.uid), ready = it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
+  const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
     return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
   box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
@@ -3727,10 +3728,35 @@ $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
 // the tab bar: five places, always one tap away; Play is home. Dots only when there is something to do there.
 const TAB_OF = { '#title': 'play', '#missions': 'play', '#store': 'shop', '#partyScreen': 'friends', '#shop': 'friends', '#items': 'bag', '#book': 'diary' };
+// one new idea at a time: each system opens after a number of stages cleared, with a line on the clear screen and a dot
+// on its tab until it's visited. Saves that are already further along have everything open.
+const UNLOCKS = [
+  { k: 'friends', at: 1, tab: 'friends', t: '🧑‍🤝‍🧑 Friends is open: tap it to meet Webster and see his tricks.' },
+  { k: 'shop', at: 2, tab: 'shop', t: '🏪 The Shop is open: spend coins and gems there.' },
+  { k: 'missions', at: 4, t: '📋 Missions are open (top of the home screen): little goals with prizes.' },
+  { k: 'bag', at: 3, tab: 'bag', t: '🎒 The Bag is open: items from matches go there. Put them on from a friend\'s card.' },
+  { k: 'power', at: 5, t: '⚡ Power is on: the Play button shows how strong your team is next to what the stage needs.' },
+  { k: 'polish', at: 6, t: '✨ Polishing is open: make any item a bit stronger in the Bag.' },
+  { k: 'month', at: 7, t: '📅 Myth of the Month is on: a featured friend gets pages from every stage this month.' },
+  { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
+  { k: 'forge', at: 10, t: '🔨 Forging is open: three items of a rarity make one of the next.' },
+  { k: 'daily', at: 11, t: '📅 The Daily Myth is open on the home screen: a new twist every day.' },
+  { k: 'endless', at: 12, t: '♾️ The Endless Stacks are open: how many waves can you last?' },
+];
+const has = k => { const U = UNLOCKS.find(u => u.k === k); return !U || save.cleared.length >= U.at; };
+// lines for anything that opened with this clear (called once the clear is counted)
+function newUnlocks() { const seen = save.seenUnlocks || (save.seenUnlocks = []), out = [];
+  for (const U of UNLOCKS) if (has(U.k) && !seen.includes(U.k)) { seen.push(U.k); out.push(U.t); if (U.tab) (save.newTabs = save.newTabs || []).push(U.tab); }
+  persist(); return out; }
+function applyUnlocks() {
+  if (!save.seenUnlocks) { save.seenUnlocks = UNLOCKS.filter(u => has(u.k)).map(u => u.k); persist(); } // older saves: what's open stays open, quietly
+  $$('#tabbar [data-tab]').forEach(b => { const t = b.dataset.tab; b.hidden = t !== 'play' && t !== 'diary' && !has(t); });
+  const mi = $('#openMissions'); if (mi) mi.hidden = !has('missions');
+}
 function navDots() { const tb = $('#tabbar'); if (!tb) return; const set = (t, on) => { const d = tb.querySelector(`[data-tab="${t}"] .dot`); if (d) d.hidden = !on; };
-  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false);
+  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
   const d2 = $('#misDot2'); if (d2) d2.hidden = !(() => { try { return misReady(); } catch (e) { return false; } })(); }
-$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab;
+$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab; if (save.newTabs && save.newTabs.includes(t)) { save.newTabs = save.newTabs.filter(x => x !== t); persist(); }
   if (t === 'play') { showScreen('#title'); drawStatics(); } else if (t === 'shop') $('#openStore').onclick(); else if (t === 'friends') { partySel = null; $('#openParty').onclick(); } else if (t === 'bag') $('#openItems').onclick(); else if (t === 'diary') $('#openBook').onclick(); });
 $$('.seg [data-seg]').forEach(b => b.onclick = () => { if (b.dataset.seg === 'friends') { partySel = null; buildParty(); showScreen('#partyScreen'); } else { if (partySel && (CWEAP[partySel] || partySel === 'dad')) shopTab = partySel; buildShop(); showScreen('#shop'); } });
 $('#homeMissions').onclick = () => $('#openMissions').onclick(); $('#homeHow').onclick = () => $('#howm').hidden = false; $('#homeSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
@@ -3742,7 +3768,7 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
+function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };

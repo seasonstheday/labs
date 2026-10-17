@@ -108,15 +108,45 @@ def sprite_fix(path, size):
 def make(name, prompt, kind):
     out = os.path.join(ASSETS, name + SUFFIX + '.png'); print(name + SUFFIX, '...', flush=True)
     if REFS: prompt += f' Match the drawing style, outline weight, colours and shading of the reference picture{"s" if len(REFS) > 1 else ""} exactly, as if drawn by the same artist, but draw only the new character described.'
-    png = call(prompt, {'arena': '9:16', 'map': '21:9'}.get(kind, '1:1'), refs=REFS); tmp = out + '.tmp.png'
+    png = call(prompt, {'arena': '9:16', 'map': '21:9', 'story': '4:3'}.get(kind, '1:1'), refs=REFS); tmp = out + '.tmp.png'
     with open(tmp, 'wb') as f: f.write(png)
     if RAW: open(os.path.join(RAW, name + '.png'), 'wb').write(png)  # keep the model's output for re-processing
     if kind == 'pet': sprite_fix(tmp, 400)
     elif kind == 'kid': sprite_fix(tmp, 800)
     elif kind == 'arena': subprocess.run(['convert', tmp, '-resize', '480x800^', '-gravity', 'center', '-extent', '480x800', tmp], check=True)
     elif kind == 'map': subprocess.run(['convert', tmp, '-resize', '928x422^', '-gravity', 'center', '-extent', '880x400', tmp], check=True)  # a little overscan trims any margin the model paints
+    if kind == 'story':  # stored as JPEG, 720x540: twenty of these add about 2 MB instead of 15
+        jpg = out[:-4] + '.jpg'; subprocess.run(['convert', tmp, '-resize', '720x540^', '-gravity', 'center', '-extent', '720x540', '-quality', '82', jpg], check=True); os.remove(tmp); print('  ->', os.path.relpath(jpg)); return
     os.replace(tmp, out); print('  ->', os.path.relpath(out))
 
+# storyboard scenes for the prologue and each chapter's opening and closing; Dad and the Kid come from the references
+CAST = ("Dad is the man in the first reference picture (short brown hair, short brown beard, round glasses, mustard-yellow sweater, green trousers). "
+        "The Kid is the child in the second reference picture (short brown hair, blue striped t-shirt, green shorts, red sneakers). Draw them exactly like that. "
+        "The myths are loose book pages that have come alive: cream paper pages with a few printed lines, a cheeky cartoon face, tiny arms and legs, mischievous but friendly, never scary. ")
+STORY = {
+    'story_p1': 'A cosy small-town library at dusk seen from the street. Through the big front window a huge old leather-bound book on a reading stand glows faintly gold. The Kid presses their nose to the glass outside, curious.',
+    'story_p2': 'Inside the library, the giant old book bursts open in a whirlwind of glowing loose pages. Each flying page is one of the page myths, tumbling and cheering. Tall shelves behind, warm lamplight.',
+    'story_p3': 'A sunny suburban backyard with a white picket fence. A line of page myths marches across the lawn. Dad holds up a big magnifying glass like a hero while the Kid points at the pages, excited.',
+    'story_p4': 'Dad and the Kid stand back to back on the lawn at golden hour, ready for anything: Dad holds his magnifying glass, the Kid holds a small notebook. A friendly brown spider, a green toad and a glowing firefly gather around their feet.',
+    'story_1_in': 'A backyard lawn where page myths are marching out from under the fence. The Kid shouts and points; Dad grabs his magnifying glass from the porch step.',
+    'story_1_out': 'The same backyard, tidy and calm at golden hour. Dad and the Kid sit on the porch step with a picnic basket of snacks while the last few pages blow over the fence toward a pond in the distance.',
+    'story_2_in': 'A green pond with lily pads, reeds and a white duck. Dad crouches at the water edge with the Kid; a page myth sits on a lily pad next to a curious frog.',
+    'story_2_out': 'At the pond, a frog happily leaps out of a small pot of water while the Kid laughs. Far away across fields, pages flutter toward a little town with a library.',
+    'story_3_in': 'Inside a grand old library with tall wooden shelves and a round red rug. A thick hardcover-book myth stomps along; Dad holds a finger to his lips saying shh, the Kid giggles.',
+    'story_3_out': 'The Kid looks out of a tall library window at a sunny harbour with sailing boats; a stream of pages flies away out to sea.',
+    'story_4_in': 'Dad and the Kid in a small wooden rowing boat on a bright blue sea. A little orange hermit crab rides at the front of the boat. A whale tail splashes in the distance.',
+    'story_4_out': 'Dad and the Kid on a sandy beach at sunset with the rowing boat pulled up behind them; pages blow inland toward golden desert dunes.',
+    'story_5_in': 'A hot sunny desert with tall dunes and green cacti. Dad and the Kid wear wide sun hats; the sand ripples where page myths are hiding under it.',
+    'story_5_out': 'The same desert at night, frosty and blue under a sky full of stars. The Kid is wrapped in a blanket, amazed at the frost; Dad points north.',
+    'story_6_in': 'A snowy arctic landscape with ice floes. Dad and the Kid in puffy parkas look at a very confused page myth dressed as a penguin; a polar bear watches from far away.',
+    'story_6_out': 'The arctic at night under green northern lights. Dad and the Kid wave goodbye to a polar bear cub; pages fly away south.',
+    'story_7_in': 'A rainy green jungle with giant leaves and vines. A monkey laughs on a branch, lightning flashes in the sky; Dad holds an umbrella over the Kid.',
+    'story_7_out': 'A jungle clearing after the rain, sunbeams through leaves. One glowing page flies straight up into the sky and the Kid points up at it, open-mouthed.',
+    'story_8_in': 'A grassy hill at night with a telescope and a sky full of stars. Dad and the Kid look up at a huge glowing page myth floating in the sky.',
+    'story_8_out': 'Dad and the Kid sit together on the hill under the stars, the old book now closed and gently glowing in the Kid\'s lap; Dad has his arm around the Kid. Warm, happy ending.',
+}
+STORY_STYLE = (" A storyboard frame: one wide picture-book panel, cinematic composition, clear focal point, characters large enough to read on a phone, "
+               "warm painted light, clean thick dark-brown outlines like the reference pictures, no border, no speech bubbles, no text or letters anywhere.")
 HOME = ('A cosy suburban backyard at golden hour, seen from the side at a child\'s eye height, as the backdrop of a game\'s home screen. '
         'The top third is a calm warm sky, soft peach to pale blue, with two or three soft clouds and no sun disc. '
         'The middle has a low wooden picket fence, a big leafy tree on the left edge and the corner of a house porch with a warm lit window on the right edge. '
@@ -126,6 +156,7 @@ def jobs():
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
     yield 'kid', STYLE + ' ' + KID + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'kid', 'kid'
     yield 'home_bg', HOME + ' ' + STYLE, 'arena', 'home'
+    for k, d in STORY.items(): yield k, STYLE + ' ' + CAST + d + STORY_STYLE, 'story', 'story'
     for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'
 
