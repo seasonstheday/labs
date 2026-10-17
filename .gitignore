@@ -10,3 +10,4 @@ defender/tools/node_modules/
 defender/tools/meshy_out/
 defender/tools/logs/
 defender/tools/*.png
+defender/tests/node_modules/
