@@ -1,0 +1,8 @@
+{
+  "name": "whydad-defender-tests",
+  "private": true,
+  "type": "module",
+  "description": "Smoke tests for Why, Dad? Defender (headless Chromium): node smoke.mjs",
+  "scripts": { "test": "node smoke.mjs" },
+  "dependencies": { "playwright": "1.56.0" }
+}

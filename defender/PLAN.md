@@ -222,6 +222,8 @@ From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item m
 
 **Build 41:** a pair-up for each new friend (a stat for the pair or the party). Each friend's card is now their outfit page: weapon, armor and book in one row, then an album of every weapon they could find, unknown ones shown as ???. Weapons come in 11 themes on top of each base (Frosty, Sparkly, Muddy, Bubbly from Rare; Thunder, Shadow, Crystal, Blazing from Epic; Golden, Rainbow, Cosmic only at Legendary): 36 per friend, 84 for Dad. Forging has a 50% chance to bring out a theme of the new tier. The separate Weapons page is gone.
 
+**Builds 45–48:** sound, music and haptics; kid-safe ads and a fairer Pass; Myth Check (spaced review); the Daily Myth and the Endless Stacks; a grown-ups' page; Myth of the Month; one new idea per stage (tabs and systems unlock as stages are cleared); storyboard frames for the prologue and every chapter. Smoke tests in `defender/tests` (`npm test`) run on every PR through GitHub Actions.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.

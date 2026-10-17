@@ -341,6 +341,24 @@
   .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 13px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
   #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
+  .breaknote { border-color: #6fa8c8 !important; background: #eef7fb !important; }
+  .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 400 15px/1.1 "Patrick Hand", cursive; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
+  .monthpill b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
+  .sframe { position: relative; aspect-ratio: 4 / 3; border: 4px solid #3a2c20; border-radius: 16px; overflow: hidden; background: #e9dcc0; box-shadow: 0 5px 0 rgba(58,44,32,.35); }
+  .sframe img { width: 100%; height: 100%; object-fit: cover; display: block; animation: kenburns 9s ease-out both; }
+  .sframe img.fade { animation: sfade .45s ease-out both, kenburns 9s ease-out both; }
+  @keyframes kenburns { from { transform: scale(1.0); } to { transform: scale(1.07) translate(-1%, -1%); } }
+  @keyframes sfade { from { opacity: 0; } }
+  .sbig { position: absolute; left: 0; right: 0; bottom: 10%; text-align: center; font: 700 34px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 3px 0 #3a2c20, 0 0 18px rgba(0,0,0,.4); animation: pop .5s .3s backwards; }
+  .sbig small { display: block; font-size: 20px; color: #ffd76a; margin-bottom: 4px; }
+  #strip .sline { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; animation: noteUp .35s ease-out backwards; }
+  #strip .sline .face { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 2.5px solid #3a2c20; overflow: hidden; background: #f3d2b0; }
+  #strip .sline .face img { width: 100%; height: 100%; object-fit: cover; }
+  #strip .sline .bub { flex: 1; background: #fff; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 7px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
+  #strip .sline .bub b { display: block; font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+  #strip .sline.kid { flex-direction: row-reverse; } #strip .sline.kid .bub { background: #eef6ff; }
+  #strip .sline.narr .bub { background: transparent; border: 0; text-align: center; font-size: 18px; font-style: italic; color: #5a4a3a; padding: 4px 6px; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -476,7 +494,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 44</div>
+    <div class="build">build 48</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -492,8 +510,10 @@
       <button class="btn big-icon ghost" id="openRoom">📚<small>Room</small></button>
     </div>
     <div class="menu">
+      <button class="monthpill" id="monthPill"></button>
       <button class="btn play" id="quickPlay">▶ Play</button>
       <button class="btn ghost small" id="play">🗺️ World Map</button>
+      <div class="hmodes"><button class="btn ghost small" id="dailyBtn" hidden>📅 Daily Myth</button><button class="btn ghost small" id="endlessBtn" hidden>♾️ Endless</button></div>
       <div hidden><button id="openHow"></button><button id="openSettings"></button></div>
     </div>
   </section>
@@ -522,6 +542,7 @@
   <div class="modal" id="comicm" hidden>
     <div class="panel">
       <h2 class="display" id="comicTitle" style="font-size:22px;text-align:center;margin-bottom:8px">Chapter 1</h2>
+      <div class="sframe"><img id="storyImg" alt=""><div class="sbig" id="storyBig" hidden></div></div>
       <div id="strip"></div>
       <div class="tap" id="comicTap">tap to continue</div>
       <div class="row"><button class="btn ghost small" id="comicSkip">Skip</button><button class="btn" id="comicGo" hidden>Let's go ▶</button></div>
@@ -541,7 +562,7 @@
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Kid's Diary</h2><span class="pill" id="bookCount"></span></div>
-    <div class="seg"><button id="bookRoom">📚 Reading Room</button></div>
+    <div class="seg"><button id="bookRoom">📚 Reading Room</button><button id="bookStory">📖 The story so far</button></div>
     <div class="dtabs"><button class="on" data-dt="topic">By topic</button><button data-dt="chapter">By chapter</button></div>
     <div class="cats" id="cats"></div>
     <div class="study" id="study" hidden><div style="flex:1"><b>📖 Study time</b><span id="studyTxt"></span></div><button class="btn small" id="studyGo">Read</button></div>
@@ -657,6 +678,7 @@
       <div id="clearStats"></div>
       <div class="lootrow" id="clearLoot"></div>
       <div class="joined" id="joined" hidden></div>
+      <div class="joined breaknote" id="breakNote" hidden></div>
       <div class="joined" id="grew" hidden></div>
       <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
       <div class="row" id="quizRow" hidden><button class="btn ghost small" id="popQuiz">🙋 The Kid has a question (optional, +🪙)</button></div>
@@ -705,13 +727,22 @@
     </div>
   </div>
 
+  <div class="modal" id="parentm" hidden>
+    <div class="panel">
+      <h2 class="display">👪 For grown-ups</h2>
+      <p class="sub hand">What your young myth-buster has been up to, and a few switches. Everything stays on this device.</p>
+      <div id="parentStats"></div>
+      <div class="toggles" id="parentToggles"></div>
+      <div class="row"><button class="btn" id="closeParent">Done</button></div>
+    </div>
+  </div>
   <div class="modal" id="settingsm" hidden>
     <div class="panel">
       <h2 class="display">Settings</h2>
       <p class="sub hand">Change these any time, even mid-match.</p>
       <div class="toggles" id="settingToggles"></div>
       <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no tracking, and it works with no signal once it has loaded. On the web there are no ads at all. In the app, a short video is only ever offered behind a grown-up check, and the Pass turns them off.</p>
-      <div class="row"><button class="btn" id="closeSettings">Done</button></div>
+      <div class="row"><button class="btn ghost" id="openParent">👪 Grown-ups</button><button class="btn" id="closeSettings">Done</button></div>
     </div>
   </div>
 
@@ -1216,7 +1247,7 @@ const elemOf = id => id === 'dad' ? WELEM[save.weapon] || null : CELEM[id] || nu
 const reactKey = (a, b) => { const i = WHEEL.indexOf(a), j = WHEEL.indexOf(b); if (i < 0 || j < 0 || a === b) return null; const adj = (i + 1) % 5 === j || (j + 1) % 5 === i; if (!adj) return null; return [a, b].sort((x, y) => WHEEL.indexOf(x) - WHEEL.indexOf(y)).join('+'); };
 const reactsWith = el => el === 'rainbow' ? WHEEL.map(o => ({ o, R: { n: 'any reaction', em: ELEM[o].em, desc: 'Chroma matches whatever is needed' } })).slice(0, 0).concat([{ o: 'rainbow', R: { n: 'Every reaction', em: '🌈', desc: 'Chroma turns into whichever colour sets one off' } }]) : WHEEL.filter(o => reactKey(el, o)).map(o => ({ o, R: REACT[reactKey(el, o)] }));
 const teamBonus = id => { const el = CELEM[id]; if (!el || !G) return 1; return G.party.filter(m => m.id !== 'dad' && CELEM[m.id] === el).length >= 2 ? 1.1 : 1; };
-function react(e, key) {
+function react(e, key) { sfx('zap');
   const R = REACT[key], base = (10 + G.stage * 2.2) * (1 + rankOf('chroma', 'camo') * .08 + sk('chroma', 'camo') * .03); G.reactions = (G.reactions || 0) + 1; missionAdd('react');
   text(e.x, e.y - e.r - 40, `${R.em} ${R.n.toUpperCase()}!`, '#fff', 20, 1.1);
   if (!(save.seenReact || (save.seenReact = [])).includes(key)) { save.seenReact.push(key); persist(); hint(`${R.em} ${R.n}: ${key.split('+').map(k => ELEM[k].n).join(' and ')} together. ${R.desc[0].toUpperCase() + R.desc.slice(1)}.`, 4.5); }
@@ -1530,7 +1561,7 @@ const itOfBoss = big => itemOf(big ? (Math.random() < .35 ? 3 : 2) : (Math.rando
 const POLISH = [[20, 40, 60, 80, 100], [40, 80, 120, 160, 200], [60, 120, 180, 240, 300], [100, 200, 300, 400, 500]], POLISH_MAX = 5;
 const itemStats = it => { const st = it.stats || { [it.stat]: it.val }, lv = it.lv || 0; if (!lv) return st; const o = {}; for (const k in st) o[k] = Math.round(st[k] * (1 + lv * .1)); return o; };
 // merge: three items of one slot and rarity become one of the next rarity; the chosen one keeps its name, look and bookmarks
-function mergeInto(it) {
+function mergeInto(it) { sfx('forge'); buzz('HEAVY');
   const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
   for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
   const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
@@ -1602,7 +1633,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
@@ -1651,7 +1682,7 @@ function powWatch() {
 }
 // the Friends tab's family chips: lit when two are in the party, gold when three
 function famRow() {
-  const n = famCount();
+  if (!has('families')) return ''; const n = famCount();
   return `<div class="famrow">${Object.keys(FAMILY).map(k => { const F = FAMILY[k], c = Math.min(3, n[k]);
     return `<button class="fam ${c >= 3 ? 'full' : c >= 2 ? 'on' : ''}" data-fam="${k}"><b>${F.em} ${F.n}</b><span>${c}/3 · ${c >= 3 ? F.mv.em + ' ' + F.mv.n : c >= 2 ? F.twoT : F.ids.map(id => CHARS[id].em).join('')}</span></button>`; }).join('')}</div>`;
 }
@@ -1682,7 +1713,7 @@ function famMoves(dt) {
   const live = G.fam || []; G.famT = G.famT || {}; const base = 8 + G.stage * 1.6;
   for (const { k, F, full } of live) { if (!full || !F.mv.every) continue; G.famT[k] = (G.famT[k] || 0) + dt; if (G.famT[k] < F.mv.every) continue; G.famT[k] = 0;
     const dad = G.dad, inR = G.enemies.filter(e => e.hp > 0 && inRing(e)), src = { x: dad.x, y: dad.y, id: 'react' };
-    text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3);
+    text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3); sfx('move');
     if (k === 'bugs') { G.fx.push({ k: 'buzz', x: dad.x, y: dad.y, R: G.radius, t: 0, life: 1.1 }); for (const e of inR) { e.slow = Math.max(e.slow, 1.5); hurt(e, base, 0, src); } }
     else if (k === 'pond') { G.fx.push({ k: 'splash', x: dad.x, y: dad.y + 10, R: 150, t: 0, life: .6, col: '#8fc7f0' }); G.fx.push({ k: 'ring', x: dad.x, y: dad.y, R: 190, t: 0, life: .5, col: '#bfe6f5' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, dad) < 190) hurt(e, base * .6, 160, src); G.hp = Math.min(G.maxhp, G.hp + 5); }
     else if (k === 'sky') { for (const e of inR.sort(() => Math.random() - .5).slice(0, 8)) { hurt(e, base * .8, 0, src); for (let q = 0; q < fxN(3); q++) G.fx.push({ k: 'paper', x: e.x + rnd(-10, 10), y: e.y - 60, vx: rnd(-40, 40), vy: rnd(40, 120), rot: rnd(0, 6), vr: rnd(-6, 6), t: 0, life: .7 }); } }
@@ -1717,9 +1748,74 @@ const OPTS = [
   ['calm', '🫧', 'Calm screen', 'No flashing, no blinking, fewer sparkles. Good for sensitive eyes.'],
   ['big', '🔠', 'Bigger text', 'Larger words on every screen for early readers.'],
   ['labels', '🗣️', 'Read buttons aloud', 'Every button says its name when you press it.'],
+  ['music', '🎵', 'Music', 'A gentle tune for every chapter.'],
+  ['sfx', '🔔', 'Sound effects', 'Pops, chimes and bonks.'],
+  ['buzz', '📳', 'Buzz', 'A little tap in your hand on big moments (on phones that can).'],
   ['autopick', '⏱️', 'Pick tricks for me', 'If nobody picks a trick within 5 seconds, Dad picks the best one.'],
 ];
-function applyOpts() { frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
+
+/* ───────── sound: every effect and the music are synthesised, so there are no files to load ───────── */
+const SND = { ctx: null, sfx: null, mus: null, last: {} };
+function audio() {
+  if (SND.ctx) return SND.ctx; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+  const c = SND.ctx = new AC(), master = c.createGain(); master.connect(c.destination);
+  SND.sfx = c.createGain(); SND.sfx.connect(master); SND.mus = c.createGain(); SND.mus.connect(master); volumes(); return c;
+}
+function volumes() { if (!SND.ctx) return; SND.sfx.gain.value = save.opt.sfx ? .8 : 0; SND.mus.gain.value = save.opt.music ? .34 : 0; }
+// phones keep audio silent until the first touch; the music starts then too
+document.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('button')) { setTimeout(() => sfx('tap'), 0); buzz('LIGHT'); } }, { capture: true });
+document.addEventListener('pointerdown', () => { const c = audio(); if (!c) return; if (c.state === 'suspended') c.resume(); if (musKey == null) music(G && G.S ? G.S.w : 'home'); }, { capture: true });
+document.addEventListener('visibilitychange', () => { if (SND.ctx) document.hidden ? SND.ctx.suspend() : SND.ctx.resume(); });
+function tone(f, d, { type = 'sine', vol = .3, at = 0, slide = 0, attack = .005, out } = {}) {
+  const c = SND.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f * slide), t + d);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0008, t + d);
+  o.connect(g); g.connect(out || SND.sfx); o.start(t); o.stop(t + d + .03);
+}
+let NOISE = null;
+function noise(d, { vol = .3, at = 0, f = 2000, q = 1, type = 'bandpass' } = {}) {
+  const c = SND.ctx; if (!NOISE) { NOISE = c.createBuffer(1, c.sampleRate, c.sampleRate); const ch = NOISE.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+  const t = c.currentTime + at, src = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(); src.buffer = NOISE; fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0008, t + d); src.connect(fl); fl.connect(g); g.connect(SND.sfx); src.start(t, Math.random() * .5); src.stop(t + d + .03);
+}
+const SFX = {
+  pop:   big => { const p = rnd(.9, 1.15); tone(520 * p, .12, { type: 'triangle', vol: .3, slide: .45 }); noise(.06, { vol: .16, f: 3000 }); if (big) { tone(170, .4, { vol: .45, slide: .5 }); noise(.3, { vol: .22, f: 900 }); } },
+  hit:   () => noise(.035, { vol: .07, f: 2500 + Math.random() * 1500 }),
+  crit:  () => { tone(1320, .16, { type: 'square', vol: .06 }); tone(1980, .22, { vol: .12, at: .03 }); },
+  bonk:  () => { tone(140, .25, { vol: .5, slide: .6 }); noise(.12, { vol: .22, f: 400, type: 'lowpass' }); },
+  level: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .26, { type: 'triangle', vol: .2, at: i * .08 })),
+  coin:  () => { tone(1568, .07, { type: 'square', vol: .05 }); tone(2093, .12, { type: 'square', vol: .05, at: .06 }); },
+  xp:    () => tone(880 + Math.random() * 220, .06, { vol: .045 }),
+  book:  () => { noise(.18, { vol: .18, f: 1800, q: .7 }); [784, 988, 1175, 1568].forEach((f, i) => tone(f, .4, { vol: .13, at: .15 + i * .07 })); },
+  forge: () => { noise(.08, { vol: .32, f: 3500, q: 3 }); [1200, 1810, 2650].forEach(f => tone(f, .7, { vol: .06, at: .01 })); },
+  shine: () => [1319, 1760, 2349].forEach((f, i) => tone(f, .25, { vol: .08, at: i * .05 })),
+  zap:   () => tone(900, .18, { type: 'sawtooth', vol: .05, slide: 2.4 }),
+  tap:   () => tone(660, .04, { vol: .07 }),
+  boss:  () => { tone(80, .9, { vol: .5, slide: .7 }); noise(.6, { vol: .18, f: 200, type: 'lowpass' }); },
+  win:   () => [523, 659, 784, 659, 784, 1047].forEach((f, i) => tone(f, i === 5 ? .6 : .18, { type: 'triangle', vol: .18, at: i * .11 })),
+  lose:  () => [392, 349, 311, 262].forEach((f, i) => tone(f, .35, { type: 'triangle', vol: .14, at: i * .2 })),
+  move:  () => { noise(.3, { vol: .14, f: 600, q: .5 }); tone(330, .4, { type: 'triangle', vol: .11, slide: 1.5 }); },
+};
+// play an effect, at most so often per kind, so a crowd of pops stays a crowd and not a roar
+function sfx(k, arg) { if (!save.opt.sfx || !SND.ctx || SND.ctx.state !== 'running') return; const now = SND.ctx.currentTime, gap = { pop: .035, hit: .03, xp: .05, coin: .05, crit: .06, zap: .08 }[k] || 0; if (gap && now - (SND.last[k] || 0) < gap) return; SND.last[k] = now; try { SFX[k](arg); } catch (e) {} }
+// a tap on the phone: the native app's haptics, or a short vibration on Android browsers
+function buzz(style = 'LIGHT') { if (!save.opt.buzz) return; try { if (window.native && window.native.haptic) window.native.haptic(style); else if (navigator.vibrate) navigator.vibrate(style === 'HEAVY' ? 28 : style === 'MEDIUM' ? 16 : 6); } catch (e) {} }
+// music: a gentle loop per chapter (and one for home) from its own key, scale and tempo, played on two soft voices
+const SONGS = { home: [196, [0, 2, 4, 7, 9], 84, 'sine'], 0: [262, [0, 2, 4, 7, 9], 104, 'triangle'], 1: [233, [0, 2, 4, 5, 7, 9], 96, 'sine'], 2: [220, [0, 2, 3, 5, 7, 10], 92, 'triangle'],
+  3: [247, [0, 2, 4, 7, 9], 108, 'triangle'], 4: [208, [0, 1, 4, 5, 7, 8], 100, 'triangle'], 5: [294, [0, 2, 4, 7, 9], 88, 'sine'], 6: [196, [0, 3, 5, 7, 10], 112, 'triangle'], 7: [175, [0, 2, 4, 7, 9, 11], 80, 'sine'] };
+let musKey = null, musT = 0, musNext = 0, musStep = 0, musPat = null;
+function music(which) {
+  if (musKey === which) return; musKey = which; clearInterval(musT); musT = 0; if (which == null || !audio()) return;
+  const [root, sc, bpm, wave] = SONGS[which] || SONGS.home, step = 60 / bpm / 2, seed = n => ((n * 9301 + String(which).length * 49297 + (+which || 7) * 233) % 233280) / 233280;
+  musPat = Array.from({ length: 32 }, (_, i) => seed(i + 1) < (i % 4 === 0 ? .9 : .45) ? sc[Math.floor(seed(i + 50) * sc.length)] + (seed(i + 90) < .2 ? 12 : 0) : null);
+  musStep = 0; musNext = SND.ctx.currentTime + .1;
+  musT = setInterval(() => { const c = SND.ctx; if (!c || c.state !== 'running' || !save.opt.music) { musNext = c ? c.currentTime + .1 : 0; return; }
+    while (musNext < c.currentTime + .35) { const i = musStep % 32, at = musNext - c.currentTime, n = musPat[i];
+      if (n != null) tone(root * 2 ** (n / 12), step * 1.6, { type: wave, vol: .16, at, attack: .02, out: SND.mus });
+      if (i % 8 === 0) tone(root / 2 * 2 ** ((i % 16 ? 7 : 0) / 12), step * 7, { type: 'sine', vol: .2, at, attack: .03, out: SND.mus });
+      musStep++; musNext += step; } }, 100);
+}
+function applyOpts() { volumes(); frame.classList.toggle('big', !!save.opt.big); frame.classList.toggle('calm', !!save.opt.calm); }
 function buildToggles(el) {
   el.innerHTML = OPTS.map(o => `<div class="tog ${save.opt[o[0]] ? 'on' : ''}" data-opt="${o[0]}"><div class="em">${o[1]}</div><div class="txt"><b>${o[2]}</b><span>${o[3]}</span></div><div class="sw"></div></div>`).join('');
   el.querySelectorAll('[data-opt]').forEach(t => t.onclick = () => { save.opt[t.dataset.opt] = !save.opt[t.dataset.opt]; persist(); buildToggles(el); applyOpts(); if (t.dataset.opt === 'labels' && save.opt.labels) sayNow('Read buttons aloud. On.'); if (t.dataset.opt === 'voice' && save.opt.voice) say('Hi! I\'m Dad. I\'ll read the facts to you.'); });
@@ -1750,17 +1846,18 @@ const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ?
 function startWave() {
   const S = G.S, w = G.wave;
   G.toSpawn = []; G.waveT = 0;
+  if (G.endless && w % 5 === 4) { const b = spawn(S.W.boss); if (b) { b.hp = b.maxhp = b.maxhp * (1 + w * .08); } }
   if (S.boss && w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
+    const n = Math.round((G.twist === 'crowd' ? 1.5 : G.twist === 'giant' ? .4 : 1) * (G.endless ? Math.min(1, 28 / (3 + w * 2)) : 1) * (3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
       if (k === 'healer') { const esc = S.pool.filter(x => ['normal', 'hardcover', 'tank'].includes(MYTHS[x].kind)); G.toSpawn.push({ id: esc.length ? pick(esc) : id, at, ang: ang - .2 }); G.toSpawn.push({ id, at: at + .6, ang }); i += 2; }
       else if (k === 'swarm') { if (swarmed) { i++; continue; } swarmed = true; for (let j = 0; j < 6; j++) G.toSpawn.push({ id, at: at + j * .12, ang: ang + rnd(-.3, .3) }); i += 3; }
-      else { G.toSpawn.push({ id, at, ang, elite: i === eliteAt }); i++; }
+      else { G.toSpawn.push({ id, at, ang, elite: i === eliteAt || G.twist === 'giant' }); i++; }
     }
     // a page stage closes with a rush of two crowned myths
     if (w === S.waves - 1 && G.stage >= 1) for (let j = 0; j < 2; j++) G.toSpawn.push({ id: pick(S.pool), at: dur + .5 + j * 1.2, ang: rnd(0, 7), elite: true });
@@ -1774,10 +1871,13 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
+  if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
+  if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
+  if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
 }
 function spawnMini(parent) {
@@ -1802,6 +1902,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
+  if (G.checked && G.checked.has(e.id)) d *= 1.5;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
@@ -1822,6 +1923,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
   e.hp -= d; e.hit = .12;
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
+  sfx(crit ? 'crit' : 'hit');
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
@@ -1841,6 +1943,7 @@ function kill(e) {
   for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(.6, 1) });
   for (let i = 0; i < fxN(2 * big); i++) G.fx.push({ k: 'star', x: e.x + rnd(-e.r, e.r), y: e.y - e.r + rnd(-8, 8), t: 0, life: rnd(.35, .55), s: rnd(8, 13) });
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
+  sfx('pop', e.elite || e.kind === 'boss'); if (e.kind === 'boss') buzz('HEAVY');
   text(e.x, e.y - 10, e.kind === 'brick' ? 'CRUMBLE' : 'POP!', '#cb382e', 22, .8);
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
@@ -2084,6 +2187,7 @@ function updateShots(dt) {
 /* ───────── update ───────── */
 function update(dt) {
   G.t += dt; const dad = G.dad, S = G.S;
+  if (G.pendingCheck && !G.over) { const id = G.pendingCheck; G.pendingCheck = null; askCheck(id); return; }
   if (G.freePicks > 0) { G.freePicks--; offerCards(G.freePicks + 1); return; }
   if (G.room) {
     const b = G.boss;
@@ -2162,7 +2266,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); if (G.famSpiky) { hurt(e, 10 + G.stage * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.stage * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -2205,7 +2309,7 @@ function update(dt) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
@@ -2219,7 +2323,7 @@ function update(dt) {
 function collectAll() { for (const o of G.orbs) o.pull = true; }
 
 /* ───────── level up & cards ───────── */
-function levelUp() { G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
+function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
@@ -2267,7 +2371,7 @@ function offerCards(free = 0) {
 // Dad's Notebook: dropped by every third elite and by a boss at half health. One to three free trick upgrades.
 function dropNote(e) { G.orbs.push({ k: 'note', x: e.x, y: e.y - 10, v: 0, t: 0 }); text(e.x, e.y - e.r - 46, '📒 NOTEBOOK!', '#ecb23c', 20, 1.2); }
 let noteT = 0;
-function openNotebook() {
+function openNotebook() { sfx('book'); buzz('MEDIUM');
   const opts = trickOpts(), r = Math.random(), n = Math.min(opts.length, r < .6 ? 1 : r < .9 ? 2 : 3), got = [];
   while (got.length < n) got.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
   $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><div class="e">${abilEm(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : 'Rank ' + o.lvl}${willEvolve(o) ? ' ✨' : ''}</i></div>`).join('')
@@ -2292,7 +2396,7 @@ function refreshHud(force) {
   const S = G.S;
   const wavesDone = G.wave + (G.breakT > 0 ? 0 : clamp(G.waveT / (10 + G.wave), 0, .95));
   const pb = $('#prog div'); pb.style.width = (wavesDone / S.waves * 100) + '%'; pb.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0);
-  const ws = $('#wstrip'); ws.hidden = !!G.room; if (!G.room) { if (ws.dataset.n !== S.waves + ':' + (S.boss || '')) { ws.dataset.n = S.waves + ':' + (S.boss || ''); ws.querySelector('.marks').innerHTML = Array.from({ length: S.waves }, (_, i) => `<span style="top:${(1 - (i + 1) / S.waves) * 100}%"></span>`).join(''); ws.querySelector('.top').textContent = S.boss ? MYTHS[S.boss].em : '🏁'; }
+  const ws = $('#wstrip'); ws.hidden = !!G.room || !!G.endless; if (!G.room) { if (ws.dataset.n !== S.waves + ':' + (S.boss || '')) { ws.dataset.n = S.waves + ':' + (S.boss || ''); ws.querySelector('.marks').innerHTML = Array.from({ length: S.waves }, (_, i) => `<span style="top:${(1 - (i + 1) / S.waves) * 100}%"></span>`).join(''); ws.querySelector('.top').textContent = S.boss ? MYTHS[S.boss].em : '🏁'; }
     ws.querySelector('.fill').style.height = (wavesDone / S.waves * 100) + '%'; ws.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0); ws.querySelectorAll('.marks span').forEach((m, i) => m.classList.toggle('done', i < G.wave)); ws.querySelector('.cnt').textContent = `${Math.min(S.waves, G.wave + 1)}/${S.waves}`; }
   $('#patience div').style.width = clamp(G.hp / G.maxhp * 100, 0, 100) + '%'; $('#patience').classList.toggle('low', G.hp < G.maxhp * .3);
   $('#patience span').textContent = `Patience ${Math.max(0, Math.ceil(G.hp))} / ${G.maxhp}`;
@@ -3045,7 +3149,7 @@ function openRoom() {
     const oldest = save.room.used[0]; $('#roomTimer').textContent = left > 0 ? `${left} visit${left > 1 ? 's' : ''} left` : `All used up. Another opens in ${fmtWait(oldest + ROOM_WINDOW - Date.now())}.`;
     $('#roomGo').hidden = false; $('#roomGo').disabled = left <= 0;
   }
-  $('#roomAdRow').hidden = !(window.rewardedAd && left <= 0 && !hasPass());
+  $('#roomAdRow').hidden = !(adsOn() && left <= 0);
   $('#roomm').hidden = false;
 }
 $('#openRoom').onclick = openRoom; $('#roomClose').onclick = () => $('#roomm').hidden = true;
@@ -3061,7 +3165,22 @@ function startRoom() {
   text(CX, CY - 160, 'Myth or fact?', '#ecb23c', 34, 1.6); say('Welcome to the Reading Room.');
 }
 // a question from the Fact Book: the statement is either the myth (answer Myth) or the real fact (answer Fact)
-function askQuiz() {
+// Myth Check: a myth you've busted before walks in, and the Kid asks about it first. Asking yourself beats reading it
+// again, and spreading the asks out over days makes it stick: 1, 3, 7, 14, then 30 days, back to 1 after a miss.
+const REVIEW_DAYS = [1, 3, 7, 14, 30];
+const dayPlus = n => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+function reviewDue(id) { const R = (save.review || {})[id]; if (R) return R.due <= today(); const d = (save.factDate || {})[id]; return !!d && d < today(); }
+const knowsWell = () => Object.values(save.review || {}).filter(r => r.box >= 3).length;
+function askCheck(id) {
+  G.check = { id }; G.checks = (G.checks || 0) + 1; G.asked = G.asked || []; G.asked.push(id);
+  const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
+  $('#quizm h2').textContent = `${M.em} Myth Check!`; $('#quizCard small').textContent = 'You busted this one before. Is the card a myth or a fact?';
+  $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
+  const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
+  $('#ansMyth').disabled = $('#ansFact').disabled = false; G.paused = true; $('#quizm').hidden = false; sfx('book');
+  sayNow(`Myth check! ${isFact ? M.fact : M.myth}. Myth, or fact?`);
+}
+function askQuiz() { $('#quizm h2').textContent = 'Myth or fact?'; $('#quizCard small').textContent = 'The Kid holds up a card';
   G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
   const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
@@ -3075,8 +3194,13 @@ function answerQuiz(saidFact) {
   if (right) G.right = (G.right || 0) + 1;
   if (right) { missionAdd('fact'); $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
   else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
+  if (G.check) { // spaced review: a right answer moves the myth further out, a miss brings it back tomorrow
+    const R = (save.review = save.review || {})[q.id] || { box: 0 }; R.box = right ? Math.min(REVIEW_DAYS.length - 1, R.box + 1) : 0; R.due = dayPlus(REVIEW_DAYS[R.box]); save.review[q.id] = R; persist();
+    if (right) { (G.checked = G.checked || new Set()).add(q.id); $('#quizAfter').innerHTML += ' <b>Every one of those is wide open this match!</b>'; }
+  }
   setTimeout(() => {
     $('#quizm').hidden = true;
+    if (G.check) { G.check = null; G.paused = false; if (right) text(G.dad.x, G.dad.y - 110, `${MYTHS[q.id].em} I KNOW THIS ONE!`, '#8fd38a', 20, 1.4); return; }
     if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
     G.paused = false;
     if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
@@ -3115,9 +3239,36 @@ const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null;
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
   if (on) { navDots(); updateQuickPlay(); } }
-function startGame(stage) {
-  newRun(stage);
-  G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famPow = famStat('pow'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
+// Daily Myth: one cleared stage a day with a twist, the same for everyone that day. A small prize the first time, nothing
+// lost by skipping it. Endless Stacks: waves until Dad needs a nap, a chapter boss every fifth, best wave remembered.
+const TWISTS = [
+  { k: 'quick', em: '💨', n: 'Speedy Day', d: 'Myths walk 30% faster, and give double XP.' },
+  { k: 'crowd', em: '👥', n: 'Crowd Day', d: 'Half again as many myths, each a lot softer.' },
+  { k: 'giant', em: '🦣', n: 'Giant Day', d: 'Fewer myths, but every one is crowned.' },
+  { k: 'solo', em: '🧍', n: 'Just Two', d: 'Dad and your first friend only.' },
+];
+// Myth of the Month: each month has a topic and a featured friend. Every stage cleared that month adds a page or two to the
+// friend's book, and myths from the topic drop more coins. Nothing to miss for good: every month comes round again next year.
+const MONTHS = [['space', 'uni'], ['body', 'frost'], ['weather', 'sol'], ['earth', 'rosie'], ['animals', 'gizmo'], ['food', 'coco'], ['science', 'inky'], ['history', 'bramble'], ['words', 'dusty'], ['animals', 'echo'], ['earth', 'pinch'], ['weather', 'bluey']];
+const MONTH_NAME = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function monthEv() { const m = new Date().getMonth(), [cat, id] = MONTHS[m]; return { cat, id, C: CATS[cat], name: MONTH_NAME[m] }; }
+function updateMonth() { const p = $('#monthPill'); if (!p) return; p.hidden = !has('month'); if (p.hidden) return; const E = monthEv(), c = chr(E.id), F = CHARS[E.id];
+  p.innerHTML = `${E.C[0]} <b>${E.C[1]} Month</b> · ${F.em} ${F.name} ${c.own ? `★${fstars(E.id)}` : `${pagesOf(E.id)}/${tierOf(E.id).pages} pages`}`;
+  p.onclick = () => toastMsg(`${E.C[0]} ${E.C[1]} Month, all of ${E.name}: every stage you clear adds a page to ${F.name}'s book (two for three stars), and ${E.C[1].toLowerCase()} myths drop more coins. If you don't finish, ${F.name} comes round again next year.`); }
+const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
+function updateModes() {
+  const D = dailyToday(), db = $('#dailyBtn'), eb = $('#endlessBtn'); if (!db) return;
+  db.hidden = !D || !has('daily'); if (D) db.innerHTML = `${D.tw.em} Daily Myth${D.done ? ' ✔' : '<i class="dot"></i>'}`;
+  eb.hidden = !save.cleared.includes(4) || !has('endless'); eb.textContent = save.endlessBest ? `♾️ Endless · best ${save.endlessBest}` : '♾️ Endless';
+}
+function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
+function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
+function startGame(stage, how = {}) { music(STAGES[stage].w);
+  newRun(stage); G.monthCat = monthEv().cat;
+  if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
+  if (how.endless) { G.endless = true; G.S = { ...G.S, waves: 9999, boss: null }; $('#stageName').textContent = '♾️ The Endless Stacks'; $('#prog').hidden = true; }
+  const pids = G.party.filter(m => m.id !== 'dad').map(m => m.id); G.fam = famLive(pids); G.famQuick = famStat('quick', pids); G.famGuard = famStat('guard', pids); G.famPow = famStat('pow', pids); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
   if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
   mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
@@ -3128,24 +3279,39 @@ function startGame(stage) {
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
 }
 /* ───────── comics: three panels, tap through, always skippable ───────── */
-let comicDone = null, comicPanels = [], comicAt = 0;
-function showComic(W, which, done) {
-  comicDone = done; comicPanels = W.comic[which]; comicAt = 0;
-  $('#comicTitle').textContent = `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`;
-  $('#strip').innerHTML = ''; $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false;
-  comicNext();
+// the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
+// is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
+let comicDone = null, frames = [], fi = 0, li = 0;
+const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png' };
+function chapterFrames(W, which) {
+  const n = WORLDS.indexOf(W) + 1, L = W.comic[which];
+  if (n === 1 && which === 'in') return [
+    { img: 'story_p1', lines: [['n', 'In the window of the town library sits the Big Book of Wrong. Every silly thing anyone ever believed is written inside it.']] },
+    { img: 'story_p2', lines: [['n', 'One evening it burst open, and every wrong page ran off on its own, still sure it was right.']] },
+    { img: 'story_1_in', lines: [L[0], L[1]] }, { img: 'story_p3', lines: [L[2]] },
+    { img: 'story_p4', lines: [['n', 'Dad, the Kid and a backyard full of friends. Every page they pop turns back into a true fact.']], big: '<small>Why, Dad?</small>Defender' }];
+  return [{ img: `story_${n}_${which}`, lines: L }];
 }
+function showComic(W, which, done) { showFrames(chapterFrames(W, which), WORLDS.indexOf(W) === 0 && which === 'in' ? '📖 The Big Book of Wrong' : `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`, done); }
+function showFrames(list, title, done) {
+  comicDone = done; frames = list; fi = 0; li = 0; $('#comicTitle').textContent = title;
+  for (const f of list) { const im = new Image(); im.src = `assets/${f.img}.jpg`; } // warm the next pictures
+  $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false; showFrame(); comicNext();
+}
+function showFrame() { const f = frames[fi], im = $('#storyImg'); im.classList.remove('fade'); void im.offsetWidth; im.src = `assets/${f.img}.jpg`; im.classList.add('fade'); $('#storyBig').hidden = !f.big; if (f.big) $('#storyBig').innerHTML = f.big; $('#strip').innerHTML = ''; }
 function comicNext() {
-  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; return; }
-  const [who, line] = comicPanels[comicAt++], d = document.createElement('div'); d.className = 'cpanel ' + (who === 'd' ? 'dad' : 'kid');
-  d.innerHTML = `<canvas width="156" height="192"></canvas><div class="bub"><b>${who === 'd' ? 'DAD' : 'THE KID'}</b>${line}</div>`;
-  $('#strip').appendChild(d); const c = d.querySelector('canvas'), x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, 0);
-  if (who === 'd') drawDadAt(x, 39, 94, 90, 1, comicAt === 1 ? 'talking' : comicAt === 2 ? 'pointing' : 'amazed'); else drawKid(x, 39, 94, 86, false);
-  say(line);
-  if (comicAt >= comicPanels.length) { $('#comicGo').hidden = false; $('#comicTap').hidden = true; }
+  if (li >= frames[fi].lines.length) { if (fi + 1 >= frames.length) return; fi++; li = 0; showFrame(); sfx("book"); }
+  const [who, line] = frames[fi].lines[li++], d = document.createElement('div');
+  d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : 'narr');
+  d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${who === 'd' ? 'DAD' : 'THE KID'}</b>`}${line}</div>`;
+  $('#strip').appendChild(d); say(line);
+  const end = fi + 1 >= frames.length && li >= frames[fi].lines.length; $('#comicGo').hidden = !end; $('#comicTap').hidden = end;
 }
+// the Diary can play everything seen so far, from the prologue on
+function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
 function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && speechSynthesis.cancel(); } catch (e) {} const f = comicDone; comicDone = null; if (f) f(); }
-$('#comicm').onclick = e => { if (e.target.closest('button')) return; if (comicAt < comicPanels.length) comicNext(); };
+$('#comicm').onclick = e => { if (e.target.closest('button')) return; comicNext(); };
+$('#bookStory').onclick = playStory;
 $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
@@ -3160,7 +3326,9 @@ function dropLoot(el, n, bonus) {
   persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
-function stageClear() {
+let sessionMatches = 0;
+setInterval(() => { if (mode === 'game' && G && !G.paused && !G.over && !document.hidden) { const p = save.play || (save.play = {}); p[today()] = (p[today()] || 0) + 10; } }, 10000);
+function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -3185,15 +3353,18 @@ function stageClear() {
   if (Math.random() < .35 + (stars === 3 ? .2 : 0)) { const pool = Object.keys(CHARS).filter(id => id !== 'dad' && (!chr(id).own || fstars(id) < STAR_MAX)), wt = id => [4, 2, 1, .35][CTIER[id] || 0];
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
+  if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
+  if (first) notes.push(...newUnlocks().map(t => t.replace(/\.$/, '')));
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
-  $('#joined').hidden = !joined && !pageNote; if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote) $('#joined').textContent = pageNote;
+  if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
+  $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
   $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
-  $('#adRow').hidden = !(window.rewardedAd && !hasPass() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
+  $('#adRow').hidden = !(adsOn() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
   if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
 // every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
@@ -3216,8 +3387,8 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
-function goHome() { mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
+function gameOver() { sfx('lose'); if (G.endless) { const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
 // the map is one long scroll: chapter 1 at the bottom, chapter 8 at the top. Pins zigzag up through each band.
@@ -3272,7 +3443,7 @@ function buildMap(scroll = true) {
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
-  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
+  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = !has('power') ? '' : powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
   if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
   $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
@@ -3306,7 +3477,8 @@ function buildBook() {
     ids.forEach(kidRow);
   }
   n = save.facts.length;
-  $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
+  $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`; $('#bookCount').title = `${knowsWell()} facts you really know (answered right in three Myth Checks on different days)`;
+  { let k = $('#knowWell'); if (!k) { k = document.createElement('p'); k.id = 'knowWell'; k.className = 'intro'; $('#factList').before(k); } k.innerHTML = `🧠 <b>${knowsWell()}</b> facts you really know. Myth Checks in matches bring old myths back on day 1, 3, 7, 14 and 30.`; }
 }
 $('#studyGo').onclick = () => {
   const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat && save.facts.includes(id)).sort(() => Math.random() - .5).slice(0, 3); if (ids.length < 3) return;
@@ -3426,7 +3598,7 @@ function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
   const list = save.items.filter(i => i.type === t && (t !== 'weapon' || i.owner === id)).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
   $('#pickSub').textContent = list.length ? 'Tap one to wear it.' : `No ${ITEMS[t].slot.toLowerCase()}s in the bag yet. They drop at the end of every match.`;
-  $('#pickList').innerHTML = list.map(it => itemRow(it, (it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`) + `<button class="btn small ghost" data-more="${it.uid}">✨ 🔨</button>`)).join('');
+  $('#pickList').innerHTML = list.map(it => itemRow(it, (it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`) + (has('polish') ? `<button class="btn small ghost" data-more="${it.uid}">✨${has('forge') ? ' 🔨' : ''}</button>` : ''))).join('');
   $('#pickList').querySelectorAll('[data-more]').forEach(b => b.onclick = () => itemSheet(b.dataset.more));
   $('#pickUnequip').hidden = !cur;
   $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; syncWeapons(); persist(); $('#pickm').hidden = true; buildParty(); });
@@ -3437,7 +3609,7 @@ $('#pickClose').onclick = () => $('#pickm').hidden = true;
 
 /* ───────── the bag ───────── */
 const twinsOf = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && (it.type !== 'weapon' || o.owner === it.owner) && !wornBy(o.uid));
-function polishItem(it) { const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return false; it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); return true; }
+function polishItem(it) { const lv = it.lv || 0, c = POLISH[it.rar][lv]; if (lv >= POLISH_MAX || save.coins < c) return false; sfx('shine'); it.lv = lv + 1; it.spent = (it.spent || 0) + c; setWallet({ coins: save.coins - c }); missionTick('polish'); return true; }
 function forgeFlow(it, after) {
   const use = twinsOf(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (use.length < 2) return;
   pickFor = null; $('#pickTitle').textContent = `Forge into ${RAR[it.rar + 1].n}`; $('#pickSub').textContent = `${itemName(it)} becomes ${RAR[it.rar + 1].n} and keeps its look. These two go into it (their bookmarks come back, and so do the coins spent polishing them):`; $('#pickUnequip').hidden = true;
@@ -3451,8 +3623,8 @@ const BAG_F = [['all', 'All'], ['weapon', '⚔️ Weapons'], ['armor', '🛡️ 
 function bagBtns(it) {
   if (it.type === 'mark') return `<div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
   const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0, w = wornBy(it.uid);
-  return `<div class="sheetbtns">${lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
-    + (it.rar < 3 ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
+  return `<div class="sheetbtns">${!has('polish') ? '' : lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
+    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
     + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
     + `</div><p class="sheethint">${it.type === 'weapon' ? `Hold it from ${CHARS[it.owner].name}'s weapon rack.` : 'Put it on from a friend\'s card in Friends.'}</p>`;
 }
@@ -3477,7 +3649,7 @@ function bindBag(root, after) {
 }
 function buildItems() {
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
-  const tile = it => { const w = wornBy(it.uid), ready = it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
+  const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
     return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
   box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
@@ -3500,17 +3672,18 @@ $('#gateOk').onclick = () => { if (+$('#gateIn').value === gateAns) { $('#gatem'
 $('#gateNo').onclick = () => { $('#gatem').hidden = true; gateCb = null; };
 $('#gateIn').onkeydown = e => { if (e.key === 'Enter') $('#gateOk').onclick(); };
 // a rewarded video, behind the gate; resolves true only when it was watched through
-function watchAd(why) { return new Promise(res => { if (!window.rewardedAd) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
+const adsOn = () => !!window.rewardedAd && !hasPass() && !save.opt.noAds;
+function watchAd(why) { return new Promise(res => { if (!adsOn()) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
 // what real money can buy: always deterministic, never a draw. Prices come from the store itself.
 const IAP = {
-  'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'Every friend joins the party today, and the video offers go away for good.', grant: () => { for (const id in CHARS) chr(id).own = true; } },
+  'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'The video offers go away for good, and Dad\'s Diary gets a gold cover. Friends are still met the usual way, page by page.', grant: () => { save.goldDiary = true; } },
   'com.whydad.defender.closet': { em: '🧥', name: "Dad's Closet", desc: 'Every named Legendary piece of armor, plus one more, with three bookmark slots each.', grant: () => { for (const l of LEGENDS.filter(l => l.type === 'armor')) { const it = makeItem('armor', 3, false); Object.assign(it, { name: l.name, em: l.em, desc: l.desc, stats: { ...l.stats }, legend: true, stat: Object.keys(l.stats)[0], val: Object.values(l.stats)[0] }); save.items.push(it); } save.items.push(makeItem('armor', 3, false)); } },
 };
 const hasPass = () => save.iap.includes('com.whydad.defender.pass');
 function grantIap(id) { if (!IAP[id] || save.iap.includes(id)) return; save.iap.push(id); IAP[id].grant(); persist(); }
 async function buildIap() {
   const box = $('#iapList'); if (!box) return;
-  if (!window.iap) { box.innerHTML = ''; return; }
+  if (!window.iap || save.opt.noBuy) { box.innerHTML = ''; return; }
   let prices = {}; try { for (const p of await window.iap.products()) prices[p.id] = p.price; } catch (e) {}
   box.innerHTML = `<div class="iaphead">🔒 Grown-ups only <small>Real money. Each one is a fixed thing, never a draw.</small></div>` + Object.keys(IAP).map(id => { const P = IAP[id], own = save.iap.includes(id); return `<div class="offer ${own ? 'owned' : ''}"><div class="em">${P.em}</div><div class="txt"><b>${P.name}</b><span>${P.desc}</span></div>${own ? '<button class="btn small green" disabled>Owned</button>' : `<button class="btn small" data-iap="${id}"><span class="price">${prices[id] || 'Buy'}</span></button>`}</div>`; }).join('') + `<div class="offer"><div class="em">♻️</div><div class="txt"><b>Restore purchases</b><span>Bought it on another phone? Get it back here.</span></div><button class="btn small ghost" id="iapRestore">Restore</button></div>`;
   box.querySelectorAll('[data-iap]').forEach(b => b.onclick = () => adultGate('Buying things is for grown-ups.', async () => { b.disabled = true; try { if (await window.iap.buy(b.dataset.iap)) { grantIap(b.dataset.iap); drawStatics(); } } catch (e) {} buildIap(); }));
@@ -3528,7 +3701,7 @@ const OFFERS = [
 ];
 function buildStore() {
   const box = $('#storeList');
-  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
@@ -3569,7 +3742,7 @@ $('#drawClose').onclick = () => $('#drawm').hidden = true;
 const DAILY = [['🪙', '100 coins', { coins: 100 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '3 Blank pages', { blank: 3 }], ['🪙', '200 coins', { coins: 200 }], ['🎟️', '1 card', { tix: 1 }], ['📄', '5 Blank pages', { blank: 5 }], ['🎁', '100 gems + card', { gems: 100, tix: 1 }]];
 const today = () => new Date().toISOString().slice(0, 10);
 function checkDaily() {
-  if (save.daily.last === today()) return;
+  if (save.daily.last === today() || !save.cleared.length) return; // a brand-new player sees the story first, gifts after
   const day = save.daily.streak % 7;
   $('#dailySub').textContent = save.daily.streak ? `Day ${day + 1} of 7. Come back any day for the next one.` : 'A little something for coming by.';
   $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
@@ -3585,10 +3758,35 @@ $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
 // the tab bar: five places, always one tap away; Play is home. Dots only when there is something to do there.
 const TAB_OF = { '#title': 'play', '#missions': 'play', '#store': 'shop', '#partyScreen': 'friends', '#shop': 'friends', '#items': 'bag', '#book': 'diary' };
+// one new idea at a time: each system opens after a number of stages cleared, with a line on the clear screen and a dot
+// on its tab until it's visited. Saves that are already further along have everything open.
+const UNLOCKS = [
+  { k: 'friends', at: 1, tab: 'friends', t: '🧑‍🤝‍🧑 Friends is open: tap it to meet Webster and see his tricks.' },
+  { k: 'shop', at: 2, tab: 'shop', t: '🏪 The Shop is open: spend coins and gems there.' },
+  { k: 'missions', at: 4, t: '📋 Missions are open (top of the home screen): little goals with prizes.' },
+  { k: 'bag', at: 3, tab: 'bag', t: '🎒 The Bag is open: items from matches go there. Put them on from a friend\'s card.' },
+  { k: 'power', at: 5, t: '⚡ Power is on: the Play button shows how strong your team is next to what the stage needs.' },
+  { k: 'polish', at: 6, t: '✨ Polishing is open: make any item a bit stronger in the Bag.' },
+  { k: 'month', at: 7, t: '📅 Myth of the Month is on: a featured friend gets pages from every stage this month.' },
+  { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
+  { k: 'forge', at: 10, t: '🔨 Forging is open: three items of a rarity make one of the next.' },
+  { k: 'daily', at: 11, t: '📅 The Daily Myth is open on the home screen: a new twist every day.' },
+  { k: 'endless', at: 12, t: '♾️ The Endless Stacks are open: how many waves can you last?' },
+];
+const has = k => { const U = UNLOCKS.find(u => u.k === k); return !U || save.cleared.length >= U.at; };
+// lines for anything that opened with this clear (called once the clear is counted)
+function newUnlocks() { const seen = save.seenUnlocks || (save.seenUnlocks = []), out = [];
+  for (const U of UNLOCKS) if (has(U.k) && !seen.includes(U.k)) { seen.push(U.k); out.push(U.t); if (U.tab) (save.newTabs = save.newTabs || []).push(U.tab); }
+  persist(); return out; }
+function applyUnlocks() {
+  if (!save.seenUnlocks) { save.seenUnlocks = UNLOCKS.filter(u => has(u.k)).map(u => u.k); persist(); } // older saves: what's open stays open, quietly
+  $$('#tabbar [data-tab]').forEach(b => { const t = b.dataset.tab; b.hidden = t !== 'play' && t !== 'diary' && !has(t); });
+  const mi = $('#openMissions'); if (mi) mi.hidden = !has('missions');
+}
 function navDots() { const tb = $('#tabbar'); if (!tb) return; const set = (t, on) => { const d = tb.querySelector(`[data-tab="${t}"] .dot`); if (d) d.hidden = !on; };
-  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false);
+  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
   const d2 = $('#misDot2'); if (d2) d2.hidden = !(() => { try { return misReady(); } catch (e) { return false; } })(); }
-$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab;
+$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab; if (save.newTabs && save.newTabs.includes(t)) { save.newTabs = save.newTabs.filter(x => x !== t); persist(); }
   if (t === 'play') { showScreen('#title'); drawStatics(); } else if (t === 'shop') $('#openStore').onclick(); else if (t === 'friends') { partySel = null; $('#openParty').onclick(); } else if (t === 'bag') $('#openItems').onclick(); else if (t === 'diary') $('#openBook').onclick(); });
 $$('.seg [data-seg]').forEach(b => b.onclick = () => { if (b.dataset.seg === 'friends') { partySel = null; buildParty(); showScreen('#partyScreen'); } else { if (partySel && (CWEAP[partySel] || partySel === 'dad')) shopTab = partySel; buildShop(); showScreen('#shop'); } });
 $('#homeMissions').onclick = () => $('#openMissions').onclick(); $('#homeHow').onclick = () => $('#howm').hidden = false; $('#homeSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
@@ -3600,7 +3798,7 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
+function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
@@ -3615,7 +3813,23 @@ $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hi
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
-$('#retry').onclick = () => startGame(G.stage);
+// the grown-ups' page, behind the gate: this week's learning and play, and the switches that matter to a parent
+const PARENT_OPTS = [['noAds', '📺', 'No video offers', 'Hides every "watch a video" offer.'], ['noBuy', '🛒', 'Hide the purchase shelf', 'The grown-ups shelf in the Store disappears.'], ['breaks', '🧃', 'Break reminders', 'Every third stage in a row suggests a stretch or a snack.']];
+function buildParent() {
+  const week = [...Array(7)].map((_, i) => dayPlus(-i)), mins = d => Math.round(((save.play || {})[d] || 0) / 60), wk = week.reduce((a, d) => a + mins(d), 0);
+  const newFacts = Object.entries(save.factDate || {}).filter(([, d]) => week.includes(d)).map(([id]) => id);
+  $('#parentStats').innerHTML = `<div class="stat"><span>Myths busted</span><b>${save.facts.length} / ${Object.keys(MYTHS).length}</b></div>
+    <div class="stat"><span>New this week</span><b>${newFacts.length}</b></div><div class="stat"><span>Facts that have stuck</span><b>${knowsWell()}</b></div>
+    <div class="stat"><span>Play today</span><b>${mins(today())} min</b></div><div class="stat"><span>Play this week</span><b>${wk} min</b></div>
+    ${newFacts.length ? `<p class="hand" style="margin:8px 0 0">Ask them about: ${newFacts.slice(0, 4).map(id => `<b>${MYTHS[id].em} ${MYTHS[id].name}</b>`).join(', ')}.</p>` : ''}`;
+  const el = $('#parentToggles'); if (save.opt.breaks == null) save.opt.breaks = true;
+  el.innerHTML = PARENT_OPTS.map(([k, em, n, d]) => `<div class="tog ${save.opt[k] ? 'on' : ''}" data-popt="${k}"><div class="em">${em}</div><div class="txt"><b>${n}</b><span>${d}</span></div><div class="sw"></div></div>`).join('');
+  el.querySelectorAll('[data-popt]').forEach(t => t.onclick = () => { save.opt[t.dataset.popt] = !save.opt[t.dataset.popt]; persist(); buildParent(); });
+}
+$('#openParent').onclick = () => { $('#settingsm').hidden = true; adultGate('This page is for grown-ups.', () => { buildParent(); $('#parentm').hidden = false; }); }; // settings closes first so the gate is on top
+$('#closeParent').onclick = () => { $('#parentm').hidden = true; };
+$('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() : startGame(G.stage);
+$('#dailyBtn').onclick = startDaily; $('#endlessBtn').onclick = startEndless;
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
   G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
@@ -3636,7 +3850,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();
