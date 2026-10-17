@@ -220,6 +220,8 @@ From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item m
 
 **Build 40:** 12 more friends, 28 in all (10 Common, 9 Rare, 5 Epic, 4 Legendary): Bumble, Wiggles, Coco, Dot, Rosie, Gizmo, Bramble, Pinch, Sol, Frost, Bluey and Uni, each busting a myth about their own animal. Their moves are data played by one engine (`genAbil`: shot, burst, lob, chain, big, all) and their passives add to party-wide auras (Power, Quick, crit, guard, coins, Patience regen). Two new families, Sky High and Furry Friends, make six. Still to do: 3D models for the new friends after the Meshy reset (they use their drawings in battle meanwhile).
 
+**Build 41:** a pair-up for each new friend (a stat for the pair or the party). Each friend's card is now their outfit page: weapon, armor and book in one row, then an album of every weapon they could find, unknown ones shown as ???. Weapons come in 11 themes on top of each base (Frosty, Sparkly, Muddy, Bubbly from Rare; Thunder, Shadow, Crystal, Blazing from Epic; Golden, Rainbow, Cosmic only at Legendary): 36 per friend, 84 for Dad. Forging has a 50% chance to bring out a theme of the new tier. The separate Weapons page is gone.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.

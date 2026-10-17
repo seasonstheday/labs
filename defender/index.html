@@ -372,6 +372,20 @@
   #title .side2 { position: absolute; left: 12px; top: 150px; display: flex; flex-direction: column; gap: 10px; }
   .r0 { --rc: #8b6d4b; } .r1 { --rc: #5c8cbe; } .r2 { --rc: #8a5cc4; } .r3 { --rc: #e0962a; }
   .slots { display: flex; gap: 8px; margin-top: 8px; }
+  .outfit { margin: 10px 0 4px; } .outfit .rackh { margin: 4px 0 6px; }
+  .otiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .otile { appearance: none; position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; border: 3px solid var(--rc, #3a2c20); border-radius: 14px; background: linear-gradient(#fff, color-mix(in srgb, var(--rc, #fff) 14%, #fff)); padding: 6px 4px 7px; box-shadow: 0 3px 0 rgba(58,44,32,.3); cursor: pointer; color: #3a2c20; min-width: 0; }
+  .otile.empty { border-style: dashed; background: rgba(255,255,255,.4); box-shadow: none; }
+  .otile small { font: 700 10px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .otile .ie { font-size: 30px; line-height: 1.1; position: relative; } .otile .ie i, .vt span i { position: absolute; right: -10px; bottom: -4px; font-size: 13px; font-style: normal; }
+  .otile b { font: 700 12px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .otile em { font: 400 12px/1.1 "Patrick Hand", cursive; font-style: normal; color: var(--muted); }
+  .albumh { appearance: none; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border: 2.5px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 10px; cursor: pointer; color: #3a2c20; }
+  .albumh b { font: 700 14px/1 "Fredoka", Arial, sans-serif; } .albumh span { font: 400 15px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .vtier { margin-top: 6px; } .vtier > small { font: 700 11px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
+  .vgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 4px; }
+  .vt { border: 2.5px solid #3a2c20; border-radius: 10px; background: #fff; padding: 4px 2px; text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+  .vt span { font-size: 22px; line-height: 1.1; position: relative; } .vt b { font: 700 10px/1.05 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .vt small { font: 400 11px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .vt.unk { background: rgba(58,44,32,.08); border-style: dashed; color: var(--muted); } .vt.unk span { opacity: .6; }
   .slotb { flex: 1; height: 54px; border-radius: 12px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
   .slotb .ie { font-size: 22px; line-height: 1; }
   .slotb.empty { border-style: dashed; background: rgba(58,44,32,.05); }
@@ -459,7 +473,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 40</div>
+    <div class="build">build 41</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -542,8 +556,7 @@
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <div class="seg"><button data-seg="friends" class="on">🧑‍🤝‍🧑 Friends</button><button data-seg="weapons">⚔️ Weapons</button></div>
-    <p class="intro">Tap a friend to see their moves, weapon and stars. Fill a friend's book with 📄 pages and they join.</p>
+    <p class="intro">Tap a friend for their outfit, moves and stars. Fill a friend's book with 📄 pages and they join.</p>
     <div class="list" id="partyList"></div>
   </section>
 
@@ -1339,6 +1352,32 @@ Object.assign(CWEAP, {
 Object.assign(CTIER, { bumble: 0, wiggles: 0, coco: 0, dot: 0, rosie: 1, gizmo: 1, bramble: 1, pinch: 1, sol: 2, frost: 2, bluey: 3, uni: 3 });
 Object.assign(CELEM, { bumble: 'spark', wiggles: 'earth', coco: 'wind', dot: 'moon', rosie: 'water', gizmo: 'moon', bramble: 'earth', pinch: 'water', sol: 'wind', frost: 'wind', bluey: 'water', uni: 'spark' });
 Object.assign(HOME, { bumble: 4, coco: 10, wiggles: 15, dot: 20, rosie: 24, gizmo: 28, pinch: 33, bramble: 35, sol: 38, frost: 39 });
+// every weapon line also comes in themes: Rare and up can be Frosty or Sparkly, Epic and up Thunder or Shadow, and only
+// Legendary ones are Golden, Rainbow or Cosmic. A themed variant is its base with the theme's numbers on top.
+const THEMES = {
+  frosty:  { n: 'Frosty',   em: '❄️', col: '#8fd3f0', tier: 1, pow: 1.04, rate: 1.04, gfx: 'slow', fx: 'Chill' },
+  sparkly: { n: 'Sparkly',  em: '✨', col: '#ffd76a', tier: 1, pow: 1.06, rate: 1, gfx: 'crit', fx: '+crit' },
+  muddy:   { n: 'Muddy',    em: '🟤', col: '#8a6a4a', tier: 1, pow: 1.08, rate: .96, gfx: 'knock', fx: 'Knockback' },
+  bubbly:  { n: 'Bubbly',   em: '🫧', col: '#9fd8ff', tier: 1, pow: 1, rate: 1.1, fx: 'Quick' },
+  thunder: { n: 'Thunder',  em: '⚡', col: '#e8b81c', tier: 2, pow: 1.1, rate: 1.04, gfx: 'stun', fx: 'Tiny stun' },
+  shadow:  { n: 'Shadow',   em: '🌑', col: '#5a4a7a', tier: 2, pow: 1.14, rate: 1, gfx: 'crit', fx: '+crit' },
+  crystal: { n: 'Crystal',  em: '💎', col: '#7fe0e0', tier: 2, pow: 1.06, rate: 1.14, fx: 'Quick' },
+  blaze:   { n: 'Blazing',  em: '🔥', col: '#f0703a', tier: 2, pow: 1.18, rate: .98, gfx: 'knock', fx: 'Knockback' },
+  golden:  { n: 'Golden',   em: '👑', col: '#f2c14e', tier: 3, pow: 1.22, rate: 1.1, gfx: 'crit', fx: '+crit' },
+  rainbow: { n: 'Rainbow',  em: '🌈', col: '#d65fa0', tier: 3, pow: 1.16, rate: 1.16, gfx: 'stun', fx: 'Tiny stun' },
+  cosmic:  { n: 'Cosmic',   em: '🌌', col: '#3a3a8a', tier: 3, pow: 1.28, rate: 1.04, gfx: 'knock', fx: 'Knockback' },
+};
+const baseOf = k => String(k).split('-')[0], themeOf = k => THEMES[String(k).split('-')[1]] || null;
+const vtier = V => V.tier || 0;
+function themedLine(L) { // adds base-theme variants to a line, once
+  if (L.themed) return L; const bases = Object.keys(L.v);
+  for (const b of bases) for (const t in THEMES) { const V = L.v[b], T = THEMES[t];
+    L.v[`${b}-${t}`] = { em: V.em, badge: T.em, col: T.col, name: `${T.n} ${V.name}`, desc: V.desc, pow: +(V.pow * T.pow).toFixed(2), rate: +(V.rate * T.rate).toFixed(2), fx: T.fx, gfx: T.gfx || V.gfx, tier: T.tier, baseKey: b, theme: t }; }
+  L.themed = true; return L;
+}
+for (const id in CWEAP) themedLine(CWEAP[id]);
+// Dad's weapon for the numbers: his lens mechanics come from the base, the theme adds its Power, Rate and effect
+function wv(id) { if (id !== 'dad') return cweapOf(id); const T = save.dadTheme && THEMES[save.dadTheme]; return T ? { pow: T.pow, rate: T.rate, gfx: T.gfx } : null; }
 // party-wide stats from the newer friends' passives
 function aura(st) { if (!G) return 0; let v = 0; for (const m of G.party) for (const a of CHARS[m.id].abil) { const D = ABIL[a]; if (D.aura === st && m.ranks[a]) v += m.ranks[a] * D.per + sk(m.id, a) * D.per / 2; } return v; }
 // play one of the newer friends' moves; false when there's nothing to aim at
@@ -1388,7 +1427,22 @@ const SYNERGY = [
   { ids: ['dad', 'dusty'], name: 'Read the Room', desc: 'Dad\'s weapon hits marked myths 10% harder.' },
   { ids: ['webster', 'nilla'], name: 'Night Watch', desc: 'Swoop hits webbed myths twice as hard.' },
   { ids: ['dad', 'luna'], name: 'Lights Out', desc: 'With Bedtime Story, Lamp Dance also puts myths to sleep.' },
+  // the newer pair-ups are a stat: for the pair, or (party) for everyone
+  { ids: ['bumble', 'sparky'], name: 'Buzz & Glow', desc: 'Both work 15% faster.', eff: { quick: 15 } },
+  { ids: ['wiggles', 'webster'], name: 'Down Below', desc: 'Both hit 15% harder.', eff: { pow: 15 } },
+  { ids: ['coco', 'puddles'], name: 'Park Bench', desc: '+10% coins for everyone.', eff: { coin: 10 }, party: true },
+  { ids: ['dot', 'hopper'], name: 'Lucky Lily Pad', desc: 'Both land 8% more critical hits.', eff: { crit: 8 } },
+  { ids: ['rosie', 'goldie'], name: 'Pink & Gold', desc: 'Both hit 15% harder.', eff: { pow: 15 } },
+  { ids: ['gizmo', 'dusty'], name: 'Midnight Snack', desc: 'Both work 15% faster.', eff: { quick: 15 } },
+  { ids: ['bramble', 'nilla'], name: 'Night Hunters', desc: 'Both land 10% more critical hits.', eff: { crit: 10 } },
+  { ids: ['pinch', 'pip'], name: 'Claws Out', desc: 'Dad loses 8% less Patience.', eff: { guard: 8 }, party: true },
+  { ids: ['sol', 'chroma'], name: 'Show-offs', desc: 'Both hit 20% harder.', eff: { pow: 20 } },
+  { ids: ['frost', 'shelly'], name: 'Cold Shell', desc: 'Dad loses 8% less Patience.', eff: { guard: 8 }, party: true },
+  { ids: ['bluey', 'inky'], name: 'Deep Sea', desc: 'Both hit 20% harder.', eff: { pow: 20 } },
+  { ids: ['uni', 'luna'], name: 'Moonbeam', desc: 'Dad gets 0.5 Patience back every second.', eff: { regen: .5 }, party: true },
 ];
+// a live pair-up's stat: for one of the pair (id), or the party-wide ones (no id)
+function synStat(st, id) { let v = 0; for (const sy of SYNERGY) if (sy.eff && sy.eff[st] && (id ? !sy.party && sy.ids.includes(id) : sy.party) && synOn(sy)) v += sy.eff[st]; return v; }
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
 const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
 const BASE_RADIUS = 170;
@@ -1437,16 +1491,18 @@ const LEGENDS = [
 const STAT = { pow: ['Power', '%'], quick: ['Quick', '%'], pat: ['Patience', ''], ring: ['Ring', ''], coin: ['Coins', '%'], crit: ['Crit', '%'] };
 const BASEVAL = { pow: 6, quick: 4, pat: 8, ring: 12, coin: 6, crit: 3 }, EXTRA_BY_RAR = [0, 1, 2, 2];
 // a weapon line: Dad's lenses, or a friend's own line
-const lineOf = id => id === 'dad' ? { line: 'Lenses', v: Object.fromEntries(Object.entries(WEAPONS).map(([k, D]) => [k, { em: D.em, name: D.name, desc: D.desc, pow: 1, rate: 1, fx: (WINFO[k] || {}).fx || '', base: k === 'glass' }])) } : CWEAP[id];
+let DADLINE = null;
+const lineOf = id => id === 'dad' ? (DADLINE || (DADLINE = themedLine({ line: 'Lenses', v: Object.fromEntries(Object.entries(WEAPONS).map(([k, D]) => [k, { em: D.em, name: D.name, desc: D.desc, pow: 1, rate: 1, fx: (WINFO[k] || {}).fx || '', base: k === 'glass' }])) }))) : CWEAP[id];
 const sing = w => w === 'Lenses' ? 'lens' : w.replace(/s$/, '').toLowerCase();
 const weaponOwners = () => ['dad', ...Object.keys(CWEAP).filter(id => chr(id).own)];
 function makeItem(type, rar, named = true, opt = {}) {
   const it = { uid: Date.now().toString(36) + (uidN++).toString(36), type, rar, marks: [] }, mul = RAR[rar].mul;
   if (type === 'weapon') { // weapons are always someone's: party members' come up most
     const owners = weaponOwners(), w = owners.map(id => id === 'dad' ? 3 : save.party.includes(id) ? 3 : 1); let r = Math.random() * w.reduce((a, b) => a + b, 0), owner = opt.owner || owners[owners.length - 1]; if (!opt.owner) for (let i = 0; i < owners.length; i++) { r -= w[i]; if (r < 0) { owner = owners[i]; break; } }
-    const Lw = lineOf(owner), keys = Object.keys(Lw.v), variant = opt.variant && Lw.v[opt.variant] ? opt.variant : pick(keys), V = Lw.v[variant];
+    const Lw = lineOf(owner), keys = Object.keys(Lw.v).filter(k => vtier(Lw.v[k]) <= rar), wk = keys.map(k => Lw.v[k].theme ? 1 : 6); let rv = Math.random() * wk.reduce((a, b) => a + b, 0);
+    const variant = opt.variant && Lw.v[opt.variant] ? opt.variant : keys.find((k, i) => (rv -= wk[i]) < 0) || keys[0], V = Lw.v[variant];
     const lg = owner === 'dad' && rar === 3 && named && !opt.variant && Math.random() < .5 ? pick(LEGENDS.filter(l => l.type === 'weapon')) : null;
-    Object.assign(it, { owner, variant: lg ? lg.variant : variant, base: (lg || V).name, name: lg ? lg.name : RADJ[rar] + V.name, em: lg ? lg.em : V.em, desc: lg ? lg.desc : V.desc, stats: lg ? { ...lg.stats } : { pow: Math.round(BASEVAL.pow * mul) }, legend: !!lg });
+    Object.assign(it, { owner, variant: lg ? lg.variant : variant, base: (lg || V).name, name: lg ? lg.name : (V.theme ? '' : RADJ[rar]) + V.name, em: lg ? lg.em : V.em, desc: lg ? lg.desc : V.desc, stats: lg ? { ...lg.stats } : { pow: Math.round(BASEVAL.pow * mul) }, legend: !!lg });
     if (!lg) { const pool = Object.keys(BASEVAL).filter(k => k !== 'pow'); for (let i = 0; i < EXTRA_BY_RAR[rar]; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; it.stats[k] = Math.max(1, Math.round(BASEVAL[k] * mul * .5)); } }
     it.stat = 'pow'; it.val = it.stats.pow || 0; return it;
   }
@@ -1474,7 +1530,11 @@ function mergeInto(it) {
   const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
   for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
   const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
-  it.stats = st; it.rar = nr; if (!it.legend) { const b = it.base || it.name.replace(/^(Shiny |Ancient |Legendary )/, ''); it.base = b; it.name = RADJ[nr] + b; }
+  it.stats = st; it.rar = nr;
+  if (it.type === 'weapon' && it.owner && !it.legend && Math.random() < .5) { // the forge brings out a theme of the new tier
+    const Lw = lineOf(it.owner), opts = Object.keys(Lw.v).filter(k => baseOf(k) === baseOf(it.variant) && vtier(Lw.v[k]) === nr);
+    if (opts.length) { const k = pick(opts), V = Lw.v[k]; Object.assign(it, { variant: k, base: V.name, em: V.em }); it.newTheme = true; } }
+  if (!it.legend) { const b = it.base || it.name.replace(/^(Shiny |Ancient |Legendary )/, ''); it.base = b; it.name = (themeOf(it.variant) ? '' : RADJ[nr]) + b; }
   const main = Object.keys(st)[0]; it.stat = main; it.val = st[main];
 }
 const itemDesc = it => Object.entries(itemStats(it)).map(([k, v]) => `+${v}${STAT[k][1]} ${STAT[k][0]}`).join(' · ');
@@ -1543,7 +1603,8 @@ save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.part
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
 var lastTP = null, tpT = 0;
-const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); };
+function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
+const persist = () => { try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
 const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
@@ -1560,7 +1621,7 @@ const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
 // what each character is holding: the weapon item in their Weapon slot, or their line's first variant
 function syncWeapons() {
-  const d = itemBy(equipOf('dad').weapon); save.weapon = d && d.owner === 'dad' && WEAPONS[d.variant] ? d.variant : 'glass';
+  const d = itemBy(equipOf('dad').weapon); save.weapon = d && d.owner === 'dad' && WEAPONS[baseOf(d.variant)] ? baseOf(d.variant) : 'glass'; save.dadTheme = d && d.owner === 'dad' && themeOf(d.variant) ? d.variant.split('-')[1] : null;
   for (const id in CWEAP) { const it = itemBy(equipOf(id).weapon); save.cweap[id] = it && it.owner === id && CWEAP[id].v[it.variant] ? it.variant : Object.keys(CWEAP[id].v)[0]; }
 }
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
@@ -1569,13 +1630,13 @@ function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (con
 // Power: everything that makes a character hit harder, faster or more often, as one number (a new Common friend is about 100)
 function powerOf(id) {
   const c = chr(id); if (!c.own && id !== 'dad') return 0; const g = gear(id), V = cweapOf(id);
-  const hit = charMul(id) * (1 + (c.pow || 0) * .08) * (1 + g.pow / 100) * (V ? V.pow : 1);
-  const pace = starQuick(id) * (1 + (c.quick || 0) * .06) * (1 + g.quick / 100) * (V ? V.rate : 1);
+  const W = wv(id), hit = charMul(id) * (1 + (c.pow || 0) * .08) * (1 + g.pow / 100) * (W ? W.pow : 1);
+  const pace = starQuick(id) * (1 + (c.quick || 0) * .06) * (1 + g.quick / 100) * (W ? W.rate : 1);
   const skills = 1 + .03 * Object.values(c.sk || {}).reduce((a, b) => a + b, 0), lvl = 1 + .03 * (clv(id) - 1);
   const help = 1 + (g.pat + g.ring + (id === 'dad' ? (c.pat || 0) * 20 + (c.ring || 0) * 22 : 0)) / 400 + g.coin / 800;
   return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
-const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1));
+const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1) * (1 + .03 * SYNERGY.filter(sy => synOn(sy)).length));
 const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">⚡ ${n.toLocaleString()}</span>`;
 // any change outside a match that moves the team's Power gets a little note: equip, polish, forge, ranks, stars, swaps
 function powWatch() {
@@ -1731,8 +1792,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => (1 + (aura('pow') + (G && G.famPow || 0)) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick')) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id)) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id)) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -1741,7 +1802,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind); d *= teamBonus(who);
-  const GV = who !== 'dad' && CWEAP[who] ? cweapOf(who) : null, gfx = GV && GV.gfx; if (gfx === 'knock') knock = Math.max(knock, 40) * 1.6;
+  const GV = CWEAP[who] || who === 'dad' ? wv(who) : null, gfx = GV && GV.gfx; if (gfx === 'knock') knock = Math.max(knock, 40) * 1.6;
   if (e.known) d *= 1 + rankOf('goldie', 'memory') * .05 + sk('goldie', 'memory') * .02;
   if (elemOf(who) === 'spark') d *= 1 + rankOf('prickles', 'static') * .04 + sk('prickles', 'static') * .02;
   if (e.stung > G.t) d *= 1 + rankOf('jelly', 'shine') * .04;
@@ -1749,7 +1810,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (famStat('crit') + aura('crit')) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -2132,10 +2193,10 @@ function update(dt) {
     else { gameOver(); return; }
   }
   if (!G.room) famMoves(dt);
-  { const rg = aura('regen'); if (rg && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + rg * dt); }
+  { const rg = aura('regen') + synStat('regen'); if (rg && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + rg * dt); }
   if (G.boss && !G.room && !G.boss.noted && G.boss.hp > 0 && G.boss.hp < G.boss.maxhp * .5) { G.boss.noted = true; dropNote(G.boss); }
   // orbs
-  const mag = 70, coinMul = 1 + aura('coin') / 100 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
+  const mag = 70, coinMul = 1 + (aura('coin') + synStat('coin')) / 100 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
   for (const o of G.orbs) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
@@ -2427,7 +2488,7 @@ function petProps(id, held) {
   const props = [], G3 = GEAR3D[id] || { pk: 2.4 };
   const V = cweapOf(id); if (V && held != null && (held < .7 || held > .85)) props.push({ bone: 'handR', behind: behindBody, draw: (c, q, row) => {
     const k = q.sc * q.size * .92 * (G3.pk || 2.4), wind = held == null ? 0 : held < .33 ? held / .33 : 1, fade = held == null ? 1 : held > .85 ? (held - .85) / .15 : held > .4 ? 1 - (held - .4) / .3 : 1, vk = save.cweap[id];
-    if (drawProp(c, id, row, q.x, q.y - k * .03 * wind, k, -.35 * wind * rowDir(row), Math.max(0, fade), VCOL[vk] || null)) return;
+    if (drawProp(c, id, row, q.x, q.y - k * .03 * wind, k, -.35 * wind * rowDir(row), Math.max(0, fade), VCOL[vk] || (themeOf(vk) || {}).col || null)) return;
     c.save(); c.globalAlpha *= Math.max(0, fade); c.translate(q.x, q.y - 8 * wind); c.font = `${Math.round(q.sc * q.size * .11)}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(V.em, 0, 0); c.restore(); } });
   return props;
 }
@@ -3053,7 +3114,7 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard')) / 100);
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard')) / 100);
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
 }
@@ -3238,6 +3299,19 @@ function buildShop() {
   box.querySelectorAll('[data-forge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.forge); if (it) forgeFlow(it, buildShop); });
 }
 let partySel = null;
+// the outfit: weapon, armor and book in one row, then every weapon this character could ever find, unknown ones as ???
+let albumOpen = {};
+function outfitH(id) {
+  const eq = equipOf(id), tile = t => { const it = itemBy(eq[t]); return it ? `<button class="otile r${it.rar}" data-slot="${id}:${t}"><small>${ITEMS[t].slot}</small><span class="ie">${it.em}${themeOf(it.variant) ? `<i>${themeOf(it.variant).em}</i>` : ''}</span><b>${itemName(it)}${it.lv ? ` +${it.lv}` : ''}</b><em>${itemDesc(it)}</em></button>`
+    : `<button class="otile empty" data-slot="${id}:${t}"><small>${ITEMS[t].slot}</small><span class="ie">➕</span><b>Nothing yet</b><em>Tap to choose</em></button>`; };
+  let h = `<div class="outfit"><h3 class="rackh">👕 Outfit</h3><div class="otiles">${tile('weapon')}${tile('armor')}${tile('book')}</div>`;
+  const Lw = lineOf(id); if (Lw) { const found = new Set([...(save.wfound || {})[id] || [], ...Object.keys(Lw.v).filter(k => Lw.v[k].base || Lw.v[k].own)]), all = Object.keys(Lw.v), n = all.filter(k => found.has(k)).length, open = albumOpen[id];
+    h += `<button class="albumh" data-album="${id}"><b>${id === 'dad' ? 'Dad\'s' : CHARS[id].name + '\'s'} ${Lw.line.toLowerCase()}</b><span>${n} of ${all.length} found ${open ? '▲' : '▼'}</span></button>`;
+    if (open) h += [0, 1, 2, 3].map(tr => { const ks = all.filter(k => vtier(Lw.v[k]) === tr); return ks.length ? `<div class="vtier"><small style="color:${['#6f8a5a', '#3f7fb5', '#8a4fb5', '#d9971c'][tr]}">${['Plain', 'Rare and up', 'Epic and up', 'Legendary only'][tr]}</small><div class="vgrid">${ks.map(k => { const V = Lw.v[k], f = found.has(k);
+      return f ? `<div class="vt" title="${V.desc}" style="border-color:${V.col || '#3a2c20'}"><span>${V.em}${V.badge ? `<i>${V.badge}</i>` : ''}</span><b>${V.name}</b><small>${V.fx || ''}</small></div>` : `<div class="vt unk"><span>❓</span><b>???</b><small>${['', 'Rare+', 'Epic+', 'Legendary'][tr] || 'Common'}</small></div>`; }).join('')}</div></div>` : ''; }).join('');
+  }
+  return h + '</div>';
+}
 // a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
 const canGrow = id => { if (id === 'dad') return false; const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= STAR_COST[st] : pagesOf(id) >= tierOf(id).pages; };
 function buildParty() {
@@ -3254,7 +3328,7 @@ function buildParty() {
     box.querySelectorAll('[data-fam]').forEach(b => b.onclick = () => famInfo(b.dataset.fam));
     drawStatics(); navDots(); return;
   }
-  box.insertAdjacentHTML('beforeend', `<div class="backrow"><button class="btn small ghost" id="allFriends">← All friends</button>${CWEAP[partySel] || partySel === 'dad' ? `<button class="btn small" id="toRack">⚔️ ${partySel === 'dad' ? 'Lenses' : CWEAP[partySel].line}</button>` : ''}</div>`);
+  box.insertAdjacentHTML('beforeend', `<div class="backrow"><button class="btn small ghost" id="allFriends">← All friends</button>${false ? `<button class="btn small" id="toRack">⚔️ ${partySel === 'dad' ? 'Lenses' : CWEAP[partySel].line}</button>` : ''}</div>`);
   $('#allFriends').onclick = () => { partySel = null; buildParty(); }; if ($('#toRack')) $('#toRack').onclick = () => { shopTab = partySel; buildShop(); showScreen('#shop'); };
   for (const id of [partySel]) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
@@ -3264,6 +3338,7 @@ function buildParty() {
     else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
     else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
     html += '</div>';
+    if (c.own) html += outfitH(id);
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
       const EL = ELEM[CELEM[id]];
       html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
@@ -3273,7 +3348,7 @@ function buildParty() {
       const lv = charLevel(c.xp || 0);
       html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
       html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
-        if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Upgrade it in the Garage.</em></span></div></div>`;
+        if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Change it in the Outfit above.</em></span></div></div>`;
         return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on && S ? `<span><em>${S[0]}:</em> ${S[1]}</span>` : on ? '' : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div>${on && S ? `${pips(r, SK_MAX)}<span data-sk="${id}:${a}">${r >= SK_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>`}</span>` : ''}</div>`; }).join('') + '</div>';
       if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
       if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
@@ -3286,13 +3361,10 @@ function buildParty() {
       html += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items and buy ranks below.'}</div>`;
     } else html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
-      const eq = equipOf(id); html += '<div class="slots">';
-      for (const t in ITEMS) { const it = itemBy(eq[t]); html += it ? `<div class="slotb r${it.rar}" data-slot="${id}:${t}"><span class="ie">${it.em}</span>${itemDesc(it)}</div>` : `<div class="slotb empty" data-slot="${id}:${t}"><span class="ie">➕</span>${ITEMS[t].slot}</div>`; }
-      html += '</div>';
       const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
       for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
-      if (id === 'dad') html += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} — collect and forge lenses in the Garage</span></div>`;
-      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name} — collect and forge them in the Garage</span></div>`; }
+      if (id === 'dad') html += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name}: change it in the Outfit above</span></div>`;
+      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name}: change it in the Outfit above</span></div>`; }
       html += '</div>';
     } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !C.starter ? (nextFriend(true) === id ? 'Next in the story: every new stage you clear adds 3 pages (6 for a boss). Lucky pages, Library Cards, gifts and missions add more.' : 'Their turn in the story comes after the friends ahead of them join. Lucky pages, Library Cards, gifts and missions fill the book any time.') : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
@@ -3302,6 +3374,7 @@ function buildParty() {
   box.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { if (starUp(b.dataset.star)) { toastMsg(`${CHARS[b.dataset.star].em} ${CHARS[b.dataset.star].name} is now ★${fstars(b.dataset.star)}!`); buildParty(); } });
   box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
+  box.querySelectorAll('[data-album]').forEach(b => b.onclick = () => { albumOpen[b.dataset.album] = !albumOpen[b.dataset.album]; buildParty(); });
   box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) { toastMsg('The backyard is full. Take someone out first.'); return; } save.party.push(b.dataset.join); persist(); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
   box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r]++; persist(); buildParty(); });
@@ -3317,7 +3390,8 @@ function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
   const list = save.items.filter(i => i.type === t && (t !== 'weapon' || i.owner === id)).sort((a, b) => b.rar - a.rar || b.val - a.val), cur = equipOf(id)[t];
   $('#pickSub').textContent = list.length ? 'Tap one to wear it.' : `No ${ITEMS[t].slot.toLowerCase()}s in the bag yet. They drop at the end of every match.`;
-  $('#pickList').innerHTML = list.map(it => itemRow(it, it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`)).join('');
+  $('#pickList').innerHTML = list.map(it => itemRow(it, (it.uid === cur ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small" data-eq="${it.uid}">Wear</button>`) + `<button class="btn small ghost" data-more="${it.uid}">✨ 🔨</button>`)).join('');
+  $('#pickList').querySelectorAll('[data-more]').forEach(b => b.onclick = () => itemSheet(b.dataset.more));
   $('#pickUnequip').hidden = !cur;
   $('#pickList').querySelectorAll('[data-eq]').forEach(b => b.onclick = () => { const uid = b.dataset.eq, prev = wornBy(uid); if (prev) delete save.equip[prev][t]; equipOf(id)[t] = uid; syncWeapons(); persist(); $('#pickm').hidden = true; buildParty(); });
   $('#pickm').hidden = false;
