@@ -338,6 +338,10 @@
   .pow { display: inline-flex; align-items: center; gap: 3px; font: 700 13px/1 "Fredoka", Arial, sans-serif; background: #3a2c20; color: #ffd76a; border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
   .pow.big { font-size: 16px; padding: 6px 11px; }
   .fcard .pow { font-size: 11px; padding: 2px 6px; margin-top: 3px; }
+  .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
+  .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
+  .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
+  .fam.on { background: #fff; opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: var(--teal); } .fam.full { background: linear-gradient(#fff3c4, #ffd76a); opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: #3a2c20; }
   .teampow { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #3a2c20; color: #fbf3df; border-radius: 14px; padding: 8px 12px; margin: 4px 0 8px; font: 400 16px/1.1 "Patrick Hand", cursive; }
   .teampow b { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #ffd76a; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
@@ -455,7 +459,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 38</div>
+    <div class="build">build 39</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -1439,7 +1443,7 @@ function powerOf(id) {
   const help = 1 + (g.pat + g.ring + (id === 'dad' ? (c.pat || 0) * 20 + (c.ring || 0) * 22 : 0)) / 400 + g.coin / 800;
   return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
-const teamPower = () => ['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0);
+const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1));
 const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">⚡ ${n.toLocaleString()}</span>`;
 // any change outside a match that moves the team's Power gets a little note: equip, polish, forge, ranks, stars, swaps
 function powWatch() {
@@ -1447,6 +1451,43 @@ function powWatch() {
   if (lastTP == null) { lastTP = tp; return; }
   if (tp === lastTP) return; const from = lastTP; lastTP = tp; clearTimeout(tpT);
   tpT = setTimeout(() => { const d = tp - from; toastMsg(`⚡ Team Power ${from.toLocaleString()} → ${tp.toLocaleString()} (${d > 0 ? '+' : ''}${d})`); $$('.teampow b').forEach(b => b.textContent = '⚡ ' + tp.toLocaleString()); }, 250);
+}
+// the Friends tab's family chips: lit when two are in the party, gold when three
+function famRow() {
+  const n = famCount();
+  return `<div class="famrow">${Object.keys(FAMILY).map(k => { const F = FAMILY[k], c = Math.min(3, n[k]);
+    return `<button class="fam ${c >= 3 ? 'full' : c >= 2 ? 'on' : ''}" data-fam="${k}"><b>${F.em} ${F.n}</b><span>${c}/3 · ${c >= 3 ? F.mv.em + ' ' + F.mv.n : c >= 2 ? F.twoT : F.ids.map(id => CHARS[id].em).join('')}</span></button>`; }).join('')}</div>`;
+}
+function famInfo(k) { const F = FAMILY[k]; toastMsg(`${F.em} ${F.n} (${F.ids.map(id => CHARS[id].name).join(', ')}, or Chroma). Two: ${F.twoT}. Three: ${F.mv.n}. ${F.mv.d}`); }
+// families: two of a kind in the party give everyone a little boost, three of a kind add a team move.
+// Chroma blends in with whichever family is closest to complete. A friend can belong to two families.
+const FAMILY = {
+  bugs:  { n: 'Bug Club',    em: '🐛', ids: ['webster', 'sparky', 'dusty', 'scuttle', 'luna'], two: { quick: 8 }, twoT: '+8% Quick for everyone', mv: { n: 'Buzz Swarm', em: '🐝', every: 10, d: 'Every 10 seconds a swarm sweeps the ring, nibbling and slowing every myth.' } },
+  pond:  { n: 'Pond Pals',   em: '💦', ids: ['hopper', 'puddles', 'goldie', 'jelly', 'shelly'], two: { pat: 15 }, twoT: '+15 Patience', mv: { n: 'Big Splash', em: '🌊', every: 12, d: 'Every 12 seconds a wave washes the myths near Dad back, and Dad gets 5 Patience back.' } },
+  night: { n: 'Night Shift', em: '🌙', ids: ['nilla', 'echo', 'luna', 'inky'], two: { crit: 5 }, twoT: '+5% critical hits', mv: { n: 'Lights Out', em: '💤', every: 14, d: 'Every 14 seconds the lights go out and every myth in the ring nods off for a second.' } },
+  shell: { n: 'Shell Squad', em: '🛡️', ids: ['shelly', 'pip', 'prickles', 'scuttle'], two: { guard: 10 }, twoT: 'Dad loses 10% less Patience', mv: { n: 'Spiky Hug', em: '🦔', every: 0, d: 'Any myth that bumps into Dad gets a prickly hit and bounces away.' } },
+};
+const famOf = id => Object.keys(FAMILY).filter(k => FAMILY[k].ids.includes(id));
+// how many of each family a party has: { bugs: 2, ... }
+function famCount(party = save.party) {
+  const n = {}; for (const k in FAMILY) n[k] = party.filter(id => FAMILY[k].ids.includes(id)).length;
+  if (party.includes('chroma')) { const best = Object.keys(n).filter(k => n[k] > 0).sort((a, b) => n[b] - n[a])[0]; if (best) n[best]++; }
+  return n;
+}
+const famOn = (k, need = 2, party) => famCount(party)[k] >= need;
+// the summed two-of-a-kind boosts for the party going into a match (or the one in the menus)
+function famStat(st, party) { const n = famCount(party); let v = 0; for (const k in FAMILY) if (n[k] >= 2 && FAMILY[k].two[st]) v += FAMILY[k].two[st]; return v; }
+function famLive(party) { const n = famCount(party); return Object.keys(FAMILY).filter(k => n[k] >= 2).map(k => ({ k, F: FAMILY[k], full: n[k] >= 3 })); }
+// the three-of-a-kind moves, fired from the match loop
+function famMoves(dt) {
+  const live = G.fam || []; G.famT = G.famT || {}; const base = 8 + G.stage * 1.6;
+  for (const { k, F, full } of live) { if (!full || !F.mv.every) continue; G.famT[k] = (G.famT[k] || 0) + dt; if (G.famT[k] < F.mv.every) continue; G.famT[k] = 0;
+    const dad = G.dad, inR = G.enemies.filter(e => e.hp > 0 && inRing(e)), src = { x: dad.x, y: dad.y, id: 'react' };
+    text(dad.x, dad.y - 120, `${F.mv.em} ${F.mv.n.toUpperCase()}!`, '#ffd76a', 22, 1.3);
+    if (k === 'bugs') { G.fx.push({ k: 'buzz', x: dad.x, y: dad.y, R: G.radius, t: 0, life: 1.1 }); for (const e of inR) { e.slow = Math.max(e.slow, 1.5); hurt(e, base, 0, src); } }
+    else if (k === 'pond') { G.fx.push({ k: 'splash', x: dad.x, y: dad.y + 10, R: 150, t: 0, life: .6, col: '#8fc7f0' }); G.fx.push({ k: 'ring', x: dad.x, y: dad.y, R: 190, t: 0, life: .5, col: '#bfe6f5' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, dad) < 190) hurt(e, base * .6, 160, src); G.hp = Math.min(G.maxhp, G.hp + 5); }
+    else if (k === 'night') { G.fx.push({ k: 'dim', t: 0, life: 1.1 }); for (const e of inR) { if (e.kind !== 'boss') e.stun = Math.max(e.stun, 1); else e.stun = Math.max(e.stun, .4); } for (const e of inR.slice(0, 4)) text(e.x, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.1); }
+  }
 }
 // a friend's pair-up is live once they have the level for it and both halves are coming
 const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
@@ -1486,7 +1527,7 @@ function buildToggles(el) {
 /* ───────── run state ───────── */
 let G = null, last = 0, mode = 'title';
 function newRun(stage) {
-  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat;
+  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat + famStat('pat');
   const party = [{ id: 'dad', x: CX, y: CY }, ...save.party.map((id, i) => ({ id, x: CX + SPOTS[i][0], y: CY + SPOTS[i][1] }))];
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
@@ -1512,7 +1553,7 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .8; // the Backyard is where everyone learns, so its waves are a little smaller
+    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -1532,7 +1573,7 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
-  if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
+  if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
@@ -1555,7 +1596,7 @@ function nearest(from, exclude = null, n = 1) {
 }
 // permanent damage / speed multipliers for a party member
 const dmgMul = m => charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / (starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const cdMul = m => 1 / ((1 + (G.famQuick || 0) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (cweapOf(m.id) ? cweapOf(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -1572,13 +1613,14 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + famStat('crit') / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
-  e.hp -= d; e.hit = .12; if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
+  e.hp -= d; e.hit = .12;
+  if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
@@ -1591,7 +1633,12 @@ function kill(e) {
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
   if (e.host) { e.host.muted = 0; e.host = null; }
-  for (let i = 0; i < fxN(8); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.4, .8), col: pick([e.M.col, '#fff', '#fbf3df']), r: rnd(4, 10) });
+  // the pop: the myth swells white and bursts, a ring, a handful of torn pages and a couple of stars
+  const big = e.elite || e.kind === 'boss' ? 2 : 1;
+  G.fx.push({ k: 'die', e, t: 0, life: .2 }); G.fx.push({ k: 'ring', x: e.x, y: e.y, R: e.r * 2.6 * big, t: 0, life: .3, col: '#fff' });
+  for (let i = 0; i < fxN(5 * big); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.35, .7), col: pick([e.col || e.M.col, '#fff', '#fbf3df']), r: rnd(4, 9) });
+  for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(.6, 1) });
+  for (let i = 0; i < fxN(2 * big); i++) G.fx.push({ k: 'star', x: e.x + rnd(-e.r, e.r), y: e.y - e.r + rnd(-8, 8), t: 0, life: rnd(.35, .55), s: rnd(8, 13) });
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
   text(e.x, e.y - 10, e.kind === 'brick' ? 'CRUMBLE' : 'POP!', '#cb382e', 22, .8);
   for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
@@ -1844,7 +1891,7 @@ function update(dt) {
   else {
     G.waveT += dt;
     while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 70) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
-    if (!G.toSpawn.length && !G.enemies.length) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = 1.6; collectAll(); }
+    if (!G.toSpawn.length && (!G.enemies.length || G.wave < S.waves - 1 && G.enemies.length <= 3 && G.waveT > 5)) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = G.enemies.length ? .4 : 1; collectAll(); }
   }
   // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
   if (G.boss && G.boss.hp > 0) {
@@ -1912,7 +1959,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); if (G.famSpiky) { hurt(e, 10 + G.stage * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -1946,6 +1993,7 @@ function update(dt) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
   }
+  if (!G.room) famMoves(dt);
   if (G.boss && !G.room && !G.boss.noted && G.boss.hp > 0 && G.boss.hp < G.boss.maxhp * .5) { G.boss.noted = true; dropNote(G.boss); }
   // orbs
   const mag = 70, coinMul = 1 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
@@ -1956,7 +2004,7 @@ function update(dt) {
     if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
-  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } }
+  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
   G.fx = G.fx.filter(f => f.t < f.life);
   for (const t of G.texts) { t.t += dt; t.y -= 28 * dt; }
   G.texts = G.texts.filter(t => t.t < t.life);
@@ -2636,7 +2684,13 @@ function draw() {
   for (const s of G.shots) drawShot(s);
   for (const f of G.fx) {
     const p = f.t / f.life;
-    if (f.k === 'puff') { ctx.globalAlpha = 1 - p; ctx.fillStyle = f.col; ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (1 + p), 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1; }
+    if (f.k === 'die') { const e = f.e; ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(e.x, e.y); ctx.scale(1 + p * .55, 1 - p * .45); ctx.translate(-e.x, -e.y); e.hit = 1; drawEnemy(e); ctx.restore(); ctx.globalAlpha = 1; }
+    else if (f.k === 'spark') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#ffd76a' : '#fff'; ctx.lineWidth = f.big ? 4 : 3; ctx.lineCap = 'round'; const L = (f.big ? 22 : 14) * (.5 + p); for (let i = -2; i <= 2; i++) { const a = f.a + i * .45; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a) * L * .35, f.y + Math.sin(a) * L * .35); ctx.lineTo(f.x + Math.cos(a) * L, f.y + Math.sin(a) * L); ctx.stroke(); } ctx.globalAlpha = 1; }
+    else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
+    else if (f.k === 'star') { ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(f.x, f.y - p * 18); ctx.rotate(p * 3); const R = f.s * (p < .3 ? p / .3 : 1); ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i < 8; i++) { const r2 = i % 2 ? R * .4 : R, a = i / 8 * Math.PI * 2; ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    else if (f.k === 'buzz') { ctx.globalAlpha = p < .8 ? 1 : (1 - p) * 5; ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 10; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.3 + p * .75), f.R * (.3 + p * .75) * .8, 0, 0, 7); ctx.stroke(); ctx.font = `24px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2 + p * 7, R = f.R * (.3 + p * .75) + Math.sin(i * 3 + p * 20) * 12; ctx.fillText('🐝', f.x + Math.cos(a) * R, f.y + Math.sin(a) * R * .8); } ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1; }
+    else if (f.k === 'dim') { ctx.globalAlpha = (p < .2 ? p / .2 : 1 - (p - .2) / .8) * .45; ctx.fillStyle = '#1d1840'; ctx.fillRect(-40, -40, W + 80, H + 80); ctx.globalAlpha = 1; }
+    else if (f.k === 'puff') { ctx.globalAlpha = 1 - p; ctx.fillStyle = f.col; ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (1 + p), 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'beam') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff6c2'; ctx.lineWidth = 9 - p * 7; ctx.beginPath(); ctx.moveTo(f.sx, f.sy); ctx.lineTo(f.x, f.y); ctx.stroke(); ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3 - p * 2; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'lens') { ctx.globalAlpha = (1 - p) * .9; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(f.x, f.y, 10 + p * 14, 0, 7); ctx.fill(); ctx.globalAlpha = 1; }
     else if (f.k === 'swing') { ctx.globalAlpha = 1 - p; ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(dad.x, dad.y - 20); ctx.arc(dad.x, dad.y - 20, f.R, f.a - 1.3 + p * .8, f.a + .3 + p * .8); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.stroke(); ctx.globalAlpha = 1; }
@@ -2647,7 +2701,7 @@ function draw() {
     else if (f.k === 'quack') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(f.x, f.y, 30 + k * 25 + p * 90, f.a - .6, f.a + .6); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'webhit') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(a) * 22, f.y + Math.sin(a) * 22); ctx.stroke(); } ctx.globalAlpha = 1; }
   }
-  for (const t of G.texts) { const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${t.size}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
+  for (const t of G.texts) { const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${Math.round(t.size * (1 + Math.max(0, 1 - t.t / .12) * .5))}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
   if (G.focus && G.focus.hp > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(G.focus.x, G.focus.y, G.focus.r + 10, G.t * 3, G.t * 3 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   ctx.restore();
 }
@@ -2825,7 +2879,10 @@ function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#h
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
   if (on) { navDots(); updateQuickPlay(); } }
 function startGame(stage) {
-  newRun(stage); mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
+  newRun(stage);
+  G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
+  if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
+  mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
   const V = VARIANT[STAGES[stage].w]; save.seenVar = save.seenVar || [];
   if (V && !save.seenVar.includes(V.name)) { save.seenVar.push(V.name); persist(); setTimeout(() => { if (G && !G.room) hint(`${V.em} ${V.name}: ${V.desc}`, 5); }, 2200); }
@@ -2856,7 +2913,7 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02);
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - (G.famGuard || 0) / 100);
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
 }
@@ -3050,10 +3107,11 @@ function buildParty() {
       return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${id === 'dad' ? '<small>Always</small>' : c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
-    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div><div class="pgrid-h">In the backyard <small>tap a friend to swap</small></div><div class="pslots">${card('dad')}${slots.map(id => id ? card(id) : '<div class="pslot">An empty spot</div>').join('')}</div>`
+    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a friend to swap</small></div><div class="pslots">${card('dad')}${slots.map(id => id ? card(id) : '<div class="pslot">An empty spot</div>').join('')}</div>`
       + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
       + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
     box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
+    box.querySelectorAll('[data-fam]').forEach(b => b.onclick = () => famInfo(b.dataset.fam));
     drawStatics(); navDots(); return;
   }
   box.insertAdjacentHTML('beforeend', `<div class="backrow"><button class="btn small ghost" id="allFriends">← All friends</button>${CWEAP[partySel] || partySel === 'dad' ? `<button class="btn small" id="toRack">⚔️ ${partySel === 'dad' ? 'Lenses' : CWEAP[partySel].line}</button>` : ''}</div>`);
@@ -3068,7 +3126,7 @@ function buildParty() {
     html += '</div>';
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
       const EL = ELEM[CELEM[id]];
-      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
       if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
     const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b> · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s></div>`;
     if (c.own) {
