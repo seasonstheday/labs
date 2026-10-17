@@ -332,6 +332,13 @@
   .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
+  .chips { flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; } .chips::-webkit-scrollbar { display: none; }
+  .chips button { flex: none; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 13px/1 "Fredoka", Arial, sans-serif; padding: 7px 11px; color: #3a2c20; cursor: pointer; } .chips button.on { background: var(--gold); } .chips small { opacity: .6; }
+  .igrid { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .itile { position: relative; appearance: none; aspect-ratio: 1 / 1.15; background: linear-gradient(#fff, color-mix(in srgb, var(--rc) 18%, #fff)); border: 3px solid var(--rc); border-radius: 14px; box-shadow: 0 3px 0 rgba(58,44,32,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; cursor: pointer; font: 400 11px/1.05 "Patrick Hand", cursive; color: #3a2c20; overflow: visible; }
+  .itile .ie { font-size: 30px; line-height: 1; } .itile small { font: 700 11px/1.05 "Fredoka", Arial, sans-serif; color: var(--rc); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+  .itile .lv { position: absolute; top: 3px; left: 5px; font: 700 11px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .itile .own { position: absolute; bottom: 18px; right: 3px; font-size: 14px; } .itile .worn { position: absolute; top: 2px; right: 5px; color: #4f8a5b; font-style: normal; font-weight: 700; } .itile .dot { top: -6px; right: -6px; }
+  .sheetbtns { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .sheethint { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 8px 0 0; }
   .rackh { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; margin: 12px 2px 6px; }
   .variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
   .var { background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 6px; text-align: center; font: 400 12px/1.15 "Patrick Hand", cursive; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 12px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
@@ -402,7 +409,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 34</div>
+    <div class="build">build 35</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -498,7 +505,7 @@
   </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Everything you've found. ✨ Polish it, 🔨 forge three of a kind, or sell what you don't need.</p>
+    <p class="intro">Tap anything to polish ✨, forge 🔨 or sell it. A red dot means three of a kind are ready to forge.</p>
     <div class="list" id="itemList"></div>
   </section>
 
@@ -2989,25 +2996,44 @@ function forgeFlow(it, after) {
   $('#mergeGo').onclick = () => { let refund = 0; for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) save.items.push(mk); } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); setWallet({ coins: save.coins + refund }); missionTick('merge'); persist(); $('#pickm').hidden = true; toastMsg(`🔨 ${itemName(it)}!`); after(); };
   $('#pickm').hidden = false;
 }
-function buildItems() {
-  const box = $('#itemList'), list = [...save.items].sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || b.val - a.val);
-  const twins = twinsOf;
-  const btns = it => { if (it.type === 'mark') return `<div class="ibtns"><button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button></div>`;
-    const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twins(it).length : 0;
-    return `<div class="ibtns">${lv < POLISH_MAX ? `<button class="btn small" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn small" disabled>✨ +5 max</button>'}${it.rar < 3 ? `<button class="btn small ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge ${Math.min(tw, 2) + 1}/3</button>` : ''}${wornBy(it.uid) ? '<button class="btn small green" disabled>Worn</button>' : `<button class="btn small ghost" data-sell="${it.uid}">Sell 🪙 ${RAR[it.rar].sell}</button>`}</div>`; };
-  box.innerHTML = list.length ? list.map(it => itemRow(it, btns(it))).join('') : '<p class="intro">The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.</p>';
-  box.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); buildItems(); });
-  box.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) buildItems(); });
-  box.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.merge); if (it) forgeFlow(it, buildItems); });
-  // bookmarks: tap an empty slot to pick one from the bag, tap a placed one to take it off (20 coins)
-  box.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
+// the Bag: a grid of tiles with filters; tap one for its card and what you can do with it
+let bagFilter = 'all';
+const BAG_F = [['all', 'All'], ['weapon', '⚔️ Weapons'], ['armor', '🛡️ Armor'], ['book', '📚 Books'], ['mark', '🔖 Marks']];
+function bagBtns(it) {
+  if (it.type === 'mark') return `<div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
+  const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0, w = wornBy(it.uid);
+  return `<div class="sheetbtns">${lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
+    + (it.rar < 3 ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
+    + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
+    + `</div><p class="sheethint">${it.type === 'weapon' ? `Hold it from ${CHARS[it.owner].name}'s weapon rack.` : 'Put it on from a friend\'s card in Friends.'}</p>`;
+}
+function itemSheet(uid) {
+  const it = itemBy(uid); if (!it) { $('#pickm').hidden = true; return; }
+  pickFor = null; $('#pickTitle').textContent = itemName(it); $('#pickSub').textContent = ''; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = itemRow(it, '') + bagBtns(it); bindBag($('#pickList'), () => { buildItems(); if (itemBy(uid) && !$('#pickm').hidden) itemSheet(uid); }); $('#pickm').hidden = false;
+}
+function bindBag(root, after) {
+  root.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); $('#pickm').hidden = true; toastMsg(`🪙 Sold ${it.name}`); buildItems(); });
+  root.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) { toastMsg(`✨ ${itemName(it)}`); after(); } });
+  root.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.merge); if (it) forgeFlow(it, () => { buildItems(); itemSheet(it.uid); }); });
+  // bookmarks: tap an empty slot to tuck one in, tap a placed one to take it out (20 coins)
+  root.querySelectorAll('[data-addmark]').forEach(b => b.onclick = () => {
     const it = itemBy(b.dataset.addmark), marks = save.items.filter(i => i.type === 'mark').sort((a, c) => c.rar - a.rar || c.val - a.val);
     pickFor = null; $('#pickTitle').textContent = `Bookmark for ${it.name}`; $('#pickSub').textContent = marks.length ? 'Tap one to tuck it in.' : 'No bookmarks yet. They come from elites, the Reading Room, and the Store.'; $('#pickUnequip').hidden = true;
     $('#pickList').innerHTML = marks.map(mk => itemRow(mk, `<button class="btn small" data-mk="${mk.uid}">Add</button>`)).join('');
-    $('#pickList').querySelectorAll('[data-mk]').forEach(x => x.onclick = () => { const mk = itemBy(x.dataset.mk); if (!mk || it.marks.length >= SLOTS_BY_RAR[it.rar]) return; it.marks.push(mk); save.items = save.items.filter(i => i !== mk); persist(); $('#pickm').hidden = true; buildItems(); });
+    $('#pickList').querySelectorAll('[data-mk]').forEach(x => x.onclick = () => { const mk = itemBy(x.dataset.mk); if (!mk || it.marks.length >= SLOTS_BY_RAR[it.rar]) return; it.marks.push(mk); save.items = save.items.filter(i => i !== mk); persist(); buildItems(); itemSheet(it.uid); });
     $('#pickm').hidden = false;
   });
-  box.querySelectorAll('[data-unmark]').forEach(b => b.onclick = () => { const [uid, i] = b.dataset.unmark.split(':'), it = itemBy(uid); if (!it || save.coins < 20) return; const mk = it.marks.splice(+i, 1)[0]; save.items.push(mk); setWallet({ coins: save.coins - 20 }); buildItems(); });
+  root.querySelectorAll('[data-unmark]').forEach(b => b.onclick = () => { const [uid, i] = b.dataset.unmark.split(':'), it = itemBy(uid); if (!it || save.coins < 20) return; const mk = it.marks.splice(+i, 1)[0]; save.items.push(mk); setWallet({ coins: save.coins - 20 }); after(); });
+}
+function buildItems() {
+  const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
+  const tile = it => { const w = wornBy(it.uid), ready = it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
+    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${CHARS[it.owner].em}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
+  box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
+    + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
+  box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { bagFilter = b.dataset.f; buildItems(); });
+  box.querySelectorAll('[data-it]').forEach(b => b.onclick = () => itemSheet(b.dataset.it));
 }
 
 /* ───────── the store ───────── */
