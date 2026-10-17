@@ -477,7 +477,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 44</div>
+    <div class="build">build 45</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -1841,6 +1841,7 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
+  if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
@@ -1869,6 +1870,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
+  if (G.checked && G.checked.has(e.id)) d *= 1.5;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
@@ -2153,6 +2155,7 @@ function updateShots(dt) {
 /* ───────── update ───────── */
 function update(dt) {
   G.t += dt; const dad = G.dad, S = G.S;
+  if (G.pendingCheck && !G.over) { const id = G.pendingCheck; G.pendingCheck = null; askCheck(id); return; }
   if (G.freePicks > 0) { G.freePicks--; offerCards(G.freePicks + 1); return; }
   if (G.room) {
     const b = G.boss;
@@ -3130,7 +3133,22 @@ function startRoom() {
   text(CX, CY - 160, 'Myth or fact?', '#ecb23c', 34, 1.6); say('Welcome to the Reading Room.');
 }
 // a question from the Fact Book: the statement is either the myth (answer Myth) or the real fact (answer Fact)
-function askQuiz() {
+// Myth Check: a myth you've busted before walks in, and the Kid asks about it first. Asking yourself beats reading it
+// again, and spreading the asks out over days makes it stick: 1, 3, 7, 14, then 30 days, back to 1 after a miss.
+const REVIEW_DAYS = [1, 3, 7, 14, 30];
+const dayPlus = n => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+function reviewDue(id) { const R = (save.review || {})[id]; if (R) return R.due <= today(); const d = (save.factDate || {})[id]; return !!d && d < today(); }
+const knowsWell = () => Object.values(save.review || {}).filter(r => r.box >= 3).length;
+function askCheck(id) {
+  G.check = { id }; G.checks = (G.checks || 0) + 1; G.asked = G.asked || []; G.asked.push(id);
+  const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
+  $('#quizm h2').textContent = `${M.em} Myth Check!`; $('#quizCard small').textContent = 'You busted this one before. Is the card a myth or a fact?';
+  $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
+  const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
+  $('#ansMyth').disabled = $('#ansFact').disabled = false; G.paused = true; $('#quizm').hidden = false; sfx('book');
+  sayNow(`Myth check! ${isFact ? M.fact : M.myth}. Myth, or fact?`);
+}
+function askQuiz() { $('#quizm h2').textContent = 'Myth or fact?'; $('#quizCard small').textContent = 'The Kid holds up a card';
   G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
   const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
@@ -3144,8 +3162,13 @@ function answerQuiz(saidFact) {
   if (right) G.right = (G.right || 0) + 1;
   if (right) { missionAdd('fact'); $('#quizAfter').innerHTML = `<b>Right!</b> ${q.isFact ? 'That one\'s true.' : 'Nope, that\'s a myth. ' + M.fact}`; say('Right!'); }
   else { $('#quizAfter').innerHTML = `<b>Not quite.</b> ${M.fact}`; say(`Not quite. ${M.fact}`); }
+  if (G.check) { // spaced review: a right answer moves the myth further out, a miss brings it back tomorrow
+    const R = (save.review = save.review || {})[q.id] || { box: 0 }; R.box = right ? Math.min(REVIEW_DAYS.length - 1, R.box + 1) : 0; R.due = dayPlus(REVIEW_DAYS[R.box]); save.review[q.id] = R; persist();
+    if (right) { (G.checked = G.checked || new Set()).add(q.id); $('#quizAfter').innerHTML += ' <b>Every one of those is wide open this match!</b>'; }
+  }
   setTimeout(() => {
     $('#quizm').hidden = true;
+    if (G.check) { G.check = null; G.paused = false; if (right) text(G.dad.x, G.dad.y - 110, `${MYTHS[q.id].em} I KNOW THIS ONE!`, '#8fd38a', 20, 1.4); return; }
     if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
     G.paused = false;
     if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
@@ -3376,7 +3399,8 @@ function buildBook() {
     ids.forEach(kidRow);
   }
   n = save.facts.length;
-  $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`;
+  $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`; $('#bookCount').title = `${knowsWell()} facts you really know (answered right in three Myth Checks on different days)`;
+  { let k = $('#knowWell'); if (!k) { k = document.createElement('p'); k.id = 'knowWell'; k.className = 'intro'; $('#factList').before(k); } k.innerHTML = `🧠 <b>${knowsWell()}</b> facts you really know. Myth Checks in matches bring old myths back on day 1, 3, 7, 14 and 30.`; }
 }
 $('#studyGo').onclick = () => {
   const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat && save.facts.includes(id)).sort(() => Math.random() - .5).slice(0, 3); if (ids.length < 3) return;
