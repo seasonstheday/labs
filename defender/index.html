@@ -342,6 +342,7 @@
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
   #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
   .breaknote { border-color: #6fa8c8 !important; background: #eef7fb !important; }
+  .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -477,7 +478,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 45</div>
+    <div class="build">build 46</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -495,6 +496,7 @@
     <div class="menu">
       <button class="btn play" id="quickPlay">▶ Play</button>
       <button class="btn ghost small" id="play">🗺️ World Map</button>
+      <div class="hmodes"><button class="btn ghost small" id="dailyBtn" hidden>📅 Daily Myth</button><button class="btn ghost small" id="endlessBtn" hidden>♾️ Endless</button></div>
       <div hidden><button id="openHow"></button><button id="openSettings"></button></div>
     </div>
   </section>
@@ -707,13 +709,22 @@
     </div>
   </div>
 
+  <div class="modal" id="parentm" hidden>
+    <div class="panel">
+      <h2 class="display">👪 For grown-ups</h2>
+      <p class="sub hand">What your young myth-buster has been up to, and a few switches. Everything stays on this device.</p>
+      <div id="parentStats"></div>
+      <div class="toggles" id="parentToggles"></div>
+      <div class="row"><button class="btn" id="closeParent">Done</button></div>
+    </div>
+  </div>
   <div class="modal" id="settingsm" hidden>
     <div class="panel">
       <h2 class="display">Settings</h2>
       <p class="sub hand">Change these any time, even mid-match.</p>
       <div class="toggles" id="settingToggles"></div>
       <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no tracking, and it works with no signal once it has loaded. On the web there are no ads at all. In the app, a short video is only ever offered behind a grown-up check, and the Pass turns them off.</p>
-      <div class="row"><button class="btn" id="closeSettings">Done</button></div>
+      <div class="row"><button class="btn ghost" id="openParent">👪 Grown-ups</button><button class="btn" id="closeSettings">Done</button></div>
     </div>
   </div>
 
@@ -1817,17 +1828,18 @@ const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ?
 function startWave() {
   const S = G.S, w = G.wave;
   G.toSpawn = []; G.waveT = 0;
+  if (G.endless && w % 5 === 4) { const b = spawn(S.W.boss); if (b) { b.hp = b.maxhp = b.maxhp * (1 + w * .08); } }
   if (S.boss && w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
+    const n = Math.round((G.twist === 'crowd' ? 1.5 : G.twist === 'giant' ? .4 : 1) * (G.endless ? Math.min(1, 28 / (3 + w * 2)) : 1) * (3 + w * 2 + Math.min(10, Math.floor(G.stage * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
     let i = 0, swarmed = false; const eliteAt = G.stage >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
       if (k === 'healer') { const esc = S.pool.filter(x => ['normal', 'hardcover', 'tank'].includes(MYTHS[x].kind)); G.toSpawn.push({ id: esc.length ? pick(esc) : id, at, ang: ang - .2 }); G.toSpawn.push({ id, at: at + .6, ang }); i += 2; }
       else if (k === 'swarm') { if (swarmed) { i++; continue; } swarmed = true; for (let j = 0; j < 6; j++) G.toSpawn.push({ id, at: at + j * .12, ang: ang + rnd(-.3, .3) }); i += 3; }
-      else { G.toSpawn.push({ id, at, ang, elite: i === eliteAt }); i++; }
+      else { G.toSpawn.push({ id, at, ang, elite: i === eliteAt || G.twist === 'giant' }); i++; }
     }
     // a page stage closes with a rush of two crowned myths
     if (w === S.waves - 1 && G.stage >= 1) for (let j = 0; j < 2; j++) G.toSpawn.push({ id: pick(S.pool), at: dur + .5 + j * 1.2, ang: rnd(0, 7), elite: true });
@@ -1844,6 +1856,7 @@ function spawn(id, at = null, q = {}) {
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
   const V = VARIANT[G.S.w]; if (V && !q.kindOf && e.kind !== 'boss') { e.V = V; e.hp = e.maxhp = e.hp * (V.hp || 1); e.spd *= V.spd || 1; e.xp += V.xp || 0; e.col = mixCol(M.col, V.tint, .45); }
+  if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
@@ -2364,7 +2377,7 @@ function refreshHud(force) {
   const S = G.S;
   const wavesDone = G.wave + (G.breakT > 0 ? 0 : clamp(G.waveT / (10 + G.wave), 0, .95));
   const pb = $('#prog div'); pb.style.width = (wavesDone / S.waves * 100) + '%'; pb.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0);
-  const ws = $('#wstrip'); ws.hidden = !!G.room; if (!G.room) { if (ws.dataset.n !== S.waves + ':' + (S.boss || '')) { ws.dataset.n = S.waves + ':' + (S.boss || ''); ws.querySelector('.marks').innerHTML = Array.from({ length: S.waves }, (_, i) => `<span style="top:${(1 - (i + 1) / S.waves) * 100}%"></span>`).join(''); ws.querySelector('.top').textContent = S.boss ? MYTHS[S.boss].em : '🏁'; }
+  const ws = $('#wstrip'); ws.hidden = !!G.room || !!G.endless; if (!G.room) { if (ws.dataset.n !== S.waves + ':' + (S.boss || '')) { ws.dataset.n = S.waves + ':' + (S.boss || ''); ws.querySelector('.marks').innerHTML = Array.from({ length: S.waves }, (_, i) => `<span style="top:${(1 - (i + 1) / S.waves) * 100}%"></span>`).join(''); ws.querySelector('.top').textContent = S.boss ? MYTHS[S.boss].em : '🏁'; }
     ws.querySelector('.fill').style.height = (wavesDone / S.waves * 100) + '%'; ws.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0); ws.querySelectorAll('.marks span').forEach((m, i) => m.classList.toggle('done', i < G.wave)); ws.querySelector('.cnt').textContent = `${Math.min(S.waves, G.wave + 1)}/${S.waves}`; }
   $('#patience div').style.width = clamp(G.hp / G.maxhp * 100, 0, 100) + '%'; $('#patience').classList.toggle('low', G.hp < G.maxhp * .3);
   $('#patience span').textContent = `Patience ${Math.max(0, Math.ceil(G.hp))} / ${G.maxhp}`;
@@ -3117,7 +3130,7 @@ function openRoom() {
     const oldest = save.room.used[0]; $('#roomTimer').textContent = left > 0 ? `${left} visit${left > 1 ? 's' : ''} left` : `All used up. Another opens in ${fmtWait(oldest + ROOM_WINDOW - Date.now())}.`;
     $('#roomGo').hidden = false; $('#roomGo').disabled = left <= 0;
   }
-  $('#roomAdRow').hidden = !(window.rewardedAd && left <= 0 && !hasPass());
+  $('#roomAdRow').hidden = !(adsOn() && left <= 0);
   $('#roomm').hidden = false;
 }
 $('#openRoom').onclick = openRoom; $('#roomClose').onclick = () => $('#roomm').hidden = true;
@@ -3207,9 +3220,28 @@ const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null;
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
   if (on) { navDots(); updateQuickPlay(); } }
-function startGame(stage) { music(STAGES[stage].w);
+// Daily Myth: one cleared stage a day with a twist, the same for everyone that day. A small prize the first time, nothing
+// lost by skipping it. Endless Stacks: waves until Dad needs a nap, a chapter boss every fifth, best wave remembered.
+const TWISTS = [
+  { k: 'quick', em: '💨', n: 'Speedy Day', d: 'Myths walk 30% faster, and give double XP.' },
+  { k: 'crowd', em: '👥', n: 'Crowd Day', d: 'Half again as many myths, each a lot softer.' },
+  { k: 'giant', em: '🦣', n: 'Giant Day', d: 'Fewer myths, but every one is crowned.' },
+  { k: 'solo', em: '🧍', n: 'Just Two', d: 'Dad and your first friend only.' },
+];
+const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; };
+function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
+function updateModes() {
+  const D = dailyToday(), db = $('#dailyBtn'), eb = $('#endlessBtn'); if (!db) return;
+  db.hidden = !D; if (D) db.innerHTML = `${D.tw.em} Daily Myth${D.done ? ' ✔' : '<i class="dot"></i>'}`;
+  eb.hidden = !save.cleared.includes(4); eb.textContent = save.endlessBest ? `♾️ Endless · best ${save.endlessBest}` : '♾️ Endless';
+}
+function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
+function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
+function startGame(stage, how = {}) { music(STAGES[stage].w);
   newRun(stage);
-  G.fam = famLive(); G.famQuick = famStat('quick'); G.famGuard = famStat('guard'); G.famPow = famStat('pow'); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
+  if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
+  if (how.endless) { G.endless = true; G.S = { ...G.S, waves: 9999, boss: null }; $('#stageName').textContent = '♾️ The Endless Stacks'; $('#prog').hidden = true; }
+  const pids = G.party.filter(m => m.id !== 'dad').map(m => m.id); G.fam = famLive(pids); G.famQuick = famStat('quick', pids); G.famGuard = famStat('guard', pids); G.famPow = famStat('pow', pids); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
   if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
   mode = 'game'; showScreen(null); $('#hud').hidden = false; $('#toast').hidden = true;
   for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm', '#howm', '#settingsm', '#quizm', '#roomwin', '#roomm']) $(m).hidden = true;
@@ -3253,7 +3285,8 @@ function dropLoot(el, n, bonus) {
   return drops;
 }
 let sessionMatches = 0;
-function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
+setInterval(() => { if (mode === 'game' && G && !G.paused && !G.over && !document.hidden) { const p = save.play || (save.play = {}); p[today()] = (p[today()] || 0) + 10; } }, 10000);
+function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -3279,14 +3312,15 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; { const bn 
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
-  $('#joined').hidden = !joined && !pageNote; if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote) $('#joined').textContent = pageNote;
+  if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
+  $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
   $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
-  $('#adRow').hidden = !(window.rewardedAd && !hasPass() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
+  $('#adRow').hidden = !(adsOn() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
   if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
 // every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
@@ -3309,7 +3343,7 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { sfx('lose'); G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { sfx('lose'); if (G.endless) { const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
@@ -3594,7 +3628,8 @@ $('#gateOk').onclick = () => { if (+$('#gateIn').value === gateAns) { $('#gatem'
 $('#gateNo').onclick = () => { $('#gatem').hidden = true; gateCb = null; };
 $('#gateIn').onkeydown = e => { if (e.key === 'Enter') $('#gateOk').onclick(); };
 // a rewarded video, behind the gate; resolves true only when it was watched through
-function watchAd(why) { return new Promise(res => { if (!window.rewardedAd) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
+const adsOn = () => !!window.rewardedAd && !hasPass() && !save.opt.noAds;
+function watchAd(why) { return new Promise(res => { if (!adsOn()) return res(false); adultGate(why, () => window.rewardedAd().then(ok => res(!!ok)).catch(() => res(false))); }); }
 // what real money can buy: always deterministic, never a draw. Prices come from the store itself.
 const IAP = {
   'com.whydad.defender.pass':   { em: '📘', name: 'The Big Book Pass', desc: 'The video offers go away for good, and Dad\'s Diary gets a gold cover. Friends are still met the usual way, page by page.', grant: () => { save.goldDiary = true; } },
@@ -3604,7 +3639,7 @@ const hasPass = () => save.iap.includes('com.whydad.defender.pass');
 function grantIap(id) { if (!IAP[id] || save.iap.includes(id)) return; save.iap.push(id); IAP[id].grant(); persist(); }
 async function buildIap() {
   const box = $('#iapList'); if (!box) return;
-  if (!window.iap) { box.innerHTML = ''; return; }
+  if (!window.iap || save.opt.noBuy) { box.innerHTML = ''; return; }
   let prices = {}; try { for (const p of await window.iap.products()) prices[p.id] = p.price; } catch (e) {}
   box.innerHTML = `<div class="iaphead">🔒 Grown-ups only <small>Real money. Each one is a fixed thing, never a draw.</small></div>` + Object.keys(IAP).map(id => { const P = IAP[id], own = save.iap.includes(id); return `<div class="offer ${own ? 'owned' : ''}"><div class="em">${P.em}</div><div class="txt"><b>${P.name}</b><span>${P.desc}</span></div>${own ? '<button class="btn small green" disabled>Owned</button>' : `<button class="btn small" data-iap="${id}"><span class="price">${prices[id] || 'Buy'}</span></button>`}</div>`; }).join('') + `<div class="offer"><div class="em">♻️</div><div class="txt"><b>Restore purchases</b><span>Bought it on another phone? Get it back here.</span></div><button class="btn small ghost" id="iapRestore">Restore</button></div>`;
   box.querySelectorAll('[data-iap]').forEach(b => b.onclick = () => adultGate('Buying things is for grown-ups.', async () => { b.disabled = true; try { if (await window.iap.buy(b.dataset.iap)) { grantIap(b.dataset.iap); drawStatics(); } } catch (e) {} buildIap(); }));
@@ -3622,7 +3657,7 @@ const OFFERS = [
 ];
 function buildStore() {
   const box = $('#storeList');
-  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
@@ -3694,7 +3729,7 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
+function updateQuickPlay() { updateModes(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small><span class="pwrap">${powCheck(i)}</span>`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
@@ -3709,7 +3744,23 @@ $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hi
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
 $('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
-$('#retry').onclick = () => startGame(G.stage);
+// the grown-ups' page, behind the gate: this week's learning and play, and the switches that matter to a parent
+const PARENT_OPTS = [['noAds', '📺', 'No video offers', 'Hides every "watch a video" offer.'], ['noBuy', '🛒', 'Hide the purchase shelf', 'The grown-ups shelf in the Store disappears.'], ['breaks', '🧃', 'Break reminders', 'Every third stage in a row suggests a stretch or a snack.']];
+function buildParent() {
+  const week = [...Array(7)].map((_, i) => dayPlus(-i)), mins = d => Math.round(((save.play || {})[d] || 0) / 60), wk = week.reduce((a, d) => a + mins(d), 0);
+  const newFacts = Object.entries(save.factDate || {}).filter(([, d]) => week.includes(d)).map(([id]) => id);
+  $('#parentStats').innerHTML = `<div class="stat"><span>Myths busted</span><b>${save.facts.length} / ${Object.keys(MYTHS).length}</b></div>
+    <div class="stat"><span>New this week</span><b>${newFacts.length}</b></div><div class="stat"><span>Facts that have stuck</span><b>${knowsWell()}</b></div>
+    <div class="stat"><span>Play today</span><b>${mins(today())} min</b></div><div class="stat"><span>Play this week</span><b>${wk} min</b></div>
+    ${newFacts.length ? `<p class="hand" style="margin:8px 0 0">Ask them about: ${newFacts.slice(0, 4).map(id => `<b>${MYTHS[id].em} ${MYTHS[id].name}</b>`).join(', ')}.</p>` : ''}`;
+  const el = $('#parentToggles'); if (save.opt.breaks == null) save.opt.breaks = true;
+  el.innerHTML = PARENT_OPTS.map(([k, em, n, d]) => `<div class="tog ${save.opt[k] ? 'on' : ''}" data-popt="${k}"><div class="em">${em}</div><div class="txt"><b>${n}</b><span>${d}</span></div><div class="sw"></div></div>`).join('');
+  el.querySelectorAll('[data-popt]').forEach(t => t.onclick = () => { save.opt[t.dataset.popt] = !save.opt[t.dataset.popt]; persist(); buildParent(); });
+}
+$('#openParent').onclick = () => { $('#settingsm').hidden = true; adultGate('This page is for grown-ups.', () => { buildParent(); $('#parentm').hidden = false; }); }; // settings closes first so the gate is on top
+$('#closeParent').onclick = () => { $('#parentm').hidden = true; };
+$('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() : startGame(G.stage);
+$('#dailyBtn').onclick = startDaily; $('#endlessBtn').onclick = startEndless;
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
   G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
