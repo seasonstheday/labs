@@ -359,6 +359,17 @@
   #strip .sline .bub b { display: block; font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
   #strip .sline.kid { flex-direction: row-reverse; } #strip .sline.kid .bub { background: #eef6ff; }
   #strip .sline.narr .bub { background: transparent; border: 0; text-align: center; font-size: 18px; font-style: italic; color: #5a4a3a; padding: 4px 6px; }
+  .chestp { position: relative; } .cbanner { margin: -6px auto 10px; width: max-content; padding: 8px 22px; background: linear-gradient(#ffe08a, #e6b84a); border: 3px solid #3a2c20; border-radius: 10px; font: 700 20px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 4px 0 #3a2c20; }
+  .chead { display: flex; align-items: center; gap: 8px; } .cflag { flex: 1; text-align: center; background: linear-gradient(#7b5bc8, #5a3fa0); color: #fff; border: 3px solid #e6b84a; border-radius: 10px 10px 40% 40% / 10px 10px 22% 22%; padding: 10px 6px 18px; box-shadow: 0 4px 0 #3a2c20; }
+  .cflag small { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; opacity: .85; margin-bottom: 4px; } .cflag b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .cflag i { display: block; font-style: normal; font-size: 26px; margin-bottom: 2px; }
+  .crow { display: flex; gap: 8px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .crow.got { opacity: .6; } .crow.ready { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 3px #ffd76a; }
+  .crow .cem { font-size: 30px; width: 40px; text-align: center; } .crow .cmid { flex: 1; min-width: 0; } .crow .cmid b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; } .crow .cmid small { font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); }
+  .rtiles { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; } .rt { position: relative; min-width: 34px; height: 34px; padding: 0 4px; border-radius: 8px; border: 2px solid #3a2c20; background: #8fd38a; display: grid; place-items: center; font-size: 18px; } .rt.y { background: #ffd76a; } .rt.b { background: #9fc4ff; } .rt.p { background: #c9a6ff; }
+  .rt small { position: absolute; right: 1px; bottom: -3px; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20, 0 0 2px #3a2c20; }
+  .creveal { position: absolute; inset: 0; background: rgba(20,14,30,.86); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; border-radius: 20px; z-index: 5; }
+  .crtitle { color: #fff; font: 700 20px/1 "Fredoka", Arial, sans-serif; } .crhint { color: #cfc6e6; font: 400 15px/1 "Patrick Hand", cursive; }
+  .crtiles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 0 12px; } .crtiles .rt { min-width: 64px; height: 64px; font-size: 32px; border-width: 3px; border-radius: 14px; animation: noteUp .45s cubic-bezier(.2,1.5,.4,1) backwards; } .crtiles .rt small { font-size: 13px; bottom: -6px; }
+  .crtiles .rt:nth-child(2) { animation-delay: .12s; } .crtiles .rt:nth-child(3) { animation-delay: .24s; } .crtiles .rt:nth-child(4) { animation-delay: .36s; } .crtiles .rt:nth-child(5) { animation-delay: .48s; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
@@ -494,7 +505,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 48</div>
+    <div class="build">build 49</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -528,6 +539,7 @@
       <div id="mapPow"></div>
       <div class="diffs" id="diffs"></div>
       <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
+      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Chests</button>
     </div>
   </section>
 
@@ -735,6 +747,15 @@
       <div class="toggles" id="parentToggles"></div>
       <div class="row"><button class="btn" id="closeParent">Done</button></div>
     </div>
+  </div>
+  <div class="modal" id="chestm" hidden>
+    <div class="panel chestp">
+      <div class="cbanner">📚 Chapter Chests</div>
+      <div class="chead"><button class="btn icon ghost" id="chPrev">◀</button><div class="cflag" id="chFlag"></div><button class="btn icon ghost" id="chNext">▶</button></div>
+      <div id="chList"></div>
+      <div class="row"><button class="btn" id="chClose">Done</button></div>
+    </div>
+    <div class="creveal" id="chReveal" hidden><div class="crtitle">◇ Reward obtained ◇</div><div class="crtiles" id="chTiles"></div><div class="crhint">tap to close</div></div>
   </div>
   <div class="modal" id="settingsm" hidden>
     <div class="panel">
@@ -3355,6 +3376,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
   if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
   if (first) notes.push(...newUnlocks().map(t => t.replace(/\.$/, '')));
+  if (first && CHESTS.some(C => C.ok(G.S.w) && !chestGot(G.S.w, C.k))) notes.push('🎁 A Chapter Chest is ready on the World Map');
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
   if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
@@ -3443,7 +3465,7 @@ function buildMap(scroll = true) {
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
-  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = !has('power') ? '' : powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
+  const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; updateChestBtn(); { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = !has('power') ? '' : powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
   if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
   $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
@@ -3828,6 +3850,45 @@ function buildParent() {
 }
 $('#openParent').onclick = () => { $('#settingsm').hidden = true; adultGate('This page is for grown-ups.', () => { buildParent(); $('#parentm').hidden = false; }); }; // settings closes first so the gate is on top
 $('#closeParent').onclick = () => { $('#parentm').hidden = true; };
+// Chapter Chests: three milestones per chapter (halfway, the boss, every star), claimed from the World Map with a reveal.
+// Rewards grow with the chapter; the boss chest brings pages for the chapter's friend and a weapon for the team.
+const CHESTS = [
+  { k: 'half', em: '🎁', n: 'Halfway', how: 'Clear stage 3 to claim', ok: w => save.cleared.includes(w * 5 + 2), pay: w => ({ coins: 120 * (w + 1), tix: 1 }) },
+  { k: 'done', em: '🧰', n: 'Chapter cleared', how: 'Beat the chapter boss to claim', ok: w => save.cleared.includes(w * 5 + 4), pay: w => ({ coins: 300 * (w + 1), gems: 40 + 15 * w, pages: [WORLDS[w].comp, 5], weapon: w >= 3 ? 2 : 1, xp: 60 + 20 * w }) },
+  { k: 'stars', em: '👑', n: 'Every star', how: 'Get all 15 stars in the chapter to claim', ok: w => chStars(w) >= 15, pay: w => ({ gems: 80 + 20 * w, item: 2, tix: 1 }) },
+];
+const chStars = w => [0, 1, 2, 3, 4].reduce((a, i) => a + Math.max(...Object.keys(DIFF).map(d => starsOf(w * 5 + i, d))), 0);
+const chestGot = (w, k) => !!(save.chests || {})[w + ':' + k];
+const chestReady = w => CHESTS.some(C => C.ok(w) && !chestGot(w, C.k));
+const anyChest = () => WORLDS.some((_, w) => chestReady(w));
+// what a chest would hand over, as tiles (the preview and the reveal share these)
+function payTiles(p) { const t = []; if (p.coins) t.push(['🪙', p.coins, 'y']); if (p.gems) t.push(['💎', p.gems, 'b']); if (p.tix) t.push(['🎟️', p.tix, 'y']);
+  if (p.pages) t.push([CHARS[p.pages[0]].em, '📄' + p.pages[1], 'p']); if (p.weapon != null) t.push(['⚔️', RAR[p.weapon].n, 'b']); if (p.item != null) t.push(['🎒', RAR[p.item].n, 'p']); if (p.xp) t.push(['⭐', p.xp + ' XP', 'b']); return t; }
+const tileH = ([em, n, c]) => `<div class="rt ${c}">${em}<small>${n}</small></div>`;
+let chW = 0;
+function buildChests() {
+  const W = WORLDS[chW]; $('#chFlag').innerHTML = `<small>Chapter ${chW + 1}</small><i>${W.em}</i><b>${W.name}</b>`;
+  $('#chPrev').disabled = chW === 0; $('#chNext').disabled = chW >= WORLDS.length - 1;
+  $('#chList').innerHTML = CHESTS.map(C => { const got = chestGot(chW, C.k), ok = C.ok(chW);
+    return `<div class="crow ${got ? 'got' : ok ? 'ready' : ''}"><div class="cem">${C.em}</div><div class="cmid"><b>${C.n}${C.k === 'stars' ? ` · ${chStars(chW)}/15 ★` : ''}</b>${got ? '<small>Claimed ✔</small>' : ok ? '<small>Ready!</small>' : `<small>${C.how}</small>`}<div class="rtiles">${payTiles(C.pay(chW)).map(tileH).join('')}</div></div>${ok && !got ? `<button class="btn small green" data-claim="${C.k}">Claim</button>` : ''}</div>`; }).join('');
+  $('#chList').querySelectorAll('[data-claim]').forEach(b => b.onclick = () => claimChest(chW, b.dataset.claim));
+}
+function claimChest(w, k) {
+  const C = CHESTS.find(c => c.k === k); if (!C || !C.ok(w) || chestGot(w, k)) return; const p = C.pay(w);
+  (save.chests = save.chests || {})[w + ':' + k] = true;
+  setWallet({ coins: save.coins + (p.coins || 0), gems: save.gems + (p.gems || 0), tix: save.tix + (p.tix || 0) });
+  if (p.pages) addPages(p.pages[0], p.pages[1]);
+  if (p.weapon != null) { const owners = ['dad', ...save.party.filter(id => CWEAP[id])]; save.items.push(makeItem('weapon', p.weapon, true, { owner: pick(owners) })); }
+  if (p.item != null) save.items.push(itemOf(p.item));
+  if (p.xp) for (const id of ['dad', ...save.party]) { const c = chr(id); c.xp = (c.xp || 0) + p.xp; }
+  persist(); sfx('book'); buzz('HEAVY');
+  $('#chTiles').innerHTML = payTiles(p).map(tileH).join(''); $('#chReveal').hidden = false; buildChests(); updateChestBtn();
+}
+function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Chests${anyChest() ? '<i class="dot"></i>' : ''}`; }
+function openChests(w) { chW = w != null ? w : Math.max(0, WORLDS.findIndex((_, i) => chestReady(i))); if (chW < 0) chW = 0; $('#chReveal').hidden = true; buildChests(); $('#chestm').hidden = false; }
+$('#mapChests').onclick = () => openChests(anyChest() ? null : STAGES[pickStage] ? STAGES[pickStage].w : 0); // a ready chest first, else the chapter on the map
+$('#chPrev').onclick = () => { if (chW > 0) { chW--; buildChests(); } }; $('#chNext').onclick = () => { if (chW < WORLDS.length - 1) { chW++; buildChests(); } };
+$('#chClose').onclick = () => { $('#chestm').hidden = true; }; $('#chReveal').onclick = () => { $('#chReveal').hidden = true; };
 $('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() : startGame(G.stage);
 $('#dailyBtn').onclick = startDaily; $('#endlessBtn').onclick = startEndless;
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
