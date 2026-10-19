@@ -137,6 +137,14 @@ await test('Daily Myth and the Endless Stacks', async () => {
   expect(await p.evaluate(() => dbg.save.endlessBest === 7), 'the best wave saved'); await close(); return errs;
 });
 
+await test('Chapter Chests: claim the chapter 1 chests', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.click('#play'); await p.waitForTimeout(500); await p.click('#mapChests'); await p.waitForTimeout(300);
+  const coins = await p.evaluate(() => dbg.save.coins); await p.click('[data-claim="done"]'); await p.waitForTimeout(400);
+  expect(await p.isVisible('#chReveal'), 'the reward reveal'); expect(await p.evaluate(c => dbg.save.coins > c && dbg.save.chests['0:done'], coins), 'the chest paid out once');
+  await close(); return errs;
+});
+
 await test("the grown-ups' page, behind the gate", async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { document.querySelector('#settingsm').hidden = false; }); await p.click('#openParent'); await p.waitForTimeout(300);
