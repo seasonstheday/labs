@@ -118,6 +118,12 @@ await test('stage clear, the next one opens', async () => {
   await close(); return errs;
 });
 
+await test('every myth: a myth, a fact, a Diary topic, a source and a stage', async () => {
+  const { p, errs, close } = await open(null);
+  const r = await p.evaluate(() => { const ids = Object.keys(dbg.MYTHS), seen = new Set(dbg.STAGES.flatMap(s => [...s.pool, s.boss].filter(Boolean)));
+    return { n: ids.length, bad: ids.filter(id => { const M = dbg.MYTHS[id]; return !M.myth || !M.fact || !M.em || !M.name || !dbg.CATS[dbg.catOf(id)] || dbg.srcOf(id) === 'Dad' || !seen.has(id); }) }; });
+  expect(r.n >= 140, `at least 140 myths, got ${r.n}`); expect(!r.bad.length, `complete myths, these are not: ${r.bad.join(', ')}`); await close(); return errs;
+});
 await test('Myth Check asks about a myth that is due', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(300); await p.click('#speed', { force: true });
