@@ -153,6 +153,22 @@ await test('saves: a spare copy, a save code, and a newer iCloud copy', async ()
   await ctx.close(); return errs;
 });
 
+await test('home hub: patrol, quick patrol, prize wheel, chapter rewards; Dad pages from facts', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { dbg.save.patrol = { t: Date.now() - 5 * 3.6e6, qd: '', qn: 0 }; dbg.persist(); });
+  const c0 = await p.evaluate(() => dbg.save.coins); await p.click('#hubPatrol'); await p.waitForTimeout(200); await p.click('#patrolGo'); await p.waitForTimeout(200);
+  const c1 = await p.evaluate(() => dbg.save.coins); expect(c1 > c0, `patrol coins (${c0} → ${c1})`);
+  await p.click('#patrolQuick'); await p.click('#patrolQuick'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.coins) > c1 && await p.isDisabled('#patrolQuick'), 'two quick patrols, then none');
+  await p.click('#patrolClose'); await p.click('#hubWheel'); await p.waitForTimeout(200); await p.click('#wheelGo'); await p.waitForTimeout(3700);
+  expect(/You won/.test(await p.textContent('#wheelWon')) && await p.isDisabled('#wheelGo'), 'a spin, once a day');
+  await p.click('#wheelClose'); await p.click('#hubChests'); await p.waitForTimeout(200); expect(await p.isVisible('#chestm'), 'Chapter Rewards from home'); await p.click('#chClose');
+  const dp = await p.evaluate(() => { const before = (dbg.save.pages || {}).dad || 0; dbg.startGame(2); const e = dbg.spawn('worm', { x: 220, y: 300 }); e.hp = 1; return before; });
+  await p.evaluate(() => { const G = dbg.G; for (const id of ['#levelup', '#comicm', '#quizm', '#notem']) document.querySelector(id).hidden = true; G.paused = false; G.freePicks = 0; }); await p.waitForTimeout(1500);
+  expect(await p.evaluate(b => dbg.save.facts.includes('worm') ? dbg.save.pages.dad === b + 1 : true, dp), 'a page in Dad\'s notebook for a new fact');
+  await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);
@@ -177,10 +193,11 @@ await test('Myth Check asks about a myth that is due', async () => {
 
 await test('Daily Myth and the Endless Stacks', async () => {
   const { p, errs, close } = await open(PROGRESSED());
-  expect(await p.isVisible('#dailyBtn') && await p.isVisible('#endlessBtn'), 'both mode buttons');
+  await p.click('#hubChall'); await p.waitForTimeout(200);
+  expect(await p.isVisible('#dailyBtn') && await p.isVisible('#endlessBtn'), 'both modes in Challenges');
   await p.click('#dailyBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => !!dbg.G.twist), 'a twist'); await play(p, 3000);
   await endMatch(p); await p.click('#overHome'); await p.waitForTimeout(400);
-  await p.click('#endlessBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => dbg.G.endless), 'endless mode');
+  await p.click('#hubChall'); await p.waitForTimeout(200); await p.click('#endlessBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => dbg.G.endless), 'endless mode');
   await endMatch(p, 6);
   expect(await p.evaluate(() => dbg.save.endlessBest === 7), 'the best wave saved'); await close(); return errs;
 });

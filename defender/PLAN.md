@@ -252,6 +252,15 @@ From `reports/3D style benchmark.md`:
 - Friends breathe, hop when they pop a myth or a wave ends, hop into the backyard when swapped in, and cheer on the Skill Tree.
 - No new 3D friends: the drawings read better at battle size.
 
+## Phase M — Home hub, Dad's stars, Diary bonuses (build 54)
+- **Dad's stars:** every new fact busted is a page in Dad's notebook. Blank pages help too. Each star gives +5% Power, +3% Quick and +10 Patience.
+- **Home hub:** four big icons beside Dad. Locked ones show a padlock and open with the stage schedule.
+  - 🏕️ **Backyard Patrol:** rewards build up while you're away, up to 12 hours. Two free quick patrols a day each give 2 hours' worth. There is no energy to run out of.
+  - 🎡 **Prize Wheel:** one free spin a day. Every prize and its chance is listed under the wheel, and spins are never sold.
+  - 🏆 **Challenges:** the Daily Myth, the Endless Stacks and the Reading Room, each saying when it opens.
+  - 🎁 **Chapter Rewards:** the Chapter Chests, now reachable from home as well as from the World Map.
+- **Diary:** each topic gives the whole team a lasting bonus: a little per fact, more at half the topic, and more when the topic is complete. The nine topics are Power, Patience, Ring, Quick, Coins, Crit, XP, less Patience lost and Reaction damage. A summary sits at the top. Topic tiles show the next milestone, fact cards are bigger, and unfound facts fold into one "N more to find in…" card.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
