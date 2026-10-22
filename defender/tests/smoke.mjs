@@ -57,8 +57,9 @@ const expect = (c, what) => { if (!c) throw new Error('expected ' + what); };
 
 await test('a brand-new player: home, then the prologue', async () => {
   const { p, errs, close } = await open(null);
-  const tabs = await p.evaluate(() => [...document.querySelectorAll('#tabbar [data-tab]')].filter(b => !b.hidden).map(b => b.dataset.tab).join(','));
-  expect(tabs === 'play,diary', `only Play and Diary at first, got ${tabs}`);
+  const tabs = await p.evaluate(() => [...document.querySelectorAll('#tabbar [data-tab]')].filter(b => !b.hidden && !b.classList.contains('locked')).map(b => b.dataset.tab).join(','));
+  expect(tabs === 'play,diary', `only Play and Diary open at first, got ${tabs}`);
+  expect(await p.evaluate(() => document.querySelectorAll('#tabbar [data-tab]:not([hidden])').length === 5), 'all five tabs in place, locked ones with a padlock');
   await p.click('#quickPlay'); await p.waitForTimeout(800);
   expect(await p.isVisible('#comicm'), 'the prologue to open');
   expect(await p.evaluate(() => document.querySelector('#storyImg').src.includes('story_p1')), 'the first storyboard frame');
