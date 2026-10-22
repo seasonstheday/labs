@@ -2,7 +2,7 @@
 // It gives the game three things it checks for at run time and never finds on the web:
 //   window.rewardedAd()  -> Promise<boolean>   show a rewarded video; true only if it was watched through
 //   window.iap           -> { products(), buy(id), restore() }   the grown-ups store, deterministic goods only
-//   window.native        -> { platform, haptic() }
+//   window.native        -> { platform, haptic(), saves }   saves: copies of the save on the phone and in iCloud
 // Every ad or purchase the game offers sits behind its own adult gate; this file just talks to the SDKs.
 (function () {
   const cap = window.Capacitor;
@@ -66,8 +66,20 @@
     owned: () => PRODUCTS.filter(id => catalog[id] && catalog[id].owned),
   };
 
+  // ───── saves: a copy in the phone's own storage (Preferences survives the web view clearing its storage), and one in
+  // iCloud through Game Center saved games (the GameSaves plugin in app/native/ios). Android keeps the phone copy only.
+  const P = () => cap.Plugins && cap.Plugins.Preferences, GS = () => cap.Plugins && cap.Plugins.GameSaves, KEY = 'whydad.defender.save';
+  let gcIn = null; // Game Center sign-in, once per launch
+  const signIn = () => gcIn || (gcIn = (async () => { try { const g = GS(); if (!g) return false; const r = await g.signIn(); return !!(r && r.signedIn); } catch (e) { return false; } })());
+  const saves = {
+    local: json => { try { const p = P(); if (p) p.set({ key: KEY, value: json }); } catch (e) {} },
+    loadLocal: async () => { try { const p = P(); return p ? (await p.get({ key: KEY })).value : null; } catch (e) { return null; } },
+    cloud: async json => { try { if (!(await signIn())) return false; const r = await GS().save({ data: json }); return !!(r && r.saved); } catch (e) { return false; } },
+    loadCloud: async () => { try { if (!(await signIn())) return null; const r = await GS().load(); return r && r.data || null; } catch (e) { return null; } },
+  };
+
   window.native = {
-    platform,
+    platform, saves,
     haptic: async (style = 'LIGHT') => { try { const H = cap.Plugins && cap.Plugins.Haptics; if (H) await H.impact({ style }); } catch (e) {} }, // LIGHT, MEDIUM or HEAVY
   };
 
