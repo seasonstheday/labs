@@ -47,8 +47,17 @@
   .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
   .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
   .btn.ghost { background: var(--card); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 15px; padding: 8px 12px; border-radius: 11px; box-shadow: 0 4px 0 #3a2c20; }
+  .btn.sure { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c, 0 4px 0 #3a2c20; animation: wobble .3s; } @keyframes wobble { 30% { transform: rotate(-2deg); } 70% { transform: rotate(2deg); } }
+  .sayb { display: block; margin: 6px auto 0; width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid #3a2c20; background: #fff; font-size: 20px; box-shadow: 0 3px 0 #3a2c20; }
+  .fcard canvas.pc, .thead .fc { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 90%; } .fcard:nth-child(2n) canvas.pc { animation-delay: -1.1s; } .fcard:nth-child(3n) canvas.pc { animation-delay: -2.2s; }
+  @keyframes breathe { 50% { transform: scale(1.02, .975); } } #frame.calm .fcard canvas.pc, #frame.calm .thead .fc { animation: none; }
+  .hopin canvas.pc, .cheer { animation: hopin .6s cubic-bezier(.3,1.6,.5,1) both !important; } @keyframes hopin { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-14px) scale(.95, 1.08); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
+  .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
+  .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
-  .btn.icon { width: 44px; height: 44px; padding: 0; border-radius: 50%; font-size: 20px; }
+  .btn.icon { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 22px; }
+  /* the frame is drawn at about 89% on a phone, so 50px here is Apple's 44pt minimum */
+  .btn.small { min-height: 50px; } .btn { min-height: 50px; }
   .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
   .btn.big-icon small { font-size: 11px; }
   .btn.big-icon { position: relative; } .dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; box-sizing: border-box; pointer-events: none; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
@@ -88,10 +97,11 @@
   #tabbar button { position: relative; appearance: none; border: 0; background: none; color: #f1e4c8; font: 700 12px/1 "Fredoka", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0 6px; border-radius: 14px 14px 0 0; cursor: pointer; min-height: 60px; justify-content: flex-end; }
   #tabbar button .ti { font-size: 24px; line-height: 1; }
   #tabbar button.on { background: var(--paper); color: #3a2c20; }
+  #tabbar button.locked { color: #8a7a62; } #tabbar button.locked .ti { filter: grayscale(1) opacity(.45); } #tabbar button.locked::after { content: '🔒'; position: absolute; top: 6px; right: 26%; font-size: 14px; }
   #tabbar .playtab .ti { width: 54px; height: 54px; margin-top: -22px; border-radius: 50%; background: var(--gold); border: 4px solid #3a2c20; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #3a2c20; box-shadow: 0 4px 0 #2a1f16; }
   #tabbar .playtab.on { background: none; color: #f1e4c8; } #tabbar .playtab.on .ti { background: #fff3c4; }
   #tabbar .dot { position: absolute; top: 4px; right: 22%; } #tabbar .playtab .dot { top: -18px; right: 18%; }
-  #frame.tabs-on .list-screen .list { padding-bottom: 86px; } #frame.tabs-on #title .build { bottom: 76px; }
+  #frame.tabs-on .list-screen .list { padding-bottom: 86px; } #frame.tabs-on #map .mapcard { padding-bottom: 84px; } #frame.tabs-on #title .build { bottom: 76px; }
   .seg { display: flex; gap: 6px; padding: 0 14px 8px; } .seg button { flex: 1; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; padding: 9px 0; cursor: pointer; color: #3a2c20; } .seg button.on { background: var(--gold); }
   .pgrid-h { font: 700 15px/1 "Fredoka", Arial, sans-serif; margin: 6px 2px 2px; display: flex; justify-content: space-between; align-items: baseline; } .pgrid-h small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
   .pslots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -285,6 +295,12 @@
 
   /* ───────── modals ───────── */
   .modal { position: absolute; inset: 0; background: rgba(43,34,25,.72); display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 10; }
+  /* a pop-up that can be taller than the screen scrolls inside itself, and its way out stays pinned to the bottom */
+  .panel.scrollp { overflow-y: auto; overscroll-behavior: contain; --pb: 18px; } #treem .panel { --pb: 14px; }
+  .panel .row.exit { position: sticky; bottom: calc(-1 * var(--pb, 18px)); margin-left: calc(-1 * var(--pb, 18px)); margin-right: calc(-1 * var(--pb, 18px)); margin-bottom: calc(-1 * var(--pb, 18px)); padding: 14px var(--pb, 18px) var(--pb, 18px); background: linear-gradient(rgba(251,243,223,0), var(--card) 30%); z-index: 3; }
+  .xbtn { position: sticky; top: -6px; display: block; margin: -8px -8px -40px auto; width: 48px; height: 48px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; color: #3a2c20; font: 700 22px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 3px 0 #3a2c20; z-index: 4; cursor: pointer; }
+  .panel.hasx > h2, .panel.hasx > .cbanner { margin-right: 44px; }
+  .xbtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #3a2c20; }
   .panel { width: 100%; background: var(--card); border: 4px solid #3a2c20; border-radius: 20px; padding: 18px; box-shadow: var(--shadow); animation: bounceIn .5s cubic-bezier(.2,1.4,.4,1) both; max-height: 100%; overflow: visible; }
   .panel h2 { margin: 0 0 4px; font-size: 30px; line-height: 1; }
   .panel .sub { margin: 0 0 12px; color: var(--muted); font-size: 20px; }
@@ -404,7 +420,7 @@
   .colors button { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; font-size: 24px; cursor: pointer; box-shadow: 0 3px 0 #3a2c20; }
   .colors button.on { background: var(--gold); transform: scale(1.1); }
   .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 12px; font: 400 17px/1.2 "Patrick Hand", cursive; text-align: center; }
-  .howto { font: 400 19px/1.3 "Patrick Hand", cursive; margin: 0; padding-left: 22px; }
+  .howcards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .hc { border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; font: 400 16px/1.2 "Patrick Hand", cursive; text-align: center; } .hc i { display: block; font-style: normal; font-size: 34px; margin-bottom: 4px; } .hc b { font-family: "Fredoka", Arial, sans-serif; }
   .howto li { margin-bottom: 6px; }
 
   /* ───────── wallet, items, store, draws, daily ───────── */
@@ -440,7 +456,7 @@
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
   .chips { flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; } .chips::-webkit-scrollbar { display: none; }
-  .chips button { flex: none; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 13px/1 "Fredoka", Arial, sans-serif; padding: 7px 11px; color: #3a2c20; cursor: pointer; } .chips button.on { background: var(--gold); } .chips small { opacity: .6; }
+  .chips button { flex: none; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 14px/1 "Fredoka", Arial, sans-serif; padding: 7px 13px; min-height: 46px; color: #3a2c20; cursor: pointer; } .chips button.on { background: var(--gold); } .chips small { opacity: .6; }
   .igrid { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .itile { position: relative; appearance: none; aspect-ratio: 1 / 1.15; background: linear-gradient(#fff, color-mix(in srgb, var(--rc) 18%, #fff)); border: 3px solid var(--rc); border-radius: 14px; box-shadow: 0 3px 0 rgba(58,44,32,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; cursor: pointer; font: 400 11px/1.05 "Patrick Hand", cursive; color: #3a2c20; overflow: visible; }
   .itile .ie { font-size: 30px; line-height: 1; } .itile small { font: 700 11px/1.05 "Fredoka", Arial, sans-serif; color: var(--rc); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
@@ -516,7 +532,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 52</div>
+    <div class="build">build 53</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -534,7 +550,7 @@
     <div class="menu">
       <button class="monthpill" id="monthPill"></button>
       <button class="btn play" id="quickPlay">▶ Play</button>
-      <button class="btn ghost small" id="play">🗺️ World Map</button>
+      <button class="btn ghost small" id="play">🗺️ World Map<i class="dot" id="mapDot" hidden></i></button>
       <div class="hmodes"><button class="btn ghost small" id="dailyBtn" hidden>📅 Daily Myth</button><button class="btn ghost small" id="endlessBtn" hidden>♾️ Endless</button></div>
       <div hidden><button id="openHow"></button><button id="openSettings"></button></div>
     </div>
@@ -542,7 +558,7 @@
 
   <!-- ───────── world map ───────── -->
   <section id="map" class="screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Big Book's Pages</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">World Map</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
     <div id="mapWrap"><div id="mapInner"><canvas id="mapc" width="880" height="3400"></canvas><div id="pins"></div></div></div>
     <div class="mapcard">
       <h3 id="mapName">The Backyard</h3>
@@ -578,13 +594,13 @@
       <h2 class="display" id="studyTitle">Study time</h2>
       <p class="sub hand">The Kid reads three pages back to you.</p>
       <div id="studyList"></div>
-      <div class="row"><button class="btn" id="studyDone">That's the lot · +🪙 40</button></div>
+      <div class="row exit"><button class="btn" id="studyDone">That's the lot · +🪙 40</button></div>
     </div>
   </div>
 
   <!-- ───────── fact book ───────── -->
   <section id="book" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Kid's Diary</h2><span class="pill" id="bookCount"></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Diary</h2><span class="pill" id="bookCount"></span></div>
     <div class="seg"><button id="bookRoom">📚 Reading Room</button><button id="bookStory">📖 The story so far</button></div>
     <div class="dtabs"><button class="on" data-dt="topic">By topic</button><button data-dt="chapter">By chapter</button></div>
     <div class="cats" id="cats"></div>
@@ -603,7 +619,7 @@
 
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Party</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Friends</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
     <p class="intro">Tap a friend for their outfit, moves and stars. Fill a friend's book with 📄 pages and they join.</p>
     <div class="list" id="partyList"></div>
   </section>
@@ -615,14 +631,14 @@
     <div class="list" id="missionList"></div>
   </section>
   <section id="items" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
     <p class="intro">Tap anything to polish ✨, forge 🔨 or sell it. A red dot means three of a kind are ready to forge.</p>
     <div class="list" id="itemList"></div>
   </section>
 
   <!-- ───────── store ───────── -->
   <section id="store" class="screen list-screen" hidden>
-    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Store</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
+    <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Shop</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
     <p class="intro">Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.</p>
     <div class="list" id="storeList"></div>
   </section>
@@ -687,7 +703,7 @@
       <h2 class="display">Paused</h2>
       <p class="sub hand">Dad is catching his breath.</p>
       <div class="toggles" id="pauseToggles"></div>
-      <div class="row"><button class="btn" id="resume">Keep going</button><button class="btn ghost" id="quit">Home</button></div>
+      <div class="row exit"><button class="btn" id="resume">Keep going</button><button class="btn ghost" id="quit">Home</button></div>
     </div>
   </div>
 
@@ -703,7 +719,7 @@
       <div class="joined" id="joined" hidden></div>
       <div class="joined breaknote" id="breakNote" hidden></div>
       <div class="joined" id="grew" hidden></div>
-      <div class="row"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
+      <div class="row exit"><button class="btn" id="nextStage">Next stage →</button><button class="btn ghost" id="clearHome">Home</button></div>
       <div class="row" id="quizRow" hidden><button class="btn ghost small" id="popQuiz">🙋 The Kid has a question (optional, +🪙)</button></div>
       <div class="row" id="adRow" hidden><button class="btn ghost small" id="adDouble">📺 Watch a short video: double the coins (grown-up says yes)</button></div>
     </div>
@@ -716,7 +732,7 @@
       <p class="sub hand" style="text-align:center">Too many questions at once. Everyone keeps what they learned.</p>
       <div id="overStats"></div>
       <div class="lootrow" id="overLoot"></div>
-      <div class="row"><button class="btn" id="retryWave">Try that wave again</button></div>
+      <div class="row exit"><button class="btn" id="retryWave">Try that wave again</button></div>
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="retry">Restart stage</button><button class="btn ghost small" id="overHome">Home</button></div>
     </div>
   </div>
@@ -767,7 +783,7 @@
         <div class="row"><button class="btn small" id="codeCopy">Copy a save code</button><button class="btn small" id="codeLoad">Load a save code</button></div>
         <div id="codeBox" hidden><textarea id="codeText" rows="3" placeholder="Paste a save code here"></textarea><div class="row"><button class="btn small green" id="codeGo">Load this game</button></div></div>
       </div>
-      <div class="row"><button class="btn" id="closeParent">Done</button></div>
+      <div class="row exit"><button class="btn" id="closeParent">Done</button></div>
     </div>
   </div>
   <div class="modal" id="chestm" hidden>
@@ -775,7 +791,7 @@
       <div class="cbanner">📚 Chapter Chests</div>
       <div class="chead"><button class="btn icon ghost" id="chPrev">◀</button><div class="cflag" id="chFlag"></div><button class="btn icon ghost" id="chNext">▶</button></div>
       <div id="chList"></div>
-      <div class="row"><button class="btn" id="chClose">Done</button></div>
+      <div class="row exit"><button class="btn" id="chClose">Done</button></div>
     </div>
     <div class="creveal" id="chReveal" hidden><div class="crtitle">◇ Reward obtained ◇</div><div class="crtiles" id="chTiles"></div><div class="crhint">tap to close</div></div>
   </div>
@@ -784,7 +800,7 @@
       <div class="cbanner">🌳 Skill Tree</div>
       <div class="thead" id="tHead"></div>
       <div id="tList"></div>
-      <div class="row"><button class="btn" id="tClose">Done</button></div>
+      <div class="row exit"><button class="btn" id="tClose">Done</button></div>
     </div>
   </div>
   <div class="modal" id="settingsm" hidden>
@@ -793,7 +809,7 @@
       <p class="sub hand">Change these any time, even mid-match.</p>
       <div class="toggles" id="settingToggles"></div>
       <p class="privacy"><b>🔒 PRIVATE BY DESIGN</b><br>This game keeps everything on your device: no account, no tracking, and it works with no signal once it has loaded. On the web there are no ads at all. In the app, a short video is only ever offered behind a grown-up check, and the Pass turns them off.</p>
-      <div class="row"><button class="btn ghost" id="openParent">👪 Grown-ups</button><button class="btn" id="closeSettings">Done</button></div>
+      <div class="row exit"><button class="btn ghost" id="openParent">👪 Grown-ups</button><button class="btn" id="closeSettings">Done</button></div>
     </div>
   </div>
 
@@ -832,21 +848,15 @@
   <div class="modal" id="howm" hidden>
     <div class="panel">
       <h2 class="display">How to play</h2>
-      <ol class="howto">
-        <li><b>Nobody moves.</b> Dad and his friends stand in the backyard while grumpy Myths march in. Once a myth steps inside Dad's <b>attention ring</b>, the party attacks on its own.</li>
-        <li>Each character has <b>one weapon and three abilities</b>. Popped myths drop purple orbs; fill the bar to <b>rank up an ability</b>. Rank 5 of a weapon <b>evolves</b> it. You get two "Nope" cards a match if you don't like the choices.</li>
-        <li><b>Tap a myth</b> outside the ring and Dad shouts "Hey, you!" so it hurries over. Tap the lawn between waves to start the next one early.</li>
-        <li>Gold orbs are <b>🪙 coins</b>, and every match pays more at the end, plus a few <b>random items</b>. Equip them on the Party screen. 💎 Gems come from daily visits and first clears; 🎟️ Library Cards draw new friends.</li>
-        <li>Every myth that pops turns into a <b>real fact</b>, saved in your Fact Book.</li>
-        <li>Myths that reach Dad use up his <b>Patience</b>. When it's gone, Dad needs a nap. <b>Tap a myth</b> to focus everyone on it.</li>
-        <li>Pop a myth whose fact is already in the Diary and it shows up with a <b>weak spot</b>: "You know this one!" means it takes a quarter more damage. Learning is the power-up.</li>
-        <li>Every friend has a <b>level</b> that grows with each match. Abilities unlock at levels 1, 2 and 4, and the pair-up at 6. Once unlocked, each ability can be <b>upgraded for coins</b> on the Party screen: wider, longer, stronger.</li>
-        <li>The Big Book of Wrong has <b>eight chapters</b>, five stages each. Stage 3 is a rough draft of the chapter boss, stage 5 is the real thing. Clear stage 3 and that chapter's <b>native friend</b> joins you.</li>
-        <li>Every stage has <b>Easy, Normal and Hard</b> and up to <b>three stars</b>: one for clearing, two if Dad kept more than half his Patience, three if nothing ever reached him.</li>
-        <li>The <b>Reading Room</b> opens at party level 10: one boss, three questions from your own Fact Book, a bookmark if you win. Three visits per twelve hours.</li>
-        <li>Everything in this game stays on your device. No accounts, no ads, nothing to buy with real money.</li>
-      </ol>
-      <div class="row"><button class="btn" id="closeHow">Got it</button></div>
+      <div class="howcards">
+        <div class="hc"><i>🧔🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
+        <div class="hc"><i>👆</i><b>Tap a myth</b> and everyone goes after it.</div>
+        <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
+        <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
+        <div class="hc"><i>📔</i>Every popped myth is a <b>real fact</b> in your Diary. Facts you know make myths weaker.</div>
+        <div class="hc"><i>🧑‍🤝‍🧑</i><b>Friends</b> join with pages, grow with levels, and wear things from your <b>Bag</b>.</div>
+      </div>
+      <div class="row exit"><button class="btn" id="closeHow">Got it</button></div>
     </div>
   </div>
 </div>
@@ -1912,7 +1922,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: false, shake: true, calm: false, big: false, labels: false, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
@@ -2153,6 +2163,7 @@ const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ?
 /* ───────── waves ───────── */
 function startWave() {
   const S = G.S, w = G.wave;
+  if (w > 0) G.party.forEach((m, i) => { if (m.id !== 'dad') G.pending.push({ at: G.t + i * .12, fn: () => { if (!m.jump) m.cheer = .5; } }); });
   G.toSpawn = []; G.waveT = 0;
   if (G.endless && w % 5 === 4) { const b = spawn(S.W.boss); if (b) { b.hp = b.maxhp = b.maxhp * (1 + w * .08); } }
   if (S.boss && w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
@@ -2239,9 +2250,10 @@ function hurt(e, d, knock = 0, from = G.dad) {
   const el = who === 'react' ? null : elemOf(who);
   if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
   else if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < (tg.long || 2.5) ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
-  if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
+  e.lastBy = who; if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
 }
 function kill(e) {
+  { const mm = G.party.find(x => x.id === e.lastBy && x.id !== 'dad'); if (mm && !mm.jump && !(mm.cheer > 0)) mm.cheer = .4; }
   G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
@@ -2842,16 +2854,23 @@ const dirRow = (S, phi) => { const n = S.meta.dirs; return ((Math.round((phi - M
 // draw one frame with the feet at (x, y) and the figure about h tall; returns the frame's anchors in screen space
 function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   const A = S.meta.anims[anim] ? anim : Object.keys(S.meta.anims)[0], an = S.meta.anims[A], img = S.img[A], size = S.meta.size;
-  const f = an.frames > 1 ? Math.floor(((t / an.dur) % 1 + 1) % 1 * an.frames) : 0, row = dirRow(S, phi), anc = (S.meta.anchors[A][row] || [])[f] || {}, g = anc.__ground || [size / 2, size * .92, 0];
+  const f = an.frames > 1 ? Math.floor(((t / an.dur) % 1 + 1) % 1 * an.frames) : 0, row = opts.cheat && S.meta.dirs === 8 ? [0, 1, 1, 2, 4, 6, 7, 7][dirRow(S, phi)] : dirRow(S, phi), anc = (S.meta.anchors[A][row] || [])[f] || {}, g = anc.__ground || [size / 2, size * .92, 0];
   const sc = h / (size * .92), cx = x - size / 2 * sc, cy = y - g[1] * sc;
   c.save(); if (opts.alpha != null) c.globalAlpha = opts.alpha;
   if (opts.lean || opts.squash || opts.stretch) { c.translate(x, y); c.rotate(opts.lean || 0); const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14); c.translate(-x, -y); }
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
   const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  if (opts.tint || opts.flash) { // a tinted copy of the frame, kept per sheet / frame / colour so a crowd of forty costs one draw each
-    const key = `${S.meta.name}:${A}:${row}:${f}:${opts.flash ? 'flash' : opts.tint}`; let tc = TINTED.get(key);
-    if (!tc) { if (TINTED.size > 600) TINTED.clear(); tc = document.createElement('canvas'); tc.width = tc.height = size; const tx = tc.getContext('2d'); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); TINTED.set(key, tc); }
+  // tint, hit flash and the brown outline are baked into a copy of the frame once, so a crowd of forty costs one draw each.
+  // The outline is about 2px on screen whatever the size, to match the outlined drawings.
+  const ol = opts.outline ? Math.max(2, Math.round(2.2 / sc)) : 0;
+  if (opts.tint || opts.flash || ol) {
+    const key = `${S.meta.name}:${A}:${row}:${f}:${opts.flash ? 'flash' : opts.tint || ''}:${ol}`; let tc = TINTED.get(key);
+    if (!tc) { if (TINTED.size > 900) TINTED.clear(); tc = document.createElement('canvas'); tc.width = tc.height = size; const tx = tc.getContext('2d');
+      const fr = document.createElement('canvas'); fr.width = fr.height = size; const fx = fr.getContext('2d'); fx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size);
+      if (opts.tint || opts.flash) { fx.globalCompositeOperation = 'source-atop'; fx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); fx.fillStyle = opts.flash ? '#fff' : opts.tint; fx.fillRect(0, 0, size, size); }
+      if (ol) { for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; tx.drawImage(fr, Math.cos(a) * ol, Math.sin(a) * ol); } tx.globalCompositeOperation = 'source-in'; tx.fillStyle = '#3a2c20'; tx.fillRect(0, 0, size, size); tx.globalCompositeOperation = 'source-over'; }
+      tx.drawImage(fr, 0, 0); TINTED.set(key, tc); }
     c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
   else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
   if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
@@ -2955,7 +2974,7 @@ function drawHeldItem(c, [hx, hy], kind, p) {
 // a companion standing with its feet at (x, y); `s` is a size scale (1 = in-game)
 function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face * s, s);
-  const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14);
+  const sq = opts.squash || 0, st = opts.stretch || 0, br = save.opt.calm ? 0 : Math.sin(t * 2.6 + (opts.bob || 0) * 1.7) * .025; c.scale(1 + sq * .18 - st * .1 - br * .5, 1 - sq * .22 + st * .14 + br);
   c.strokeStyle = '#3a2c20'; c.lineWidth = 2.5; c.lineJoin = 'round'; c.lineCap = 'round';
   const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = ready(png) ? null : sheet(id);
   c.save();
@@ -3088,7 +3107,7 @@ function drawMember(m) {
     if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
       const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
       const TH = S3.meta.anims.throw, tt = a && TH ? (p < .33 ? p / .33 * 6 : 6 + (p - .33) / .67 * 6.9) / TH.frames * TH.dur : G.t;
-      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : save.weapon, a ? p : null) });
+      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { outline: true, cheat: true, lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : save.weapon, a ? p : null) });
       return;
     }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
@@ -3104,8 +3123,9 @@ function drawMember(m) {
   ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 4, 20 - z * .05, 7, 0, 0, 7); ctx.fill();
   const lean = a ? (p < .33 ? -.22 * (p / .33) : .18 * (1 - Math.min(1, (p - .33) / .67)) - .03) * m.face : 0;
   if (m.land > 0) m.land -= 1 / 60;
+  const cheer = m.cheer > 0 ? Math.sin((1 - m.cheer / .5) * Math.PI) * 9 : 0; if (m.cheer > 0) m.cheer -= 1 / 60;
   const step = a ? (p < .33 ? -5 * (p / .33) : 12 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 8 : 0;
-  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: hop / 8, gear: true, held: a ? p : null, aim: m.aim });
+  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop - cheer, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: (hop + cheer) / 8, gear: true, held: a ? p : null, aim: m.aim });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
@@ -3170,7 +3190,7 @@ function drawEnemy(e) {
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
-    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
     if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', x + Math.cos(a) * r * .7, y - r * 1.2 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
@@ -3772,10 +3792,13 @@ function buildStagePick() {
   $('#play').textContent = total ? `🗺️ World Map · ⭐ ${total}` : '🗺️ World Map';
 }
 let diaryTab = 'topic', diaryCat = 'animals', diaryW = 0;
+// the 🔊 on a fact reads it out, whatever the voice setting says
+document.addEventListener('click', e => { const h = e.target.closest && e.target.closest('.hc'); if (h) sayNow(h.textContent.trim()); });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.sayb'); if (!b) return; e.stopPropagation(); const M = MYTHS[b.dataset.say]; sayNow(`${M.name}. I thought: ${M.myth} Dad says: ${M.fact}`); });
 function buildBook() {
   const box = $('#factList'); box.innerHTML = ''; let n = 0;
   $$('#book [data-dt]').forEach(b => { b.classList.toggle('on', b.dataset.dt === diaryTab); b.onclick = () => { diaryTab = b.dataset.dt; buildBook(); }; });
-  const kidRow = id => { const M = MYTHS[id], got = save.facts.includes(id); listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = got ? `<div class="em">${M.em}</div><div><b>${M.name}</b><s><span class="kid">I THOUGHT</span>${M.myth}</s><p><span class="kid">DAD SAYS</span>${M.fact}</p><span class="meta">${save.factDate[id] ? 'Learned ' + save.factDate[id] : 'Learned before I kept a diary'} · Dad read it in ${srcOf(id)}</span></div>` : `<div class="em">❓</div><div><b>???</b><s>A page I haven't popped yet.</s><p>Pop it in the game and I'll write it down.</p></div>`; box.appendChild(d); };
+  const kidRow = id => { const M = MYTHS[id], got = save.facts.includes(id); listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = got ? `<div class="em">${M.em}<button class="sayb" data-say="${id}" aria-label="Read it to me">🔊</button></div><div><b>${M.name}</b><s><span class="kid">I THOUGHT</span>${M.myth}</s><p><span class="kid">DAD SAYS</span>${M.fact}</p><span class="meta">${save.factDate[id] ? 'Learned ' + save.factDate[id] : 'Learned before I kept a diary'} · Dad read it in ${srcOf(id)}</span></div>` : `<div class="em">❓</div><div><b>???</b><s>A page I haven't popped yet.</s><p>Pop it in the game and I'll write it down.</p></div>`; box.appendChild(d); };
   const listed = new Set();
   if (diaryTab === 'topic') {
     const cats = $('#cats'); cats.innerHTML = Object.keys(CATS).map(c => { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${c === diaryCat ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-cat="${c}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${CATS[c][0]}</span></div>${CATS[c][1]}<br><small>${got}/${ids.length}</small></div>`; }).join('');
@@ -3845,22 +3868,22 @@ function buildParty() {
       return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${id === 'dad' ? '<small>Always</small>' : c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
-    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a friend to swap</small></div><div class="pslots">${card('dad')}${slots.map(id => id ? card(id) : '<div class="pslot">An empty spot</div>').join('')}</div>`
+    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
       + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
       + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
     box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
+    box.querySelectorAll('[data-slot-i]').forEach(b => b.onclick = () => openSwap(+b.dataset.slotI));
     box.querySelectorAll('[data-fam]').forEach(b => b.onclick = () => famInfo(b.dataset.fam));
     drawStatics(); navDots(); return;
   }
-  box.insertAdjacentHTML('beforeend', `<div class="backrow"><button class="btn small ghost" id="allFriends">← All friends</button>${false ? `<button class="btn small" id="toRack">⚔️ ${partySel === 'dad' ? 'Lenses' : CWEAP[partySel].line}</button>` : ''}</div>`);
-  $('#allFriends').onclick = () => { partySel = null; buildParty(); }; if ($('#toRack')) $('#toRack').onclick = () => { shopTab = partySel; buildShop(); showScreen('#shop'); };
+  // the friend card has one way back: the ← at the top goes to all friends
   for (const id of [partySel]) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
     let html = `<div class="top"><canvas class="pc" data-c="${id}" width="112" height="112"></canvas><div><b>${C.name}</b>${c.own || id === 'dad' ? ' ' + powH(powerOf(id), true) : ''}<span class="d">${C.desc}</span></div>`;
     if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Card</button>`;
     else if (id === 'dad') html += `<button class="btn small green" disabled>Always</button>`;
-    else if (inP) html += `<button class="btn small ghost" data-leave="${id}">In party ✓</button>`;
-    else html += `<button class="btn small" data-join="${id}" ${save.party.length >= MAX_COMPANIONS ? 'disabled' : ''}>Join</button>`;
+    else if (inP) html += `<button class="btn small ghost" data-leave="${id}">Take out</button>`;
+    else html += `<button class="btn small" data-join="${id}">Bring in</button>`;
     html += '</div>';
     if (c.own) html += outfitH(id);
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
@@ -3899,7 +3922,7 @@ function buildParty() {
   box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-slot]').forEach(b => b.onclick = () => { const [id, t] = b.dataset.slot.split(':'); openPick(id, t); });
   box.querySelectorAll('[data-album]').forEach(b => b.onclick = () => { albumOpen[b.dataset.album] = !albumOpen[b.dataset.album]; buildParty(); });
-  box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) { toastMsg('The backyard is full. Take someone out first.'); return; } save.party.push(b.dataset.join); persist(); buildParty(); drawStatics(); });
+  box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) { openSwap(null, b.dataset.join); return; } save.party.push(b.dataset.join); persist(); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
   box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r]++; persist(); buildParty(); });
   drawStatics();
@@ -3909,6 +3932,26 @@ function buildParty() {
 let pickFor = null;
 const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
 const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+// spending or leaving: the first tap asks ("Sure?"), a second tap within 3 seconds does it
+function sure(b, ask = 'Sure? Tap again') { if (b.dataset.sure && Date.now() - +b.dataset.sure < 3000) { delete b.dataset.sure; b.classList.remove('sure'); return true; }
+  const old = b.innerHTML; b.dataset.sure = Date.now(); b.innerHTML = '✔ ' + ask; b.classList.add('sure'); buzz('LIGHT');
+  setTimeout(() => { if (b.isConnected && b.dataset.sure) { delete b.dataset.sure; b.innerHTML = old; b.classList.remove('sure'); } }, 3000); return false; }
+// swapping who's in the backyard: tap a spot, then a face. With a friend chosen first (a full backyard), pick who goes out.
+function openSwap(i, incoming) {
+  pickFor = null; $('#pickUnequip').hidden = true; const out = i != null ? save.party[i] : null;
+  const cand = incoming ? save.party.slice() : Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && !save.party.includes(id)).sort((a, b) => powerOf(b) - powerOf(a));
+  $('#pickTitle').textContent = incoming ? `Who makes room for ${CHARS[incoming].name}?` : out ? `Who comes in for ${CHARS[out].name}?` : 'Who comes into the backyard?';
+  $('#pickSub').textContent = cand.length ? '' : 'Everyone you have is already in the backyard. Pages bring new friends.';
+  $('#pickList').innerHTML = cand.map(id => `<button class="swaprow" data-swap="${id}"><span class="fc">${faceH(id)}</span><b>${CHARS[id].name}</b>${powH(powerOf(id))}</button>`).join('')
+    + (out ? `<div class="row"><button class="btn small ghost" data-seecard="${out}">${CHARS[out].em} ${CHARS[out].name}'s card</button><button class="btn small ghost" data-takeout="${out}">Take ${CHARS[out].name} out</button></div>` : '');
+  const done = () => { persist(); $('#pickm').hidden = true; buildParty(); drawStatics(); };
+  $('#pickList').querySelectorAll('[data-swap]').forEach(b => b.onclick = () => { const id = b.dataset.swap;
+    if (incoming) save.party[save.party.indexOf(id)] = incoming; else if (out) save.party[i] = id; else save.party.push(id);
+    sfx('coin'); buzz('LIGHT'); done(); const nw = incoming || id, card = $(`.pslots [data-who="${nw}"]`); if (card) card.classList.add('hopin'); });
+  const sc = $('#pickList').querySelector('[data-seecard]'); if (sc) sc.onclick = () => { $('#pickm').hidden = true; partySel = sc.dataset.seecard; buildParty(); };
+  const to = $('#pickList').querySelector('[data-takeout]'); if (to) to.onclick = () => { save.party = save.party.filter(x => x !== to.dataset.takeout); done(); };
+  $('#pickm').hidden = false;
+}
 function wornBy(uid) { for (const id in save.equip) for (const t in save.equip[id]) if (save.equip[id][t] === uid) return id; return null; }
 function openPick(id, t) {
   pickFor = { id, t }; $('#pickTitle').textContent = `${CHARS[id].name} · ${ITEMS[t].slot}`;
@@ -3942,15 +3985,20 @@ function bagBtns(it) {
   return `<div class="sheetbtns">${!has('polish') ? '' : lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
     + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
     + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
-    + `</div><p class="sheethint">${it.type === 'weapon' ? `Hold it from ${CHARS[it.owner].name}'s weapon rack.` : 'Put it on from a friend\'s card in Friends.'}</p>`;
+    + '</div>';
 }
+// who can wear it: a row of faces; one tap puts it on (a weapon only fits its owner)
+function puton(it, w) { const who = it.type === 'weapon' ? [it.owner] : ['dad', ...save.party];
+  return `<p class="sheethint" style="margin-top:8px">${it.type === 'weapon' ? 'Give it to:' : 'Put it on:'}</p><div class="puton" style="margin-bottom:22px">${who.map(id => `<button data-puton="${it.uid}:${id}" class="${w === id ? 'on' : ''}" aria-label="${CHARS[id].name}">${faceH(id)}<small>${CHARS[id].name}</small></button>`).join('')}</div>`; }
 function itemSheet(uid) {
   const it = itemBy(uid); if (!it) { $('#pickm').hidden = true; return; }
   pickFor = null; $('#pickTitle').textContent = itemName(it); $('#pickSub').textContent = ''; $('#pickUnequip').hidden = true;
-  $('#pickList').innerHTML = itemRow(it, '') + bagBtns(it); bindBag($('#pickList'), () => { buildItems(); if (itemBy(uid) && !$('#pickm').hidden) itemSheet(uid); }); $('#pickm').hidden = false;
+  $('#pickList').innerHTML = itemRow(it, '') + (it.type !== 'mark' ? puton(it, wornBy(it.uid)) : '') + bagBtns(it); bindBag($('#pickList'), () => { buildItems(); if (itemBy(uid) && !$('#pickm').hidden) itemSheet(uid); }); $('#pickm').hidden = false;
 }
 function bindBag(root, after) {
-  root.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); $('#pickm').hidden = true; toastMsg(`🪙 Sold ${it.name}`); buildItems(); });
+  root.querySelectorAll('[data-sell]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.sell); if (!it || !sure(b, 'Sell it?')) return; save.items = save.items.filter(i => i !== it); for (const mk of it.marks || []) save.items.push(mk); setWallet({ coins: save.coins + RAR[it.rar].sell + Math.round((it.spent || 0) / 2) }); $('#pickm').hidden = true; toastMsg(`🪙 Sold ${it.name}`); buildItems(); });
+  root.querySelectorAll('[data-puton]').forEach(b => b.onclick = () => { const [uid, id] = b.dataset.puton.split(':'), it = itemBy(uid); if (!it) return; const prev = wornBy(uid); if (prev) delete save.equip[prev][it.type];
+    if (it.type === 'weapon') chr(id); equipOf(id)[it.type] = uid; syncWeapons(); persist(); sfx('coin'); buzz('LIGHT'); toastMsg(`${CHARS[id].em} ${CHARS[id].name} has the ${itemName(it)}.`); after(); });
   root.querySelectorAll('[data-polish]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.polish); if (it && polishItem(it)) { toastMsg(`✨ ${itemName(it)}`); after(); } });
   root.querySelectorAll('[data-merge]').forEach(b => b.onclick = () => { const it = itemBy(b.dataset.merge); if (it) forgeFlow(it, () => { buildItems(); itemSheet(it.uid); }); });
   // bookmarks: tap an empty slot to tuck one in, tap a placed one to take it out (20 coins)
@@ -4021,7 +4069,7 @@ function buildStore() {
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
-  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1]) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
 /* ───────── library card draws ───────── */
@@ -4073,7 +4121,7 @@ $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };
 $('#openParty').onclick = () => { buildParty(); showScreen('#partyScreen'); };
 $('#openItems').onclick = () => { buildItems(); showScreen('#items'); };
 // the tab bar: five places, always one tap away; Play is home. Dots only when there is something to do there.
-const TAB_OF = { '#title': 'play', '#missions': 'play', '#store': 'shop', '#partyScreen': 'friends', '#shop': 'friends', '#items': 'bag', '#book': 'diary' };
+const TAB_OF = { '#title': 'play', '#map': 'play', '#missions': 'play', '#store': 'shop', '#partyScreen': 'friends', '#shop': 'friends', '#items': 'bag', '#book': 'diary' };
 // one new idea at a time: each system opens after a number of stages cleared, with a line on the clear screen and a dot
 // on its tab until it's visited. Saves that are already further along have everything open.
 const UNLOCKS = [
@@ -4097,13 +4145,20 @@ function newUnlocks() { const seen = save.seenUnlocks || (save.seenUnlocks = [])
   persist(); return out; }
 function applyUnlocks() {
   if (!save.seenUnlocks) { save.seenUnlocks = UNLOCKS.filter(u => has(u.k)).map(u => u.k); persist(); } // older saves: what's open stays open, quietly
-  $$('#tabbar [data-tab]').forEach(b => { const t = b.dataset.tab; b.hidden = t !== 'play' && t !== 'diary' && !has(t); });
-  const mi = $('#openMissions'); if (mi) mi.hidden = !has('missions');
+  // every tab is always there, so nothing moves as the game opens up; a locked one wears a padlock
+  $$('#tabbar [data-tab]').forEach(b => { const t = b.dataset.tab; b.hidden = false; b.classList.toggle('locked', t !== 'play' && t !== 'diary' && !has(t)); });
+  const mi = $('#openMissions'); if (mi) mi.hidden = !has('missions'); const hm = $('#homeMissions'); if (hm) hm.hidden = !has('missions');
 }
 function navDots() { const tb = $('#tabbar'); if (!tb) return; const set = (t, on) => { const d = tb.querySelector(`[data-tab="${t}"] .dot`); if (d) d.hidden = !on; };
-  set('shop', save.tix > 0); set('friends', Object.keys(CHARS).some(canGrow)); set('play', (() => { try { return misReady(); } catch (e) { return false; } })()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
+  if ((save.tixSeen || 0) > save.tix) save.tixSeen = save.tix;
+  // a dot means "something to collect over there": never on the tab you're on, the Shop only for a card you haven't seen
+  const here = (tb.querySelector('[data-tab].on') || {}).dataset?.tab, mis = (() => { try { return misReady(); } catch (e) { return false; } })();
+  set('shop', save.tix > (save.tixSeen || 0)); set('friends', Object.keys(CHARS).some(canGrow)); set('play', mis || anyChest()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
+  if (here) set(here, false); const md = $('#mapDot'); if (md) md.hidden = !anyChest();
   const d2 = $('#misDot2'); if (d2) d2.hidden = !(() => { try { return misReady(); } catch (e) { return false; } })(); }
-$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab; if (save.newTabs && save.newTabs.includes(t)) { save.newTabs = save.newTabs.filter(x => x !== t); persist(); }
+$$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab;
+  if (b.classList.contains('locked')) { const U = UNLOCKS.find(u => u.k === t), n = U.at - save.cleared.length; buzz('LIGHT'); toastMsg(`🔒 ${b.textContent.trim()} opens after ${n} more stage${n > 1 ? 's' : ''}. Keep playing!`); say(`${b.textContent.trim()} opens soon. Keep playing!`); return; }
+  if (save.newTabs && save.newTabs.includes(t)) { save.newTabs = save.newTabs.filter(x => x !== t); persist(); }
   if (t === 'play') { showScreen('#title'); drawStatics(); } else if (t === 'shop') $('#openStore').onclick(); else if (t === 'friends') { partySel = null; $('#openParty').onclick(); } else if (t === 'bag') $('#openItems').onclick(); else if (t === 'diary') $('#openBook').onclick(); });
 $$('.seg [data-seg]').forEach(b => b.onclick = () => { if (b.dataset.seg === 'friends') { partySel = null; buildParty(); showScreen('#partyScreen'); } else { if (partySel && (CWEAP[partySel] || partySel === 'dad')) shopTab = partySel; buildShop(); showScreen('#shop'); } });
 $('#homeMissions').onclick = () => $('#openMissions').onclick(); $('#homeHow').onclick = () => $('#howm').hidden = false; $('#homeSettings').onclick = () => { buildToggles($('#settingToggles')); $('#settingsm').hidden = false; };
@@ -4118,7 +4173,7 @@ function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >
 function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
-$('#openStore').onclick = () => { buildStore(); showScreen('#store'); };
+$('#openStore').onclick = () => { save.tixSeen = save.tix; persist(); buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
 $$('.back').forEach(b => b.onclick = () => { if (b.closest('#shop')) { buildParty(); showScreen('#partyScreen'); return; } if (b.closest('#partyScreen') && partySel) { partySel = null; buildParty(); return; } showScreen('#title'); drawStatics(); });
 $('#openHow').onclick = () => $('#howm').hidden = false;
@@ -4128,7 +4183,7 @@ $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
 $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; buildToggles($('#pauseToggles')); $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
-$('#quit').onclick = goHome; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
+$('#quit').onclick = () => { if (sure($('#quit'), 'Leave?')) goHome(); }; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
 // the grown-ups' page, behind the gate: this week's learning and play, and the switches that matter to a parent
 const PARENT_OPTS = [['noAds', '📺', 'No video offers', 'Hides every "watch a video" offer.'], ['noBuy', '🛒', 'Hide the purchase shelf', 'The grown-ups shelf in the Store disappears.'], ['breaks', '🧃', 'Break reminders', 'Every third stage in a row suggests a stretch or a snack.']];
@@ -4207,18 +4262,24 @@ function buildTree() {
     h += `<div class="tlab">Finisher${fOpen ? '' : ' · after every upgrade and a choice'}</div><div class="ttier"><div class="tn fin ${fin ? 'on' : ''}"><span class="te">${F.em}</span><b>${F.n}</b><p>${F.d}</p>${fin ? '<button class="btn small maxed" disabled>Done</button>' : `<button class="btn small" data-tf="${a}" ${canF ? '' : 'disabled'}>Learn · 🪙${T_FIN_COST}</button>`}</div></div></div>`;
   }
   $('#tList').innerHTML = h;
-  const done = () => { persist(); buildTree(); buildParty(); };
+  const done = () => { persist(); buildTree(); buildParty(); const f = $('#tHead .fc'); if (f) { f.classList.add('cheer'); setTimeout(() => f.classList.remove('cheer'), 650); } };
   $('#tList').querySelectorAll('[data-tn]').forEach(b => b.onclick = () => { const [a, k] = b.dataset.tn.split(':'), r = tRank(id, a, k), cost = tCost(r); if (r >= TREE_MAX || tLeft(id) <= 0 || save.coins < cost || !tOpen(id, a)) return;
     setWallet({ coins: save.coins - cost }); if (k === 'sig') c.sk[a] = r + 1; else tBr(id, a)[k] = r + 1; sfx('forge'); buzz('LIGHT'); done(); });
   $('#tList').querySelectorAll('[data-tp]').forEach(b => b.onclick = () => { const [a, i] = b.dataset.tp.split(':'), B = tBr(id, a);
-    if (!B.pick) { if (tLeft(id) <= 0 || save.coins < T_PICK_COST || tBase(id, a) < tPickAt(a)) return; setWallet({ coins: save.coins - T_PICK_COST }); }
+    if (!B.pick) { if (tLeft(id) <= 0 || save.coins < T_PICK_COST || tBase(id, a) < tPickAt(a) || !sure(b, 'Pick it?')) return; setWallet({ coins: save.coins - T_PICK_COST }); }
     B.pick = +i; sfx('coin'); buzz('LIGHT'); done(); });
-  $('#tList').querySelectorAll('[data-tf]').forEach(b => b.onclick = () => { const a = b.dataset.tf, B = tBr(id, a); if (B.fin || tLeft(id) <= 0 || save.coins < T_FIN_COST || !B.pick || !tFull(id, a)) return;
+  $('#tList').querySelectorAll('[data-tf]').forEach(b => b.onclick = () => { const a = b.dataset.tf, B = tBr(id, a); if (B.fin || tLeft(id) <= 0 || save.coins < T_FIN_COST || !B.pick || !tFull(id, a) || !sure(b, 'Learn it?')) return;
     setWallet({ coins: save.coins - T_FIN_COST }); B.fin = 1; sfx('levelup'); buzz('MEDIUM'); toastMsg(`${tFin(id, a).em} ${C.name} learned ${tFin(id, a).n}!`); done(); });
   const bk = $('#tList').querySelector('[data-tbook]'); if (bk) bk.onclick = () => { if (!(save.books > 0)) return; save.books--; c.books = (c.books || 0) + 1; sfx('coin'); done(); };
 }
 function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $('#treem .panel').scrollTop = 0; }
 $('#tClose').onclick = () => { $('#treem').hidden = true; };
+// every pop-up with a plain way out gets a big ✕ in the corner, and a tap on the dark area outside does the same
+const XCLOSE = { settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
+for (const [id, sel] of Object.entries(XCLOSE)) { const m = $('#' + id), p = m.querySelector('.panel'), x = document.createElement('button');
+  x.className = 'xbtn'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close'); x.onclick = () => $(sel).click(); p.prepend(x); p.classList.add('hasx');
+  m.addEventListener('click', e => { if (e.target === m) $(sel).click(); }); }
+document.querySelectorAll('.row.exit').forEach(r => r.closest('.panel').classList.add('scrollp'));
 function openChests(w) { chW = w != null ? w : Math.max(0, WORLDS.findIndex((_, i) => chestReady(i))); if (chW < 0) chW = 0; $('#chReveal').hidden = true; buildChests(); $('#chestm').hidden = false; }
 $('#mapChests').onclick = () => openChests(anyChest() ? null : STAGES[pickStage] ? STAGES[pickStage].w : 0); // a ready chest first, else the chapter on the map
 $('#chPrev').onclick = () => { if (chW > 0) { chW--; buildChests(); } }; $('#chNext').onclick = () => { if (chW < WORLDS.length - 1) { chW++; buildChests(); } };

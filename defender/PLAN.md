@@ -234,6 +234,24 @@ Points come from levels (one per level) plus Skill Books from chapter chests and
 
 Balance: a full tree on Dad and three friends roughly doubles damage (dummy-target test); half a tree adds about 30–60%. Late myth HP rises 2% a stage after stage 20, and the suggested Power rises to match.
 
+## Phase L — Menus and character life (build 53)
+From `reports/Menu usability benchmark.md`:
+- Pop-up exits are pinned to the bottom, with a big ✕ and tap-outside to close.
+- All five tabs show from the start, with padlocks on locked ones, and the tab bar stays on the World Map.
+- Buttons are at least 44pt.
+- The Bag has a "Put on" row of faces.
+- Swapping friends is: tap a spot, then a face.
+- Dot rules are tidied.
+- Spending and leaving a stage ask for a second tap.
+- Screen titles match the tabs.
+- Read-aloud is on by default, with a 🔊 on Diary facts.
+- How to play is now picture cards.
+
+From `reports/3D style benchmark.md`:
+- 3D Dad and the myths get a cached 2px brown outline and face the camera at three-quarters.
+- Friends breathe, hop when they pop a myth or a wave ends, hop into the backyard when swapped in, and cheer on the Skill Tree.
+- No new 3D friends: the drawings read better at battle size.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
