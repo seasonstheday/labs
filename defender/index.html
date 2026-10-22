@@ -49,6 +49,9 @@
   .btn.ghost { background: var(--card); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 15px; padding: 8px 12px; border-radius: 11px; box-shadow: 0 4px 0 #3a2c20; }
   .btn.sure { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c, 0 4px 0 #3a2c20; animation: wobble .3s; } @keyframes wobble { 30% { transform: rotate(-2deg); } 70% { transform: rotate(2deg); } }
   .sayb { display: block; margin: 6px auto 0; width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid #3a2c20; background: #fff; font-size: 20px; box-shadow: 0 3px 0 #3a2c20; }
+  .fcard canvas.pc, .thead .fc { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 90%; } .fcard:nth-child(2n) canvas.pc { animation-delay: -1.1s; } .fcard:nth-child(3n) canvas.pc { animation-delay: -2.2s; }
+  @keyframes breathe { 50% { transform: scale(1.02, .975); } } #frame.calm .fcard canvas.pc, #frame.calm .thead .fc { animation: none; }
+  .hopin canvas.pc, .cheer { animation: hopin .6s cubic-bezier(.3,1.6,.5,1) both !important; } @keyframes hopin { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-14px) scale(.95, 1.08); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
   .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
@@ -529,7 +532,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 52</div>
+    <div class="build">build 53</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -2160,6 +2163,7 @@ const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ?
 /* ───────── waves ───────── */
 function startWave() {
   const S = G.S, w = G.wave;
+  if (w > 0) G.party.forEach((m, i) => { if (m.id !== 'dad') G.pending.push({ at: G.t + i * .12, fn: () => { if (!m.jump) m.cheer = .5; } }); });
   G.toSpawn = []; G.waveT = 0;
   if (G.endless && w % 5 === 4) { const b = spawn(S.W.boss); if (b) { b.hp = b.maxhp = b.maxhp * (1 + w * .08); } }
   if (S.boss && w === S.waves - 1) { spawn(S.boss); for (let i = 0; i < 4; i++) G.toSpawn.push({ id: pick(S.pool), at: 2 + i * 1.5 }); }
@@ -2246,9 +2250,10 @@ function hurt(e, d, knock = 0, from = G.dad) {
   const el = who === 'react' ? null : elemOf(who);
   if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
   else if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < (tg.long || 2.5) ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
-  if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
+  e.lastBy = who; if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
 }
 function kill(e) {
+  { const mm = G.party.find(x => x.id === e.lastBy && x.id !== 'dad'); if (mm && !mm.jump && !(mm.cheer > 0)) mm.cheer = .4; }
   G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
@@ -2849,16 +2854,23 @@ const dirRow = (S, phi) => { const n = S.meta.dirs; return ((Math.round((phi - M
 // draw one frame with the feet at (x, y) and the figure about h tall; returns the frame's anchors in screen space
 function drawSheet(c, S, anim, phi, t, x, y, h, opts = {}) {
   const A = S.meta.anims[anim] ? anim : Object.keys(S.meta.anims)[0], an = S.meta.anims[A], img = S.img[A], size = S.meta.size;
-  const f = an.frames > 1 ? Math.floor(((t / an.dur) % 1 + 1) % 1 * an.frames) : 0, row = dirRow(S, phi), anc = (S.meta.anchors[A][row] || [])[f] || {}, g = anc.__ground || [size / 2, size * .92, 0];
+  const f = an.frames > 1 ? Math.floor(((t / an.dur) % 1 + 1) % 1 * an.frames) : 0, row = opts.cheat && S.meta.dirs === 8 ? [0, 1, 1, 2, 4, 6, 7, 7][dirRow(S, phi)] : dirRow(S, phi), anc = (S.meta.anchors[A][row] || [])[f] || {}, g = anc.__ground || [size / 2, size * .92, 0];
   const sc = h / (size * .92), cx = x - size / 2 * sc, cy = y - g[1] * sc;
   c.save(); if (opts.alpha != null) c.globalAlpha = opts.alpha;
   if (opts.lean || opts.squash || opts.stretch) { c.translate(x, y); c.rotate(opts.lean || 0); const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14); c.translate(-x, -y); }
   const at = n => { const b = S.bones[n], v = b && anc[b]; return v ? { x: cx + v[0] * sc, y: cy + v[1] * sc, z: v[2], sc, size } : null; };
   const back = []; if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && pr.behind && pr.behind(q, row)) back.push([pr, q]); }
   for (const [pr, q] of back) pr.draw(c, q, row);
-  if (opts.tint || opts.flash) { // a tinted copy of the frame, kept per sheet / frame / colour so a crowd of forty costs one draw each
-    const key = `${S.meta.name}:${A}:${row}:${f}:${opts.flash ? 'flash' : opts.tint}`; let tc = TINTED.get(key);
-    if (!tc) { if (TINTED.size > 600) TINTED.clear(); tc = document.createElement('canvas'); tc.width = tc.height = size; const tx = tc.getContext('2d'); tx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size); tx.globalCompositeOperation = 'source-atop'; tx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); tx.fillStyle = opts.flash ? '#fff' : opts.tint; tx.fillRect(0, 0, size, size); TINTED.set(key, tc); }
+  // tint, hit flash and the brown outline are baked into a copy of the frame once, so a crowd of forty costs one draw each.
+  // The outline is about 2px on screen whatever the size, to match the outlined drawings.
+  const ol = opts.outline ? Math.max(2, Math.round(2.2 / sc)) : 0;
+  if (opts.tint || opts.flash || ol) {
+    const key = `${S.meta.name}:${A}:${row}:${f}:${opts.flash ? 'flash' : opts.tint || ''}:${ol}`; let tc = TINTED.get(key);
+    if (!tc) { if (TINTED.size > 900) TINTED.clear(); tc = document.createElement('canvas'); tc.width = tc.height = size; const tx = tc.getContext('2d');
+      const fr = document.createElement('canvas'); fr.width = fr.height = size; const fx = fr.getContext('2d'); fx.drawImage(img, f * size, row * size, size, size, 0, 0, size, size);
+      if (opts.tint || opts.flash) { fx.globalCompositeOperation = 'source-atop'; fx.globalAlpha = opts.flash ? .85 : (opts.tintA || .55); fx.fillStyle = opts.flash ? '#fff' : opts.tint; fx.fillRect(0, 0, size, size); }
+      if (ol) { for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; tx.drawImage(fr, Math.cos(a) * ol, Math.sin(a) * ol); } tx.globalCompositeOperation = 'source-in'; tx.fillStyle = '#3a2c20'; tx.fillRect(0, 0, size, size); tx.globalCompositeOperation = 'source-over'; }
+      tx.drawImage(fr, 0, 0); TINTED.set(key, tc); }
     c.drawImage(tc, 0, 0, size, size, cx, cy, size * sc, size * sc); }
   else c.drawImage(img, f * size, row * size, size, size, cx, cy, size * sc, size * sc);
   if (opts.props) for (const pr of opts.props) { if (!pr.draw) continue; const q = at(pr.bone); if (q && !(pr.behind && pr.behind(q, row))) pr.draw(c, q, row); }
@@ -2962,7 +2974,7 @@ function drawHeldItem(c, [hx, hy], kind, p) {
 // a companion standing with its feet at (x, y); `s` is a size scale (1 = in-game)
 function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face * s, s);
-  const sq = opts.squash || 0, st = opts.stretch || 0; c.scale(1 + sq * .18 - st * .1, 1 - sq * .22 + st * .14);
+  const sq = opts.squash || 0, st = opts.stretch || 0, br = save.opt.calm ? 0 : Math.sin(t * 2.6 + (opts.bob || 0) * 1.7) * .025; c.scale(1 + sq * .18 - st * .1 - br * .5, 1 - sq * .22 + st * .14 + br);
   c.strokeStyle = '#3a2c20'; c.lineWidth = 2.5; c.lineJoin = 'round'; c.lineCap = 'round';
   const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = ready(png) ? null : sheet(id);
   c.save();
@@ -3095,7 +3107,7 @@ function drawMember(m) {
     if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
       const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
       const TH = S3.meta.anims.throw, tt = a && TH ? (p < .33 ? p / .33 * 6 : 6 + (p - .33) / .67 * 6.9) / TH.frames * TH.dur : G.t;
-      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : save.weapon, a ? p : null) });
+      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { outline: true, cheat: true, lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : save.weapon, a ? p : null) });
       return;
     }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
@@ -3111,8 +3123,9 @@ function drawMember(m) {
   ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + 4, 20 - z * .05, 7, 0, 0, 7); ctx.fill();
   const lean = a ? (p < .33 ? -.22 * (p / .33) : .18 * (1 - Math.min(1, (p - .33) / .67)) - .03) * m.face : 0;
   if (m.land > 0) m.land -= 1 / 60;
+  const cheer = m.cheer > 0 ? Math.sin((1 - m.cheer / .5) * Math.PI) * 9 : 0; if (m.cheer > 0) m.cheer -= 1 / 60;
   const step = a ? (p < .33 ? -5 * (p / .33) : 12 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 8 : 0;
-  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: hop / 8, gear: true, held: a ? p : null, aim: m.aim });
+  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop - cheer, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: (hop + cheer) / 8, gear: true, held: a ? p : null, aim: m.aim });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
@@ -3177,7 +3190,7 @@ function drawEnemy(e) {
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
-    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
     if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', x + Math.cos(a) * r * .7, y - r * 1.2 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
@@ -3934,7 +3947,7 @@ function openSwap(i, incoming) {
   const done = () => { persist(); $('#pickm').hidden = true; buildParty(); drawStatics(); };
   $('#pickList').querySelectorAll('[data-swap]').forEach(b => b.onclick = () => { const id = b.dataset.swap;
     if (incoming) save.party[save.party.indexOf(id)] = incoming; else if (out) save.party[i] = id; else save.party.push(id);
-    sfx('coin'); buzz('LIGHT'); done(); });
+    sfx('coin'); buzz('LIGHT'); done(); const nw = incoming || id, card = $(`.pslots [data-who="${nw}"]`); if (card) card.classList.add('hopin'); });
   const sc = $('#pickList').querySelector('[data-seecard]'); if (sc) sc.onclick = () => { $('#pickm').hidden = true; partySel = sc.dataset.seecard; buildParty(); };
   const to = $('#pickList').querySelector('[data-takeout]'); if (to) to.onclick = () => { save.party = save.party.filter(x => x !== to.dataset.takeout); done(); };
   $('#pickm').hidden = false;
@@ -4249,7 +4262,7 @@ function buildTree() {
     h += `<div class="tlab">Finisher${fOpen ? '' : ' · after every upgrade and a choice'}</div><div class="ttier"><div class="tn fin ${fin ? 'on' : ''}"><span class="te">${F.em}</span><b>${F.n}</b><p>${F.d}</p>${fin ? '<button class="btn small maxed" disabled>Done</button>' : `<button class="btn small" data-tf="${a}" ${canF ? '' : 'disabled'}>Learn · 🪙${T_FIN_COST}</button>`}</div></div></div>`;
   }
   $('#tList').innerHTML = h;
-  const done = () => { persist(); buildTree(); buildParty(); };
+  const done = () => { persist(); buildTree(); buildParty(); const f = $('#tHead .fc'); if (f) { f.classList.add('cheer'); setTimeout(() => f.classList.remove('cheer'), 650); } };
   $('#tList').querySelectorAll('[data-tn]').forEach(b => b.onclick = () => { const [a, k] = b.dataset.tn.split(':'), r = tRank(id, a, k), cost = tCost(r); if (r >= TREE_MAX || tLeft(id) <= 0 || save.coins < cost || !tOpen(id, a)) return;
     setWallet({ coins: save.coins - cost }); if (k === 'sig') c.sk[a] = r + 1; else tBr(id, a)[k] = r + 1; sfx('forge'); buzz('LIGHT'); done(); });
   $('#tList').querySelectorAll('[data-tp]').forEach(b => b.onclick = () => { const [a, i] = b.dataset.tp.split(':'), B = tBr(id, a);
