@@ -369,6 +369,8 @@
   .ttier { display: flex; gap: 6px; } .ttier + .ttier { margin-top: 6px; } .tlab { font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 3px; }
   .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 12px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 12px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 400 12px/1.1 "Patrick Hand", cursive; color: #5a4a3a; flex: 1; }
   .tn .pips { flex: none; width: 72%; } .tn .pips i { height: 10px; } .tn button { width: 100%; padding: 4px 2px; font-size: 12px; } .tn.on { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 2px #ffd76a; } .tn.off { opacity: .5; } .tn.fin.on { background: linear-gradient(#ffe6f6, #f7c4ea); box-shadow: 0 0 0 2px #e58fd0; }
+  .backup { margin-top: 12px; padding: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .backup > b { display: block; font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .backup > span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .backup textarea { width: 100%; margin-top: 8px; font: 12px/1.3 monospace; border: 2px solid #3a2c20; border-radius: 10px; padding: 6px; box-sizing: border-box; }
   .tbtn { width: 100%; margin-top: 8px; } .tbtn b { color: #2f7a2a; }
   .tn small.why { font: 400 11px/1.1 "Patrick Hand", cursive; color: var(--muted); }
   .crow { display: flex; gap: 8px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .crow.got { opacity: .6; } .crow.ready { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 3px #ffd76a; }
@@ -514,7 +516,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 51</div>
+    <div class="build">build 52</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -748,12 +750,23 @@
     </div>
   </div>
 
+  <div class="modal" id="cloudm" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">☁️ Another saved game</h2>
+      <p class="sub hand" id="cloudText"></p>
+      <div class="row"><button class="btn" id="cloudKeep">Keep this one</button><button class="btn green" id="cloudUse">Use the other one</button></div>
+    </div>
+  </div>
   <div class="modal" id="parentm" hidden>
     <div class="panel">
       <h2 class="display">👪 For grown-ups</h2>
-      <p class="sub hand">What your young myth-buster has been up to, and a few switches. Everything stays on this device.</p>
+      <p class="sub hand">What your young myth-buster has been up to, a few switches, and the saved game.</p>
       <div id="parentStats"></div>
       <div class="toggles" id="parentToggles"></div>
+      <div class="backup"><b>💾 Saved game</b><span id="backupNote"></span>
+        <div class="row"><button class="btn small" id="codeCopy">Copy a save code</button><button class="btn small" id="codeLoad">Load a save code</button></div>
+        <div id="codeBox" hidden><textarea id="codeText" rows="3" placeholder="Paste a save code here"></textarea><div class="row"><button class="btn small green" id="codeGo">Load this game</button></div></div>
+      </div>
       <div class="row"><button class="btn" id="closeParent">Done</button></div>
     </div>
   </div>
@@ -852,11 +865,12 @@ const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
 /* ───────── scale the 440x760 frame to the window ───────── */
+let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
   const s = Math.min(innerWidth / W, (innerHeight - inset) / H);
   frame.style.setProperty('--s', s);
-  const dpr = Math.min(devicePixelRatio || 1, 3) * Math.min(s, 1.5);
+  const dpr = Math.min(devicePixelRatio || 1, lowFx ? 1.5 : 2) * Math.min(s, 1.5); // pixels are most of a frame's cost on a phone
   cv.width = W * dpr; cv.height = H * dpr;
   ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
 }
@@ -1904,7 +1918,36 @@ save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.part
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
 var lastTP = null, tpT = 0;
 function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
-const persist = () => { try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); };
+const persist = () => { save.savedAt = Date.now(); try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); backupSoon(); };
+// ───────── save backup ─────────
+// Three copies besides the main one: a spare in this browser (in case the main one is ever cut short), and in the app the
+// phone's own storage and iCloud through Game Center (window.native.saves, see app/src/native.js). A save code moves a
+// game by hand. Copies are compared by progress, so an empty new game never wins over a real one.
+const SPARE_KEY = SAVE_KEY + '.spare';
+const progressOf = s => !s || !s.cleared ? 0 : s.cleared.length * 1e6 + Object.values(s.chars || {}).reduce((n, c) => n + (c.xp || 0), 0) + (s.busted || 0);
+let backupT = null, lastCloud = 0;
+function backupSoon() { clearTimeout(backupT); backupT = setTimeout(backupNow, 4000); }
+function backupNow() { const json = JSON.stringify(save); try { localStorage.setItem(SPARE_KEY, json); } catch (e) {}
+  const N = window.native && window.native.saves; if (!N) return;
+  N.local(json); if (Date.now() - lastCloud > 60000) { lastCloud = Date.now(); N.cloud(json).then(ok => { if (ok) { save.cloudAt = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} } }); } }
+// at start: if another copy has more progress than this one, offer it (or just take it when this one is a brand-new game)
+async function checkBackups() {
+  const cands = []; try { const sp = JSON.parse(localStorage.getItem(SPARE_KEY) || 'null'); if (sp) cands.push(['spare', sp]); } catch (e) {}
+  const N = window.native && window.native.saves;
+  if (N) { for (const [k, f] of [['phone', N.loadLocal], ['icloud', N.loadCloud]]) { try { const t = await f(); if (t) cands.push([k, JSON.parse(t)]); } catch (e) {} } }
+  const best = cands.sort((a, b) => progressOf(b[1]) - progressOf(a[1]))[0]; if (!best || progressOf(best[1]) <= progressOf(save)) return;
+  const take = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(best[1])); } catch (e) {} location.reload(); };
+  if (!save.cleared.length) return take();
+  const B = best[1]; $('#cloudText').textContent = `${best[0] === 'icloud' ? 'iCloud' : 'This phone'} has a game with ${B.cleared.length} stages cleared and ${Object.values(B.chars || {}).filter(c => c.own).length} friends. This one has ${save.cleared.length} stages. Use the other one?`;
+  $('#cloudUse').onclick = take; $('#cloudKeep').onclick = () => { $('#cloudm').hidden = true; backupNow(); }; $('#cloudm').hidden = false; }
+// a save code: the whole save, squeezed and written as letters, to paste into another device
+async function saveCode() { const json = JSON.stringify(save);
+  if (window.CompressionStream) { const buf = await new Response(new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer(); let b = ''; for (const x of new Uint8Array(buf)) b += String.fromCharCode(x); return 'WDZ1' + btoa(b); }
+  return 'WDJ1' + btoa(unescape(encodeURIComponent(json))); }
+async function readCode(code) { code = code.replace(/\s+/g, ''); const body = code.slice(4), bin = Uint8Array.from(atob(body), c => c.charCodeAt(0));
+  if (code.startsWith('WDZ1')) return JSON.parse(await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+  if (code.startsWith('WDJ1')) return JSON.parse(decodeURIComponent(escape(atob(body))));
+  throw new Error('not a save code'); }
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
 const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; if (c.skFree == null) c.skFree = Object.values(c.sk).reduce((s, v) => s + v, 0); return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
@@ -2662,7 +2705,9 @@ function evolveBanner(m, a) {
 
 /* ───────── hud ───────── */
 let partyKey = '', hudAbs = [];
+let hudT = 0;
 function refreshHud(force) {
+  if (!force && G.t - hudT < .1 && G.t >= hudT) return; hudT = G.t;
   const S = G.S;
   const wavesDone = G.wave + (G.breakT > 0 ? 0 : clamp(G.waveT / (10 + G.wave), 0, .95));
   const pb = $('#prog div'); pb.style.width = (wavesDone / S.waves * 100) + '%'; pb.classList.toggle('boss', G.wave === S.waves - 1 && G.breakT <= 0);
@@ -3491,12 +3536,12 @@ $('#roomTake').onclick = () => { const rar = Math.min(3, 1 + Math.floor((G.right
 
 /* ───────── loop ───────── */
 // if the device can't keep up, drop the sparkle count rather than the frame rate
-let frameMs = 16, lowFx = false, slowFrames = 0, fpsT = 0;
+let frameMs = 16, slowFrames = 0, fpsT = 0;
 const fxN = n => lowFx ? Math.ceil(n * .4) : n;
 function loop(ts) {
   requestAnimationFrame(loop);
   const raw = (ts - last) || 0; let dt = Math.min(.05, raw / 1000); last = ts;
-  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 90 && !lowFx) { lowFx = true; slowFrames = 0; }
+  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 90 && !lowFx) { lowFx = true; slowFrames = 0; fit(); }
   if (DEBUG) { fpsT += raw; if (fpsT > 500) { fpsT = 0; $('#fps').style.display = 'block'; $('#fps').textContent = `${Math.round(1000 / frameMs)} fps · ${G ? G.enemies.length + ' myths · ' + G.fx.length + ' fx' : ''}${lowFx ? ' · low fx' : ''}`; } }
   if (mode !== 'game' || !G) return;
   if (G.slowmo > 0) { G.slowmo -= dt; dt *= .3; }
@@ -4097,7 +4142,15 @@ function buildParent() {
   const el = $('#parentToggles'); if (save.opt.breaks == null) save.opt.breaks = true;
   el.innerHTML = PARENT_OPTS.map(([k, em, n, d]) => `<div class="tog ${save.opt[k] ? 'on' : ''}" data-popt="${k}"><div class="em">${em}</div><div class="txt"><b>${n}</b><span>${d}</span></div><div class="sw"></div></div>`).join('');
   el.querySelectorAll('[data-popt]').forEach(t => t.onclick = () => { save.opt[t.dataset.popt] = !save.opt[t.dataset.popt]; persist(); buildParent(); });
+  const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`; };
+  $('#backupNote').textContent = window.native && window.native.saves ? (save.cloudAt ? ` Backed up to iCloud ${ago(save.cloudAt)}.` : ' Saved on this phone. Sign in to Game Center to back it up to iCloud.') : ' Saved in this browser. To move it, copy a save code here and load it on the other device.';
 }
+$('#codeCopy').onclick = async () => { const code = await saveCode(); $('#codeBox').hidden = false; $('#codeGo').hidden = true; $('#codeText').value = code; $('#codeText').select();
+  try { await navigator.clipboard.writeText(code); toastMsg('📋 Save code copied.'); } catch (e) { toastMsg('Select the code in the box and copy it.'); } };
+$('#codeLoad').onclick = () => { $('#codeBox').hidden = false; $('#codeGo').hidden = false; $('#codeText').value = ''; $('#codeText').focus(); };
+$('#codeGo').onclick = async () => { let s2; try { s2 = await readCode($('#codeText').value); if (!s2 || !Array.isArray(s2.cleared)) throw 0; } catch (e) { toastMsg('That doesn\'t look like a save code.'); return; }
+  if (!confirm(`Load a game with ${s2.cleared.length} stages cleared? It replaces the game on this device.`)) return;
+  try { localStorage.setItem(SPARE_KEY, JSON.stringify(save)); localStorage.setItem(SAVE_KEY, JSON.stringify(s2)); } catch (e) {} location.reload(); };
 $('#openParent').onclick = () => { $('#settingsm').hidden = true; adultGate('This page is for grown-ups.', () => { buildParent(); $('#parentm').hidden = false; }); }; // settings closes first so the gate is on top
 $('#closeParent').onclick = () => { $('#parentm').hidden = true; };
 // Chapter Chests: three milestones per chapter (halfway, the boss, every star), claimed from the World Map with a reveal.
@@ -4192,9 +4245,10 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
+checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start
 applyOpts();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();

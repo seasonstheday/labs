@@ -57,12 +57,24 @@ Create both in App Store Connect (In-App Purchases, Non-Consumable) and Play Con
 validation; if you later want server-side validation, point `cordova-plugin-purchase` at a
 validator in `src/native.js`.
 
+## Saves (Game Center and iCloud)
+
+The game keeps four copies of its save:
+- **The main save:** in the web view's storage.
+- **A spare:** in the same storage, used if the main one is ever unreadable.
+- **A phone copy:** in the phone's own storage through `@capacitor/preferences`, which survives iOS clearing web storage.
+- **An iCloud copy:** through Game Center saved games.
+
+At start the game compares the copies by progress. A new phone with an empty game loads the iCloud copy without asking. If both copies have progress, a card asks which one to keep.
+
+The Game Center part is a small local plugin: see `native/ios/README.md` for the four Xcode steps (add two Swift files, set the view controller class, add the Game Center and iCloud capabilities). Grown-ups can also move a game by hand with a save code (Settings → 👪 → Saved game).
+
 ## Store listing notes
 
 - Age rating 4+ (not the Kids Category, by decision, so ads and purchases stay possible).
 - The game is plainly made for children, so ad requests are child-directed, under the age of consent and capped at a General rating (`src/native.js`), and every ad and purchase sits behind the grown-up gate. Have whoever owns the listing confirm this against COPPA and Apple's guidelines 1.3 and 5.1.4.
 - Privacy: no account, no analytics, no data leaves the device apart from what AdMob needs to serve
-  a non-personalised ad. Say so in the App Privacy questionnaire. Add Apple's privacy manifest for
+  a non-personalised ad, and the save game that Game Center stores in the player's own iCloud. Say so in the App Privacy questionnaire. Add Apple's privacy manifest for
   the AdMob SDK (it ships with the SDK; Xcode will tell you if it is missing).
 - Screenshots: the title lawn, the chapter map, a Pond battle, the Diary, the Party screen.
 - Orientation is portrait only (set in the Xcode target and `AndroidManifest.xml`).

@@ -133,6 +133,25 @@ await test('Skill Trees: spend a point, then every full tree fires in a match', 
   expect(hits > 100, `branch effects firing (got ${hits})`); await close(); return errs;
 });
 
+await test('saves: a spare copy, a save code, and a newer iCloud copy', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  // the spare copy is written a few seconds after a change; a broken main save falls back to it
+  await p.evaluate(() => { dbg.save.coins = 4321; dbg.persist(); }); await p.waitForTimeout(4600);
+  await p.evaluate(() => localStorage.setItem('whydad.defender.v3', '{broken')); await p.reload(); await p.waitForTimeout(1500);
+  expect(await p.evaluate(() => dbg.save.coins === 4321 && dbg.save.cleared.length === 12), 'the spare copy restored');
+  // a save code round trip
+  const code = await p.evaluate(() => dbg.saveCode()); expect(/^WD[ZJ]1/.test(code), 'a save code');
+  const back = await p.evaluate(c => dbg.readCode(c).then(s => s.coins), code); expect(back === 4321, 'the code reads back');
+  await close();
+  // inside the app: iCloud has more progress than this phone's brand-new game, so it loads without asking
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' }), q = await ctx.newPage(); q.on('pageerror', e => errs.push(e.message));
+  const cloud = JSON.stringify({ ...PROGRESSED(), coins: 777 });
+  await q.addInitScript(c => { window.native = { platform: 'ios', haptic: async () => {}, saves: { local: () => {}, loadLocal: async () => null, cloud: async () => true, loadCloud: async () => c } }; }, cloud);
+  await q.goto(URL); await q.evaluate(() => localStorage.clear()); await q.reload(); await q.waitForTimeout(1800);
+  expect(await q.evaluate(() => dbg.save.coins === 777 && dbg.save.cleared.length === 12), 'the iCloud game loaded on a new phone');
+  await ctx.close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);
