@@ -224,6 +224,16 @@ From `reports/Inventory, upgrades and economy benchmark.md`. **Shipped:** item m
 
 **Builds 45–48:** sound, music and haptics; kid-safe ads and a fairer Pass; Myth Check (spaced review); the Daily Myth and the Endless Stacks; a grown-ups' page; Myth of the Month; one new idea per stage (tabs and systems unlock as stages are cleared); storyboard frames for the prologue and every chapter. Smoke tests in `defender/tests` (`npm test`) run on every PR through GitHub Actions.
 
+## Phase K — Skill Trees (build 51)
+Every friend has a tree with one branch per skill. A branch has:
+- **Upgrades:** 3 ranks each of Power, Speed and the skill's own upgrade. Passives get Stronger and their own upgrade.
+- **A choice of two:** opens after about half the upgrades and can be swapped any time for free. Skills that hit get one of 12 shared effects (Chilly, Dizzy, Toasty, Splashy, Jumpy, Tagged, Pushy, Again!, Lucky, Sharp, Giant-Slayer, Tidy-Up). Passives and skills that don't hit get a gift for the whole party.
+- **A finisher:** once every upgrade and the choice are done. The generic ones are Best of Both, Encore, Pop Burst and Deeper. The first skills of Dad, the four starters and the four Legendaries have hand-made finishers.
+
+Points come from levels (one per level) plus Skill Books from chapter chests and the Daily Myth, and each rank also costs coins. Old coin ranks became the skill's own upgrade, free. Hits carry their skill (`G.src`), so the effects hook into `hurt()` once rather than into every attack. Trees open after 9 stages.
+
+Balance: a full tree on Dad and three friends roughly doubles damage (dummy-target test); half a tree adds about 30–60%. Late myth HP rises 2% a stage after stage 20, and the suggested Power rises to match.
+
 ## Phase F — Polish and accessibility
 
 **Shipped in PR 14:** offline first (service worker caches the game and its art, network-first for the page so new builds arrive), home-screen install (manifest, icons), safe-area aware scaling, Calm screen (no blink, no shake, no bouncy animations), Bigger text, Read buttons aloud (every button, pin and card says its name), a private-by-design note in Settings, and a frame-rate guard that trims particles when a device falls behind (fps readout under `?debug`). Still to do on a real device: a frame-rate pass on an older iPhone.
