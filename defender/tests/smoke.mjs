@@ -111,6 +111,28 @@ await test('every attack, all 28 friends and all 7 of Dad\'s lenses', async () =
   expect(n >= 60, `every active move and lens to fire (got ${n})`); await close(); return errs;
 });
 
+await test('Skill Trees: spend a point, then every full tree fires in a match', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { dbg.save.chars.webster.xp = 3000; dbg.persist(); }); await p.click('#tabbar [data-tab="friends"]'); await p.waitForTimeout(300); await p.click('[data-pick="webster"]'); await p.waitForTimeout(300);
+  await p.click('[data-tree="webster"]'); await p.waitForTimeout(300); expect(await p.isVisible('#treem'), 'the Skill Tree');
+  const before = await p.evaluate(() => ({ left: dbg.tLeft('webster'), coins: dbg.save.coins }));
+  await p.click('[data-tn]:not([disabled])'); await p.waitForTimeout(200);
+  const after = await p.evaluate(() => ({ left: dbg.tLeft('webster'), coins: dbg.save.coins }));
+  expect(after.left === before.left - 1 && after.coins < before.coins, `a point and some coins spent (${JSON.stringify(before)} → ${JSON.stringify(after)})`);
+  await p.click('#tClose');
+  const hits = await p.evaluate(async () => {
+    const ids = Object.keys(dbg.CHARS).filter(id => id !== 'dad'); let hits = 0;
+    for (let g = 0; g < ids.length; g += 3) {
+      dbg.save.party = ids.slice(g, g + 3);
+      for (const id of ['dad', ...dbg.save.party]) { const tree = {}, sk = {}; for (const a of dbg.CHARS[id].abil) { tree[a] = { pow: 3, cd: 3, sharp: 3, boost: 3, pick: 1 + (g / 3) % 2, fin: 1 }; sk[a] = 3; } dbg.save.chars[id] = { own: true, xp: 30000, star: 1, tree, sk, books: 10, skFree: 0 }; }
+      dbg.startGame(3); const G = dbg.G; G.freePicks = 0; for (const id of ['#levelup', '#comicm', '#quizm', '#notem']) document.querySelector(id).hidden = true; G.paused = false; G.breakT = 9999; G.toSpawn = []; G.pendingCheck = null;
+      for (const m of G.party) for (const a in m.ranks) { m.ranks[a] = 5; m.cds[a] = 0; }
+      G.enemies = []; for (let i = 0; i < 8; i++) { const e = dbg.spawn('moon', { x: 90 + i * 35, y: 250 + (i % 3) * 120 }); e.spd = 0; e.hp = e.maxhp = 3000; }
+      await new Promise(r => setTimeout(r, 2500)); hits += G.treeHits || 0; G.paused = true; }
+    return hits; });
+  expect(hits > 100, `branch effects firing (got ${hits})`); await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);

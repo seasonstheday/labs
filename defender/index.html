@@ -362,6 +362,15 @@
   .chestp { position: relative; } .cbanner { margin: -6px auto 10px; width: max-content; padding: 8px 22px; background: linear-gradient(#ffe08a, #e6b84a); border: 3px solid #3a2c20; border-radius: 10px; font: 700 20px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 4px 0 #3a2c20; }
   .chead { display: flex; align-items: center; gap: 8px; } .cflag { flex: 1; text-align: center; background: linear-gradient(#7b5bc8, #5a3fa0); color: #fff; border: 3px solid #e6b84a; border-radius: 10px 10px 40% 40% / 10px 10px 22% 22%; padding: 10px 6px 18px; box-shadow: 0 4px 0 #3a2c20; }
   .cflag small { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; opacity: .85; margin-bottom: 4px; } .cflag b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .cflag i { display: block; font-style: normal; font-size: 26px; margin-bottom: 2px; }
+  #treem .panel { overflow-y: auto; padding: 14px 12px; } .thead { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; } .thead .fc { font-size: 34px; width: 46px; text-align: center; } .thead .fc .fim { width: 44px; }
+  .thead .tm { flex: 1; } .thead b { display: block; font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .thead small { font: 400 14px/1.1 "Patrick Hand", cursive; color: var(--muted); } .tpts { background: #8fd38a; border: 2.5px solid #3a2c20; border-radius: 12px; padding: 4px 10px; font: 700 16px/1 "Fredoka", Arial, sans-serif; text-align: center; } .tpts small { display: block; font: 700 10px/1.2 "Fredoka", Arial, sans-serif; color: #2f4a26; }
+  .tbook { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; padding: 6px 8px; background: #eef4ff; border: 2px dashed #6f8fc0; border-radius: 12px; font: 400 14px/1.15 "Patrick Hand", cursive; } .tbook span { flex: 1; }
+  .tbr { margin-top: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; } .tbr.locked { opacity: .55; } .tbr h3 { margin: 0 0 6px; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; display: flex; gap: 6px; align-items: center; } .tbr h3 small { margin-left: auto; font: 400 13px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .ttier { display: flex; gap: 6px; } .ttier + .ttier { margin-top: 6px; } .tlab { font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 3px; }
+  .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 12px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 12px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 400 12px/1.1 "Patrick Hand", cursive; color: #5a4a3a; flex: 1; }
+  .tn .pips { flex: none; width: 72%; } .tn .pips i { height: 10px; } .tn button { width: 100%; padding: 4px 2px; font-size: 12px; } .tn.on { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 2px #ffd76a; } .tn.off { opacity: .5; } .tn.fin.on { background: linear-gradient(#ffe6f6, #f7c4ea); box-shadow: 0 0 0 2px #e58fd0; }
+  .tbtn { width: 100%; margin-top: 8px; } .tbtn b { color: #2f7a2a; }
+  .tn small.why { font: 400 11px/1.1 "Patrick Hand", cursive; color: var(--muted); }
   .crow { display: flex; gap: 8px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .crow.got { opacity: .6; } .crow.ready { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 3px #ffd76a; }
   .crow .cem { font-size: 30px; width: 40px; text-align: center; } .crow .cmid { flex: 1; min-width: 0; } .crow .cmid b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; } .crow .cmid small { font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); }
   .rtiles { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; } .rt { position: relative; min-width: 34px; height: 34px; padding: 0 4px; border-radius: 8px; border: 2px solid #3a2c20; background: #8fd38a; display: grid; place-items: center; font-size: 18px; } .rt.y { background: #ffd76a; } .rt.b { background: #9fc4ff; } .rt.p { background: #c9a6ff; }
@@ -505,7 +514,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 50</div>
+    <div class="build">build 51</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="side" hidden>
@@ -756,6 +765,14 @@
       <div class="row"><button class="btn" id="chClose">Done</button></div>
     </div>
     <div class="creveal" id="chReveal" hidden><div class="crtitle">◇ Reward obtained ◇</div><div class="crtiles" id="chTiles"></div><div class="crhint">tap to close</div></div>
+  </div>
+  <div class="modal" id="treem" hidden>
+    <div class="panel treep">
+      <div class="cbanner">🌳 Skill Tree</div>
+      <div class="thead" id="tHead"></div>
+      <div id="tList"></div>
+      <div class="row"><button class="btn" id="tClose">Done</button></div>
+    </div>
   </div>
   <div class="modal" id="settingsm" hidden>
     <div class="panel">
@@ -1398,6 +1415,144 @@ function charLevel(xp) { let L = 1; while (L < 30 && xp >= xpNeed(L)) { xp -= xp
 const clv = id => charLevel(chr(id).xp || 0).L;
 const unlocked = (id, a) => clv(id) >= UNLOCK_AT[CHARS[id].abil.indexOf(a)];
 const sk = (id, a) => { const c = save.chars[id]; return c && c.sk && c.sk[a] || 0; };
+/* ───────── the Skill Tree ───────── */
+// Every skill is a branch: a few upgrades (3 ranks each), then a choice of two changes to how it works (swap any time,
+// free), then a finisher. Points come from levels (one a level) and Skill Books. Each rank also costs a few coins.
+const TFX = { // what a branch's choice adds to every hit of that skill
+  chill: { em: '❄️', n: 'Chilly',       d: 'Hits slow the myth down.' },
+  stun:  { em: '💫', n: 'Dizzy',        d: '1 in 5 hits stops the myth for a moment.' },
+  burn:  { em: '🔥', n: 'Toasty',       d: 'Hit myths keep losing a little more for 2 seconds.' },
+  splash:{ em: '💦', n: 'Splashy',      d: 'Every hit splashes a quarter of itself onto myths close by.' },
+  chain: { em: '⚡', n: 'Jumpy',        d: '1 in 3 hits jumps on to another myth nearby.' },
+  mark:  { em: '🎯', n: 'Tagged',       d: 'Hit myths take 15% more from everyone for 3 seconds.' },
+  shove: { em: '👐', n: 'Pushy',        d: 'Hits shove myths much further back.' },
+  echo:  { em: '🔁', n: 'Again!',       d: '1 in 4 hits lands a second time.' },
+  lucky: { em: '🪙', n: 'Lucky',        d: 'Myths it pops often drop a coin.' },
+  sharp: { em: '🗡️', n: 'Sharp',        d: '+12% critical hits with this skill.' },
+  bully: { em: '🏋️', n: 'Giant-Slayer', d: '+40% damage to bosses, elites and big myths.' },
+  mop:   { em: '🧹', n: 'Tidy-Up',      d: '+50% damage to myths that are nearly popped.' },
+};
+// passive skills (and skills that don't hit) choose a gift for the whole party instead
+const TAURA = {
+  pow:   { em: '💪', n: 'Pep Talk',     d: 'The whole party hits 6% harder.', v: 6 },
+  quick: { em: '⏱️', n: 'Hurry Up',     d: 'The whole party acts 6% sooner.', v: 6 },
+  crit:  { em: '🍀', n: 'Lucky Day',    d: '+4% critical hits for everyone.', v: 4 },
+  guard: { em: '🛡️', n: 'Brave Face',   d: 'Dad loses 8% less Patience.', v: 8 },
+  coin:  { em: '🪙', n: 'Pocket Money', d: '+10% coins.', v: 10 },
+  regen: { em: '💗', n: 'Deep Breath',  d: 'Dad gets 0.4 Patience back every second.', v: .4 },
+};
+const TPICK = {
+  weapon: ['sharp', 'burn'], joke: ['stun', 'mark'], web: ['chill', 'mark'], zap: ['chain', 'stun'], tongue: ['shove', 'lucky'], hop: ['splash', 'stun'],
+  quack: ['shove', 'echo'], toss: ['mark', 'sharp'], shell: ['splash', 'shove'], roll: ['shove', 'bully'], dig: ['stun', 'splash'], hoot: ['chill', 'echo'],
+  swoop: ['bully', 'mop'], spin: ['shove', 'chill'], snap: ['bully', 'stun'], bubbles: ['chill', 'lucky'], splash: ['splash', 'chill'], quills: ['sharp', 'burn'],
+  rollup: ['splash', 'shove'], sting: ['stun', 'mark'], drift: ['burn', 'chill'], sonar: ['echo', 'mark'], dive: ['bully', 'sharp'], arms: ['lucky', 'chain'],
+  flick: ['chain', 'burn'], dust: ['chill', 'splash'], buzzshot: ['burn', 'sharp'], pollen: ['chill', 'lucky'], wriggle: ['splash', 'stun'], tunnel: ['bully', 'mop'],
+  acorn: ['lucky', 'sharp'], stash: ['bully', 'lucky'], spots: ['lucky', 'sharp'], lucky: ['mop', 'lucky'], peck: ['chain', 'sharp'], stomp: ['shove', 'stun'],
+  swipe: ['chain', 'lucky'], lid: ['splash', 'stun'], nip: ['mop', 'sharp'], pounce: ['bully', 'mop'], claw: ['sharp', 'bully'], slam: ['shove', 'stun'],
+  fan: ['burn', 'mark'], display: ['mark', 'stun'], maul: ['chill', 'shove'], floe: ['chill', 'splash'], spout: ['shove', 'splash'], whalesong: ['chill', 'mark'],
+  horn: ['sharp', 'mark'], wish: ['mark', 'sharp'],
+  // gifts
+  story: ['guard', 'regen'], trap: ['guard', 'crit'], eyes: ['crit', 'pow'], glow: ['pow', 'crit'], surge: ['pow', 'quick'], song: ['regen', 'guard'],
+  echo: ['quick', 'pow'], pond: ['coin', 'quick'], footnote: ['pow', 'crit'], speedread: ['quick', 'pow'], shellwall: ['guard', 'regen'], thickshell: ['guard', 'regen'],
+  antennae: ['crit', 'guard'], nighteyes: ['crit', 'quick'], steady: ['guard', 'regen'], memory: ['pow', 'crit'], static: ['pow', 'quick'], shine: ['crit', 'pow'],
+  echoes: ['quick', 'crit'], ink: ['pow', 'guard'], clever: ['coin', 'crit'], colours: ['pow', 'quick'], camo: ['crit', 'guard'], lamp: ['guard', 'regen'],
+  moonlight: ['regen', 'guard'], hive: ['quick', 'pow'], compost: ['regen', 'guard'], hoard: ['coin', 'pow'], luckspot: ['crit', 'coin'], pink: ['pow', 'quick'],
+  nightpaws: ['crit', 'quick'], sly: ['quick', 'crit'], hardshell: ['guard', 'regen'], pride: ['pow', 'crit'], thickfur: ['guard', 'regen'], deep: ['pow', 'guard'], magic: ['quick', 'crit'],
+};
+const FINS = {
+  both:  { em: '🌟', n: 'Best of Both', d: 'Gets both choices at once.' },
+  twice: { em: '⏩', n: 'Encore',       d: 'Every third time, it happens twice.' },
+  nova:  { em: '💥', n: 'Pop Burst',    d: 'Myths it pops burst and hit the ones around them.' },
+  deep:  { em: '📈', n: 'Deeper',       d: 'Counts as one rank higher in a match, even past rank 5.' },
+};
+// the hand-made finishers: the starters' and the Legendaries' first skills
+const BFIN = {
+  weapon: { em: '🔎', n: 'Truth Beam',   d: 'Hitting the same myth again within a second does 30% more.' },
+  web:    { em: '🕸️', n: 'Tangle',       d: 'Webbed myths are stuck for a moment, and the ones next to them slow down.' },
+  zap:    { em: '🌩️', n: 'Thunderstruck', d: 'Now and then a zap calls down a bolt that hits everything near it.' },
+  tongue: { em: '🍽️', n: 'Snack Time',   d: 'Every myth the tongue pops gives Dad 1 Patience back.' },
+  quack:  { em: '🌊', n: 'Tidal Honk',   d: 'Every quack leaves a slippery puddle where it lands.' },
+  arms:   { em: '🖤', n: 'Inky Grip',    d: 'Grabbed myths are inked and take 20% more for 3 seconds.' },
+  flick:  { em: '🎆', n: 'Prism',        d: 'Every flick also lashes two more myths nearby.' },
+  spout:  { em: '🌊', n: 'Tsunami',      d: 'Each spout sends a second, bigger wave that pushes everything back.' },
+  horn:   { em: '🌠', n: 'Shooting Stars', d: '1 in 5 horn hits rains three little stars on the ring.' },
+};
+const TNODE = {
+  pow:   { em: '💪', n: 'Power',    d: '+6% damage per rank.' },
+  cd:    { em: '⏱️', n: 'Speed',    d: 'Ready 5% sooner per rank.' },
+  sharp: { em: '🗡️', n: 'Sharp',    d: '+3% critical hits per rank.' },
+  boost: { em: '📈', n: 'Stronger', d: 'Works 10% better per rank.' },
+};
+const TREE_MAX = 3, T_PICK_COST = 300, T_FIN_COST = 600;
+const isPassive = a => { const D = ABIL[a]; return !!(D && (D.passive || D.aura)); };
+const isSupport = a => a !== 'weapon' && !isPassive(a) && !(ABIL[a] && ABIL[a].dmg);
+const giftBranch = a => isPassive(a) || isSupport(a);
+// the upgrades in a branch, in order. 'sig' is the skill's own upgrade (the old coin ranks).
+function tNodes(a) { const sig = SKILL[a] ? ['sig'] : [];
+  if (isPassive(a)) return ['boost', ...sig]; if (isSupport(a)) return ['cd', ...sig];
+  return ['pow', 'cd', ...(sig.length ? sig : ['sharp'])]; }
+function tFin(id, a) { if (BFIN[a] && CHARS[id].abil[0] === a) return BFIN[a]; if (isPassive(a)) return FINS.deep; if (isSupport(a)) return FINS.twice;
+  return CHARS[id].abil[0] === a ? FINS.both : (a === 'weapon' || (ABIL[a].cd || [0])[0] >= 5 ? FINS.twice : FINS.nova); }
+const tFinKey = (id, a) => { const F = tFin(id, a); return Object.keys(BFIN).find(k => BFIN[k] === F) ? 'bespoke' : Object.keys(FINS).find(k => FINS[k] === F); };
+function tBr(id, a) { const c = save.chars[id] || {}; c.tree = c.tree || {}; return c.tree[a] || (c.tree[a] = {}); }
+// a node's rank: the skill's own upgrade lives where it always did, in c.sk
+const tRank = (id, a, k) => k === 'sig' ? sk(id, a) : ((save.chars[id] || {}).tree || {})[a] ? save.chars[id].tree[a][k] || 0 : 0;
+const tBase = (id, a) => tNodes(a).reduce((s, k) => s + tRank(id, a, k), 0);
+const tPickAt = a => Math.ceil(tNodes(a).length * TREE_MAX * .55);
+const tFull = (id, a) => tBase(id, a) >= tNodes(a).length * TREE_MAX;
+const tPicked = (id, a) => ((save.chars[id] || {}).tree || {})[a] ? save.chars[id].tree[a].pick || 0 : 0;
+const tHasFin = (id, a) => !!(((save.chars[id] || {}).tree || {})[a] || {}).fin;
+// the effects live on a branch: its choice, or both with Best of Both
+function tFx(id, a) { const P = TPICK[a] || ['sharp', 'mop'], p = tPicked(id, a); if (!p) return [];
+  return tHasFin(id, a) && tFinKey(id, a) === 'both' ? P : [P[p - 1]]; }
+function tSpent(id) { const c = chr(id); let n = 0;
+  for (const a of CHARS[id].abil) { n += tBase(id, a) + (tPicked(id, a) ? 1 : 0) + (tHasFin(id, a) ? 1 : 0); }
+  return Math.max(0, n - (c.skFree || 0)); }
+const tPoints = id => Math.max(0, clv(id) - 1 + ((save.chars[id] || {}).books || 0));
+const tLeft = id => tPoints(id) - tSpent(id);
+const tOpen = (id, a) => clv(id) >= UNLOCK_AT[CHARS[id].abil.indexOf(a)];
+// in a match: the passive boost and Deeper raise a passive's rank
+function effRank(m, a) { const r = m.ranks[a] || 0; if (!r || !isPassive(a)) return r; return r * (1 + .1 * tRank(m.id, a, 'boost')) + (tHasFin(m.id, a) ? 1 : 0); }
+// the party-wide gifts from passive branches' choices
+function treeAura(st) { if (!G) return 0; let v = 0;
+  for (const m of G.party) for (const a of CHARS[m.id].abil) if (giftBranch(a)) { const P = TPICK[a] || ['pow', 'guard'], p = tPicked(m.id, a); if (p && P[p - 1] === st) v += TAURA[st].v; }
+  return v; }
+// who is acting right now, so a hit knows which branch it came from
+function withSrc(src, fn) { const prev = G.src, s0 = G.shots.length, p0 = G.pending.length; G.src = src; let r;
+  try { r = fn(); } finally { for (let i = s0; i < G.shots.length; i++) if (!G.shots[i].src) G.shots[i].src = src; for (let i = p0; i < G.pending.length; i++) if (!G.pending[i].src) G.pending[i].src = src; G.src = prev; }
+  return r; }
+// a hit from a branch: damage first (before the crit and armour maths), then what happens after
+function treeDmg(e, d, T) { const id = T.id, a = T.a, fx = tFx(id, a);
+  d *= 1 + .06 * tRank(id, a, 'pow');
+  if (fx.includes('bully') && (e.kind === 'boss' || e.elite || e.kind === 'tank' || e.kind === 'hardcover')) d *= 1.4;
+  if (fx.includes('mop') && e.hp < e.maxhp * .35) d *= 1.5;
+  if (a === 'weapon' && tHasFin(id, a) && tFinKey(id, a) === 'bespoke') { if (e.lensT > G.t) d *= 1.3; e.lensT = G.t + 1; }
+  return d; }
+const treeCrit = T => (tFx(T.id, T.a).includes('sharp') ? .12 : 0) + .03 * tRank(T.id, T.a, 'sharp');
+function treeHit(e, d, T, from) { G.treeHits = (G.treeHits || 0) + 1; const id = T.id, a = T.a, fx = tFx(id, a), fin = tHasFin(id, a) && tFinKey(id, a), near = (R, f) => G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < R + o.r).forEach(f);
+  const plain = (o, dd, k = 0) => { const s = G.src; G.src = null; hurt(o, dd, k, { x: e.x, y: e.y, id }); G.src = s; };
+  if (fx.includes('chill')) e.slow = Math.max(e.slow, 1.2);
+  if (fx.includes('stun') && Math.random() < .2) e.stun = Math.max(e.stun, e.kind === 'boss' ? .2 : .5);
+  if (fx.includes('mark')) e.tagged = G.t + 3;
+  if (fx.includes('burn')) { const tick = Math.max(1, d * .06); for (let i = 1; i <= 3; i++) G.pending.push({ at: G.t + i * .6, fn: () => { if (e.hp > 0) plain(e, tick); } }); }
+  if (fx.includes('splash') && G.fx.length < 240) { near(50, o => plain(o, d * .25)); G.fx.push({ k: 'splash', x: e.x, y: e.y, R: 50, t: 0, life: .3, col: '#8fd0f0' }); }
+  if (fx.includes('chain') && Math.random() < .33) { const o = G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < 130).sort((x, y) => dist(x, e) - dist(y, e))[0]; if (o) { G.fx.push({ k: 'bolt', x1: e.x, y1: e.y, x2: o.x, y2: o.y, t: 0, life: .2 }); plain(o, d * .6); } }
+  if (fx.includes('echo') && Math.random() < .25) G.pending.push({ at: G.t + .3, fn: () => { if (e.hp > 0) { plain(e, d * .6); text(e.x, e.y - e.r - 30, 'again!', '#fff', 13, .6); } } });
+  if (!fin) return;
+  if (a === 'web' && fin === 'bespoke') { e.stun = Math.max(e.stun, e.kind === 'boss' ? .2 : .6); near(60, o => { o.slow = Math.max(o.slow, 1.5); }); }
+  if (a === 'zap' && fin === 'bespoke' && !T.storm && Math.random() < .35) { T.storm = 1; G.fx.push({ k: 'bolt', x1: e.x + rnd(-20, 20), y1: e.y - 260, x2: e.x, y2: e.y, t: 0, life: .3, big: true }); plain(e, d * .6); near(55, o => plain(o, d * .6)); G.shake = .08; }
+  if (a === 'quack' && fin === 'bespoke' && !T.puddle) { T.puddle = 1; G.traps.push({ x: e.x, y: e.y, r: 55, t: 0, life: 4, mul: .55, puddle: true, col: 'rgba(120,180,230,.5)' }); }
+  if (a === 'arms' && fin === 'bespoke') e.inked = Math.max(e.inked || 0, G.t + 3);
+  if (a === 'flick' && fin === 'bespoke') { G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < 140).slice(0, 2).forEach(o => { G.fx.push({ k: 'tongue', x: e.x, y: e.y, a: Math.atan2(o.y - e.y, o.x - e.x), len: dist(o, e), t: 0, life: .25, rainbow: true }); plain(o, d * .6); }); }
+  if (a === 'spout' && fin === 'bespoke' && !T.wave) { T.wave = 1; const at = { x: e.x, y: e.y }; G.pending.push({ at: G.t + .25, fn: () => { G.fx.push({ k: 'splash', x: at.x, y: at.y, R: 110, t: 0, life: .5, col: '#6fb8f0' }); for (const o of G.enemies) if (o.hp > 0 && dist(o, at) < 110 + o.r) { const s = G.src; G.src = null; hurt(o, d * .5, 90, { x: at.x, y: at.y, id }); G.src = s; } } }); }
+  if (a === 'horn' && fin === 'bespoke' && Math.random() < .2) { const ring = G.enemies.filter(o => o.hp > 0 && inRing(o)); for (let i = 0; i < 3 && ring.length; i++) { const o = pick(ring); G.fx.push({ k: 'bolt', x1: o.x + rnd(-30, 30), y1: o.y - 240, x2: o.x, y2: o.y, t: 0, life: .3 }); plain(o, d * .6); } text(e.x, e.y - e.r - 40, '🌠', '#fff', 22, .8); }
+}
+// when a branch's hit pops a myth
+function treeKill(e, T) { const fx = tFx(T.id, T.a), fin = tHasFin(T.id, T.a) && tFinKey(T.id, T.a);
+  if (fx.includes('lucky') && Math.random() < .35) G.orbs.push({ k: 'coin', x: e.x, y: e.y, v: 1 });
+  if (fin === 'nova') { G.fx.push({ k: 'ring', x: e.x, y: e.y, R: 60, t: 0, life: .3, col: '#ffd76a' }); for (const o of G.enemies) if (o.hp > 0 && dist(o, e) < 60 + o.r) { const s = G.src; G.src = null; hurt(o, Math.max(6, e.maxhp * .25), 30, { x: e.x, y: e.y, id: T.id }); G.src = s; } }
+  if (T.a === 'tongue' && fin === 'bespoke') { G.hp = Math.min(G.maxhp, G.hp + 1); text(e.x, e.y - 30, '+1 💗', '#f6a0b8', 14, .8); }
+}
 // what rank 5 of a primary turns into
 const EVO = {
   glass: ['Spotlight', 'The beam sweeps every myth in the ring.'], yoyo: ['Halo Storm', 'Twice the halos, twice the bonks.'], bat: ['Supernova', 'A flash that circles all the way round.'], plane: ['Light Volley', 'A whole volley of darts, and they come back for more.'], frisbee: ['Pinball', 'It never runs out of myths to bounce to.'], bubble: ['Bubble Bath', 'Bubbles everywhere, all the time.'], balloon: ['Heatwave', 'Two sunspots, bigger splashes.'],
@@ -1524,7 +1679,7 @@ for (const id in CWEAP) themedLine(CWEAP[id]);
 // Dad's weapon for the numbers: his lens mechanics come from the base, the theme adds its Power, Rate and effect
 function wv(id) { if (id !== 'dad') return cweapOf(id); const T = save.dadTheme && THEMES[save.dadTheme]; return T ? { pow: T.pow, rate: T.rate, gfx: T.gfx } : null; }
 // party-wide stats from the newer friends' passives
-function aura(st) { if (!G) return 0; let v = 0; for (const m of G.party) for (const a of CHARS[m.id].abil) { const D = ABIL[a]; if (D.aura === st && m.ranks[a]) v += m.ranks[a] * D.per + sk(m.id, a) * D.per / 2; } return v; }
+function aura(st) { if (!G) return 0; let v = 0; for (const m of G.party) for (const a of CHARS[m.id].abil) { const D = ABIL[a]; if (D.aura === st && m.ranks[a]) v += effRank(m, a) * D.per + sk(m.id, a) * D.per / 2; } return v + treeAura(st); }
 // play one of the newer friends' moves; false when there's nothing to aim at
 function genAbil(m, a, D, L, mul, tgt) {
   const sb = 1 + sk(m.id, a) * .08, ev = evolved(m, a), dmg = (D.dmg ? D.dmg[L] : 0) * mul * sb;
@@ -1751,7 +1906,7 @@ var lastTP = null, tpT = 0;
 function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
 const persist = () => { try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); };
 const wep = id => save.wep[id] || (save.wep[id] = { pow: 0, quick: 0, own: !!WEAPONS[id].own });
-const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; return c; };
+const chr = id => { const c = save.chars[id] || (save.chars[id] = {}); if (c.own == null) c.own = id === 'dad'; for (const k of ['pow', 'quick', 'ring', 'pat']) if (!(c[k] >= 0)) c[k] = 0; if (c.xp == null) c.xp = 0; c.sk = c.sk || {}; if (c.skFree == null) c.skFree = Object.values(c.sk).reduce((s, v) => s + v, 0); return c; };
 const itemBy = uid => save.items.find(i => i.uid === uid);
 const equipOf = id => save.equip[id] || (save.equip[id] = {});
 // what a character gets from its three item slots
@@ -1777,7 +1932,7 @@ function powerOf(id) {
   const c = chr(id); if (!c.own && id !== 'dad') return 0; const g = gear(id), V = cweapOf(id);
   const W = wv(id), hit = charMul(id) * (1 + (c.pow || 0) * .08) * (1 + g.pow / 100) * (W ? W.pow : 1);
   const pace = starQuick(id) * (1 + (c.quick || 0) * .06) * (1 + g.quick / 100) * (W ? W.rate : 1);
-  const skills = 1 + .03 * Object.values(c.sk || {}).reduce((a, b) => a + b, 0), lvl = 1 + .03 * (clv(id) - 1);
+  const skills = 1 + CHARS[id].abil.reduce((n, a) => n + .02 * tBase(id, a) + (tPicked(id, a) ? .05 : 0) + (tHasFin(id, a) ? .08 : 0), 0), lvl = 1 + .03 * (clv(id) - 1);
   const help = 1 + (g.pat + g.ring + (id === 'dad' ? (c.pat || 0) * 20 + (c.ring || 0) * 22 : 0)) / 400 + g.coin / 800;
   return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
@@ -1950,7 +2105,7 @@ function newRun(stage) {
   refreshHud(true);
 }
 // passive rank lookups across the party
-const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ? m.ranks[a] : 0; };
+const rankOf = (id, a) => { const m = G.party.find(m => m.id === id); return m ? effRank(m, a) : 0; };
 
 /* ───────── waves ───────── */
 function startWave() {
@@ -1976,7 +2131,7 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .012); // the later chapters were easy for every team in the sim
+  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
   const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
@@ -2016,7 +2171,9 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
-  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind); d *= teamBonus(who);
+  const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind), T = G.src && G.src.id === who ? G.src : null; d *= teamBonus(who);
+  if (T) { d = treeDmg(e, d, T); if (tFx(T.id, T.a).includes('shove')) knock = Math.max(knock, 50) * 1.7; }
+  if (e.tagged > G.t) d *= 1.15;
   const GV = CWEAP[who] || who === 'dad' ? wv(who) : null, gfx = GV && GV.gfx; if (gfx === 'knock') knock = Math.max(knock, 40) * 1.6;
   if (e.known) d *= 1 + rankOf('goldie', 'memory') * .05 + sk('goldie', 'memory') * .02;
   if (elemOf(who) === 'spark') d *= 1 + rankOf('prickles', 'static') * .04 + sk('prickles', 'static') * .02;
@@ -2025,7 +2182,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (T ? treeCrit(T) : 0) + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -2039,7 +2196,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   const el = who === 'react' ? null : elemOf(who);
   if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
   else if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < (tg.long || 2.5) ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
-  if (e.hp <= 0) kill(e);
+  if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
 }
 function kill(e) {
   G.busted++; save.busted++; missionAdd('pop'); if (e.elite) missionAdd('elite');
@@ -2248,7 +2405,7 @@ function fireWeapon(m, tgt) {
 }
 function updateShots(dt) {
   for (const s of G.shots) {
-    s.t = (s.t || 0) + dt;
+    s.t = (s.t || 0) + dt; G.src = s.src || null;
     switch (s.k) {
       case 'gen': genShot(s, dt); break;
       case 'yoyo': {
@@ -2291,7 +2448,7 @@ function updateShots(dt) {
         break; }
     }
   }
-  G.shots = G.shots.filter(s => !s.dead);
+  G.src = null; G.shots = G.shots.filter(s => !s.dead);
 }
 
 /* ───────── update ───────── */
@@ -2388,24 +2545,27 @@ function update(dt) {
     if (m.jump) { // hopper's big hop
       const j = m.jump; j.t += dt; const p = Math.min(1, j.t / j.dur), ease = p * p * (3 - 2 * p);
       m.x = j.from.x + (j.to.x - j.from.x) * ease; m.y = j.from.y + (j.to.y - j.from.y) * ease; m.z = Math.sin(p * Math.PI) * (j.kind === 'dig' ? 0 : j.kind === 'swoop' ? 110 : 90);
-      if (p >= 1) { if (!j.back) { const kd = j.kind || 'hop';
+      if (p >= 1) { if (!j.back) { const kd = j.kind || 'hop'; G.src = j.src || null;
           if (kd === 'swoop') { for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + 40) hurt(e, j.dmg * (e.slow > 0 && synOn(SYNERGY[5]) ? 2 : 1), 100, m); G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 40, t: 0, life: .35, col: '#eef4ff' }); text(m.x, m.y - 40, 'SWOOP!', '#fff', 22, .8); }
           else { const R = 62 + (kd === 'dig' ? sk('scuttle', 'dig') : sk('hopper', 'hop')) * 12; for (const e of G.enemies) if (e.hp > 0 && dist(e, m) < e.r + R) { hurt(e, j.dmg, kd === 'dig' ? 70 : 120, m); if (kd === 'dig') e.stun = Math.max(e.stun, 1); } G.fx.push({ k: 'splash', x: m.x, y: m.y + 10, R: 60, t: 0, life: .4, col: kd === 'dig' ? '#d9c08a' : '#8fbf6a' }); G.shake = .18; text(m.x, m.y - 40, kd === 'dig' ? 'SURPRISE!' : 'SPLAT', '#fff', 22, .8); }
-          m.jump = { kind: kd, from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
+          G.src = null; m.jump = { kind: kd, from: { x: m.x, y: m.y }, to: m.home, t: 0, dur: .5, back: true }; } else { m.x = m.home.x; m.y = m.home.y; m.z = 0; m.jump = null; m.land = .25; } }
       continue;
     }
     if (m.muted > 0) { m.muted -= dt; continue; }
     for (const a of CHARS[m.id].abil) {
       if (!m.ranks[a] || ABIL[a].passive) continue;
       m.cds[a] -= dt;
-      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a]; if (useAbility(m, a) && (m.id === 'dad' || missionAdd('abil') || true)) m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m); else m.cds[a] = .15; }
+      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a], src = { id: m.id, a, cast: G.casts = (G.casts || 0) + 1 };
+        if (withSrc(src, () => useAbility(m, a))) { if (m.id !== 'dad') missionAdd('abil'); if (m.jump && !m.jump.src) m.jump.src = src; m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m) * (1 - .05 * tRank(m.id, a, 'cd'));
+          if (tHasFin(m.id, a) && tFinKey(m.id, a) === 'twice' && (m.uses = m.uses || {}, m.uses[a] = (m.uses[a] || 0) + 1) % 3 === 0) G.pending.push({ at: G.t + .5, src: { id: m.id, a, cast: ++G.casts }, fn: () => { if (!m.anim && !m.jump) { useAbility(m, a); text(m.x, m.y - 60, 'encore!', '#ffd76a', 14, .8); } } }); }
+        else m.cds[a] = .15; }
     }
   }
-  for (const p of G.pending) if (G.t >= p.at) { p.done = true; p.fn(); }
+  for (const p of G.pending) if (G.t >= p.at) { p.done = true; if (p.src) withSrc(p.src, p.fn); else p.fn(); }
   G.pending = G.pending.filter(p => !p.done);
   updateShots(dt);
   G.flash = Math.max(0, G.flash - dt);
-  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if (song || moon) G.hp = Math.min(G.maxhp, G.hp + (song * (.3 + sk('hopper', 'song') * .1) + moon * .15) * dt);
+  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if ((song || moon) && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + (song * (.3 + sk('hopper', 'song') * .1) + moon * .15) * dt);
   if (G.hp <= 0) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
@@ -3438,7 +3598,7 @@ function dropLoot(el, n, bonus) {
 }
 let sessionMatches = 0;
 setInterval(() => { if (mode === 'game' && G && !G.paused && !G.over && !document.hidden) { const p = save.play || (save.play = {}); p[today()] = (p[today()] || 0) + 10; } }, 10000);
-function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
+function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); save.books = (save.books || 0) + 1; } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -3467,7 +3627,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   if (first) notes.push(...newUnlocks().map(t => t.replace(/\.$/, '')));
   if (first && CHESTS.some(C => C.ok(G.S.w) && !chestGot(G.S.w, C.k))) notes.push('🎁 A Chapter Chest is ready on the World Map');
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
-  if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150 and a 🎟️ Library Card. A new one tomorrow.'); }
+  if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150, a 🎟️ Library Card and a 📘 Skill Book. A new one tomorrow.'); }
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
@@ -3668,7 +3828,7 @@ function buildParty() {
       html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
       html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
         if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Change it in the Outfit above.</em></span></div></div>`;
-        return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on && S ? `<span><em>${S[0]}:</em> ${S[1]}</span>` : on ? '' : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div>${on && S ? `${pips(r, SK_MAX)}<span data-sk="${id}:${a}">${r >= SK_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>`}</span>` : ''}</div>`; }).join('') + '</div>';
+        return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on ? (tPicked(id, a) ? `<span><em>${(giftBranch(a) ? TAURA : TFX)[(TPICK[a] || [])[tPicked(id, a) - 1]]?.n || ''}${tHasFin(id, a) ? ' · ' + tFin(id, a).n : ''}</em></span>` : '') : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div></div>`; }).join('') + '</div>' + (has('tree') ? `<button class="btn small tbtn" data-tree="${id}">🌳 Skill Tree${tLeft(id) > 0 ? ` · <b>${tLeft(id)}</b> to spend` : ''}</button>` : '');
       if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
       if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
       const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
@@ -3688,7 +3848,7 @@ function buildParty() {
     } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !C.starter ? (nextFriend(true) === id ? 'Next in the story: every new stage you clear adds 3 pages (6 for a boss). Lucky pages, Library Cards, gifts and missions add more.' : 'Their turn in the story comes after the friends ahead of them join. Lucky pages, Library Cards, gifts and missions fill the book any time.') : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
     d.innerHTML = html; box.appendChild(d);
   }
-  box.querySelectorAll('[data-sk] button').forEach(b => b.onclick = () => { const [id, a] = b.parentElement.dataset.sk.split(':'), c = chr(id), r = sk(id, a), cost = skCost(r); if (r >= SK_MAX || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c.sk[a] = r + 1; persist(); buildParty(); });
+  box.querySelectorAll('[data-tree]').forEach(b => b.onclick = () => openTree(b.dataset.tree));
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
   box.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { if (starUp(b.dataset.star)) { toastMsg(`${CHARS[b.dataset.star].em} ${CHARS[b.dataset.star].name} is now ★${fstars(b.dataset.star)}!`); buildParty(); } });
   box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
@@ -3880,6 +4040,7 @@ const UNLOCKS = [
   { k: 'polish', at: 6, t: '✨ Polishing is open: make any item a bit stronger in the Bag.' },
   { k: 'month', at: 7, t: '📅 Myth of the Month is on: a featured friend gets pages from every stage this month.' },
   { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
+  { k: 'tree', at: 9, tab: 'friends', t: '🌳 Skill Trees are open: every level gives a friend a point. Tap 🌳 on a friend\'s card.' },
   { k: 'forge', at: 10, t: '🔨 Forging is open: three items of a rarity make one of the next.' },
   { k: 'daily', at: 11, t: '📅 The Daily Myth is open on the home screen: a new twist every day.' },
   { k: 'endless', at: 12, t: '♾️ The Endless Stacks are open: how many waves can you last?' },
@@ -3906,7 +4067,7 @@ $('#bookRoom').onclick = () => openRoom();
 function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // suggested Power for a stage: what a team that clears it with random picks has (from the simulator), a little more for
 // chapter bosses, and a third more on Hard
-function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
+function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18 + Math.max(0, i - 20) * 12; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
 function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
@@ -3943,8 +4104,8 @@ $('#closeParent').onclick = () => { $('#parentm').hidden = true; };
 // Rewards grow with the chapter; the boss chest brings pages for the chapter's friend and a weapon for the team.
 const CHESTS = [
   { k: 'half', em: '🎁', n: 'Halfway', how: 'Clear stage 3 to claim', ok: w => save.cleared.includes(w * 5 + 2), pay: w => ({ coins: 120 * (w + 1), tix: 1 }) },
-  { k: 'done', em: '🧰', n: 'Chapter cleared', how: 'Beat the chapter boss to claim', ok: w => save.cleared.includes(w * 5 + 4), pay: w => ({ coins: 300 * (w + 1), gems: 40 + 15 * w, pages: [WORLDS[w].comp, 5], weapon: w >= 3 ? 2 : 1, xp: 60 + 20 * w }) },
-  { k: 'stars', em: '👑', n: 'Every star', how: 'Get all 15 stars in the chapter to claim', ok: w => chStars(w) >= 15, pay: w => ({ gems: 80 + 20 * w, item: 2, tix: 1 }) },
+  { k: 'done', em: '🧰', n: 'Chapter cleared', how: 'Beat the chapter boss to claim', ok: w => save.cleared.includes(w * 5 + 4), pay: w => ({ coins: 300 * (w + 1), gems: 40 + 15 * w, pages: [WORLDS[w].comp, 5], weapon: w >= 3 ? 2 : 1, xp: 60 + 20 * w, books: 1 }) },
+  { k: 'stars', em: '👑', n: 'Every star', how: 'Get all 15 stars in the chapter to claim', ok: w => chStars(w) >= 15, pay: w => ({ gems: 80 + 20 * w, item: 2, tix: 1, books: 1 }) },
 ];
 const chStars = w => [0, 1, 2, 3, 4].reduce((a, i) => a + Math.max(...Object.keys(DIFF).map(d => starsOf(w * 5 + i, d))), 0);
 const chestGot = (w, k) => !!(save.chests || {})[w + ':' + k];
@@ -3952,7 +4113,7 @@ const chestReady = w => CHESTS.some(C => C.ok(w) && !chestGot(w, C.k));
 const anyChest = () => WORLDS.some((_, w) => chestReady(w));
 // what a chest would hand over, as tiles (the preview and the reveal share these)
 function payTiles(p) { const t = []; if (p.coins) t.push(['🪙', p.coins, 'y']); if (p.gems) t.push(['💎', p.gems, 'b']); if (p.tix) t.push(['🎟️', p.tix, 'y']);
-  if (p.pages) t.push([CHARS[p.pages[0]].em, '📄' + p.pages[1], 'p']); if (p.weapon != null) t.push(['⚔️', RAR[p.weapon].n, 'b']); if (p.item != null) t.push(['🎒', RAR[p.item].n, 'p']); if (p.xp) t.push(['⭐', p.xp + ' XP', 'b']); return t; }
+  if (p.pages) t.push([CHARS[p.pages[0]].em, '📄' + p.pages[1], 'p']); if (p.weapon != null) t.push(['⚔️', RAR[p.weapon].n, 'b']); if (p.item != null) t.push(['🎒', RAR[p.item].n, 'p']); if (p.xp) t.push(['⭐', p.xp + ' XP', 'b']); if (p.books) t.push(['📘', p.books, 'b']); return t; }
 const tileH = ([em, n, c]) => `<div class="rt ${c}">${em}<small>${n}</small></div>`;
 let chW = 0;
 function buildChests() {
@@ -3967,6 +4128,7 @@ function claimChest(w, k) {
   (save.chests = save.chests || {})[w + ':' + k] = true;
   setWallet({ coins: save.coins + (p.coins || 0), gems: save.gems + (p.gems || 0), tix: save.tix + (p.tix || 0) });
   if (p.pages) addPages(p.pages[0], p.pages[1]);
+  if (p.books) save.books = (save.books || 0) + p.books;
   if (p.weapon != null) { const owners = ['dad', ...save.party.filter(id => CWEAP[id])]; save.items.push(makeItem('weapon', p.weapon, true, { owner: pick(owners) })); }
   if (p.item != null) save.items.push(itemOf(p.item));
   if (p.xp) for (const id of ['dad', ...save.party]) { const c = chr(id); c.xp = (c.xp || 0) + p.xp; }
@@ -3974,6 +4136,36 @@ function claimChest(w, k) {
   $('#chTiles').innerHTML = payTiles(p).map(tileH).join(''); $('#chReveal').hidden = false; buildChests(); updateChestBtn();
 }
 function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Chests${anyChest() ? '<i class="dot"></i>' : ''}`; }
+let treeId = null;
+const tCost = (r) => skCost(r);
+function buildTree() {
+  const id = treeId, c = chr(id), C = CHARS[id], L = clv(id), left = tLeft(id);
+  $('#tHead').innerHTML = `<div class="fc">${faceH(id)}</div><div class="tm"><b>${C.name}</b><small>Level ${L} · a point every level, and Skill Books from chests and the Daily Myth</small></div><div class="tpts">${left}<small>${left === 1 ? 'POINT' : 'POINTS'}</small></div>`;
+  let h = (save.books || 0) ? `<div class="tbook"><span>📘 You have ${save.books} Skill Book${save.books > 1 ? 's' : ''}. Each one is a point for any friend.</span><button class="btn small" data-tbook>Use one</button></div>` : '';
+  for (const a of C.abil) {
+    const open = tOpen(id, a), nodes = tNodes(a), base = tBase(id, a), need = tPickAt(a), P = TPICK[a] || (giftBranch(a) ? ['pow', 'guard'] : ['sharp', 'mop']), pk = tPicked(id, a), F = tFin(id, a), fin = tHasFin(id, a);
+    h += `<div class="tbr ${open ? '' : 'locked'}"><h3>${abilEm(a)} ${abilName(a)}<small>${open ? (isPassive(a) ? 'always on' : 'a skill') : `opens at level ${UNLOCK_AT[C.abil.indexOf(a)]}`}</small></h3>`;
+    h += '<div class="tlab">Upgrades</div><div class="ttier">' + nodes.map(k => { const r = tRank(id, a, k), N = k === 'sig' ? { em: '⭐', n: SKILL[a][0], d: SKILL[a][1] } : TNODE[k], cost = tCost(r), can = open && r < TREE_MAX && left > 0 && save.coins >= cost;
+      return `<div class="tn ${r ? 'on' : ''}"><span class="te">${N.em}</span><b>${N.n}</b><p>${N.d}</p>${pips(r, TREE_MAX)}${r >= TREE_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" data-tn="${a}:${k}" ${can ? '' : 'disabled'}>+1 · 🪙${cost}</button>`}</div>`; }).join('') + '</div>';
+    const pOpen = open && base >= need;
+    h += `<div class="tlab">Choose one${pOpen ? (pk ? ' · swap any time, free' : '') : ` · after ${need} upgrades`}</div><div class="ttier">` + P.map((k, i) => { const X = giftBranch(a) ? TAURA[k] : TFX[k], on = pk === i + 1 || (pk && fin && tFinKey(id, a) === 'both'), first = !pk, can = pOpen && (first ? left > 0 && save.coins >= T_PICK_COST : true);
+      return `<div class="tn ${on ? 'on' : pk ? 'off' : ''}"><span class="te">${X.em}</span><b>${X.n}</b><p>${X.d}</p>${on ? '<button class="btn small maxed" disabled>Chosen</button>' : `<button class="btn small" data-tp="${a}:${i + 1}" ${can ? '' : 'disabled'}>${first ? `Pick · 🪙${T_PICK_COST}` : 'Swap'}</button>`}</div>`; }).join('') + '</div>';
+    const fOpen = pOpen && pk && tFull(id, a), canF = fOpen && !fin && left > 0 && save.coins >= T_FIN_COST;
+    h += `<div class="tlab">Finisher${fOpen ? '' : ' · after every upgrade and a choice'}</div><div class="ttier"><div class="tn fin ${fin ? 'on' : ''}"><span class="te">${F.em}</span><b>${F.n}</b><p>${F.d}</p>${fin ? '<button class="btn small maxed" disabled>Done</button>' : `<button class="btn small" data-tf="${a}" ${canF ? '' : 'disabled'}>Learn · 🪙${T_FIN_COST}</button>`}</div></div></div>`;
+  }
+  $('#tList').innerHTML = h;
+  const done = () => { persist(); buildTree(); buildParty(); };
+  $('#tList').querySelectorAll('[data-tn]').forEach(b => b.onclick = () => { const [a, k] = b.dataset.tn.split(':'), r = tRank(id, a, k), cost = tCost(r); if (r >= TREE_MAX || tLeft(id) <= 0 || save.coins < cost || !tOpen(id, a)) return;
+    setWallet({ coins: save.coins - cost }); if (k === 'sig') c.sk[a] = r + 1; else tBr(id, a)[k] = r + 1; sfx('forge'); buzz('LIGHT'); done(); });
+  $('#tList').querySelectorAll('[data-tp]').forEach(b => b.onclick = () => { const [a, i] = b.dataset.tp.split(':'), B = tBr(id, a);
+    if (!B.pick) { if (tLeft(id) <= 0 || save.coins < T_PICK_COST || tBase(id, a) < tPickAt(a)) return; setWallet({ coins: save.coins - T_PICK_COST }); }
+    B.pick = +i; sfx('coin'); buzz('LIGHT'); done(); });
+  $('#tList').querySelectorAll('[data-tf]').forEach(b => b.onclick = () => { const a = b.dataset.tf, B = tBr(id, a); if (B.fin || tLeft(id) <= 0 || save.coins < T_FIN_COST || !B.pick || !tFull(id, a)) return;
+    setWallet({ coins: save.coins - T_FIN_COST }); B.fin = 1; sfx('levelup'); buzz('MEDIUM'); toastMsg(`${tFin(id, a).em} ${C.name} learned ${tFin(id, a).n}!`); done(); });
+  const bk = $('#tList').querySelector('[data-tbook]'); if (bk) bk.onclick = () => { if (!(save.books > 0)) return; save.books--; c.books = (c.books || 0) + 1; sfx('coin'); done(); };
+}
+function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $('#treem .panel').scrollTop = 0; }
+$('#tClose').onclick = () => { $('#treem').hidden = true; };
 function openChests(w) { chW = w != null ? w : Math.max(0, WORLDS.findIndex((_, i) => chestReady(i))); if (chW < 0) chW = 0; $('#chReveal').hidden = true; buildChests(); $('#chestm').hidden = false; }
 $('#mapChests').onclick = () => openChests(anyChest() ? null : STAGES[pickStage] ? STAGES[pickStage].w : 0); // a ready chest first, else the chapter on the map
 $('#chPrev').onclick = () => { if (chW > 0) { chW--; buildChests(); } }; $('#chNext').onclick = () => { if (chW < WORLDS.length - 1) { chW++; buildChests(); } };
@@ -4000,7 +4192,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 applyOpts();
