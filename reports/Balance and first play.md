@@ -48,7 +48,7 @@ Why:
 | Friend level at the end | 30 by stage 22 | 29 by stage 40 |
 | Dad ★5 | stage 12 | stage 22 |
 | Power vs suggested | 4 to 7× | about 1.7 to 2× |
-| Stages where Dad lost Patience | 4 of 40 | 9 of 40, mostly chapters 6 to 8 |
+| Stages where Dad lost Patience | 3 of 40, all in chapter 1 or 2 | 8 of 40, mostly chapters 6 to 8 |
 | Retries | none | 3, in chapters 6 to 8 |
 
 The sim spends everything well, so a real child will usually sit closer to the suggested Power and feel the difficulty more. Easy mode is still there for anyone who needs it.
