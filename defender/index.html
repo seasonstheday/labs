@@ -556,7 +556,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 60</div>
+    <div class="build">build 61</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -741,6 +741,7 @@
         <h3>Starring</h3><p>Dad, and his magnifying glass<br>The Kid, who kept asking why<br>Webster, Hopper, Sparky and every backyard friend</p>
         <h3>And introducing</h3><p>Sir Ever-So-Sure, who learned to say "I don't know… yet"</p>
         <h3>Facts checked with</h3><p>museums, universities, NASA, and a lot of patient librarians</p>
+        <h3>Music</h3><p>Original score made with Google's Lyria music model</p>
         <h3>Made by</h3><p>The Backyard Library</p>
         <h3>What's next?</h3><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
       </div></div>
@@ -2202,7 +2203,8 @@ function audio() {
   const c = SND.ctx = new AC(), master = c.createGain(); master.connect(c.destination);
   SND.sfx = c.createGain(); SND.sfx.connect(master); SND.mus = c.createGain(); SND.mus.connect(master); volumes(); return c;
 }
-function volumes() { if (!SND.ctx) return; SND.sfx.gain.value = save.opt.sfx ? .8 : 0; SND.mus.gain.value = save.opt.music ? .34 : 0; }
+function volumes() { if (!SND.ctx) return; SND.sfx.gain.value = save.opt.sfx ? .8 : 0; SND.mus.gain.value = save.opt.music ? .34 : 0;
+  if (!save.opt.music && musEl) { fadeOut(musEl, .2); musEl = null; } else if (save.opt.music && !musEl && musKey != null && typeof playTrack === 'function') { const k = musKey; musKey = null; music(k); } }
 // phones keep audio silent until the first touch; the music starts then too
 document.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('button')) { setTimeout(() => sfx('tap'), 0); buzz('LIGHT'); } }, { capture: true });
 document.addEventListener('pointerdown', () => { const c = audio(); if (!c) return; if (c.state === 'suspended') c.resume(); if (musKey == null) music(G && G.S ? G.S.w : 'home'); }, { capture: true });
@@ -2245,8 +2247,30 @@ function buzz(style = 'LIGHT') { if (!save.opt.buzz) return; try { if (window.na
 const SONGS = { home: [196, [0, 2, 4, 7, 9], 84, 'sine'], 0: [262, [0, 2, 4, 7, 9], 104, 'triangle'], 1: [233, [0, 2, 4, 5, 7, 9], 96, 'sine'], 2: [220, [0, 2, 3, 5, 7, 10], 92, 'triangle'],
   3: [247, [0, 2, 4, 7, 9], 108, 'triangle'], 4: [208, [0, 1, 4, 5, 7, 8], 100, 'triangle'], 5: [294, [0, 2, 4, 7, 9], 88, 'sine'], 6: [196, [0, 3, 5, 7, 10], 112, 'triangle'], 7: [175, [0, 2, 4, 7, 9, 11], 80, 'sine'] };
 let musKey = null, musT = 0, musNext = 0, musStep = 0, musPat = null;
+// the soundtrack: one recorded piece per place in assets/music/, streamed and looped with a crossfade. The little tune-maker
+// below only plays if a piece can't be loaded (offline the first time, an old browser).
+const TRACKS = { home: 'home', 0: 'w0', 1: 'w1', 2: 'w2', 3: 'w3', 4: 'w4', 5: 'w5', 6: 'w6', 7: 'w7', boss: 'boss', final: 'final', villain: 'villain', credits: 'credits' };
+let musEl = null, musName = null;
+function fadeOut(m, sec = 1.2) { if (!m) return; const c = SND.ctx, g = m.g.gain; g.cancelScheduledValues(c.currentTime); g.setValueAtTime(g.value, c.currentTime); g.linearRampToValueAtTime(0, c.currentTime + sec); setTimeout(() => { m.el.pause(); m.el.removeAttribute('src'); try { m.src.disconnect(); } catch (e) {} }, sec * 1000 + 100); }
+function playTrack(name, which, fade = 1.2) {
+  const c = SND.ctx, el = new Audio(`assets/music/${name}.mp3`); el.preload = 'auto';
+  const m = { el, name, g: c.createGain(), src: c.createMediaElementSource(el) }; m.g.gain.value = 0; m.src.connect(m.g); m.g.connect(SND.mus);
+  el.addEventListener('timeupdate', () => { if (musEl === m && el.duration && el.currentTime > el.duration - 3 && name !== 'credits') { const old = musEl; musEl = playTrack(name, which, 2.5); fadeOut(old, 2.5); } }); // loop: the next pass fades in over the tail
+  el.addEventListener('error', () => { if (musEl === m && musKey === which) { musEl = null; synthMusic(which); } });
+  const start = () => el.play().then(() => { m.g.gain.setValueAtTime(0, c.currentTime); m.g.gain.linearRampToValueAtTime(1, c.currentTime + fade); });
+  start().catch(err => { if (musEl !== m || musKey !== which) return;
+    if (err && err.name === 'NotAllowedError') document.addEventListener('pointerdown', () => { if (musEl === m) start().catch(() => {}); }, { once: true, capture: true }); // phones wait for the first tap
+    else { musEl = null; synthMusic(which); } });
+  return m;
+}
 function music(which) {
   if (musKey === which) return; musKey = which; clearInterval(musT); musT = 0; if (which == null || !audio()) return;
+  const name = TRACKS[which] || 'home'; if (musEl && musEl.name === name) return; fadeOut(musEl); musEl = null;
+  if (!save.opt.music) return; musEl = playTrack(name, which);
+}
+document.addEventListener('visibilitychange', () => { if (!musEl) return; if (document.hidden) musEl.el.pause(); else if (save.opt.music) musEl.el.play().catch(() => {}); });
+function synthMusic(which) {
+  clearInterval(musT); musT = 0; if (which == null || !audio()) return;
   const [root, sc, bpm, wave] = SONGS[which] || SONGS.home, step = 60 / bpm / 2, seed = n => ((n * 9301 + String(which).length * 49297 + (+which || 7) * 233) % 233280) / 233280;
   musPat = Array.from({ length: 32 }, (_, i) => seed(i + 1) < (i % 4 === 0 ? .9 : .45) ? sc[Math.floor(seed(i + 50) * sc.length)] + (seed(i + 90) < .2 ? 12 : 0) : null);
   musStep = 0; musNext = SND.ctx.currentTime + .1;
@@ -2320,7 +2344,7 @@ function spawn(id, at = null, q = {}) {
   if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name;
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
     if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
@@ -2487,8 +2511,9 @@ function kill(e) {
     G.pending.push({ at: G.t + 1.8, fn: () => { const b = spawn(G.S.finale, { x: CX, y: CY - 320 }); b.hp = b.maxhp = b.maxhp * 1.35; b.moveT = 3; G.sses = b; G.shake = .4; sfx('boss');
       text(CX, CY - 230, '"Fine. I\'ll do it MYSELF."', '#e6d6fa', 20, 2.4); } });
   }
+  if (e.kind === 'boss' && !G.sses) music(G.S.w);
   if (e.kind === 'boss' && e.id === 'sses') { G.sses = 'done'; text(G.dad.x, G.dad.y - 120, 'The Kid: "But… WHY are you so sure?"', '#fff', 16, 3); G.pending.push({ at: G.t + 1.6, fn: () => text(CX, CY - 160, '"I… I don\'t know."', '#e6d6fa', 20, 2.6) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); if (G.sses === 'coming') G.pending.push({ at: G.t + 4.5, fn: () => toast(e.M) }); else toast(e.M); } // the shield's fact card waits until he has made his entrance
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
@@ -3935,7 +3960,7 @@ function startGame(stage, how = {}) { music(STAGES[stage].w);
   else setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
   const ck = G.S.w + ':in';
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
-  else if (G.S.finale && !G.endless && !G.twist && !G.room && !save.comics.includes(G.S.w + ':showdown')) { save.comics.push(G.S.w + ':showdown'); persist(); G.paused = true; showComic(G.S.W, 'showdown', () => { if (G) G.paused = false; }); }
+  else if (G.S.finale && !G.endless && !G.twist && !G.room && !save.comics.includes(G.S.w + ':showdown')) { save.comics.push(G.S.w + ':showdown'); persist(); G.paused = true; music('villain'); showComic(G.S.W, 'showdown', () => { if (G) { G.paused = false; music(G.S.w); } }); }
 }
 /* ───────── comics: three panels, tap through, always skippable ───────── */
 // the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
@@ -4062,7 +4087,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
   $('#adRow').hidden = !(adsOn() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
-  if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => G.S.finale ? showCredits(() => $('#clearm').hidden = false) : $('#clearm').hidden = false); } else $('#clearm').hidden = false;
+  if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); if (G.S.finale) music('credits'); showComic(G.S.W, 'out', () => G.S.finale ? showCredits(() => $('#clearm').hidden = false) : $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
 // every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
 function giveXp(cleared) {
@@ -4684,7 +4709,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill };
+if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, musNow: () => musEl && { name: musEl.name, t: musEl.el.currentTime, paused: musEl.el.paused }, musSeek: t => { if (musEl) musEl.el.currentTime = musEl.el.duration - t; } };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start

@@ -1,6 +1,6 @@
 // Why, Dad? Defender: offline first. Everything the game needs is cached on first visit,
 // so it opens with no signal. Bump CACHE when the build changes.
-const CACHE = 'whydad-defender-b60';
+const CACHE = 'whydad-defender-b61';
 const CORE = ['./', './index.html', './manifest.json',
   './assets/mascot_wave.png', './assets/mascot_pointing.png', './assets/mascot_amazed.png', './assets/mascot_talking.png', './assets/webster.png', './assets/bdad_idle.png', './assets/bdad_aim.png', './assets/bdad_ouch.png',
   './assets/icon-192.png', './assets/home_bg.png', './assets/home_bg_2.png', './assets/home_bg_3.png', './assets/home_bg_4.png', './assets/home_bg_5.png', './assets/home_bg_6.png', './assets/home_bg_7.png', './assets/home_bg_8.png', './assets/dad_face.png', './assets/kid_face.png', './assets/story_1_in.jpg', './assets/story_1_out.jpg', './assets/story_2_in.jpg', './assets/story_2_out.jpg', './assets/story_3_in.jpg', './assets/story_3_out.jpg', './assets/story_4_in.jpg', './assets/story_4_out.jpg', './assets/story_5_in.jpg', './assets/story_5_out.jpg', './assets/story_6_in.jpg', './assets/story_6_out.jpg', './assets/story_7_in.jpg', './assets/story_7_out.jpg', './assets/story_8_in.jpg', './assets/story_8_out.jpg', './assets/story_p1.jpg', './assets/story_p2.jpg', './assets/story_p3.jpg', './assets/story_p4.jpg', './assets/story_v0.jpg', './assets/story_1_flee.jpg', './assets/story_2_flee.jpg', './assets/story_3_flee.jpg', './assets/story_4_flee.jpg', './assets/story_5_flee.jpg', './assets/story_6_flee.jpg', './assets/story_7_flee.jpg', './assets/story_8_boss.jpg', './assets/story_end1.jpg', './assets/story_end2.jpg', './assets/story_end3.jpg', './assets/sses_face.png', './assets/sses_idle.png', './assets/sses_scribble.png', './assets/sses_flee.png', './assets/sses_shout.png', './assets/sses_kind.png',  './assets/icon-512.png',
@@ -19,5 +19,6 @@ self.addEventListener('fetch', e => {
   // the page itself: network first so a new build shows up, cache when offline
   if (req.mode === 'navigate' || req.url.endsWith('/index.html')) { e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return r; }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))); return; }
   // everything else (art, fonts, optional PNG drop-ins): cache first, then network, and remember what came back
+  if (req.headers.has('range') || req.url.includes('/music/')) return; // music streams in pieces; let the browser handle it
   e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => { if (r && (r.ok || r.type === 'opaque')) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return r; }).catch(() => hit)));
 });
