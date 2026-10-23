@@ -52,6 +52,15 @@
   .fcard canvas.pc, .thead .fc { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 90%; } .fcard:nth-child(2n) canvas.pc { animation-delay: -1.1s; } .fcard:nth-child(3n) canvas.pc { animation-delay: -2.2s; }
   @keyframes breathe { 50% { transform: scale(1.02, .975); } } #frame.calm .fcard canvas.pc, #frame.calm .thead .fc { animation: none; }
   .hopin canvas.pc, .cheer { animation: hopin .6s cubic-bezier(.3,1.6,.5,1) both !important; } @keyframes hopin { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-14px) scale(.95, 1.08); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
+  #title .hub { position: absolute; top: 236px; display: flex; flex-direction: column; gap: 10px; z-index: 2; } #title .hub-l { left: 10px; } #title .hub-r { right: 10px; }
+  #title .hub .btn { width: 72px; height: 72px; font-size: 30px; border-radius: 18px; } #title .hub .btn small { font-size: 10px; line-height: 1; white-space: normal; text-align: center; }
+  #title .hub .btn.locked { filter: grayscale(1); opacity: .6; } #title .hub .btn.locked::after { content: '🔒'; position: absolute; top: -6px; right: -6px; font-size: 16px; }
+  .patrolart { font-size: 40px; margin: 6px 0; letter-spacing: 4px; animation: breathe 2.4s ease-in-out infinite; } .ptime { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .ptbar { height: 12px; border: 2.5px solid #3a2c20; border-radius: 8px; background: #eee; overflow: hidden; margin: 6px 20px; } .ptbar div { height: 100%; background: var(--green); }
+  .rtiles.big { justify-content: center; margin: 10px 0; } .rtiles.big .rt { min-width: 70px; height: auto; padding: 6px 6px 4px; font-size: 28px; display: flex; flex-direction: column; align-items: center; gap: 2px; } .rtiles.big .rt small { position: static; font-size: 13px; color: #3a2c20; text-shadow: none; }
+  .wheelwrap { position: relative; width: 250px; height: 250px; margin: 6px auto; } .wpin { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 26px; color: #c94a4a; z-index: 2; text-shadow: 0 2px 0 #3a2c20; }
+  .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #3a2c20; box-shadow: 0 6px 0 #3a2c20; position: relative; transition: transform 3.2s cubic-bezier(.15,.9,.25,1); } .wheel span { position: absolute; left: 50%; top: 50%; font-size: 24px; width: 40px; margin: -20px; text-align: center; }
+  .odds { text-align: left; margin-top: 6px; font: 400 15px/1.3 "Patrick Hand", cursive; } .odds summary { font: 700 14px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
+  .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
   .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
@@ -157,6 +166,11 @@
   .dtabs { display: flex; gap: 6px; padding: 0 14px 8px; }
   .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .dtabs button.on { background: var(--gold); }
+  .catgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px 14px 10px; }
+  .dbon { grid-column: 1 / -1; background: #3a2c20; color: #fff; border-radius: 14px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; } .dbon b { flex-basis: 100%; font: 700 14px/1.2 "Fredoka", Arial, sans-serif; } .dbon span { font: 400 15px/1.2 "Patrick Hand", cursive; color: #ffe08a; }
+  .ctile { border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; } .ctile.on { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c; } .ctile.done { border-color: #4f9a5a; }
+  .ctile i { font-style: normal; font-size: 26px; line-height: 1; } .ctile b { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; } .ctile small { font: 700 11px/1 "Fredoka", Arial, sans-serif; color: var(--muted); } .ctile em { font: 700 11px/1.1 "Fredoka", Arial, sans-serif; color: #2f7a2a; font-style: normal; } .ctile small.nx { font: 400 11px/1.1 "Patrick Hand", cursive; }
+  .cbar { position: relative; width: 100%; height: 8px; border: 2px solid #3a2c20; border-radius: 6px; background: #eee; overflow: hidden; } .cbar div { height: 100%; background: var(--gold); } .cbar span { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #3a2c20; }
   .cats { display: flex; gap: 8px; overflow-x: auto; padding: 4px 14px 10px; scrollbar-width: none; }
   .cat { flex: none; width: 74px; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; cursor: pointer; font: 700 11px/1.1 "Fredoka", Arial, sans-serif; }
   .cat.on { background: var(--gold); }
@@ -222,9 +236,9 @@
   .list-screen .intro { margin: 0 14px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; color: var(--muted); }
   .fact { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .fact .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
-  .fact b { font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .fact s { color: var(--red); font: 400 14px/1.2 "Patrick Hand", cursive; display: block; }
-  .fact p { margin: 4px 0 0; font: 400 16px/1.25 "Patrick Hand", cursive; }
+  .fact b { font: 700 19px/1.15 "Fredoka", Arial, sans-serif; display: block; }
+  .fact s { color: var(--red); font: 400 16px/1.25 "Patrick Hand", cursive; display: block; }
+  .fact p { margin: 6px 0 0; font: 400 18px/1.3 "Patrick Hand", cursive; }
   .fact.locked { opacity: .5; } .fact.locked p { font-style: italic; }
   .item { background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .item.inparty { border-color: var(--green); box-shadow: inset 0 0 0 2px var(--green); }
@@ -532,9 +546,11 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 53</div>
+    <div class="build">build 54</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
+    <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
+    <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button></div>
     <div class="side" hidden>
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
@@ -551,7 +567,6 @@
       <button class="monthpill" id="monthPill"></button>
       <button class="btn play" id="quickPlay">▶ Play</button>
       <button class="btn ghost small" id="play">🗺️ World Map<i class="dot" id="mapDot" hidden></i></button>
-      <div class="hmodes"><button class="btn ghost small" id="dailyBtn" hidden>📅 Daily Myth</button><button class="btn ghost small" id="endlessBtn" hidden>♾️ Endless</button></div>
       <div hidden><button id="openHow"></button><button id="openSettings"></button></div>
     </div>
   </section>
@@ -766,6 +781,40 @@
     </div>
   </div>
 
+  <div class="modal" id="patrolm" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">🏕️ Backyard Patrol</h2>
+      <p class="sub hand">While you're away, your friends keep watch and pick up what the myths drop. They can carry up to 12 hours of it.</p>
+      <div class="patrolart" id="patrolArt"></div>
+      <div class="ptime" id="patrolTime"></div>
+      <div class="rtiles big" id="patrolTiles"></div>
+      <div class="row"><button class="btn green" id="patrolGo">Collect</button></div>
+      <div class="row"><button class="btn" id="patrolQuick">⚡ Quick patrol</button></div>
+      <p class="hand" id="patrolNote" style="margin:6px 0 0"></p>
+      <div class="row exit"><button class="btn ghost" id="patrolClose">Done</button></div>
+    </div>
+  </div>
+  <div class="modal" id="wheelm" hidden>
+    <div class="panel" style="text-align:center">
+      <h2 class="display">🎡 Prize Wheel</h2>
+      <p class="sub hand" id="wheelSub">One free spin every day.</p>
+      <div class="wheelwrap"><div class="wpin">▼</div><div class="wheel" id="wheel"></div></div>
+      <div class="row"><button class="btn green" id="wheelGo">Spin!</button></div>
+      <p class="hand" id="wheelWon" style="min-height:1.3em;margin:6px 0 0"></p>
+      <details class="odds"><summary>What's on the wheel</summary><div id="wheelOdds"></div></details>
+      <div class="row exit"><button class="btn ghost" id="wheelClose">Done</button></div>
+    </div>
+  </div>
+  <div class="modal" id="challm" hidden>
+    <div class="panel">
+      <h2 class="display">🏆 Challenges</h2>
+      <p class="sub hand">Extra ways to play. Nothing here is lost if you skip a day.</p>
+      <div class="chrow"><div class="cem">📅</div><div class="cmid"><b>Daily Myth</b><small id="dailyTxt"></small></div><button class="btn small" id="dailyBtn">Play</button></div>
+      <div class="chrow"><div class="cem">♾️</div><div class="cmid"><b>Endless Stacks</b><small id="endlessTxt"></small></div><button class="btn small" id="endlessBtn">Play</button></div>
+      <div class="chrow"><div class="cem">📚</div><div class="cmid"><b>Reading Room</b><small id="roomTxt"></small></div><button class="btn small" id="challRoom">Open</button></div>
+      <div class="row exit"><button class="btn ghost" id="challClose">Done</button></div>
+    </div>
+  </div>
   <div class="modal" id="cloudm" hidden>
     <div class="panel" style="text-align:center">
       <h2 class="display">☁️ Another saved game</h2>
@@ -1073,6 +1122,22 @@ const META = { moon: ['space', 'NASA'], bull: ['animals', 'Britannica'], fish: [
   star5: ['space', 'NASA'], shooting: ['space', 'NASA'], darkside: ['space', 'NASA'], sun: ['space', 'NASA'], northstar: ['space', 'NASA'], gravity: ['space', 'NASA'],
   worm: ['animals', 'Natural History Museum'], daddylong: ['animals', 'University of California, Riverside'], bumblefly: ['science', 'Scientific American'], beesting: ['animals', 'Natural History Museum'], babybird: ['animals', 'Audubon'], dogyears: ['animals', 'American Veterinary Medical Association'], dogcolour: ['animals', 'American Kennel Club'], sunflower: ['science', 'UC Berkeley'], ladybird: ['animals', 'Natural History Museum'], earwig: ['animals', 'Royal Horticultural Society'], gum: ['body', 'Mayo Clinic'], watermelon: ['food', 'Cleveland Clinic'], fivesec: ['food', 'Rutgers University'], ribbit: ['animals', 'AP News'], hippo: ['animals', 'Nature'], beaver: ['animals', 'National Wildlife Federation'], eel: ['animals', 'Smithsonian'], mosquito: ['animals', 'Smithsonian'], swimwait: ['body', 'American Red Cross'], poolpee: ['science', 'Snopes'], redeyes: ['body', 'CDC'], dimlight: ['body', 'American Academy of Ophthalmology'], tvclose: ['body', 'American Academy of Ophthalmology'], blood: ['body', 'Scientific American'], twins: ['body', 'Scientific American'], washington: ['history', 'Mount Vernon'], cake: ['history', 'Britannica'], oldglass: ['science', 'Scientific American'], dinopeople: ['history', 'Natural History Museum'], dinoword: ['words', 'Natural History Museum'], ringroses: ['words', 'Library of Congress'], bilingual: ['words', 'American Speech-Language-Hearing Association'], seashell: ['science', 'Scientific American'], jellyfish: ['animals', 'NOAA'], jellypee: ['body', 'Scientific American'], whalefish: ['animals', 'NOAA'], dolphin: ['animals', 'Smithsonian'], bluesea: ['science', 'NOAA'], octoarms: ['animals', 'Smithsonian'], coral: ['animals', 'NOAA'], treasure: ['history', 'Smithsonian'], rattle: ['animals', 'Smithsonian'], snakejaw: ['animals', 'Natural History Museum'], sandy: ['earth', 'USGS'], greensahara: ['earth', 'Smithsonian'], curse: ['history', 'British Medical Journal'], sphinx: ['history', 'Smithsonian'], vulture: ['animals', 'Audubon'], diamond: ['earth', 'Smithsonian'], frostbite: ['body', 'NHS'], wolfmoon: ['animals', 'International Wolf Center'], narwhal: ['animals', 'Smithsonian'], leftpaw: ['animals', 'Polar Bears International'], iceberg: ['earth', 'National Snow and Ice Data Center'], alwaysdark: ['earth', 'National Snow and Ice Data Center'], owlhead: ['animals', 'Johns Hopkins Medicine'], toocold: ['weather', 'Met Office'], elemouse: ['animals', 'Smithsonian'], trunk: ['animals', 'Smithsonian'], gorilla: ['animals', 'Dian Fossey Gorilla Fund'], lungs: ['earth', 'National Geographic'], lionjungle: ['animals', 'National Geographic'], pineapple: ['food', 'Britannica'], peanut: ['food', 'Britannica'], clapcloud: ['weather', 'NOAA'], treeshelter: ['weather', 'National Weather Service'], sevencol: ['weather', 'Met Office'], venus: ['space', 'NASA'], seasons: ['space', 'NASA'], moonglow: ['space', 'NASA'], blackhole: ['space', 'NASA'], bigstar: ['space', 'NASA'], redmars: ['space', 'NASA'], rings: ['space', 'NASA'], fullmoon: ['space', 'Scientific American'], bigmoon: ['space', 'NASA'], feather: ['science', 'NASA'], carrots: ['food', 'Smithsonian'] };
 const catOf = id => (META[id] || ['science'])[0], srcOf = id => (META[id] || [0, 'Dad'])[1];
+// what each Diary topic gives, for good: a little per fact, more at half the topic, more again when it's all in
+const CATBON = {
+  animals: { k: 'pow',   n: 'Power',          u: '%', per: .2, half: 3, all: 5 },
+  body:    { k: 'pat',   n: 'Patience',       u: '',  per: 1,  half: 8, all: 12 },
+  space:   { k: 'ring',  n: 'Ring',           u: '',  per: 1,  half: 6, all: 10 },
+  weather: { k: 'quick', n: 'Quick',          u: '%', per: .6, half: 3, all: 5 },
+  food:    { k: 'coin',  n: 'Coins',          u: '%', per: 1,  half: 5, all: 8 },
+  history: { k: 'crit',  n: 'Critical hits',  u: '%', per: .3, half: 2, all: 3 },
+  words:   { k: 'xp',    n: 'XP',             u: '%', per: 1.5, half: 5, all: 8 },
+  earth:   { k: 'guard', n: 'Less Patience lost', u: '%', per: .4, half: 3, all: 4 },
+  science: { k: 'react', n: 'Reaction damage', u: '%', per: 1,  half: 5, all: 8 },
+};
+let diaryCache = null;
+function catCount(c) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); return { got: ids.filter(id => save.facts.includes(id)).length, all: ids.length }; }
+function catBonus(c) { const B = CATBON[c], { got, all } = catCount(c); return Math.round((got * B.per + (got * 2 >= all ? B.half : 0) + (got >= all ? B.all : 0)) * 10) / 10; }
+const diaryStat = k => { if (!diaryCache || diaryCache.n !== save.facts.length) { diaryCache = { n: save.facts.length }; for (const c in CATBON) diaryCache[CATBON[c].k] = catBonus(c); } return diaryCache[k] || 0; };
 // what busting every myth in a chapter earns, for good
 const TRAITS = [['🏡', 'Backyard Calm', 'Patience +10'], ['🪷', 'Pond Patience', 'Slows last 20% longer'], ['📚', 'Well Read', 'One extra Nope on level-up cards'], ['🌊', 'Beachcomber', 'Coins +8%'], ['🏜️', 'Far Sight', 'Ring +12'], ['❄️', 'Thick Coat', 'Patience +20'], ['🌴', 'Sharp Eyes', 'Critical hits +4%'], ['🌙', 'Stargazer', 'One extra remembered trick each match']];
 const worldIds = W => [...W.pool, ...(W.mid ? [W.mid] : []), W.boss];
@@ -1368,8 +1433,9 @@ const STAR_COST = [0, 6, 10, 14, 20], STAR_MAX = 5; // pages to go from ★n to 
 const tierOf = id => TIER[CTIER[id] || 0];
 const pagesOf = id => (save.pages || {})[id] || 0;
 const fstars = id => { const c = chr(id); return c.own ? (c.star || 1) : 0; };
-const charMul = id => id === 'dad' ? 1 : tierOf(id).mul * (1 + .04 * Math.max(0, fstars(id) - 1));
-const starQuick = id => id === 'dad' ? 1 : 1 + .04 * Math.max(0, fstars(id) - 1);
+// Dad has stars too: every new fact busted puts a page in his notebook. Each star is +5% Power, +3% Quick and +10 Patience.
+const charMul = id => id === 'dad' ? 1 + .05 * Math.max(0, fstars('dad') - 1) : tierOf(id).mul * (1 + .04 * Math.max(0, fstars(id) - 1));
+const starQuick = id => id === 'dad' ? 1 + .03 * Math.max(0, fstars('dad') - 1) : 1 + .04 * Math.max(0, fstars(id) - 1);
 // pages for a friend: a locked friend joins when the book is full; a joined one banks them for stars. Returns true if they joined.
 function addPages(id, n) {
   save.pages = save.pages || {}; save.pages[id] = pagesOf(id) + n; const c = chr(id);
@@ -1399,7 +1465,7 @@ const reactKey = (a, b) => { const i = WHEEL.indexOf(a), j = WHEEL.indexOf(b); i
 const reactsWith = el => el === 'rainbow' ? WHEEL.map(o => ({ o, R: { n: 'any reaction', em: ELEM[o].em, desc: 'Chroma matches whatever is needed' } })).slice(0, 0).concat([{ o: 'rainbow', R: { n: 'Every reaction', em: '🌈', desc: 'Chroma turns into whichever colour sets one off' } }]) : WHEEL.filter(o => reactKey(el, o)).map(o => ({ o, R: REACT[reactKey(el, o)] }));
 const teamBonus = id => { const el = CELEM[id]; if (!el || !G) return 1; return G.party.filter(m => m.id !== 'dad' && CELEM[m.id] === el).length >= 2 ? 1.1 : 1; };
 function react(e, key) { sfx('zap');
-  const R = REACT[key], base = (10 + G.stage * 2.2) * (1 + rankOf('chroma', 'camo') * .08 + sk('chroma', 'camo') * .03); G.reactions = (G.reactions || 0) + 1; missionAdd('react');
+  const R = REACT[key], base = (10 + G.stage * 2.2) * (1 + rankOf('chroma', 'camo') * .08 + sk('chroma', 'camo') * .03) * (1 + diaryStat('react') / 100); G.reactions = (G.reactions || 0) + 1; missionAdd('react');
   text(e.x, e.y - e.r - 40, `${R.em} ${R.n.toUpperCase()}!`, '#fff', 20, 1.1);
   if (!(save.seenReact || (save.seenReact = [])).includes(key)) { save.seenReact.push(key); persist(); hint(`${R.em} ${R.n}: ${key.split('+').map(k => ELEM[k].n).join(' and ')} together. ${R.desc[0].toUpperCase() + R.desc.slice(1)}.`, 4.5); }
   const near = r => G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < r);
@@ -1923,6 +1989,7 @@ try {
   if (s) Object.assign(save, s);
 } catch (e) {}
 save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
@@ -1979,7 +2046,7 @@ function syncWeapons() {
 }
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
 // the party-wide stats, summed over everyone who's coming
-function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
+function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } for (const k in g) g[k] += diaryStat(k); if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
 // Power: everything that makes a character hit harder, faster or more often, as one number (a new Common friend is about 100)
 function powerOf(id) {
   const c = chr(id); if (!c.own && id !== 'dad') return 0; const g = gear(id), V = cweapOf(id);
@@ -2142,7 +2209,7 @@ function buildToggles(el) {
 /* ───────── run state ───────── */
 let G = null, last = 0, mode = 'title';
 function newRun(stage) {
-  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat + famStat('pat');
+  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat + famStat('pat') + (fstars('dad') - 1) * 10;
   const party = [{ id: 'dad', x: CX, y: CY }, ...save.party.map((id, i) => ({ id, x: CX + SPOTS[i][0], y: CY + SPOTS[i][1] }))];
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
@@ -2215,8 +2282,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id)) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id)) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id) + diaryStat('pow')) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id) + diaryStat('quick')) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -2271,7 +2338,7 @@ function kill(e) {
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
@@ -2634,7 +2701,7 @@ function update(dt) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v; if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v * (1 + diaryStat('xp') / 100); if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
@@ -3594,9 +3661,65 @@ const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math
 function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
 function updateModes() {
   const D = dailyToday(), db = $('#dailyBtn'), eb = $('#endlessBtn'); if (!db) return;
-  db.hidden = !D || !has('daily'); if (D) db.innerHTML = `${D.tw.em} Daily Myth${D.done ? ' ✔' : '<i class="dot"></i>'}`;
-  eb.hidden = !save.cleared.includes(4) || !has('endless'); eb.textContent = save.endlessBest ? `♾️ Endless · best ${save.endlessBest}` : '♾️ Endless';
+  db.disabled = !D || !has('daily'); $('#dailyTxt').textContent = !has('daily') ? 'Opens after 6 stages.' : !D ? 'Clear two stages first.' : D.done ? `Done today ✔ (${D.tw.em} ${D.tw.n}). A new one tomorrow.` : `Today: ${D.tw.em} ${D.tw.n}. A prize the first time.`;
+  const eOpen = save.cleared.includes(4) && has('endless'); eb.disabled = !eOpen; $('#endlessTxt').textContent = !eOpen ? 'Opens after 12 stages.' : save.endlessBest ? `Waves until Dad needs a nap. Best: wave ${save.endlessBest}.` : 'Waves until Dad needs a nap. How far can you go?';
+  const lv = partyLevel(); $('#roomTxt').textContent = lv < ROOM_LEVEL ? `Opens at party level ${ROOM_LEVEL} (you're ${lv}).` : `One big boss and three questions. ${roomRunsLeft()} visit${roomRunsLeft() === 1 ? '' : 's'} left.`;
+  updateHub();
 }
+// ───────── the home hub: Patrol, Prize Wheel, Challenges, Chapter Rewards ─────────
+// Backyard Patrol: rewards build up while you're away (up to 12 hours), and two free quick patrols a day hand over two
+// hours' worth at once. There's no energy to run out of: kids can play as much or as little as they like.
+const PATROL_CAP = 12, QUICK_PER_DAY = 2, QUICK_H = 2;
+function patrolRate() { const P = save.cleared.length; return { coins: 40 + 8 * P, xp: 30 + 4 * P }; }
+function patrolPay(h) { const R = patrolRate(); return { coins: Math.round(R.coins * h), xp: Math.round(R.xp * h), blank: Math.floor(h / 3), gems: Math.floor(h / 4) * 5 }; }
+const patrolState = () => save.patrol || (save.patrol = { t: Date.now(), qd: '', qn: 0 });
+const patrolHours = () => Math.min(PATROL_CAP, (Date.now() - patrolState().t) / 3.6e6);
+const quickLeft = () => { const P = patrolState(); return P.qd === today() ? QUICK_PER_DAY - P.qn : QUICK_PER_DAY; };
+function givePay(g) { setWallet({ coins: save.coins + (g.coins || 0), gems: save.gems + (g.gems || 0) }); if (g.blank) save.blank = (save.blank || 0) + g.blank; if (g.xp) for (const id of ['dad', ...save.party]) { const c = chr(id); c.xp = (c.xp || 0) + g.xp; } persist(); }
+const payTilesP = g => [g.coins ? ['🪙', g.coins, 'y'] : 0, g.xp ? ['⭐', g.xp + ' XP', 'b'] : 0, g.blank ? ['📄', g.blank, 'p'] : 0, g.gems ? ['💎', g.gems, 'b'] : 0].filter(Boolean).map(tileH).join('');
+function buildPatrol() { const h = patrolHours(), g = patrolPay(h), full = h >= PATROL_CAP, left = Math.max(0, PATROL_CAP - h);
+  $('#patrolArt').innerHTML = ['dad', ...save.party].map(faceH).join(' ');
+  $('#patrolTime').innerHTML = `${full ? 'Full! Collect it so they can keep going.' : `${Math.floor(h)}h ${Math.floor(h % 1 * 60)}m on patrol · full in ${Math.floor(left)}h ${Math.floor(left % 1 * 60)}m`}<div class="ptbar"><div style="width:${h / PATROL_CAP * 100}%"></div></div>`;
+  $('#patrolTiles').innerHTML = payTilesP(g) || '<small class="hand">Nothing yet. Come back in a little while.</small>';
+  $('#patrolGo').disabled = g.coins < 1; const q = quickLeft(); $('#patrolQuick').disabled = q <= 0;
+  $('#patrolQuick').innerHTML = `⚡ Quick patrol: ${QUICK_H} hours now · ${q} left today`;
+  $('#patrolNote').textContent = `Every hour: 🪙${patrolRate().coins} and ⭐${patrolRate().xp} XP for each friend in the backyard. More stages cleared, more found.`; }
+function openPatrol() { buildPatrol(); $('#patrolm').hidden = false; }
+$('#patrolGo').onclick = () => { const g = patrolPay(patrolHours()); if (g.coins < 1) return; givePay(g); patrolState().t = Date.now(); persist(); sfx('coin'); buzz('MEDIUM'); toastMsg('🏕️ Collected! The patrol carries on.'); buildPatrol(); updateHub(); drawStatics(); };
+$('#patrolQuick').onclick = () => { if (quickLeft() <= 0) return; const P = patrolState(); if (P.qd !== today()) { P.qd = today(); P.qn = 0; } P.qn++; givePay(patrolPay(QUICK_H)); sfx('coin'); buzz('MEDIUM'); toastMsg(`⚡ A quick patrol brought back ${QUICK_H} hours of finds.`); buildPatrol(); updateHub(); drawStatics(); };
+$('#patrolClose').onclick = () => { $('#patrolm').hidden = true; };
+// Prize Wheel: one free spin a day. Every prize and its chance are listed under the wheel; spins are never sold.
+const WHEEL_P = [
+  { em: '🪙', n: '100 coins', w: 24, give: () => ({ coins: 100 }) }, { em: '📄', n: '3 Blank pages', w: 12, give: () => ({ blank: 3 }) },
+  { em: '💎', n: '10 gems', w: 15, give: () => ({ gems: 10 }) }, { em: '🎟️', n: 'A Library Card', w: 10, give: () => ({ tix: 1 }) },
+  { em: '💰', n: '300 coins', w: 15, give: () => ({ coins: 300 }) }, { em: '📘', n: 'A Skill Book', w: 8, give: () => ({ books: 1 }) },
+  { em: '🎒', n: 'A Rare item', w: 10, give: () => ({ item: 1 }) }, { em: '💎', n: '30 gems', w: 6, give: () => ({ gems: 30 }) },
+];
+const spinReady = () => save.spinDay !== today();
+function buildWheel() { const n = WHEEL_P.length, cols = ['#ffe08a', '#bfe3a8', '#ffd0d8', '#c8dcff'];
+  $('#wheel').style.background = `conic-gradient(${WHEEL_P.map((_, i) => `${cols[i % 4]} ${i / n * 360}deg ${(i + 1) / n * 360}deg`).join(',')})`;
+  $('#wheel').innerHTML = WHEEL_P.map((P, i) => { const a = (i + .5) / n * Math.PI * 2; return `<span style="transform:translate(${Math.sin(a) * 82}px,${-Math.cos(a) * 82}px)">${P.em}</span>`; }).join('');
+  const tot = WHEEL_P.reduce((a, P) => a + P.w, 0); $('#wheelOdds').innerHTML = WHEEL_P.map(P => `<span>${P.em} ${P.n}</span><b>${Math.round(P.w / tot * 100)}%</b>`).join('');
+  $('#wheelGo').disabled = !spinReady(); $('#wheelSub').textContent = spinReady() ? 'One free spin every day. Every prize is shown below.' : 'Spun today! Come back tomorrow for another free spin.'; }
+function openWheel() { buildWheel(); $('#wheelWon').textContent = ''; $('#wheelm').hidden = false; }
+let wheelTurn = 0;
+$('#wheelGo').onclick = () => { if (!spinReady()) return; save.spinDay = today(); persist(); $('#wheelGo').disabled = true;
+  const tot = WHEEL_P.reduce((a, P) => a + P.w, 0); let r = Math.random() * tot, k = 0; while (r >= WHEEL_P[k].w) { r -= WHEEL_P[k].w; k++; }
+  const n = WHEEL_P.length; wheelTurn += 360 * 5 + (360 - (wheelTurn % 360)) - (k + .5) / n * 360; $('#wheel').style.transform = `rotate(${wheelTurn}deg)`; sfx('tap');
+  setTimeout(() => { const P = WHEEL_P[k], g = P.give(); if (g.tix) setWallet({ tix: save.tix + g.tix }); if (g.books) save.books = (save.books || 0) + g.books; if (g.item) save.items.push(itemOf(1)); givePay(g);
+    sfx('win'); buzz('HEAVY'); $('#wheelWon').textContent = `You won ${P.em} ${P.n}!`; say(`You won ${P.n}!`); buildWheel(); updateHub(); drawStatics(); }, 3300); };
+$('#wheelClose').onclick = () => { $('#wheelm').hidden = true; };
+// the four buttons: locked ones wear a padlock and say when they open; a dot means something's waiting
+function updateHub() { const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
+  const D = dailyToday();
+  set('hubPatrol', 'patrol', patrolHours() >= 1 || quickLeft() > 0 && patrolHours() >= .5); set('hubWheel', 'wheel', spinReady()); set('hubChall', 'daily', D && !D.done); set('hubChests', 'chests', anyChest()); }
+const lockedHub = b => { if (!b.classList.contains('locked')) return false; const U = UNLOCKS.find(u => u.k === b.dataset.lock), n = Math.max(1, U.at - save.cleared.length); toastMsg(`🔒 Opens after ${n} more stage${n > 1 ? 's' : ''}. Keep playing!`); return true; };
+$('#hubPatrol').onclick = function () { if (!lockedHub(this)) openPatrol(); };
+$('#hubWheel').onclick = function () { if (!lockedHub(this)) openWheel(); };
+$('#hubChall').onclick = function () { if (lockedHub(this)) return; updateModes(); $('#challm').hidden = false; };
+$('#hubChests').onclick = function () { if (!lockedHub(this)) openChests(anyChest() ? null : STAGES[nextStage()].w); };
+$('#challClose').onclick = () => { $('#challm').hidden = true; };
+$('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
 function startGame(stage, how = {}) { music(STAGES[stage].w);
@@ -3651,7 +3774,7 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard')) / 100);
+const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
 }
@@ -3800,20 +3923,26 @@ function buildBook() {
   $$('#book [data-dt]').forEach(b => { b.classList.toggle('on', b.dataset.dt === diaryTab); b.onclick = () => { diaryTab = b.dataset.dt; buildBook(); }; });
   const kidRow = id => { const M = MYTHS[id], got = save.facts.includes(id); listed.add(id); const d = document.createElement('div'); d.className = 'fact' + (got ? '' : ' locked'); d.innerHTML = got ? `<div class="em">${M.em}<button class="sayb" data-say="${id}" aria-label="Read it to me">🔊</button></div><div><b>${M.name}</b><s><span class="kid">I THOUGHT</span>${M.myth}</s><p><span class="kid">DAD SAYS</span>${M.fact}</p><span class="meta">${save.factDate[id] ? 'Learned ' + save.factDate[id] : 'Learned before I kept a diary'} · Dad read it in ${srcOf(id)}</span></div>` : `<div class="em">❓</div><div><b>???</b><s>A page I haven't popped yet.</s><p>Pop it in the game and I'll write it down.</p></div>`; box.appendChild(d); };
   const listed = new Set();
+  const lockedCard = left => { if (!left.length) return; const where = [...new Set(left.map(id => WORLDS.find(W => worldIds(W).includes(id))).filter(Boolean))];
+    const d = document.createElement('div'); d.className = 'fact locked'; d.innerHTML = `<div class="em">🔒</div><div><b>${left.length} more to find</b><p>Pop them in ${where.length ? where.map(W => `${W.em} ${W.name}`).join(', ') : 'the Big Book'} and they'll be written here.</p></div>`; box.appendChild(d); };
   if (diaryTab === 'topic') {
-    const cats = $('#cats'); cats.innerHTML = Object.keys(CATS).map(c => { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${c === diaryCat ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-cat="${c}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${CATS[c][0]}</span></div>${CATS[c][1]}<br><small>${got}/${ids.length}</small></div>`; }).join('');
+    const cats = $('#cats'); cats.className = 'catgrid';
+    const bon = Object.keys(CATBON).map(c => [c, catBonus(c)]).filter(([, v]) => v > 0);
+    cats.innerHTML = `<div class="dbon"><b>📔 Your Diary gives the whole team</b>${bon.length ? bon.map(([c, v]) => `<span>${CATS[c][0]} +${v}${CATBON[c].u} ${CATBON[c].n}</span>`).join('') : '<span>Bust myths to fill it: every fact makes the team a little stronger.</span>'}</div>`
+      + Object.keys(CATS).map(c => { const { got, all } = catCount(c), B = CATBON[c], next = got * 2 < all ? `half: +${B.half}${B.u} more` : got < all ? `all: +${B.all}${B.u} more` : 'complete!';
+        return `<div class="ctile ${c === diaryCat ? 'on' : ''} ${got === all ? 'done' : ''}" data-cat="${c}"><i>${CATS[c][0]}</i><b>${CATS[c][1]}</b><small>${got} / ${all}</small><div class="cbar"><div style="width:${got / all * 100}%"></div><span></span></div><em>+${catBonus(c)}${B.u} ${B.n}</em><small class="nx">${next}</small></div>`; }).join('');
     cats.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { diaryCat = b.dataset.cat; buildBook(); });
     const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat), got = ids.filter(id => save.facts.includes(id));
     const today = new Date().toISOString().slice(0, 10), studied = save.study === today, can = got.length >= 3;
     $('#study').hidden = false; $('#studyTxt').textContent = studied ? 'Done for today. The Kid will read again tomorrow.' : can ? `Re-read three ${CATS[diaryCat][1]} pages with the Kid. Once a day, +🪙 40.` : `Learn three ${CATS[diaryCat][1]} facts and the Kid can read them back to you.`; $('#studyGo').disabled = studied || !can;
-    ids.forEach(kidRow);
+    ids.filter(id => save.facts.includes(id)).forEach(kidRow); lockedCard(ids.filter(id => !save.facts.includes(id)));
   } else {
     $('#study').hidden = true;
-    const cats = $('#cats'); cats.innerHTML = WORLDS.map((W, w) => { const ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${w === diaryW ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-w="${w}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${W.em}</span></div>${W.name.replace('The ', '')}<br><small>${got}/${ids.length}</small></div>`; }).join('');
+    const cats = $('#cats'); cats.className = 'cats'; cats.innerHTML = WORLDS.map((W, w) => { const ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${w === diaryW ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-w="${w}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${W.em}</span></div>${W.name.replace('The ', '')}<br><small>${got}/${ids.length}</small></div>`; }).join('');
     cats.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { diaryW = +b.dataset.w; buildBook(); });
     const W = WORLDS[diaryW], ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length;
     const h = document.createElement('div'); h.className = 'wh'; h.innerHTML = `${W.em} ${W.name} <small>${got === ids.length ? `${TRAITS[diaryW][0]} ${TRAITS[diaryW][1]}: ${TRAITS[diaryW][2]}` : `pop every page for a chapter trait: ${TRAITS[diaryW][2].toLowerCase()}`}</small>`; box.appendChild(h);
-    ids.forEach(kidRow);
+    ids.filter(id => save.facts.includes(id)).forEach(kidRow); lockedCard(ids.filter(id => !save.facts.includes(id)));
   }
   n = save.facts.length;
   $('#bookCount').textContent = `${n} / ${Object.keys(MYTHS).length}`; $('#bookCount').title = `${knowsWell()} facts you really know (answered right in three Myth Checks on different days)`;
@@ -3860,12 +3989,12 @@ function outfitH(id) {
   return h + '</div>';
 }
 // a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
-const canGrow = id => { if (id === 'dad') return false; const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= STAR_COST[st] : pagesOf(id) >= tierOf(id).pages; };
+const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= STAR_COST[st] : pagesOf(id) >= tierOf(id).pages; };
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
   if (!partySel) { // the grid: the party on top, then everyone
     const card = id => { const C = CHARS[id], c = chr(id), T = id === 'dad' ? { col: '#3a2c20' } : tierOf(id), st = fstars(id), EL = ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
-      return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${id === 'dad' ? '<small>Always</small>' : c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
+      return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
     box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
@@ -3886,6 +4015,9 @@ function buildParty() {
     else html += `<button class="btn small" data-join="${id}">Bring in</button>`;
     html += '</div>';
     if (c.own) html += outfitH(id);
+    if (id === 'dad') { const st = fstars('dad'), need = STAR_COST[st], have = pagesOf('dad');
+      html += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>${st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
+      if (st < STAR_MAX && have + (save.blank || 0) >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
       const EL = ELEM[CELEM[id]];
       html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
@@ -4127,6 +4259,9 @@ const TAB_OF = { '#title': 'play', '#map': 'play', '#missions': 'play', '#store'
 const UNLOCKS = [
   { k: 'friends', at: 1, tab: 'friends', t: '🧑‍🤝‍🧑 Friends is open: tap it to meet Webster and see his tricks.' },
   { k: 'shop', at: 2, tab: 'shop', t: '🏪 The Shop is open: spend coins and gems there.' },
+  { k: 'patrol', at: 2, t: '🏕️ Backyard Patrol is on (home screen): your friends collect coins while you\'re away.' },
+  { k: 'chests', at: 3, t: '🎁 Chapter Rewards are open (home screen): prizes for every chapter you clear.' },
+  { k: 'wheel', at: 5, t: '🎡 The Prize Wheel is on (home screen): one free spin a day.' },
   { k: 'missions', at: 4, t: '📋 Missions are open (top of the home screen): little goals with prizes.' },
   { k: 'bag', at: 3, tab: 'bag', t: '🎒 The Bag is open: items from matches go there. Put them on from a friend\'s card.' },
   { k: 'power', at: 5, t: '⚡ Power is on: the Play button shows how strong your team is next to what the stage needs.' },
@@ -4135,10 +4270,10 @@ const UNLOCKS = [
   { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
   { k: 'tree', at: 9, tab: 'friends', t: '🌳 Skill Trees are open: every level gives a friend a point. Tap 🌳 on a friend\'s card.' },
   { k: 'forge', at: 10, t: '🔨 Forging is open: three items of a rarity make one of the next.' },
-  { k: 'daily', at: 11, t: '📅 The Daily Myth is open on the home screen: a new twist every day.' },
+  { k: 'daily', at: 6, t: '🏆 Challenges are open (home screen): a Daily Myth with a new twist every day.' },
   { k: 'endless', at: 12, t: '♾️ The Endless Stacks are open: how many waves can you last?' },
 ];
-const has = k => { const U = UNLOCKS.find(u => u.k === k); return !U || save.cleared.length >= U.at; };
+const has = k => { const U = UNLOCKS.find(u => u.k === k); return !U || save.cleared.length >= U.at || (save.seenUnlocks || []).includes(k); };
 // lines for anything that opened with this clear (called once the clear is counted)
 function newUnlocks() { const seen = save.seenUnlocks || (save.seenUnlocks = []), out = [];
   for (const U of UNLOCKS) if (has(U.k) && !seen.includes(U.k)) { seen.push(U.k); out.push(U.t); if (U.tab) (save.newTabs = save.newTabs || []).push(U.tab); }
@@ -4275,7 +4410,7 @@ function buildTree() {
 function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $('#treem .panel').scrollTop = 0; }
 $('#tClose').onclick = () => { $('#treem').hidden = true; };
 // every pop-up with a plain way out gets a big ✕ in the corner, and a tap on the dark area outside does the same
-const XCLOSE = { settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
+const XCLOSE = { patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
 for (const [id, sel] of Object.entries(XCLOSE)) { const m = $('#' + id), p = m.querySelector('.panel'), x = document.createElement('button');
   x.className = 'xbtn'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close'); x.onclick = () => $(sel).click(); p.prepend(x); p.classList.add('hasx');
   m.addEventListener('click', e => { if (e.target === m) $(sel).click(); }); }
@@ -4285,7 +4420,7 @@ $('#mapChests').onclick = () => openChests(anyChest() ? null : STAGES[pickStage]
 $('#chPrev').onclick = () => { if (chW > 0) { chW--; buildChests(); } }; $('#chNext').onclick = () => { if (chW < WORLDS.length - 1) { chW++; buildChests(); } };
 $('#chClose').onclick = () => { $('#chestm').hidden = true; }; $('#chReveal').onclick = () => { $('#chReveal').hidden = true; };
 $('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() : startGame(G.stage);
-$('#dailyBtn').onclick = startDaily; $('#endlessBtn').onclick = startEndless;
+$('#dailyBtn').onclick = () => { $('#challm').hidden = true; startDaily(); }; $('#endlessBtn').onclick = () => { $('#challm').hidden = true; startEndless(); };
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
   G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
