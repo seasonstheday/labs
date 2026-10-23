@@ -62,6 +62,7 @@
   .odds { text-align: left; margin-top: 6px; font: 400 15px/1.3 "Patrick Hand", cursive; } .odds summary { font: 700 14px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
   .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
   .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 400 21px/1.3 "Patrick Hand", cursive; margin: 0 0 6px; }
+  .itile .rpips { position: absolute; top: 3px; left: 5px; font-size: 9px; letter-spacing: -1px; color: #3a2c20; opacity: .7; }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
   .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
@@ -549,7 +550,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 56</div>
+    <div class="build">build 57</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -909,7 +910,7 @@
     <div class="panel">
       <h2 class="display">How to play</h2>
       <div class="howcards">
-        <div class="hc"><i>🧔🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
+        <div class="hc"><i><img class="fim" src="assets/dad_face.png" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
         <div class="hc"><i>👆</i><b>Tap a myth</b> and everyone goes after it.</div>
         <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
         <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
@@ -1370,7 +1371,7 @@ function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS
 
 /* ───────── the party ───────── */
 const CHARS = {
-  dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has his magnifying glass, and a drawer full of lenses for it.', abil: ['weapon', 'story', 'joke'], price: 0 },
+  dad:     { name: 'Dad',     em: '🔍', desc: 'Never moves. Always has his magnifying glass, and a drawer full of lenses for it.', abil: ['weapon', 'story', 'joke'], price: 0 },
   webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], freeAfter: 0, starter: true },
   sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], freeAfter: 2 },
   hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], freeAfter: 1 },
@@ -2078,13 +2079,13 @@ function powerOf(id) {
   return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
 const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1) * (1 + .03 * SYNERGY.filter(sy => synOn(sy)).length));
-const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">⚡ ${n.toLocaleString()}</span>`;
+const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">💪 ${n.toLocaleString()}</span>`;
 // any change outside a match that moves the team's Power gets a little note: equip, polish, forge, ranks, stars, swaps
 function powWatch() {
   let tp; try { if (typeof G !== 'undefined' && G) return; tp = teamPower(); } catch (e) { return; }
   if (lastTP == null) { lastTP = tp; return; }
   if (tp === lastTP) return; const from = lastTP; lastTP = tp; clearTimeout(tpT);
-  tpT = setTimeout(() => { const d = tp - from; toastMsg(`⚡ Team Power ${from.toLocaleString()} → ${tp.toLocaleString()} (${d > 0 ? '+' : ''}${d})`); $$('.teampow b').forEach(b => b.textContent = '⚡ ' + tp.toLocaleString()); }, 250);
+  tpT = setTimeout(() => { const d = tp - from; toastMsg(`💪 Team Power ${from.toLocaleString()} → ${tp.toLocaleString()} (${d > 0 ? '+' : ''}${d})`); $$('.teampow b').forEach(b => b.textContent = '💪 ' + tp.toLocaleString()); }, 250);
 }
 // the Friends tab's family chips: lit when two are in the party, gold when three
 function famRow() {
@@ -3860,7 +3861,7 @@ function giveXp(cleared) {
   const gain = Math.round((G.busted * .6 + (cleared ? 20 : 5) + G.lvl * 2) * (G.room ? .5 : 1)), lines = [];
   for (const m of G.party) {
     const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
-    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${CHARS[m.id].em} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
+    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
   }
   persist(); $('#grew').innerHTML = `✨ Everyone gained ${gain} XP.` + (lines.length ? '<br>' + lines.join('<br>') : ''); return true;
 }
@@ -4026,7 +4027,7 @@ function buildParty() {
       return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
-    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
+    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>💪 ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
       + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
       + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
     box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
@@ -4175,7 +4176,7 @@ function bindBag(root, after) {
 function buildItems() {
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
-    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
+    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
   box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
   box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { bagFilter = b.dataset.f; buildItems(); });
@@ -4293,7 +4294,7 @@ const UNLOCKS = [
   { k: 'wheel', at: 5, t: '🎡 The Prize Wheel is on (home screen): one free spin a day.' },
   { k: 'missions', at: 4, t: '📋 Missions are open (top of the home screen): little goals with prizes.' },
   { k: 'bag', at: 3, tab: 'bag', t: '🎒 The Bag is open: items from matches go there. Put them on from a friend\'s card.' },
-  { k: 'power', at: 5, t: '⚡ Power is on: the Play button shows how strong your team is next to what the stage needs.' },
+  { k: 'power', at: 5, t: '💪 Team Power is on: the Play button shows how strong your team is next to what the stage needs. Playing is always free.' },
   { k: 'polish', at: 6, t: '✨ Polishing is open: make any item a bit stronger in the Bag.' },
   { k: 'month', at: 7, t: '📅 Myth of the Month is on: a featured friend gets pages from every stage this month.' },
   { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
@@ -4333,8 +4334,8 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // chapter bosses, and a third more on Hard
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; if (d === 'master') v *= 1.8; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
-  return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
+  return `<span class="pchk ${cls}">${cls === 'ok' ? '✔' : cls === 'close' ? '≈' : '⚠'} 💪 Team ${mine.toLocaleString()} <i>· needs ${rec.toLocaleString()}</i></span>`; }
+function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name} · free</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (!diffOpen(save.diff, i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { save.tixSeen = save.tix; persist(); buildStore(); showScreen('#store'); };
