@@ -1,0 +1,470 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Bat Lab</title>
+<meta name="description" content="Two small games from the Backyard Library bats episode: be the bat and find moths in the dark by timing your echoes, then pick the minute the bat wakes up - too early and the hawks are out, too late and dinner is gone.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f;
+    --echo: #f2a65a; --click: #bfe6f0;
+    --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  }
+  :root[data-theme="dark"] { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding-inline: 14px; padding-block: 14px 40px; overflow-x: hidden; }
+  main { max-width: 980px; margin: 0 auto; position: relative; }
+  .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
+  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .mote { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: .0; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0; transform: translateY(0); } 50% { opacity: .45; transform: translateY(-14px); } }
+  main > * { position: relative; z-index: 1; }
+  [hidden] { display: none !important; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #10162c; box-shadow: var(--shadow); border: 4px solid #3a2c20; user-select: none; -webkit-user-select: none; }
+  .stage > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(10,8,20,.4) 100%); pointer-events: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .topbar .spacer { flex: 1; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  #title .stage { aspect-ratio: 16 / 8; }
+  .hero-title { position: absolute; left: 4%; top: 7%; color: #fff; font-size: clamp(38px, 8vw, 92px); line-height: .95; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.35); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  .hero-sub { position: absolute; left: 4.5%; top: 44%; color: #fff; font-size: clamp(16px, 2.6vw, 26px); text-shadow: 0 2px 0 #3a2c20, 0 6px 14px rgba(0,0,0,.4); max-width: 46%; }
+  .hero-btns { position: absolute; left: 4%; bottom: 7%; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stickers { position: absolute; right: 3%; top: 5%; display: flex; gap: 8px; }
+  .stickers img { height: 72px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .stickers img.locked { filter: grayscale(1) opacity(.35); animation: none; }
+  .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); color: var(--ink); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 16px; padding: 8px 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+  .btn:focus-visible { outline: 3px solid var(--water); outline-offset: 3px; }
+  .bubble { position: absolute; background: var(--card); color: var(--ink); border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 14px; font: 400 clamp(14px, 2.2vw, 22px)/1.25 "Patrick Hand", cursive; max-width: 46%; box-shadow: var(--shadow); animation: pop .35s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; pointer-events: none; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; border: 10px solid transparent; border-left-color: #3a2c20; }
+  .guide { position: absolute; right: 1%; bottom: -3%; height: 58%; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); z-index: 5; transition: opacity .3s; pointer-events: none; }
+  .pop-text { position: absolute; font-size: clamp(22px, 4.4vw, 50px); color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; animation: punch .9s cubic-bezier(.2,1.6,.4,1) both; z-index: 7; white-space: nowrap; }
+  .pop-text.bad { color: #ffd0c8; }
+  @keyframes punch { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  .wobble { animation: wob .5s ease-in-out infinite; } @keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .status { font: 400 22px/1.3 "Patrick Hand", cursive; margin-top: 10px; min-height: 1.4em; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+  .confetti i { position: absolute; width: 10px; height: 14px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+  .results { position: absolute; inset: 6%; background: var(--card); color: var(--ink); border: 4px solid #3a2c20; border-radius: 18px; padding: 18px 22px; box-shadow: var(--shadow); animation: bounceIn .6s cubic-bezier(.2,1.4,.4,1) both; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; overflow: auto; z-index: 9; }
+  .results h3 { margin: 0 0 6px; font: 700 clamp(20px, 4vw, 34px)/1.1 "Fredoka", Arial, sans-serif; }
+  .results p { margin: 4px 0; font-size: clamp(13px, 2vw, 18px); }
+  .results img { height: clamp(80px, 18vw, 170px); filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); animation: pop .6s .3s cubic-bezier(.2,1.6,.4,1) both; }
+  .pill { position: absolute; font: 700 clamp(12px, 2.2vw, 20px)/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(20,16,30,.8); padding: 7px 12px; border-radius: 999px; z-index: 5; pointer-events: none; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { font: 400 19px/1.2 "Patrick Hand", cursive; padding: 6px 12px; border: 2px dashed var(--line); border-radius: 10px; background: var(--card); }
+  .chip b { font: 700 22px/1 "Fredoka", Arial, sans-serif; font-variant-numeric: tabular-nums; }
+  footer { margin-top: 22px; font-size: 14px; color: var(--muted); border-top: 2px solid var(--line); padding-top: 10px; }
+
+  /* ───────── game 1: see with sound ───────── */
+  #stage1 { cursor: crosshair; touch-action: manipulation; }
+  .dark { position: absolute; inset: 0; background: rgba(4,7,20,.80); pointer-events: none; z-index: 1; }
+  #cv1 { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  #bat1 { position: absolute; width: 15%; z-index: 4; transform: translate(-50%, -50%); transition: left .22s ease-in, top .22s ease-in; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0,0,0,.5)); }
+  #bat1.flap { animation: flap .32s ease-in-out infinite; }
+  @keyframes flap { 0%, 100% { transform: translate(-50%, -50%) scaleY(1); } 50% { transform: translate(-50%, -54%) scaleY(.82); } }
+  .moth { position: absolute; width: 6.5%; z-index: 3; transform: translate(-50%, -50%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .moth.lit { opacity: 1; animation: mflap .14s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(255,220,150,.9)); }
+  @keyframes mflap { 0%, 100% { transform: translate(-50%, -50%) scaleX(1); } 50% { transform: translate(-50%, -50%) scaleX(.7); } }
+  .slowmo { position: absolute; right: 2%; bottom: 3%; font: 400 clamp(11px, 1.7vw, 16px)/1.2 "Patrick Hand", cursive; color: #cfe3f0; z-index: 5; pointer-events: none; opacity: .8; }
+  .dawn { position: absolute; left: 25%; right: 25%; top: 3%; height: 12px; border: 3px solid #3a2c20; border-radius: 99px; background: rgba(255,255,255,.2); overflow: hidden; z-index: 5; pointer-events: none; }
+  .dawn .f { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, #f2a65a, #ecb23c); transition: width .2s linear; }
+  .echo-read { font: 400 clamp(17px, 2.6vw, 24px)/1.3 "Patrick Hand", cursive; margin-top: 10px; padding: 8px 14px; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; min-height: 2.8em; }
+  .echo-read b { font: 700 1.05em/1 "Fredoka", Arial, sans-serif; font-variant-numeric: tabular-nums; }
+  .echo-read .e { color: #b5631c; } .echo-read .d { color: var(--teal); }
+
+  /* ───────── game 2: the night shift ───────── */
+  .sky { position: absolute; inset: 0; pointer-events: none; z-index: 1; transition: background .3s; }
+  .glow { position: absolute; right: -4%; top: 8%; width: 30%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,214,140,.75) 0, rgba(255,190,110,.25) 40%, transparent 70%); pointer-events: none; z-index: 2; transition: opacity .3s; }
+  #hawk { position: absolute; width: 16%; left: 24%; top: 6%; z-index: 3; pointer-events: none; transition: opacity .3s; animation: glide 6s ease-in-out infinite; }
+  @keyframes glide { 0%, 100% { transform: translate(0, 0) rotate(-4deg); } 50% { transform: translate(60%, 18%) rotate(5deg); } }
+  #hawk.swoop { animation: swoop 1.1s ease-in forwards; }
+  @keyframes swoop { from { transform: translate(0, 0); } to { transform: translate(330%, 40%) rotate(18deg); } }
+  .m2 { position: absolute; width: 3.4%; z-index: 3; pointer-events: none; transition: opacity .4s; animation: buzz 1.4s ease-in-out infinite; }
+  @keyframes buzz { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(40%, -30%); } 66% { transform: translate(-30%, 25%); } }
+  #bat2 { position: absolute; width: 6%; left: 79%; top: 4%; z-index: 4; pointer-events: none; transition: left 1.6s ease-in, top 1.6s ease-in, width .4s; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+  #bat2.fly { width: 12%; }
+  .clock { position: absolute; left: 2%; top: 4%; width: 21%; z-index: 5; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0,0,0,.35)); }
+  .clock-read { position: absolute; left: 2%; top: 46%; width: 21%; text-align: center; font: 700 clamp(16px, 3vw, 30px)/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 3px 0 #3a2c20; z-index: 5; pointer-events: none; }
+  .controls { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; }
+  .controls label { font: 400 20px/1.2 "Patrick Hand", cursive; display: block; }
+  input[type=range] { width: 100%; accent-color: #cb6a2e; height: 28px; }
+  .meters { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; margin-top: 10px; font: 400 19px/1.1 "Patrick Hand", cursive; }
+  .bar { height: 18px; border: 3px solid #3a2c20; border-radius: 99px; background: var(--card); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; transition: width .2s; }
+  .bar.hawk i { background: var(--red); } .bar.bugs i { background: var(--water); }
+  #chart2 { width: 100%; height: auto; margin-top: 10px; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; }
+  #chart2 text { font: 400 15px "Patrick Hand", cursive; fill: var(--ink); }
+  @media (max-width: 560px) { #title .stage { aspect-ratio: 4 / 3; } #title .stage > img.bg { object-position: 60% 50%; } .hero-title { font-size: 36px; top: 5%; } .hero-btns { flex-direction: column; gap: 6px; bottom: 5%; } .stickers img { height: 44px; } .hero-sub { display: none; } .bubble { max-width: 60%; font-size: 13px; padding: 6px 9px; } .guide { height: 46%; } .btn { font-size: 17px; padding: 10px 13px; } .controls { grid-template-columns: 1fr; } }
+</style>
+
+<div class="motes" id="motes" aria-hidden="true"></div>
+<main>
+  <div class="topbar">
+    <span class="eyebrow">The Backyard Library · Why, Dad? · Episode 22</span>
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="home" type="button" hidden>⌂ Title</button>
+    <button class="btn ghost small" id="mute" type="button" aria-pressed="false">🔔 sound</button>
+  </div>
+
+  <!-- ═══════════ TITLE ═══════════ -->
+  <section class="screen" id="title">
+    <div class="stage">
+      <img class="bg" src="assets/title_key.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="hero-title display">The<br>Bat Lab</div>
+      <div class="hero-sub hand">Be the bat: find moths in the pitch dark by timing your echoes. Then pick the minute you wake up.</div>
+      <div class="stickers" id="stickers" aria-label="Badges earned"></div>
+      <div class="hero-btns">
+        <button class="btn" id="play1" type="button">🦇 See with sound</button>
+        <button class="btn teal" id="play2" type="button">🕕 The night shift</button>
+      </div>
+    </div>
+    <p class="status">Two games from the episode <a href="https://www.youtube.com/@thebackyardlibrary">Why Do Bats Come Out at Night?</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a><br><span id="bestline"></span></p>
+  </section>
+
+  <!-- ═══════════ GAME 1: SEE WITH SOUND ═══════════ -->
+  <section class="screen" id="g1" hidden>
+    <div class="stage" id="stage1">
+      <img class="bg" src="assets/bg_night.jpg" alt="">
+      <div class="dark"></div>
+      <canvas id="cv1" aria-hidden="true"></canvas>
+      <div id="moths1"></div>
+      <img id="bat1" class="flap" src="assets/bat_fly.png" alt="you, the bat">
+      <div class="dawn" aria-hidden="true"><div class="f" id="dawn1"></div></div>
+      <div class="pill" style="left:2%;top:3%" id="pill1">🦋 0 / 5</div>
+      <div class="slowmo">sound slowed down 190 times, so you can see it</div>
+      <img class="guide" id="guide1" src="assets/mascot_pointing.png" alt="">
+      <div class="bubble" id="bubble1" style="right:22%;top:22%;max-width:42%">You are the bat, and it is pitch dark. Tap to shout a click. Watch for an echo, then tap the moth it came from!</div>
+      <div class="confetti" id="conf1"></div>
+      <div class="results" id="card1" hidden></div>
+    </div>
+    <div class="echo-read" id="read1" aria-live="polite">Your echoes will show up here: how long the sound took to come back, and how far away that makes the moth.</div>
+    <div class="topbar" style="margin-top:10px"><button class="btn" id="start1" type="button">🌙 Start the night</button><button class="btn ghost small" id="reset1" type="button">↺ Start again</button></div>
+    <div class="status" id="s1"></div>
+  </section>
+
+  <!-- ═══════════ GAME 2: THE NIGHT SHIFT ═══════════ -->
+  <section class="screen" id="g2" hidden>
+    <div class="stage" id="stage2">
+      <img class="bg" src="assets/bg_dusk.jpg" alt="">
+      <div class="sky" id="sky2"></div>
+      <div class="glow" id="glow2"></div>
+      <img id="hawk" src="assets/hawk.png" alt="">
+      <div id="moths2"></div>
+      <img id="bat2" src="assets/bat_hang.png" alt="the bat, asleep under the roof">
+      <svg class="clock" id="clock2" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="92" fill="#fbf3df" stroke="#3a2c20" stroke-width="8"/>
+        <g id="ticks2"></g>
+        <line id="hh2" x1="100" y1="100" x2="100" y2="52" stroke="#3a2c20" stroke-width="10" stroke-linecap="round"/>
+        <line id="mh2" x1="100" y1="100" x2="100" y2="28" stroke="#3a2c20" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="8" fill="#cb382e"/>
+      </svg>
+      <div class="clock-read" id="read2">6:00 pm</div>
+      <img class="guide" id="guide2" src="assets/mascot_pointing.png" alt="">
+      <div class="bubble" id="bubble2" style="right:22%;top:30%;max-width:40%">Pick the minute the bat wakes up. Too early and the hawks are still hunting. Too late and dinner is gone.</div>
+      <div class="confetti" id="conf2"></div>
+      <div class="results" id="card2" hidden></div>
+    </div>
+    <div class="controls">
+      <div><label for="wake">Wake-up time: <b id="wakeTxt">6:00 pm</b></label><input type="range" id="wake" min="900" max="1320" step="5" value="1080"></div>
+      <button class="btn red" id="go2" type="button">🦇 Wake up the bat!</button>
+    </div>
+    <div class="meters">
+      <span>🦅 hawks hunting</span><div class="bar hawk"><i id="barHawk"></i></div>
+      <span>🦋 moths in the air</span><div class="bar bugs"><i id="barBugs"></i></div>
+    </div>
+    <svg id="chart2" viewBox="0 0 900 230" role="img" aria-label="Hawks hunting and moths in the air from 3 pm to 10 pm"></svg>
+    <div class="chips" id="log2"></div>
+    <div class="status" id="s2"></div>
+  </section>
+
+  <footer>Game 1 is the sonar plate from the video: sound moves about 1,125 feet a second, so an echo from a moth 3 feet away is back in about 5.3 thousandths of a second; distance = speed of sound × echo time ÷ 2. The game slows the sound down 190 times so you can watch it. Real bats click about 20 times a second while searching and more than 150 times a second as they close in. Game 2 is the night-shift plate: day-hunting hawks stop around sunset, insects in the air peak about an hour after it, and the lines cross at about 6:20 pm on a late-October evening. Scientists think that trade-off is why bats leave when they do; the curves here are illustrative, not measured. A bat on the ground in the daytime may be sick: never touch it, tell a grown-up.</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const store = { get: (k) => { try { return JSON.parse(localStorage.getItem("batlab:" + k)); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem("batlab:" + k, JSON.stringify(v)); } catch (e) {} } };
+  const fmt = (n) => n.toLocaleString("en-US");
+
+  /* ───────── sound ───────── */
+  let ac = null, muted = false, musicTimer = null;
+  function tone(f0, f1, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || "sine";
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = { tap: () => tone(600, 900, 0.08, "square", 0.035), click: () => tone(3200, 2400, 0.04, "square", 0.02),
+                ping: (d) => tone(1400 - d * 60, 1100 - d * 50, 0.18, "sine", 0.05), chomp: () => { tone(500, 900, 0.06, "triangle", 0.06); tone(700, 1200, 0.06, "triangle", 0.05, 0.07); },
+                sad: () => tone(380, 200, 0.35, "sine", 0.04), whoosh: () => tone(900, 200, 0.4, "sawtooth", 0.025), chime: () => tone(880, 1320, 0.25, "triangle", 0.05),
+                win: () => [0, .12, .24, .4].forEach((d, i) => tone([523, 659, 784, 1047][i], [523, 659, 784, 1047][i] * 1.01, 0.3, "triangle", 0.06, d)) };
+  const TUNE = [220, 262, 330, 262, 294, 349, 294, 247, 220, 262, 330, 392, 349, 294, 262, 247];
+  function music(on) {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!on || muted) return;
+    let i = 0; musicTimer = setInterval(() => { tone(TUNE[i % TUNE.length], TUNE[i % TUNE.length], 0.24, "triangle", 0.016); if (i % 4 === 0) tone(TUNE[i % TUNE.length] / 2, TUNE[i % TUNE.length] / 2, 0.45, "sine", 0.012); i++; }, 330);
+  }
+  let screen = "title";
+  $("mute").addEventListener("click", () => { muted = !muted; $("mute").textContent = muted ? "🔕 sound" : "🔔 sound"; $("mute").setAttribute("aria-pressed", String(muted)); music(screen !== "title"); });
+
+  /* ───────── motes (fireflies), confetti, pops ───────── */
+  const motes = $("motes");
+  for (let i = 0; i < 18; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = Math.random() * 100 + "%"; m.style.top = Math.random() * 100 + "%"; m.style.animationDuration = 3 + Math.random() * 4 + "s"; m.style.animationDelay = -Math.random() * 6 + "s"; motes.appendChild(m); }
+  function confetti(host, n) { if (reduce) return; const cols = ["#ecb23c", "#20525c", "#f2a65a", "#bfe6f0", "#4f8a5b"]; for (let i = 0; i < n; i++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.top = "-5%"; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * .6 + "s"; p.style.animationDuration = 1.2 + Math.random() + "s"; host.appendChild(p); setTimeout(() => p.remove(), 2600); } }
+  function popText(stage, text, x, y, bad) { const el = document.createElement("div"); el.className = "pop-text display" + (bad ? " bad" : ""); el.textContent = text; el.style.left = x; el.style.top = y; stage.appendChild(el); setTimeout(() => el.remove(), 1400); }
+  function say(el, t) { el.textContent = t; el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+
+  /* ───────── screens ───────── */
+  function show(id) {
+    screen = id;
+    for (const s of ["title", "g1", "g2"]) $(s).hidden = (s !== id);
+    $("home").hidden = (id === "title"); music(id !== "title"); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id !== "g1") stopNight();
+    if (id === "title") { renderStickers(); bestLine(); }
+    if (id === "g1") setTimeout(sizeCanvas, 30);
+    if (id === "g2") renderShift();
+  }
+  $("home").addEventListener("click", () => { sfx.tap(); show("title"); });
+  $("play1").addEventListener("click", () => { sfx.tap(); show("g1"); });
+  $("play2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  function renderStickers() {
+    const got = store.get("badges") || {}; const host = $("stickers"); host.innerHTML = "";
+    for (const [k, src, nm] of [["echo", "assets/badge_echo.png", "Echo Hunter"], ["shift", "assets/badge_shift.png", "Night Shift"]]) { const im = document.createElement("img"); im.src = src; im.alt = got[k] ? nm + " badge earned" : nm + " badge locked"; if (!got[k]) im.className = "locked"; host.appendChild(im); }
+  }
+  function earn(k) { const got = store.get("badges") || {}; got[k] = true; store.set("badges", got); }
+  function bestLine() {
+    const b = store.get("best") || {}; const parts = [];
+    if (b.echo) parts.push(`🦇 best night: ${b.echo} moths`); if (b.shift) parts.push(`🕕 best dinner: ${fmt(b.shift)} bugs`);
+    $("bestline").textContent = parts.join(" · ");
+  }
+
+  /* ═══════════ GAME 1: SEE WITH SOUND ═══════════ */
+  // The sonar plate as a game. The stage is 12 feet wide. Sound really moves 1,125 ft/s; on screen
+  // it moves SHOW ft/s (190x slower) so the rings can be watched. A ring that reaches a hidden moth
+  // lights it up and sends an echo ring back; when the echo reaches the bat, the read-out shows the
+  // REAL echo time and the distance it means (d = c x t / 2). Tap a lit moth to catch it.
+  const FW = 12, FH = 6.75, C = 1125, SHOW = 6, NIGHT = 45, GOAL = 5, LIT = 1.9, MOTHS = 3;
+  const BAT = { x: 1.6, y: 3.4 };
+  const stage1 = $("stage1"), cv = $("cv1"), cx = cv.getContext("2d");
+  const g1 = { on: false, t: 0, last: 0, rings: [], echoes: [], moths: [], caught: 0, clicks: 0, cool: 0, timer: null, reads: [] };
+  function sizeCanvas() { const r = stage1.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; cv.width = Math.max(1, r.width * dpr); cv.height = Math.max(1, r.height * dpr); }
+  window.addEventListener("resize", sizeCanvas);
+  const px = (ft) => ft / FW * cv.width;
+  function newMoth() {
+    const el = document.createElement("img"); el.className = "moth"; el.src = "assets/moth.png"; el.alt = ""; $("moths1").appendChild(el);
+    const a = Math.random() * Math.PI * 2, sp = 0.18 + Math.random() * 0.25;
+    const m = { x: 4 + Math.random() * 7.4, y: 0.7 + Math.random() * 5.3, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, lit: 0, el, pinged: new Set() };
+    g1.moths.push(m); placeMoth(m); return m;
+  }
+  function placeMoth(m) { m.el.style.left = (m.x / FW * 100) + "%"; m.el.style.top = (m.y / FH * 100) + "%"; m.el.classList.toggle("lit", m.lit > g1.t); }
+  function resetNight() {
+    stopNight(); g1.t = 0; g1.rings = []; g1.echoes = []; g1.caught = 0; g1.clicks = 0; g1.cool = 0; g1.reads = [];
+    $("moths1").innerHTML = ""; g1.moths = []; for (let i = 0; i < MOTHS; i++) newMoth();
+    $("card1").hidden = true; $("pill1").textContent = `🦋 0 / ${GOAL}`; $("dawn1").style.width = "100%";
+    $("bat1").style.left = (BAT.x / FW * 100) + "%"; $("bat1").style.top = (BAT.y / FH * 100) + "%";
+    $("start1").disabled = false; $("guide1").style.opacity = "1";
+    say($("bubble1"), "You are the bat, and it is pitch dark. Tap to shout a click. Watch for an echo, then tap the moth it came from!");
+    $("read1").textContent = "Your echoes will show up here: how long the sound took to come back, and how far away that makes the moth.";
+    $("s1").textContent = ""; sizeCanvas(); draw();
+  }
+  function startNight() {
+    if (g1.on) return; resetNight(); g1.on = true; $("start1").disabled = true; sfx.tap();
+    $("bubble1").hidden = true; $("guide1").style.opacity = "0";
+    g1.last = performance.now();
+    // rAF does not run while the pane is unfocused; a 16 ms interval always does (ep20 lesson)
+    g1.timer = setInterval(() => tick(performance.now()), 16);
+  }
+  function stopNight() { clearInterval(g1.timer); g1.timer = null; g1.on = false; }
+  function sendClick() {
+    if (g1.t < g1.cool) return; g1.cool = g1.t + 0.25; g1.clicks++;
+    g1.rings.push({ t0: g1.t }); sfx.click();
+  }
+  function tick(now) {
+    const dt = Math.min(0.05, (now - g1.last) / 1000); g1.last = now; g1.t += dt;
+    for (const m of g1.moths) {
+      m.x += m.vx * dt; m.y += m.vy * dt;
+      if (m.x < 3.6 || m.x > 11.6) m.vx *= -1; if (m.y < 0.6 || m.y > 6.2) m.vy *= -1;
+      m.x = clamp(m.x, 3.6, 11.6); m.y = clamp(m.y, 0.6, 6.2); placeMoth(m);
+    }
+    // rings out: light up the moths they reach, send echoes back
+    for (const r of g1.rings) {
+      const rad = SHOW * (g1.t - r.t0);
+      for (const m of g1.moths) {
+        if (m.pinged.has(r)) continue;
+        const d = Math.hypot(m.x - BAT.x, m.y - BAT.y);
+        if (rad >= d) { m.pinged.add(r); m.lit = g1.t + LIT; g1.echoes.push({ t0: g1.t, x: m.x, y: m.y, d, back: false }); }
+      }
+    }
+    for (const e of g1.echoes) {
+      if (!e.back && SHOW * (g1.t - e.t0) >= e.d) { e.back = true; echoHome(e.d); }
+    }
+    g1.rings = g1.rings.filter(r => SHOW * (g1.t - r.t0) < 15);
+    g1.echoes = g1.echoes.filter(e => SHOW * (g1.t - e.t0) < e.d + 1.2);
+    $("dawn1").style.width = (100 * (1 - g1.t / NIGHT)) + "%";
+    draw();
+    if (g1.t >= NIGHT) finishNight();
+  }
+  function echoHome(d) {
+    const ms = 2 * d / C * 1000; sfx.ping(d);
+    $("read1").innerHTML = `Echo back in <b class="e">${ms.toFixed(1)}</b> thousandths of a second → the moth is <b class="d">${d.toFixed(1)} feet</b> away <span style="opacity:.7">(1,125 ft/s × ${(ms / 1000).toFixed(4)} s ÷ 2)</span>`;
+    g1.reads.push(ms);
+  }
+  function draw() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    const bx = px(BAT.x) + px(0.55), by = px(BAT.y);
+    for (const r of g1.rings) {
+      const rad = SHOW * (g1.t - r.t0); if (rad <= 0.2) continue;
+      cx.strokeStyle = `rgba(191,230,240,${clamp(1 - rad / 15, 0, 1) * 0.9})`; cx.lineWidth = Math.max(2, px(0.06));
+      cx.beginPath(); cx.arc(bx, by, px(rad), -Math.PI * 0.42, Math.PI * 0.42); cx.stroke();
+    }
+    for (const e of g1.echoes) {
+      const rad = SHOW * (g1.t - e.t0); if (rad <= 0.05) continue;
+      cx.strokeStyle = `rgba(242,166,90,${clamp(1 - rad / (e.d + 1.2), 0, 1) * 0.95})`; cx.lineWidth = Math.max(2, px(0.05));
+      cx.beginPath(); cx.arc(px(e.x), px(e.y), px(rad), 0, Math.PI * 2); cx.stroke();
+    }
+    for (const m of g1.moths) {
+      if (m.lit <= g1.t) continue;
+      const a = clamp((m.lit - g1.t) / LIT, 0, 1);
+      const gr = cx.createRadialGradient(px(m.x), px(m.y), 0, px(m.x), px(m.y), px(0.9));
+      gr.addColorStop(0, `rgba(255,224,160,${0.55 * a})`); gr.addColorStop(1, "rgba(255,224,160,0)");
+      cx.fillStyle = gr; cx.beginPath(); cx.arc(px(m.x), px(m.y), px(0.9), 0, Math.PI * 2); cx.fill();
+    }
+  }
+  async function catchMoth(m) {
+    const bat = $("bat1"); sfx.whoosh();
+    bat.style.left = (m.x / FW * 100) + "%"; bat.style.top = (m.y / FH * 100) + "%";
+    m.lit = 0; m.el.remove(); g1.moths = g1.moths.filter(x => x !== m);
+    g1.caught++; $("pill1").textContent = g1.caught >= GOAL ? `🦋 ${g1.caught} ✓` : `🦋 ${g1.caught} / ${GOAL}`;
+    await sleep(230); sfx.chomp(); popText(stage1, "+1 moth!", (m.x / FW * 100 - 6) + "%", (m.y / FH * 100 - 14) + "%");
+    if (g1.caught === GOAL) { sfx.chime(); confetti($("conf1"), 50); }
+    await sleep(160); bat.style.left = (BAT.x / FW * 100) + "%"; bat.style.top = (BAT.y / FH * 100) + "%";
+    setTimeout(() => { if (g1.on) newMoth(); }, 900);
+  }
+  stage1.addEventListener("pointerdown", e => {
+    if (e.target.closest("button") || e.target.closest(".results")) return;
+    if (!g1.on) { if ($("card1").hidden) startNight(); return; }
+    const r = stage1.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width * FW, y = (e.clientY - r.top) / r.height * FH;
+    const hit = g1.moths.filter(m => m.lit > g1.t).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y))[0];
+    if (hit && Math.hypot(hit.x - x, hit.y - y) < 0.85) catchMoth(hit); else sendClick();
+  });
+  function finishNight() {
+    stopNight(); sfx[g1.caught >= GOAL ? "win" : "sad"]();
+    const best = store.get("best") || {}; const record = !best.echo || g1.caught > best.echo; if (record && g1.caught) { best.echo = g1.caught; store.set("best", best); }
+    if (g1.caught >= GOAL) { earn("echo"); confetti($("conf1"), 120); }
+    const near = g1.reads.length ? Math.min(...g1.reads) : 0;
+    const c = $("card1"); c.hidden = false;
+    c.innerHTML = `<div><h3>Dawn: ${g1.caught} moth${g1.caught === 1 ? "" : "s"} caught</h3><p>${record && g1.caught ? "<b>New best!</b> " : ""}You shouted ${g1.clicks} click${g1.clicks === 1 ? "" : "s"} into the dark.${near ? ` Your quickest echo came back in ${near.toFixed(1)} thousandths of a second: a moth ${(near / 1000 * C / 2).toFixed(1)} feet away.` : ""}</p><p>A real bat does this about 20 times a second while it searches, and more than 150 times a second as it closes in. It is building a picture of the night out of sound.</p><p><button class="btn small" id="again1" type="button">↺ Another night</button> <button class="btn ghost small" id="next1" type="button">Next: the night shift →</button></p></div><img src="assets/${g1.caught >= GOAL ? "badge_echo" : "bat_hang"}.png" alt="">`;
+    $("again1").addEventListener("click", () => { sfx.tap(); resetNight(); startNight(); }); $("next1").addEventListener("click", () => { sfx.tap(); show("g2"); });
+    $("s1").textContent = g1.caught >= GOAL ? "You earned the Echo Hunter badge." : "Tip: click, wait for the orange echo, then tap where the moth lit up.";
+  }
+  $("start1").addEventListener("click", startNight);
+  $("reset1").addEventListener("click", () => { sfx.tap(); resetNight(); });
+  resetNight();
+
+  /* ═══════════ GAME 2: THE NIGHT SHIFT ═══════════ */
+  // The night-shift plate's model (anim_ep22_diagrams.MODEL_NIGHT_SHIFT): insects in the air peak an
+  // hour after a 6:00 pm sunset; day-hunting hawks switch off around sunset; the lines cross at
+  // ~6:20 pm. Dinner = the moths in the air from wake-up until 9:30 pm, times the chance a hawk is
+  // not still out. Wake up too early and a hawk is hunting; too late and the moths are thinning.
+  const M = { sunset: 18.0, base: 0.10, peak: 0.95, after: 1.0, rise: 0.6, fall: 2.4, hawk: 0.85, off: 0.25, w: 0.2, end: 21.5, k: 530 };
+  const insects = (h) => { const pk = M.sunset + M.after, w = h < pk ? M.rise : M.fall; return M.base + (M.peak - M.base) * Math.exp(-(((h - pk) / w) ** 2)); };
+  const hawks = (h) => M.hawk / (1 + Math.exp((h - (M.sunset + M.off)) / M.w));
+  const danger = (h) => hawks(h) / M.hawk;
+  function dinner(h) { let s = 0; const n = 60; for (let i = 0; i < n; i++) s += insects(h + (M.end - h) * i / n); return Math.max(0, Math.round((1 - danger(h)) * s / n * (M.end - h) * M.k)); }
+  function crossing() { let lo = 15, hi = 20; for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (insects(mid) >= hawks(mid)) hi = mid; else lo = mid; } return hi; }
+  const HC = crossing(); let BEST = 0, BEST_H = 18; for (let m = 900; m <= 1320; m += 5) { const d = dinner(m / 60); if (d > BEST) { BEST = d; BEST_H = m / 60; } }
+  const clockTxt = (h) => { let hh = Math.floor(h), mm = Math.round((h - hh) * 60); if (mm === 60) { hh++; mm = 0; } const ap = hh >= 12 ? "pm" : "am"; const h12 = hh > 12 ? hh - 12 : hh; return `${h12}:${String(mm).padStart(2, "0")} ${ap}`; };
+  const g2 = { busy: false, tries: [], showCross: false };
+  const ticks = $("ticks2"); for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; const l = document.createElementNS("http://www.w3.org/2000/svg", "line"); l.setAttribute("x1", 100 + 74 * Math.sin(a)); l.setAttribute("y1", 100 - 74 * Math.cos(a)); l.setAttribute("x2", 100 + 84 * Math.sin(a)); l.setAttribute("y2", 100 - 84 * Math.cos(a)); l.setAttribute("stroke", "#3a2c20"); l.setAttribute("stroke-width", "5"); ticks.appendChild(l); }
+  for (let i = 0; i < 7; i++) { const im = document.createElement("img"); im.className = "m2"; im.src = "assets/moth.png"; im.alt = ""; im.style.left = (80 + (i % 4) * 4.4) + "%"; im.style.top = (14 + Math.floor(i / 4) * 12 + (i % 2) * 4) + "%"; im.style.animationDelay = (-i * 0.3) + "s"; $("moths2").appendChild(im); }
+  function hourNow() { return Number($("wake").value) / 60; }
+  function renderShift() {
+    const h = hourNow(); const t = clockTxt(h); $("wakeTxt").textContent = t; $("read2").textContent = t;
+    const hh = h % 12, mm = (h % 1) * 60, ah = (hh * 30 + mm * 0.5) * Math.PI / 180, am = mm * 6 * Math.PI / 180;
+    $("hh2").setAttribute("x2", 100 + 48 * Math.sin(ah)); $("hh2").setAttribute("y2", 100 - 48 * Math.cos(ah));
+    $("mh2").setAttribute("x2", 100 + 72 * Math.sin(am)); $("mh2").setAttribute("y2", 100 - 72 * Math.cos(am));
+    // the sky: daylight -> dusk (the painting) -> night
+    let bg;
+    if (h < M.sunset - 0.4) { const a = clamp((M.sunset - 0.4 - h) / 1.6, 0, 1) * 0.5; bg = `rgba(205,228,246,${a.toFixed(3)})`; }
+    else if (h <= M.sunset + 0.5) bg = "rgba(0,0,0,0)";
+    else { const a = clamp((h - M.sunset - 0.5) / 2.5, 0, 1) * 0.66; bg = `rgba(8,12,40,${a.toFixed(3)})`; }
+    $("sky2").style.background = bg;
+    $("glow2").style.opacity = clamp((h - (M.sunset - 0.7)) / 1.0, 0, 1).toFixed(2);
+    $("hawk").style.opacity = clamp(danger(h) * 1.2, 0, 1).toFixed(2);
+    const ins = insects(h); [...$("moths2").children].forEach((im, i) => { im.style.opacity = ins > 0.12 + i * 0.11 ? "1" : "0"; });
+    $("barHawk").style.width = (danger(h) * 100) + "%"; $("barBugs").style.width = (ins / M.peak * 100) + "%";
+    drawChart(h);
+  }
+  function drawChart(h) {
+    const svg = $("chart2"), X0 = 60, X1 = 880, Y0 = 20, Y1 = 180, hx = (v) => X0 + (X1 - X0) * (v - 15) / 7, vy = (v) => Y1 - (Y1 - Y0) * v;
+    let s = `<line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" stroke="#3a2c20" stroke-width="3"/><line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#3a2c20" stroke-width="3"/>`;
+    for (let k = 15; k <= 22; k++) s += `<text x="${hx(k)}" y="${Y1 + 26}" text-anchor="middle">${k > 12 ? k - 12 : k} pm</text>`;
+    const path = (f) => Array.from({ length: 141 }, (_, i) => { const v = 15 + i * 0.05; return `${i ? "L" : "M"}${hx(v).toFixed(1)},${vy(f(v)).toFixed(1)}`; }).join("");
+    s += `<line x1="${hx(M.sunset)}" y1="${Y0}" x2="${hx(M.sunset)}" y2="${Y1}" stroke="#8b6d4b" stroke-width="2" stroke-dasharray="6 6"/><text x="${hx(M.sunset) + 6}" y="${Y0 + 14}">sunset</text>`;
+    s += `<path d="${path(hawks)}" fill="none" stroke="#cb382e" stroke-width="5"/><path d="${path(insects)}" fill="none" stroke="#5c8cbe" stroke-width="5"/>`;
+    s += `<text x="${hx(15.1)}" y="${vy(hawks(15)) - 10}" fill="#cb382e">hawks hunting</text><text x="${hx(19.8)}" y="${vy(insects(19.8)) - 12}" fill="#5c8cbe">moths in the air</text>`;
+    if (g2.showCross) s += `<circle cx="${hx(HC)}" cy="${vy(insects(HC))}" r="12" fill="none" stroke="#3a2c20" stroke-width="3"/><text x="${hx(HC) + 16}" y="${vy(insects(HC)) + 26}">the lines cross at ${clockTxt(HC)}</text>`;
+    for (const tr of g2.tries) s += `<circle cx="${hx(tr.h)}" cy="${Y1}" r="6" fill="${tr.bugs ? "#4f8a5b" : "#cb382e"}"/>`;
+    s += `<line x1="${hx(h)}" y1="${Y0}" x2="${hx(h)}" y2="${Y1}" stroke="#3a2c20" stroke-width="3"/><circle cx="${hx(h)}" cy="${Y0}" r="7" fill="#ecb23c" stroke="#3a2c20" stroke-width="3"/>`;
+    svg.innerHTML = s;
+  }
+  async function wakeUp() {
+    if (g2.busy) return; g2.busy = true; $("go2").disabled = true; $("wake").disabled = true; sfx.tap();
+    const h = hourNow(), dz = danger(h), bat = $("bat2"), hawk = $("hawk");
+    $("bubble2").hidden = true; $("guide2").style.opacity = "0";
+    bat.src = "assets/bat_fly.png"; bat.classList.add("fly"); await sleep(350);
+    bat.style.left = "44%"; bat.style.top = "26%"; sfx.whoosh(); await sleep(1100);
+    let bugs = 0, msg;
+    if (dz > 0.45) {
+      hawk.style.opacity = "1"; hawk.classList.add("swoop"); await sleep(500);
+      sfx.sad(); bat.style.left = "79%"; bat.style.top = "4%"; await sleep(1200);
+      bat.classList.remove("fly"); bat.src = "assets/bat_hang.png"; hawk.classList.remove("swoop");
+      popText($("stage2"), "Too early!", "34%", "40%", true);
+      msg = `${clockTxt(h)}: a hawk was still hunting, so the bat zipped straight back under the roof. Wait for the hawks to go home.`;
+    } else {
+      bugs = dinner(h);
+      bat.style.left = "-14%"; bat.style.top = "30%"; await sleep(1300);
+      sfx.chime(); popText($("stage2"), `${fmt(bugs)} bugs tonight`, "30%", "40%");
+      msg = dz > 0.2 ? `${clockTxt(h)}: close call, a hawk was still out. Dinner: ${fmt(bugs)} bugs.` :
+            h > BEST_H + 0.5 ? `${clockTxt(h)}: safe, but the moths were already thinning out. Dinner: ${fmt(bugs)} bugs.` :
+            `${clockTxt(h)}: the hawks had gone home and the moths were out. Dinner: ${fmt(bugs)} bugs.`;
+      await sleep(600); bat.classList.remove("fly"); bat.src = "assets/bat_hang.png"; bat.style.transition = "none"; bat.style.left = "79%"; bat.style.top = "4%"; void bat.offsetWidth; bat.style.transition = "";
+    }
+    g2.tries.push({ h, bugs }); g2.showCross = true;
+    const chip = document.createElement("span"); chip.className = "chip"; chip.innerHTML = `${clockTxt(h)} <b>${bugs ? fmt(bugs) : "🦅"}</b>`; $("log2").appendChild(chip);
+    $("s2").textContent = msg;
+    const best = store.get("best") || {}; if (bugs > (best.shift || 0)) { best.shift = bugs; store.set("best", best); }
+    const great = bugs >= Math.round(BEST * 0.92);
+    if (great) {
+      earn("shift"); sfx.win(); confetti($("conf2"), 120);
+      const c = $("card2"); c.hidden = false;
+      c.innerHTML = `<div><h3>${fmt(bugs)} bugs: a perfect night shift</h3><p>You woke at ${clockTxt(h)}. The hawks stop hunting around sunset and the moths peak about an hour later, so the lines cross at ${clockTxt(HC)}, and the best time to leave is just after that (the very best here: ${clockTxt(BEST_H)}).</p><p>That is what scientists think sets a bat's alarm clock. Not spooky. Punctual.</p><p><button class="btn small" id="again2" type="button">↺ Try other times</button> <button class="btn ghost small" id="home2" type="button">⌂ Title</button></p></div><img src="assets/badge_shift.png" alt="">`;
+      $("again2").addEventListener("click", () => { sfx.tap(); $("card2").hidden = true; }); $("home2").addEventListener("click", () => { sfx.tap(); show("title"); });
+    }
+    g2.busy = false; $("go2").disabled = false; $("wake").disabled = false; renderShift();
+  }
+  $("wake").addEventListener("input", renderShift);
+  $("go2").addEventListener("click", wakeUp);
+  renderShift();
+  show("title");
+})();
+</script>
