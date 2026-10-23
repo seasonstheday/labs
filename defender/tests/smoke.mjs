@@ -203,6 +203,26 @@ await test('the home screen shows the furthest world reached', async () => {
   expect(/home_bg_5\.png/.test(bg2[0]), `desert backdrop on stage 23 (got ${bg2[0]}, world ${bg2[1]})`); await close(); return errs;
 });
 
+await test('the finale: the Flat Earth shield, then Sir Ever-So-Sure, the ending and the credits', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), unlocked: 39, cleared: [...Array(39).keys()], comics: ['0:in', '7:in'] });
+  await p.evaluate(() => dbg.startGame(39)); await p.waitForTimeout(400);
+  expect(await p.evaluate(() => !document.querySelector('#comicm').hidden && document.querySelector('#comicTitle').textContent.includes('last page')), 'the showdown plays first');
+  await p.click('#comicSkip');
+  const r = await p.evaluate(async () => { const G = dbg.G; document.querySelectorAll('.modal').forEach(el => el.hidden = true); G.paused = false; G.toSpawn = []; G.enemies = []; G.wave = G.S.waves - 1; G.breakT = 0; G.next = 1e9; G.freePicks = 0; // no level-up cards in the way
+    const f = dbg.spawn('flat'); f.hp = 0; dbg.kill(f);
+    for (let i = 0; i < 200 && !(G.sses && G.sses.id); i++) dbg.step(1, 1 / 30);
+    const b = G.sses; const out = { came: !!(b && b.id === 'sses'), name: document.querySelector('#bossName').textContent };
+    if (b && b.id) { b.hp = b.maxhp * .25; dbg.step(3, 1 / 30); out.rage = !!b.rage; b.hp = 0; dbg.kill(b); G.enemies = []; G.toSpawn = []; }
+    for (let i = 0; i < 400 && !G.cleared; i++) dbg.step(1, 1 / 30); out.cleared = !!G.cleared; return out; });
+  expect(r.came, 'he comes in when the shield pops'); expect(r.name === 'Sir Ever-So-Sure', `boss bar names him (got ${r.name})`); expect(r.rage, 'his rage phase'); expect(r.cleared, 'the stage clears');
+  await p.waitForTimeout(500);
+  expect(await p.evaluate(() => document.querySelector('#comicTitle').textContent.includes('Big Book of Why')), 'the ending plays');
+  await p.click('#comicSkip'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => !document.querySelector('#creditsm').hidden), 'the credits roll'); await p.click('#creditsGo');
+  expect(await p.evaluate(() => !document.querySelector('#clearm').hidden && dbg.save.facts.includes('sses')), 'then the stage-clear card, and his page in the Diary');
+  await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);
@@ -212,7 +232,7 @@ await test('stage clear, the next one opens', async () => {
 
 await test('every myth: a myth, a fact, a Diary topic, a source and a stage', async () => {
   const { p, errs, close } = await open(null);
-  const r = await p.evaluate(() => { const ids = Object.keys(dbg.MYTHS), seen = new Set(dbg.STAGES.flatMap(s => [...s.pool, s.boss].filter(Boolean)));
+  const r = await p.evaluate(() => { const ids = Object.keys(dbg.MYTHS), seen = new Set(dbg.STAGES.flatMap(s => [...s.pool, s.boss, s.finale].filter(Boolean)));
     return { n: ids.length, bad: ids.filter(id => { const M = dbg.MYTHS[id]; return !M.myth || !M.fact || !M.em || !M.name || !dbg.CATS[dbg.catOf(id)] || dbg.srcOf(id) === 'Dad' || !seen.has(id); }) }; });
   expect(r.n >= 140, `at least 140 myths, got ${r.n}`); expect(!r.bad.length, `complete myths, these are not: ${r.bad.join(', ')}`); await close(); return errs;
 });

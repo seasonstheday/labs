@@ -123,6 +123,23 @@ def make(name, prompt, kind):
 CAST = ("Dad is the man in the first reference picture (short brown hair, short brown beard, round glasses, mustard-yellow sweater, green trousers). "
         "The Kid is the child in the second reference picture (short brown hair, blue striped t-shirt, green shorts, red sneakers). Draw them exactly like that. "
         "The myths are loose book pages that have come alive: cream paper pages with a few printed lines, a cheeky cartoon face, tiny arms and legs, mischievous but friendly, never scary. ")
+# the villain's scenes need a third reference picture: --ref mascot_wave.png,kid.png,sses_idle.png
+VILLAIN = ("Sir Ever-So-Sure is the pompous Title Page in the third reference picture: a tall cream book page with gold edges, a purple squiggle banner, "
+           "a gold monocle, a twirly brown moustache, noodle arms with white gloves, brown shoes and a purple quill. Draw him exactly like that: silly and smug, never scary. ")
+STORY_V = {
+    'story_v0': 'The library at night by moonlight. Sir Ever-So-Sure stands on the reading stand and flings the giant old book wide open with a grand gesture, cackling, quill raised, as glowing page myths whoosh out of it into the air. Dad and the Kid are not in this picture.',
+    'story_1_flee': 'The backyard at sunset. Sir Ever-So-Sure leaps over the white picket fence with a rolled-up page under his arm, looking back smugly. Dad and the Kid run after him across the lawn, the Kid pointing. A pond glints in the distance.',
+    'story_2_flee': 'A pond with lily pads. Sir Ever-So-Sure hops from lily pad to lily pad clutching a rolled-up page, looking back smugly. Dad and the Kid stand at the water edge; a frog watches. Far away, the roofs of a little town and its library.',
+    'story_3_flee': 'Inside a tall library. Sir Ever-So-Sure slides down a rolling library ladder clutching a rolled-up page, heading for an open window with a harbour and sailing boats outside. Dad and the Kid hurry between the shelves after him.',
+    'story_4_flee': 'The bright blue sea. Sir Ever-So-Sure paddles away on a floating open book like a little raft, using his quill as an oar, smug. Dad and the Kid lean out of their small rowing boat, a hermit crab at the front. A sandy desert coast on the horizon.',
+    'story_5_flee': 'The desert at night, frosty and blue under stars. Sir Ever-So-Sure tiptoes away north across the silvery dunes with a rolled-up page, past plain saguaro cacti (no faces). Dad and the Kid in a blanket spot him. Snowy mountains on the far horizon.',
+    'story_6_flee': 'The snowy Arctic. Sir Ever-So-Sure sleds away downhill on a big open page like a toboggan, holding his monocle on, smug. Dad and the Kid in puffy parkas chase him through the snow. A white snowy owl flies alongside. Green jungle far away to the south.',
+    'story_7_flee': 'A rainy jungle. Sir Ever-So-Sure flies straight up out of the treetops hanging from a kite made of a page, waving his quill smugly toward the starry evening sky. Dad and the Kid look up from a branch, open-mouthed; a monkey points.',
+    'story_8_boss': 'A showdown on a grassy hilltop at night under a sky full of stars. On the RIGHT, Sir Ever-So-Sure stands on top of a big rock, leaning back and laughing, holding high above his head a giant flat round disc painted like a flat map of the Earth, like a shield. On the LEFT, facing him from below, Dad holds up his magnifying glass and the Kid points up at him, brave; a toad, a spider and a firefly behind them. The two sides face each other across the hilltop.',
+    'story_end1': 'The same hilltop under the stars, calm now. Sir Ever-So-Sure sits on the grass, soft and a little crumpled, monocle askew, shrugging with a small shy smile. The Kid kneels and offers him a friendly hand; Dad smiles beside them.',
+    'story_end2': 'The town library at dawn. The giant old book on its reading stand closes by itself, its cover glowing warm gold with a big friendly question mark shape on it. Dad, the Kid and Sir Ever-So-Sure (smiling, humble) watch through the window from outside.',
+    'story_end3': 'The backyard on a warm starry night: a picnic blanket, a telescope, Dad and the Kid lying back looking at the stars, all the animal friends around them (a spider, a toad, a firefly, a duck, a snowy owl, a moth), and Sir Ever-So-Sure sitting with them asking a question, curious and happy.',
+}
 STORY = {
     'story_p1': 'A cosy small-town library at dusk seen from the street. Through the big front window a huge old leather-bound book on a reading stand glows faintly gold. The Kid presses their nose to the glass outside, curious.',
     'story_p2': 'Inside the library, the giant old book bursts open in a whirlwind of glowing loose pages. Each flying page is one of the page myths, tumbling and cheering. Tall shelves behind, warm lamplight.',
@@ -173,6 +190,7 @@ def jobs():
     yield 'home_bg', HOME + ' ' + STYLE, 'arena', 'home'
     for i, d in HOMES.items(): yield f'home_bg_{i}', d + ' ' + HOME_LAYOUT + STYLE, 'arena', 'homes'
     for k, d in STORY.items(): yield k, STYLE + ' ' + CAST + d + STORY_STYLE, 'story', 'story'
+    for k, d in STORY_V.items(): yield k, STYLE + ' ' + CAST + VILLAIN + d + STORY_STYLE, 'story', 'villain'
     for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'
 
