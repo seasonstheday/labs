@@ -107,7 +107,7 @@ def sprite_fix(path, size):
 
 def make(name, prompt, kind):
     out = os.path.join(ASSETS, name + SUFFIX + '.png'); print(name + SUFFIX, '...', flush=True)
-    if REFS: prompt += f' Match the drawing style, outline weight, colours and shading of the reference picture{"s" if len(REFS) > 1 else ""} exactly, as if drawn by the same artist, but draw only the new character described.'
+    if REFS: prompt += f' Match the drawing style, outline weight, colours and shading of the reference picture{"s" if len(REFS) > 1 else ""} exactly, as if drawn by the same artist, but draw only the new {"scene" if kind == "arena" else "character"} described.'
     png = call(prompt, {'arena': '9:16', 'map': '21:9', 'story': '4:3'}.get(kind, '1:1'), refs=REFS); tmp = out + '.tmp.png'
     with open(tmp, 'wb') as f: f.write(png)
     if RAW: open(os.path.join(RAW, name + '.png'), 'wb').write(png)  # keep the model's output for re-processing
@@ -136,8 +136,8 @@ STORY = {
     'story_3_out': 'The Kid looks out of a tall library window at a sunny harbour with sailing boats; a stream of pages flies away out to sea.',
     'story_4_in': 'Dad and the Kid in a small wooden rowing boat on a bright blue sea. A little orange hermit crab rides at the front of the boat. A whale tail splashes in the distance.',
     'story_4_out': 'Dad and the Kid on a sandy beach at sunset with the rowing boat pulled up behind them; pages blow inland toward golden desert dunes.',
-    'story_5_in': 'A hot sunny desert with tall dunes and green cacti. Dad and the Kid wear wide sun hats; the sand ripples where page myths are hiding under it.',
-    'story_5_out': 'The same desert at night, frosty and blue under a sky full of stars. The Kid is wrapped in a blanket, amazed at the frost; Dad points north.',
+    'story_5_in': 'A hot sunny desert with tall golden dunes under a pale blue sky. A few tall green saguaro cacti stand on the dunes; the cacti are ordinary plants with NO faces, NO eyes and NO mouths. Dad and the Kid wear wide straw sun hats; Dad shades his eyes and looks across the dunes, the Kid points at the sand ahead, where little bumps ripple as page myths hide under it, one page corner poking out.',
+    'story_5_out': 'The same desert at night: dark blue sky full of stars and a crescent moon, the golden dunes now silvery with a thin sparkle of frost, and plain saguaro cacti (ordinary plants with NO faces) standing dark against the sky. The Kid sits on a rock wrapped in a striped blanket, breath puffing in the cold, amazed. Dad points north toward a bright star, where a line of pages flutters away into the distance.',
     'story_6_in': 'A snowy arctic landscape with ice floes. Dad and the Kid in puffy parkas look at a very confused page myth dressed as a penguin; a polar bear watches from far away.',
     'story_6_out': 'The arctic at night under green northern lights. Dad and the Kid wave goodbye to a polar bear cub; pages fly away south.',
     'story_7_in': 'A rainy green jungle with giant leaves and vines. A monkey laughs on a branch, lightning flashes in the sky; Dad holds an umbrella over the Kid.',
@@ -152,10 +152,26 @@ HOME = ('A cosy suburban backyard at golden hour, seen from the side at a child\
         'The middle has a low wooden picket fence, a big leafy tree on the left edge and the corner of a house porch with a warm lit window on the right edge. '
         'The lower half is a soft green lawn with a gently worn, empty, lighter patch of grass in the centre where characters will stand, '
         'and a few small flowers only along the very bottom edge. Soft long shadows, gentle light. Nothing has eyes or a face, no people, no animals, no text.')
+# the home screen follows the furthest world reached: the same layout as home_bg (calm sky on top, scenery at the sides,
+# an empty patch in the lower middle where the team stands); generate with --ref home_bg.png
+HOME_LAYOUT = ('Seen from the side at a child\'s eye height, as the backdrop of a game\'s home screen, laid out exactly like the reference picture: '
+               'the top third is calm sky with two or three soft clouds and no sun disc, scenery frames the left and right edges, '
+               'and the lower half is open ground with a gently worn, empty, lighter patch in the centre where characters will stand. '
+               'Soft long shadows, gentle light. Nothing has eyes or a face, no people, no animals, no text. ')
+HOMES = {
+  2: 'A sunny pond bank: tall reeds and cattails on the left edge, a small wooden jetty and a weeping willow on the right edge, the pond water with lily pads across the middle, and a soft grassy bank in front.',
+  3: 'Inside a cosy old library: tall wooden bookshelves full of books on the left and right edges, a big arched window with warm afternoon light in the middle instead of sky, a round red rug on the wooden floor in front.',
+  4: 'A sunny beach: a palm tree leaning in from the left edge, a striped beach hut on the right edge, calm blue sea and a few gentle waves across the middle, and smooth pale sand in front with a few shells along the bottom edge.',
+  5: 'A sunny desert: tall green saguaro cacti (plain plants, no faces) on the left and right edges, golden dunes across the middle, and smooth rippled sand in front with a few small stones along the bottom edge.',
+  6: 'The Arctic on a bright day, far from any town: snowy pine trees on the left edge, a small round igloo on the right edge, white snow fields and blue ice floes across the middle, and smooth soft snow in front. No fence, no buildings.',
+  7: 'A rainforest clearing: giant leaves, vines and a big tree trunk on the left and right edges, misty green jungle across the middle, and a soft mossy clearing in front with a few ferns along the bottom edge.',
+  8: 'A grassy hilltop at dusk: a deep blue sky with the first stars and a crescent moon instead of clouds, a small telescope on a stand at the right edge, a leafy bush on the left edge, faraway hills across the middle, and soft dark-green grass in front.',
+}
 def jobs():
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
     yield 'kid', STYLE + ' ' + KID + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'kid', 'kid'
     yield 'home_bg', HOME + ' ' + STYLE, 'arena', 'home'
+    for i, d in HOMES.items(): yield f'home_bg_{i}', d + ' ' + HOME_LAYOUT + STYLE, 'arena', 'homes'
     for k, d in STORY.items(): yield k, STYLE + ' ' + CAST + d + STORY_STYLE, 'story', 'story'
     for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'

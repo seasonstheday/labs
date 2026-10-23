@@ -83,6 +83,7 @@
 
   /* ───────── screens ───────── */
   .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  #title.nightbg .tag { color: #f1e4c8; text-shadow: 0 1px 2px rgba(0,0,0,.5); } /* the night sky backdrop is dark */
   #title { background: url(assets/home_bg.png) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
   #title .sun, #title .cloud, #title .fence { display: none; }
   #title::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 200px; background: linear-gradient(rgba(127,174,90,0), #7fae5a 55%); pointer-events: none; }
@@ -550,7 +551,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 58</div>
+    <div class="build">build 59</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -3846,7 +3847,15 @@ $('#wheelGo').onclick = () => { if (!spinReady()) return; save.spinDay = today()
     sfx('win'); buzz('HEAVY'); $('#wheelWon').textContent = `You won ${P.em} ${P.n}!`; say(`You won ${P.n}!`); buildWheel(); updateHub(); drawStatics(); }, 3300); };
 $('#wheelClose').onclick = () => { $('#wheelm').hidden = true; };
 // the four buttons: locked ones wear a padlock and say when they open; a dot means something's waiting
-function updateHub() { const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
+// the home screen shows the furthest world reached: the backyard, then the pond, the library ... up to the night sky
+const HOME_EDGE = [['#d7bc9a', '#738a43'], ['#cac18d', '#6c8741'], ['#c2a478', '#986c48'], ['#bdd3bc', '#deb36c'], ['#e8ca8f', '#d5a14d'], ['#d1ecea', '#d5e3ed'], ['#96a885', '#546b33'], ['#435370', '#4e6941']];
+function homeBg() {
+  const w = STAGES[Math.min(save.unlocked, STAGES.length - 1)].w, el = $('#title'); if (el.dataset.w === String(w)) return; el.dataset.w = w;
+  const [top, ground] = HOME_EDGE[w] || HOME_EDGE[0];
+  el.style.backgroundImage = `url(assets/home_bg${w ? '_' + (w + 1) : ''}.png), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
+  el.classList.toggle('nightbg', w === 7);
+}
+function updateHub() { homeBg(); const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
   const D = dailyToday();
   set('hubPatrol', 'patrol', patrolHours() >= 1 || quickLeft() > 0 && patrolHours() >= .5); set('hubWheel', 'wheel', spinReady()); set('hubChall', 'daily', D && !D.done); set('hubChests', 'chests', anyChest()); }
 const lockedHub = b => { if (!b.classList.contains('locked')) return false; const U = UNLOCKS.find(u => u.k === b.dataset.lock), n = Math.max(1, U.at - save.cleared.length); toastMsg(`🔒 Opens after ${n} more stage${n > 1 ? 's' : ''}. Keep playing!`); return true; };

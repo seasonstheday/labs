@@ -197,6 +197,12 @@ await test('Myth Master opens after Hard, stage by stage, and pays a crown', asy
   await close(); return errs;
 });
 
+await test('the home screen shows the furthest world reached', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), unlocked: 22, cleared: [...Array(22).keys()] });
+  const bg2 = await p.evaluate(() => [document.querySelector('#title').style.backgroundImage, dbg.STAGES[22].w]);
+  expect(/home_bg_5\.png/.test(bg2[0]), `desert backdrop on stage 23 (got ${bg2[0]}, world ${bg2[1]})`); await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);
