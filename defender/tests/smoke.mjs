@@ -169,6 +169,21 @@ await test('home hub: patrol, quick patrol, prize wheel, chapter rewards; Dad pa
   await close(); return errs;
 });
 
+await test('Myth Master opens after Hard, stage by stage, and pays a crown', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), stars: { '0:normal': 3, '0:hard': 2, '1:normal': 3 } });
+  await p.click('#play'); await p.waitForTimeout(400);
+  await p.evaluate(() => { document.querySelectorAll('#pins .pin')[0].click(); }); await p.waitForTimeout(200);
+  expect(!(await p.isDisabled('#diffs [data-d="master"]')), 'Myth Master open on stage 1 after Hard');
+  await p.evaluate(() => { document.querySelectorAll('#pins .pin')[1].click(); }); await p.waitForTimeout(200);
+  expect(await p.isDisabled('#diffs [data-d="master"]'), 'still locked on stage 2');
+  const g0 = await p.evaluate(() => { dbg.save.diff = 'master'; dbg.startGame(0); for (const id of ['#comicm', '#levelup']) document.querySelector(id).hidden = true; dbg.G.freePicks = 0; return { d: dbg.G.D.name, gems: dbg.save.gems, books: dbg.save.books || 0 }; });
+  expect(g0.d === 'Myth Master', 'playing on Myth Master');
+  await p.evaluate(() => dbg.stageClear()); await p.waitForTimeout(400);
+  const g1 = await p.evaluate(() => ({ gems: dbg.save.gems, books: dbg.save.books || 0, st: dbg.save.stars['0:master'] }));
+  expect(g1.st > 0 && g1.gems >= g0.gems + 40 && g1.books === g0.books + 1, `crown prizes (${JSON.stringify(g0)} → ${JSON.stringify(g1)})`);
+  await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);

@@ -147,8 +147,9 @@
   .mapcard { background: var(--card); border-top: 4px solid #3a2c20; padding: 12px 14px 14px; box-shadow: 0 -10px 30px rgba(58,44,32,.2); }
   .mapcard h3 { margin: 0; font: 700 24px/1.1 "Fredoka", Arial, sans-serif; }
   .mapcard .d { font: 400 16px/1.25 "Patrick Hand", cursive; color: var(--muted); margin: 2px 0 8px; }
-  .diffs { display: flex; gap: 6px; margin-bottom: 8px; }
-  .diffs button { flex: 1; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .diffs { display: flex; gap: 5px; margin-bottom: 8px; } .diffs button[data-d="master"] { background: linear-gradient(#ffe2c4, #ffc08a); } .diffs button[data-d="master"].on { background: linear-gradient(#ffb36a, #f0803a); } .pin .crown { position: absolute; top: -10px; right: -10px; font-style: normal; font-size: 16px; }
+  
+  .diffs button { flex: 1; min-width: 0; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .diffs button.on { background: var(--gold); }
   .diffs button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
   .diffs .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
@@ -167,6 +168,7 @@
   .dtabs { display: flex; gap: 6px; padding: 0 14px 8px; }
   .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .dtabs button.on { background: var(--gold); }
+  .cat.gold { border-color: #d9971c; box-shadow: 0 0 0 3px #ffd76a; background: linear-gradient(#fff8dc, #ffe08a); }
   .catgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px 14px 10px; }
   .dbon { grid-column: 1 / -1; background: #3a2c20; color: #fff; border-radius: 14px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; } .dbon b { flex-basis: 100%; font: 700 14px/1.2 "Fredoka", Arial, sans-serif; } .dbon span { font: 400 15px/1.2 "Patrick Hand", cursive; color: #ffe08a; }
   .ctile { border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; } .ctile.on { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c; } .ctile.done { border-color: #4f9a5a; }
@@ -547,7 +549,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 55</div>
+    <div class="build">build 56</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -582,7 +584,7 @@
       <div id="mapPow"></div>
       <div class="diffs" id="diffs"></div>
       <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
-      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Chests</button>
+      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Rewards</button>
     </div>
   </section>
 
@@ -846,7 +848,7 @@
   </div>
   <div class="modal" id="chestm" hidden>
     <div class="panel chestp">
-      <div class="cbanner">📚 Chapter Chests</div>
+      <div class="cbanner">🎁 Chapter Rewards</div>
       <div class="chead"><button class="btn icon ghost" id="chPrev">◀</button><div class="cflag" id="chFlag"></div><button class="btn icon ghost" id="chNext">▶</button></div>
       <div id="chList"></div>
       <div class="row exit"><button class="btn" id="chClose">Done</button></div>
@@ -1204,6 +1206,9 @@ const DIFF = {
   easy:   { name: 'Easy',   em: '🌤️', hp: .72, spd: .9,  dmg: .7,  coin: .8,  desc: 'Slower, softer myths.' },
   normal: { name: 'Normal', em: '🌳', hp: 1,   spd: 1,   dmg: 1,   coin: 1,   desc: 'The backyard as it is.' },
   hard:   { name: 'Hard',   em: '🌩️', hp: 1.45, spd: 1.12, dmg: 1.3, coin: 1.5, desc: 'Tougher, faster, more of them.' },
+  // the fourth tier, stage by stage once Hard is beaten: twice as tough, extra elites every wave, bosses move more often and
+  // Patience doesn't come back. The prizes are crowns, gems, better items and a chapter chest, never power the story needs.
+  master: { name: 'Myth Master', em: '🔥', hp: 2, spd: 1.15, dmg: 1.15, coin: 2, elites: 2, bossMv: .7, noRegen: true, loot: .25, desc: 'Twice as tough, faster, extra elites, and no Patience coming back.' },
 };
 // the eight chapters of the Big Book of Wrong. Each one: a palette, its own myths, a boss (stage 3 is a rough draft of it,
 // stage 5 the real thing), a native friend who joins after stage 3, and a three-panel comic in and out.
@@ -2052,6 +2057,9 @@ save.iap = save.iap || []; save.factDate = save.factDate || {}; save.catCards = 
 for (const id in save.chars) { const c = save.chars[id]; if (c.own && c.xp == null) c.xp = save.cleared.length ? 25 * (1 + 2 + 3) : 0; c.sk = c.sk || {}; }
 const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
+const masterOpen = st => starsOf(st, 'hard') > 0;
+const diffOpen = (d, st) => d === 'hard' ? hardOpen(st) : d === 'master' ? masterOpen(st) : true;
+const mastered5 = w => [0, 1, 2, 3, 4].every(i => starsOf(w * 5 + i, 'master') > 0);
 // what each character is holding: the weapon item in their Weapon slot, or their line's first variant
 function syncWeapons() {
   const d = itemBy(equipOf('dad').weapon); save.weapon = d && d.owner === 'dad' && WEAPONS[baseOf(d.variant)] ? baseOf(d.variant) : 'glass'; save.dadTheme = d && d.owner === 'dad' && themeOf(d.variant) ? d.variant.split('-')[1] : null;
@@ -2260,6 +2268,7 @@ function startWave() {
     }
     // a page stage closes with a rush of two crowned myths
     if (w === S.waves - 1 && G.stage >= 1) for (let j = 0; j < 2; j++) G.toSpawn.push({ id: pick(S.pool), at: dur + .5 + j * 1.2, ang: rnd(0, 7), elite: true });
+    if (G.D.elites && !G.endless) for (let j = 0; j < G.D.elites; j++) G.toSpawn.push({ id: pick(S.pool), at: rnd(dur * .3, dur), ang: rnd(0, 7), elite: true });
     G.toSpawn.sort((a, b) => a.at - b.at);
   }
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
@@ -2610,9 +2619,9 @@ function update(dt) {
     if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.stage ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
     // its own move: a tell, then the move; a stun during the tell is a 'Nope!'
     const MV = BOSSMOVE[b.id]; if (MV && !b.rough) {
-      if (b.moveT == null) b.moveT = G.S.w === 0 ? 10 : 7;
+      if (b.moveT == null) b.moveT = (G.S.w === 0 ? 10 : 7) * (G.D.bossMv || 1);
       if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 15, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
-      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1); MV.go(b); } }
+      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1); MV.go(b); } }
     }
     if (b.sliding > 0) { b.sliding -= dt; b.x += b.sx * dt; b.y += b.sy * dt; b.walk += dt * 10; G.fx.push({ k: 'puff', x: b.x - b.sx * .05, y: b.y + b.r * .8, vx: rnd(-20, 20), vy: -20, t: 0, life: .4, col: '#eef6ff', r: 7 });
       if (dist(b, G.dad) < b.r + 40 && !b.slid.has('dad')) { b.slid.add('dad'); b.bonk = 1.6; G.hp -= patHit(b.dmg); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'WHOOSH', '#cb382e', 24, .9); }
@@ -2700,13 +2709,13 @@ function update(dt) {
   G.pending = G.pending.filter(p => !p.done);
   updateShots(dt);
   G.flash = Math.max(0, G.flash - dt);
-  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if ((song || moon) && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + (song * (.3 + sk('hopper', 'song') * .1) + moon * .15) * dt);
+  const song = rankOf('hopper', 'song'), moon = rankOf('luna', 'moonlight'); if ((song || moon) && G.hp > 0 && !G.D.noRegen) G.hp = Math.min(G.maxhp, G.hp + (song * (.3 + sk('hopper', 'song') * .1) + moon * .15) * dt);
   if (G.hp <= 0) {
     if (save.opt.little) { G.hp = Math.round(G.maxhp * .6); G.flash = .6; G.shake = .2; for (const e of G.enemies) { const a = Math.atan2(e.y - dad.y, e.x - dad.x); e.kx += Math.cos(a) * 420; e.ky += Math.sin(a) * 420; e.stun = Math.max(e.stun, 1.5); } text(dad.x, dad.y - 100, 'Snack break!', '#ecb23c', 30, 1.4); say('Snack break!'); }
     else { gameOver(); return; }
   }
   if (!G.room) famMoves(dt);
-  { const rg = aura('regen') + synStat('regen'); if (rg && G.hp > 0) G.hp = Math.min(G.maxhp, G.hp + rg * dt); }
+  { const rg = aura('regen') + synStat('regen'); if (rg && G.hp > 0 && !G.D.noRegen) G.hp = Math.min(G.maxhp, G.hp + rg * dt); }
   if (G.boss && !G.room && !G.boss.noted && G.boss.hp > 0 && G.boss.hp < G.boss.maxhp * .5) { G.boss.noted = true; dropNote(G.boss); }
   // orbs
   const mag = 70, coinMul = 1 + (aura('coin') + synStat('coin')) / 100 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
@@ -3811,11 +3820,12 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   save.stars[key] = Math.max(prev, stars);
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
-  const hardFirst = save.diff === 'hard' && prev === 0;
+  const hardFirst = save.diff === 'hard' && prev === 0, masterFirst = save.diff === 'master' && prev === 0;
+  const masterNote = !masterFirst ? '' : (save.books = (save.books || 0) + 1, `🔥 Myth Master! A flame on this stage's pin, +💎40 and a 📘 Skill Book${mastered5(G.S.w) ? `. Every ${G.S.W.name} stage on Myth Master: a Myth Master chest is waiting in Chapter Rewards` : ''}`);
   missionAdd('clear'); if (stars === 3) missionAdd('star3'); if (G.bossDown) missionAdd('boss'); if (G.coins) missionAdd('coin', G.coins);
   const factGems = payFacts();
-  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst ? 1 : 0) });
-  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0), Math.min(.9, G.stage * .03) + .1);
+  const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + (masterFirst ? 40 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst || masterFirst ? 1 : 0) });
+  dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0) + (G.D.loot ? 1 : 0), Math.min(.9, G.stage * .03) + .1 + (G.D.loot || 0));
   if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
@@ -3830,6 +3840,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
   // what just opened is shown on the home screen, one card at a time, instead of in this already-busy card
   if (first) { const nu = newUnlocks(); if (nu.length) save.news = [...(save.news || []), ...nu]; }
+  if (masterNote) notes.push(masterNote);
   { const noted = save.chestNoted || (save.chestNoted = []), fresh = CHESTS.filter(C => C.ok(G.S.w) && !chestGot(G.S.w, C.k) && !noted.includes(G.S.w + ':' + C.k));
     if (fresh.length) { fresh.forEach(C => noted.push(G.S.w + ':' + C.k)); notes.push('🎁 A Chapter Reward is ready: tap 🎁 on the home screen'); } }
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
@@ -3837,7 +3848,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
   const last = G.stage === STAGES.length - 1;
   $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
-  $('#nextStage').hidden = last || save.diff === 'hard' && !hardOpen(Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
+  $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
@@ -3913,16 +3924,16 @@ function buildMap(scroll = true) {
   let total = 0; for (const k in save.stars) total += save.stars[k]; $('#starTotal').textContent = total;
   WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}<small>Chapter ${w + 1}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
   STAGES.forEach((st, i) => {
-    const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard')), b = document.createElement('button'), [px, py] = pinXY(i);
+    const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard'), starsOf(i, 'master')), b = document.createElement('button'), [px, py] = pinXY(i);
     b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
     b.style.left = px + 'px'; b.style.top = py + 'px';
-    b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}`;
+    b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}${starsOf(i, 'master') ? '<i class="crown">🔥</i>' : ''}`;
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
   const st = STAGES[pickStage]; $('#mapName').textContent = `${st.W.em} ${st.name}`; $('#mapDesc').textContent = st.desc; updateChestBtn(); { const mine = teamPower(), rec = recPower(pickStage); $('#mapPow').innerHTML = !has('power') ? '' : powCheck(pickStage) + (mine < rec * .8 ? '<small class="ptip">A tough one for this team. Try a stronger outfit, a family of three, or polish a weapon.</small>' : ''); }
-  if (save.diff === 'hard' && !hardOpen(pickStage)) save.diff = 'normal';
-  $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = d !== 'hard' || hardOpen(pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : 'clear Normal'}</span></button>`; }).join('');
+  if (!diffOpen(save.diff, pickStage)) save.diff = 'normal';
+  $('#diffs').innerHTML = Object.keys(DIFF).map(d => { const open = diffOpen(d, pickStage), n = starsOf(pickStage, d); return `<button class="${save.diff === d ? 'on' : ''}" data-d="${d}" ${open ? '' : 'disabled'} title="${DIFF[d].desc}">${DIFF[d].em} ${DIFF[d].name}<span class="st">${open ? (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '☆☆☆') : d === 'master' ? 'beat Hard' : 'clear Normal'}</span></button>`; }).join('');
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
   $('#mapPlay').textContent = `Play ${st.name} on ${DIFF[save.diff].name} ▶`;
   if (scroll) { const wrap = $('#mapWrap'); requestAnimationFrame(() => { wrap.scrollTop = Math.max(0, pinXY(pickStage)[1] - wrap.clientHeight / 2); }); }
@@ -3956,7 +3967,7 @@ function buildBook() {
     ids.filter(id => save.facts.includes(id)).forEach(kidRow); lockedCard(ids.filter(id => !save.facts.includes(id)));
   } else {
     $('#study').hidden = true;
-    const cats = $('#cats'); cats.className = 'cats'; cats.innerHTML = WORLDS.map((W, w) => { const ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${w === diaryW ? 'on' : ''} ${got === ids.length ? 'done' : ''}" data-w="${w}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${W.em}</span></div>${W.name.replace('The ', '')}<br><small>${got}/${ids.length}</small></div>`; }).join('');
+    const cats = $('#cats'); cats.className = 'cats'; cats.innerHTML = WORLDS.map((W, w) => { const ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length; return `<div class="cat ${w === diaryW ? 'on' : ''} ${got === ids.length ? 'done' : ''} ${mastered5(w) ? 'gold' : ''}" data-w="${w}" style="--p:${Math.round(got / ids.length * 100)}"><div class="ring"><span>${W.em}</span></div>${W.name.replace('The ', '')}<br><small>${got}/${ids.length}</small></div>`; }).join('');
     cats.querySelectorAll('[data-w]').forEach(b => b.onclick = () => { diaryW = +b.dataset.w; buildBook(); });
     const W = WORLDS[diaryW], ids = worldIds(W), got = ids.filter(id => save.facts.includes(id)).length;
     const h = document.createElement('div'); h.className = 'wh'; h.innerHTML = `${W.em} ${W.name} <small>${got === ids.length ? `${TRAITS[diaryW][0]} ${TRAITS[diaryW][1]}: ${TRAITS[diaryW][2]}` : `pop every page for a chapter trait: ${TRAITS[diaryW][2].toLowerCase()}`}</small>`; box.appendChild(h);
@@ -4320,11 +4331,11 @@ $('#bookRoom').onclick = () => openRoom();
 function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // suggested Power for a stage: what a team that clears it with random picks has (from the simulator), a little more for
 // chapter bosses, and a third more on Hard
-function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
+function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; if (d === 'master') v *= 1.8; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
 function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
-$('#quickPlay').onclick = () => { const i = nextStage(); if (save.diff === 'hard' && !hardOpen(i)) save.diff = 'normal'; startGame(i); };
+$('#quickPlay').onclick = () => { const i = nextStage(); if (!diffOpen(save.diff, i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { save.tixSeen = save.tix; persist(); buildStore(); showScreen('#store'); };
 $('#openDraw').onclick = openDraw;
@@ -4366,6 +4377,7 @@ $('#closeParent').onclick = () => { $('#parentm').hidden = true; };
 const CHESTS = [
   { k: 'half', em: '🎁', n: 'Halfway', how: 'Clear stage 3 to claim', ok: w => save.cleared.includes(w * 5 + 2), pay: w => ({ coins: 120 * (w + 1), tix: 1 }) },
   { k: 'done', em: '🧰', n: 'Chapter cleared', how: 'Beat the chapter boss to claim', ok: w => save.cleared.includes(w * 5 + 4), pay: w => ({ coins: 300 * (w + 1), gems: 40 + 15 * w, pages: [WORLDS[w].comp, 5], weapon: w >= 3 ? 2 : 1, xp: 60 + 20 * w, books: 1 }) },
+  { k: 'master', em: '🔥', n: 'Myth Master', how: 'Beat all five stages on Myth Master to claim', ok: w => mastered5(w), pay: w => ({ gems: 150 + 30 * w, item: 3, books: 2 }) },
   { k: 'stars', em: '👑', n: 'Every star', how: 'Get all 15 stars in the chapter to claim', ok: w => chStars(w) >= 15, pay: w => ({ gems: 80 + 20 * w, item: 2, tix: 1, books: 1 }) },
 ];
 const chStars = w => [0, 1, 2, 3, 4].reduce((a, i) => a + Math.max(...Object.keys(DIFF).map(d => starsOf(w * 5 + i, d))), 0);
@@ -4396,7 +4408,7 @@ function claimChest(w, k) {
   persist(); sfx('book'); buzz('HEAVY');
   $('#chTiles').innerHTML = payTiles(p).map(tileH).join(''); $('#chReveal').hidden = false; buildChests(); updateChestBtn();
 }
-function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Chests${anyChest() ? '<i class="dot"></i>' : ''}`; }
+function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Rewards${anyChest() ? '<i class="dot"></i>' : ''}`; }
 let treeId = null;
 const tCost = (r) => skCost(r);
 function buildTree() {
