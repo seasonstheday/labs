@@ -393,6 +393,11 @@
   #strip .sline .bub { flex: 1; background: #fff; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 7px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
   #strip .sline .bub b { display: block; font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
   #strip .sline.kid { flex-direction: row-reverse; } #strip .sline.kid .bub { background: #eef6ff; }
+  #creditsm .credits { text-align: center; } #creditsm .cwin { height: 420px; overflow: hidden; position: relative; -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+  #creditsm .roll { animation: roll 26s linear forwards; padding: 380px 8px 40px; } #creditsm .roll h3 { font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 22px 0 6px; }
+  #creditsm .roll p { font: 400 18px/1.3 "Patrick Hand", cursive; margin: 0; } #creditsm .cimg { width: 120px; } @keyframes roll { to { transform: translateY(-100%); } }
+  @media (prefers-reduced-motion: reduce) { #creditsm .roll { animation: none; padding-top: 8px; } #creditsm .cwin { overflow-y: auto; } }
+  #strip .sline.vil .bub { background: #f3ecff; border-color: #6b4fa8; } #strip .sline.vil .bub b { color: #6b4fa8; } #strip .sline.vil .face { background: #fbf3df; border-color: #6b4fa8; }
   #strip .sline.narr .bub { background: transparent; border: 0; text-align: center; font-size: 18px; font-style: italic; color: #5a4a3a; padding: 4px 6px; }
   .chestp { position: relative; } .cbanner { margin: -6px auto 10px; width: max-content; padding: 8px 22px; background: linear-gradient(#ffe08a, #e6b84a); border: 3px solid #3a2c20; border-radius: 10px; font: 700 20px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 4px 0 #3a2c20; }
   .chead { display: flex; align-items: center; gap: 8px; } .cflag { flex: 1; text-align: center; background: linear-gradient(#7b5bc8, #5a3fa0); color: #fff; border: 3px solid #e6b84a; border-radius: 10px 10px 40% 40% / 10px 10px 22% 22%; padding: 10px 6px 18px; box-shadow: 0 4px 0 #3a2c20; }
@@ -551,7 +556,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 59</div>
+    <div class="build">build 60</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -727,6 +732,21 @@
     </div>
   </div>
 
+  <div class="modal" id="creditsm" hidden>
+    <div class="panel credits">
+      <div class="cwin"><div class="roll">
+        <img src="assets/sses_kind.png" alt="" class="cimg">
+        <h2 class="display">The Big Book of Why</h2>
+        <p>Every page popped. Every myth turned back into a fact.</p>
+        <h3>Starring</h3><p>Dad, and his magnifying glass<br>The Kid, who kept asking why<br>Webster, Hopper, Sparky and every backyard friend</p>
+        <h3>And introducing</h3><p>Sir Ever-So-Sure, who learned to say "I don't know… yet"</p>
+        <h3>Facts checked with</h3><p>museums, universities, NASA, and a lot of patient librarians</p>
+        <h3>Made by</h3><p>The Backyard Library</p>
+        <h3>What's next?</h3><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
+      </div></div>
+      <div class="row"><button class="btn" id="creditsGo">Back to the backyard ▶</button></div>
+    </div>
+  </div>
   <div class="modal" id="clearm" hidden>
     <div class="panel">
       <canvas class="m" id="clearDad" width="200" height="250"></canvas>
@@ -1037,6 +1057,7 @@ const MYTHS = {
   sun:       { em: '🌞', name: 'Yellow Sun',            myth: 'The Sun is yellow.', fact: 'From space the Sun is white. Our air scatters the blue light away and leaves the yellow.', kind: 'splitter', col: '#ffd25a' },
   northstar: { em: '🌟', name: 'Brightest North Star',  myth: 'The North Star is the brightest star in the sky.', fact: 'It\'s about the 48th brightest. It\'s famous because it sits almost still above the North Pole.', kind: 'rumour', col: '#e0e8ff' },
   gravity:   { em: '🧑‍🚀', name: 'No-Gravity Space',    myth: 'There is no gravity in space.', fact: 'Gravity up there is nearly as strong as on the ground. Astronauts float because they are falling around the Earth, all the time.', kind: 'dasher', col: '#8a9ac0' },
+  sses:    { em: '🧐', name: 'Sir Ever-So-Sure', myth: 'If you feel really sure, you must be right.', fact: 'Feeling sure is not the same as being right. Good thinkers test their ideas, ask why, and change their minds when the evidence says so.', kind: 'boss', col: '#b48be6' },
   flat:    { em: '🌍', name: 'The Flat Earth',        myth: 'The Earth is flat.', fact: 'Earth is round. Ships sink bottom-first over the horizon, and people have sailed, flown and orbited all the way around.', kind: 'boss', col: '#4e8ab8' },
   // more pages, chapter by chapter (build 50)
   // the Backyard
@@ -1128,7 +1149,7 @@ const MYTHS = {
 };
 // the Diary: every fact has a topic and the place Dad read it. Learned dates live in the save.
 const CATS = { animals: ['🐾', 'Animals'], body: ['🫀', 'My body'], space: ['🪐', 'Space'], weather: ['🌦️', 'Weather'], food: ['🍎', 'Food'], history: ['🏛️', 'History'], words: ['📝', 'Words'], earth: ['🌍', 'Earth'], science: ['⚗️', 'Science'] };
-const META = { moon: ['space', 'NASA'], bull: ['animals', 'Britannica'], fish: ['animals', 'University of Plymouth'], toad: ['body', 'NHS'], duck: ['animals', 'University of Salford'], sugar: ['food', 'JAMA'], bat: ['animals', 'Bat Conservation International'], tongue: ['body', 'Britannica'], hair: ['body', 'Mayo Clinic'], knuckle: ['body', 'Johns Hopkins Medicine'], camel: ['animals', 'San Diego Zoo'], cold: ['body', 'NHS'], banana: ['food', 'Kew Gardens'], ostrich: ['animals', 'San Diego Zoo'], penny: ['science', 'Scientific American'], words: ['words', 'Britannica'], wall: ['history', 'NASA'], spiders: ['animals', 'Scientific American'], brain: ['body', 'Scientific American'], bolt: ['weather', 'NOAA'], flat: ['earth', 'NASA'],
+const META = { moon: ['space', 'NASA'], bull: ['animals', 'Britannica'], fish: ['animals', 'University of Plymouth'], toad: ['body', 'NHS'], duck: ['animals', 'University of Salford'], sugar: ['food', 'JAMA'], bat: ['animals', 'Bat Conservation International'], tongue: ['body', 'Britannica'], hair: ['body', 'Mayo Clinic'], knuckle: ['body', 'Johns Hopkins Medicine'], camel: ['animals', 'San Diego Zoo'], cold: ['body', 'NHS'], banana: ['food', 'Kew Gardens'], ostrich: ['animals', 'San Diego Zoo'], penny: ['science', 'Scientific American'], words: ['words', 'Britannica'], wall: ['history', 'NASA'], spiders: ['animals', 'Scientific American'], brain: ['body', 'Scientific American'], bolt: ['weather', 'NOAA'], flat: ['earth', 'NASA'], sses: ['science', 'Understanding Science, UC Berkeley'],
   frogdrink: ['animals', 'Smithsonian'], fishsleep: ['animals', 'National Geographic'], bread: ['animals', 'RSPB'], turtle: ['animals', 'Smithsonian'], tadpole: ['animals', 'Natural History Museum'], dragonfly: ['animals', 'Smithsonian'], boil: ['animals', 'Scientific American'],
   leftbrain: ['body', 'University of Utah'], einstein: ['history', 'Britannica'], senses: ['body', 'Harvard Medical School'], vikings: ['history', 'National Museum of Denmark'], napoleon: ['history', 'Britannica'],
   starfish: ['animals', 'NOAA'], whale: ['animals', 'NOAA'], shark: ['animals', 'Smithsonian'], gull: ['animals', 'Cornell Lab of Ornithology'], octopus: ['animals', 'Smithsonian'], drain: ['science', 'Scientific American'], triangle: ['earth', 'NOAA'],
@@ -1191,8 +1212,12 @@ const BOSSMOVE = {
   hot:      { every: 11, tell: '"It\'s ALWAYS hot. Look, there\'s more of me."', note: 'Mirages look like the boss but pop in one hit. The real one keeps its crown.', go: b => { for (const sg of [-1, 1]) { const a = Math.atan2(b.y - CY, b.x - CX) + sg * .9, e = spawn(b.id, { x: CX + Math.cos(a) * 330, y: CY + Math.sin(a) * 330 }, { kindOf: 'mirage' }); e.life = 7; } G.heatwave = 4; text(b.x, b.y - b.r - 40, 'HEAT WAVE', '#f08a4b', 18, 1.2); } },
   penguin:  { every: 10, tell: '"Watch me SLIDE."', note: 'The Penguin slides right through. Friends it passes get frosted.', go: b => { const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); b.sliding = 1.3; b.sx = Math.cos(a) * 520; b.sy = Math.sin(a) * 520; b.slid = new Set(); } },
   bolt:     { every: 11, tell: '"Lightning NEVER strikes twice."', note: 'The Storm marks spots and strikes them. Twice. Stun it during the tell.', go: b => { const spots = [G.dad, ...G.party.filter(m => m.id !== 'dad')].map(m => ({ x: m.x, y: m.y, who: m })); G.strikes = { spots, t: 0, hits: 0, by: b }; } },
+  // Sir Ever-So-Sure borrows a move from every boss he sent out, and does them faster when he loses his temper
+  sses:     { get every() { return G.boss && G.boss.rage ? 6 : 9; }, get tell() { const k = SSES_MOVES[(sses.n = (sses.n + 1) % SSES_MOVES.length)]; sses.cur = k; return '"' + BOSSMOVE[k].tell.replace(/^"|"$/g, '') + '" (borrowed!)'; },
+              note: 'Sir Ever-So-Sure borrows every boss\'s move. Stun him during the tell to stop it.', go: b => BOSSMOVE[sses.cur].go(b) },
   flat:     { every: 12, tell: '"The world is FLAT. See?"', note: 'The Flat Earth flips the whole backyard over for a moment. Dad never moves, so neither should you.', go: b => { G.flip = 3; text(CX, CY - 120, 'FLIP!', '#fff', 24, 1.2); } },
 };
+const SSES_MOVES = ['wall', 'boil', 'brain', 'triangle', 'hot', 'penguin', 'bolt'], sses = { n: -1, cur: 'wall' };
 // each chapter's myths come with a twist of their own, so a Library book isn't a Backyard book with a new cover:
 // a colour the whole chapter shares (mixed into each myth's own) and one habit the player can read and play around
 const VARIANT = [
@@ -1248,7 +1273,7 @@ const STAGES = [];
 WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
   // each stage brings in the next slice of the chapter's pages and keeps the newest eight, so every myth shows up before the boss
   const N = W.pool.length, prev = w ? WORLDS[w - 1].pool.slice(-2) : [], pool = [...W.pool.slice(0, Math.max(4, Math.ceil(N * (i + 1) / 5))).slice(-8), ...(i >= 2 ? prev : [])];
-  STAGES.push({ w, idx: i, W, name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid,
+  STAGES.push({ w, idx: i, W, name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid, finale: w === WORLDS.length - 1 && i === 4 ? 'sses' : null,
     desc: (i === 4 ? `The chapter boss. ${W.desc}` : i === 2 ? (W.mid ? 'A boss of its own, before the chapter boss.' : 'A rough draft of the chapter boss: smaller, and it never gets to its second act.') : i === 0 ? W.desc : 'A page stage. It ends in a rush of two elites.') + (VARIANT[w] ? ` ${VARIANT[w].em} ${VARIANT[w].name} myths: ${VARIANT[w].desc}` : ''),
     lawn: W.lawn, stone: W.stone, edge: W.edge });
 } });
@@ -2295,7 +2320,8 @@ function spawn(id, at = null, q = {}) {
   if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name;
+    if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
 // ranged myths: a pelter stands at the ring's edge, a spellbook a little further out; both aim at Dad most of the time
@@ -2350,6 +2376,26 @@ function rangedGear(e, x, top, dir) {
   const glow = 4 + w * 9 + Math.sin(G.t * 9) * 1.2, g = ctx.createRadialGradient(wx, wy, 0, wx, wy, glow * 2); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.4, 'rgba(190,150,240,.8)'); g.addColorStop(1, 'rgba(150,100,220,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(wx, wy, glow * 2, 0, 7); ctx.fill();
   if (w && e.tgt) { const P = aimPt(e.tgt); ctx.globalAlpha = .4 + w * .5; ctx.strokeStyle = '#b48be6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(P.x, P.y + (e.tgt === G.dad ? 70 : 16), 30 * (1.6 - w), 0, 7); ctx.stroke(); }
   ctx.restore();
+}
+// Sir Ever-So-Sure in the arena: his drawings, by mood (smug, scribbling a borrowed move, running a slide, shouting in a rage)
+for (const k of ['idle', 'scribble', 'flee', 'shout', 'kind']) art('sses_' + k);
+function drawSses(e) {
+  const pose = e.kind === 'mirage' ? 'idle' : e.sliding > 0 ? 'flee' : e.rage ? 'shout' : e.tellT > 0 ? 'scribble' : 'idle', img = art('sses_' + pose);
+  const r = e.r, h = r * (e.kind === 'mirage' ? 2.5 : 2.9), face = G.dad.x < e.x ? -1 : 1, bob = Math.sin(G.t * 3 + e.walk) * 3, sq = e.tellT > 0 ? Math.sin(G.t * 20) * .03 : 0;
+  ctx.save(); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .8, r * .28, 0, 0, 7); ctx.fill();
+  if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
+  ctx.translate(e.x, e.y + r * .95 + bob * .3); ctx.rotate(e.charging > 0 ? face * .3 : Math.sin(G.t * 2) * .03); ctx.scale(face * (1 + sq), 1 - sq);
+  ctx.drawImage(img, -h / 2, -h, h, h);
+  if (e.hit > 0) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= .45; ctx.drawImage(img, -h / 2, -h, h, h); }
+  ctx.restore();
+  if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', e.x + Math.cos(a) * r * .7, e.y - h * .8 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
+}
+// stage 3: he pops in beside the rough draft, scribbles it, and pops out again
+function drawCameo() {
+  const C = G.cameo; if (!C) return; C.t += 1 / 60; if (C.t > C.life) { G.fx.push({ k: 'puff', x: C.x, y: C.y - 40, vx: 0, vy: -30, t: 0, life: .5, col: '#e6d6fa', r: 26 }); G.cameo = null; return; }
+  const img = art('sses_scribble'); if (!ready(img)) return; const k = Math.min(1, C.t / .25) * Math.min(1, (C.life - C.t) / .25), h = 110 * (.6 + .4 * k), face = C.x < CX ? 1 : -1;
+  ctx.save(); ctx.globalAlpha = k; ctx.translate(C.x, C.y + 20); ctx.scale(face * (1 + Math.sin(C.t * 22) * .03), 1); ctx.drawImage(img, -h / 2, -h, h, h); ctx.restore();
+  if (Math.random() < .3) G.fx.push({ k: 'puff', x: C.x + face * 36 + rnd(-8, 8), y: C.y - 80 + rnd(-8, 8), vx: rnd(-40, 40), vy: rnd(-40, 10), t: 0, life: .4, col: '#6b4fa8', r: rnd(2, 4) });
 }
 function drawEshots() {
   for (const s of G.eshots) {
@@ -2436,6 +2482,12 @@ function kill(e) {
   if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
+  if (e.kind === 'boss' && e.id === G.S.boss && G.S.finale && !G.endless && !G.twist && !G.room && !G.sses) { // the Flat Earth was only his shield
+    G.bossDown = false; G.sses = 'coming'; text(CX, CY - 200, '"My SHIELD!"', '#e6d6fa', 24, 1.6);
+    G.pending.push({ at: G.t + 1.8, fn: () => { const b = spawn(G.S.finale, { x: CX, y: CY - 320 }); b.hp = b.maxhp = b.maxhp * 1.35; b.moveT = 3; G.sses = b; G.shake = .4; sfx('boss');
+      text(CX, CY - 230, '"Fine. I\'ll do it MYSELF."', '#e6d6fa', 20, 2.4); } });
+  }
+  if (e.kind === 'boss' && e.id === 'sses') { G.sses = 'done'; text(G.dad.x, G.dad.y - 120, 'The Kid: "But… WHY are you so sure?"', '#fff', 16, 3); G.pending.push({ at: G.t + 1.6, fn: () => text(CX, CY - 160, '"I… I don\'t know."', '#e6d6fa', 20, 2.6) }); }
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
@@ -2700,7 +2752,7 @@ function update(dt) {
   else {
     G.waveT += dt;
     while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 70) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
-    if (!G.toSpawn.length && (!G.enemies.length || G.wave < S.waves - 1 && G.enemies.length <= 3 && G.waveT > 5)) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = G.enemies.length ? .4 : 1; collectAll(); }
+    if (!G.toSpawn.length && G.sses !== 'coming' && (!G.enemies.length || G.wave < S.waves - 1 && G.enemies.length <= 3 && G.waveT > 5)) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = G.enemies.length ? .4 : 1; collectAll(); }
   }
   // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
   if (G.boss && G.boss.hp > 0) {
@@ -2729,6 +2781,8 @@ function update(dt) {
         if (sp.who === G.dad) { G.hp -= patHit(ST.by.dmg * (ST.hits === 1 ? .7 : .5)); G.dropped = true; G.flash = .25; } else if (sp.who && dist(sp, sp.who) < 30) { sp.who.muted = Math.max(sp.who.muted || 0, 1.5); text(sp.who.x, sp.who.y - 50, 'ZAP', '#ffe36b', 16, 1); } }
       G.shake = Math.max(G.shake, .25); text(CX, CY - 110, ST.hits === 1 ? 'STRIKE!' : 'TWICE!', '#ffe36b', 24, 1); if (ST.hits === 2) G.strikes = null; } }
   // boss phase two at half health: a line, a crowd, and charges come sooner
+  if (G.boss && G.boss.id === 'sses' && G.boss.hp > 0 && !G.boss.rage && G.boss.hp < G.boss.maxhp * .3) { const b = G.boss; b.rage = true; b.moveT = 1; G.shake = .4; G.slowmo = .6; text(b.x, b.y - b.r - 70, '"I\'m right because I\'m RIGHT!"', '#ff9a9a', 19, 2.2);
+    const old = WORLDS.slice(0, -1).flatMap(W => W.pool); for (let j = 0; j < 5; j++) G.toSpawn.unshift({ id: pick(old), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && !G.boss.rough && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.stage ? 3 : 2) + Math.min(5, Math.floor(G.stage / 4)); j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.stage, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
@@ -3367,6 +3421,7 @@ function bossFront(id, r, col) {
   ctx.restore();
 }
 function drawEnemy(e) {
+  if (e.id === 'sses' && ready(art('sses_idle'))) return drawSses(e);
   const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill();
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
@@ -3525,7 +3580,7 @@ function draw() {
   // everyone, back to front
   const things = [...G.enemies.map(e => ({ y: e.y + e.r, e })), ...G.party.map(m => ({ y: m.y + (m.id === 'dad' ? 26 : 4), m }))].sort((a, b) => a.y - b.y);
   for (const t of things) t.e ? drawEnemy(t.e) : drawMember(t.m);
-  drawEshots();
+  drawEshots(); drawCameo();
   for (const s of G.shots) drawShot(s);
   for (const f of G.fx) {
     const p = f.t / f.life;
@@ -3880,22 +3935,51 @@ function startGame(stage, how = {}) { music(STAGES[stage].w);
   else setTimeout(() => { if (G && !G.room && G.t < 3) hint('Myths only get noticed inside the ring'); }, 2200);
   const ck = G.S.w + ':in';
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
+  else if (G.S.finale && !G.endless && !G.twist && !G.room && !save.comics.includes(G.S.w + ':showdown')) { save.comics.push(G.S.w + ':showdown'); persist(); G.paused = true; showComic(G.S.W, 'showdown', () => { if (G) G.paused = false; }); }
 }
 /* ───────── comics: three panels, tap through, always skippable ───────── */
 // the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
 // is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
 let comicDone = null, frames = [], fi = 0, li = 0;
-const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png' };
-function chapterFrames(W, which) {
+const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png', v: 'assets/sses_face.png' };
+const WHO = { d: 'DAD', k: 'THE KID', v: 'SIR EVER-SO-SURE' };
+// Sir Ever-So-Sure, the Big Book of Wrong's own Title Page, is behind it all. In every chapter he pins up a note on the way in,
+// scribbles the rough-draft boss stronger at stage 3, and runs off with a page at the end, which is where the next chapter starts.
+const VILLAIN = [
+  { note: null, cameo: '"Make it WRONGER!"', flee: [['v', '"Ha! One little backyard means NOTHING. The pond is full of things everybody KNOWS."'], ['k', 'Dad! It\'s the Title Page from the book, and he\'s got more pages!'], ['d', 'Sir Ever-So-Sure. He has never once said "I don\'t know." Come on!']], prev: 'Sir Ever-So-Sure leapt the fence with a page of wrong, heading for the pond.' },
+  { note: '"Frogs drink with their MOUTHS. Everyone knows. Signed, S.E.S."', cameo: '"Hotter! Nobody will notice!"', flee: [['v', '"Back to the library! Books never lie, and I am the BEST book."'], ['k', 'He\'s going back to where it all started!'], ['d', 'A book is only as right as the people who check it.']], prev: 'Sir Ever-So-Sure hopped the lily pads back toward town and the library.' },
+  { note: '"You only use ten percent of your brain. I use ELEVEN. S.E.S."', cameo: '"Even LESS brain!"', flee: [['v', '"To sea! Nobody can check the bottom of the ocean!"'], ['k', 'He\'s escaping out of the window with a page!'], ['d', 'People have been checking the ocean for a very long time. Find us a boat.']], prev: 'Sir Ever-So-Sure slid out of the library window and down to the harbour.' },
+  { note: '"Ships VANISH in the Triangle. I read it. Well, I wrote it. S.E.S."', cameo: '"More vanishing!"', flee: [['v', '"Somewhere HOT next. It is always hot in the desert. Always!"'], ['k', 'He\'s paddling away on a book!'], ['d', 'And he\'s about to learn about desert nights.']], prev: 'Sir Ever-So-Sure paddled off on a floating book toward the desert coast.' },
+  { note: '"Deserts are hot. That is the whole POINT of them. S.E.S."', cameo: '"Hotter! HOTTER!"', flee: [['v', '"Brrr. Fine. NORTH! At least I know where penguins live."'], ['k', 'He\'s sneaking off across the frost!'], ['d', 'North. He\'s in for a surprise.']], prev: 'Sir Ever-So-Sure tiptoed north across the frosty dunes.' },
+  { note: '"Penguins live at the North Pole. OBVIOUSLY. S.E.S."', cameo: '"More penguins! Up NORTH!"', flee: [['v', '"South, to the jungle! Where lightning NEVER strikes twice!"'], ['k', 'He\'s sledding away on a page!'], ['d', 'Follow that toboggan!']], prev: 'Sir Ever-So-Sure sledded south on a page, toward the jungle.' },
+  { note: '"Lightning never strikes the same place twice. Write that down. S.E.S."', cameo: '"Never twice! NEVER!"', flee: [['v', '"UP! To the stars! I will show you the flattest idea of ALL!"'], ['k', 'He\'s flying away on a kite made of pages!'], ['d', 'Then we finish this under the stars.']], prev: 'Sir Ever-So-Sure flew up into the night on a kite made of pages.' },
+  { note: '"The Earth is FLAT. Come and look, if you dare. S.E.S."', cameo: '"Flatter! FLATTER!"' },
+];
+// the last stage: a showdown before it, and the ending after it
+const SHOWDOWN = [{ img: 'story_8_boss', lines: [['v', '"So. You popped every page I sent you. It doesn\'t matter. I am SURE."'], ['k', 'Being sure isn\'t the same as being right!'], ['v', '"Behold my shield: the flattest idea of ALL!"'], ['d', 'Pop the shield first. Then we ask him a question.']] }];
+const ENDING = [
+  { img: 'story_end1', lines: [['k', 'But… why are you so sure?'], ['n', 'For the first time ever, Sir Ever-So-Sure had no answer.'], ['v', '"I… I don\'t know."'], ['k', 'That\'s okay! "I don\'t know" is where all the good questions start.']] },
+  { img: 'story_8_out', lines: null },
+  { img: 'story_end2', lines: [['n', 'The old book closed by itself, and its cover turned gold. It wasn\'t the Big Book of Wrong any more.']], big: '<small>The</small>Big Book of Why' },
+  { img: 'story_end3', lines: [['v', '"So… why ARE the stars so far apart?"'], ['d', 'Great question. Lie down, this one takes a while.'], ['n', 'The End. Well, the end of this book.']] },
+];
+function chapterFrames(W, which, recap = true) {
   const n = WORLDS.indexOf(W) + 1, L = W.comic[which];
+  if (which === 'showdown') return SHOWDOWN;
+  if (n === 8 && which === 'out') return ENDING.map(f => f.lines ? f : { img: f.img, lines: L });
+  const V = VILLAIN[n - 1];
+  if (which === 'out') return [{ img: `story_${n}_out`, lines: L }, ...(V.flee ? [{ img: `story_${n}_flee`, lines: V.flee }] : [])];
   if (n === 1 && which === 'in') return [
     { img: 'story_p1', lines: [['n', 'In the window of the town library sits the Big Book of Wrong. Every silly thing anyone ever believed is written inside it.']] },
-    { img: 'story_p2', lines: [['n', 'One evening it burst open, and every wrong page ran off on its own, still sure it was right.']] },
+    { img: 'story_v0', lines: [['n', 'Its Title Page, Sir Ever-So-Sure, had never once said "I don\'t know."'], ['v', '"Why ask questions? I already know EVERYTHING. And soon, so will everybody else!"']] },
+    { img: 'story_p2', lines: [['n', 'One evening he flung the book open, and every wrong page ran off on its own, still sure it was right.']] },
     { img: 'story_1_in', lines: [L[0], L[1]] }, { img: 'story_p3', lines: [L[2]] },
     { img: 'story_p4', lines: [['n', 'Dad, the Kid and a backyard full of friends. Every page they pop turns back into a true fact.']], big: '<small>Why, Dad?</small>Defender' }];
-  return [{ img: `story_${n}_${which}`, lines: L }];
+  // 'in': a "Previously" reminder over the last chapter's escape (left out when the Diary replays the story), then the note he left
+  return [...(recap ? [{ img: `story_${n - 1}_flee`, lines: [['n', 'Previously: ' + VILLAIN[n - 2].prev]], recap: true }] : []),
+    { img: `story_${n}_in`, lines: [['n', 'A note is pinned up where everyone can see it:'], ['v', V.note], ...L] }];
 }
-function showComic(W, which, done) { showFrames(chapterFrames(W, which), WORLDS.indexOf(W) === 0 && which === 'in' ? '📖 The Big Book of Wrong' : `${W.em} Chapter ${WORLDS.indexOf(W) + 1}: ${W.name}${which === 'out' ? ', the end' : ''}`, done); }
+function showComic(W, which, done) { const n = WORLDS.indexOf(W) + 1; showFrames(chapterFrames(W, which), n === 1 && which === 'in' ? '📖 The Big Book of Wrong' : which === 'showdown' ? '🧐 The last page' : n === 8 && which === 'out' ? '📖 The Big Book of Why' : `${W.em} Chapter ${n}: ${W.name}${which === 'out' ? ', the end' : ''}`, done); }
 function showFrames(list, title, done) {
   comicDone = done; frames = list; fi = 0; li = 0; $('#comicTitle').textContent = title;
   for (const f of list) { const im = new Image(); im.src = `assets/${f.img}.jpg`; } // warm the next pictures
@@ -3905,13 +3989,18 @@ function showFrame() { const f = frames[fi], im = $('#storyImg'); im.classList.r
 function comicNext() {
   if (li >= frames[fi].lines.length) { if (fi + 1 >= frames.length) return; fi++; li = 0; showFrame(); sfx("book"); }
   const [who, line] = frames[fi].lines[li++], d = document.createElement('div');
-  d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : 'narr');
-  d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${who === 'd' ? 'DAD' : 'THE KID'}</b>`}${line}</div>`;
+  d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : who === 'v' ? 'vil' : 'narr');
+  d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${WHO[who]}</b>`}${line}</div>`;
   $('#strip').appendChild(d); say(line);
   const end = fi + 1 >= frames.length && li >= frames[fi].lines.length; $('#comicGo').hidden = !end; $('#comicTap').hidden = end;
 }
 // the Diary can play everything seen so far, from the prologue on
-function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
+function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'showdown', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w, false)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
+// after the last page: a short roll of who did what, and what's left to play
+function showCredits(done) {
+  const m = $('#creditsm'); m.hidden = false; const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
+  $('#creditsGo').onclick = () => { m.hidden = true; done && done(); };
+}
 function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && speechSynthesis.cancel(); } catch (e) {} const f = comicDone; comicDone = null; if (f) f(); }
 $('#comicm').onclick = e => { if (e.target.closest('button')) return; comicNext(); };
 $('#bookStory').onclick = playStory;
@@ -3973,7 +4062,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
   $('#adRow').hidden = !(adsOn() && k >= 60); $('#adDouble').disabled = false; $('#adDouble').onclick = () => watchAd('Doubling the coins is a grown-up\'s call.').then(ok => { if (ok) { setWallet({ coins: save.coins + k }); $('#adRow').hidden = true; toastLine(`🪙 Doubled! +${k} coins.`); } });
-  if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => $('#clearm').hidden = false); } else $('#clearm').hidden = false;
+  if (G.S.idx === 4 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); showComic(G.S.W, 'out', () => G.S.finale ? showCredits(() => $('#clearm').hidden = false) : $('#clearm').hidden = false); } else $('#clearm').hidden = false;
 }
 // every friend who came grows a little; returns a line for the scoreboard when someone levelled up or unlocked something
 function giveXp(cleared) {
@@ -4018,7 +4107,10 @@ function drawMap() {
   x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); const [sx, sy] = pinXY(0); x.moveTo(sx, sy);
   for (let i = 1; i < STAGES.length; i++) { const [ax, ay] = pinXY(i - 1), [bx, by] = pinXY(i); x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 30 : -30), (ay + by) / 2, bx, by); }
   x.stroke(); x.setLineDash([]);
-  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText('the last page of the Big Book of Wrong', 220, 24);
+  { const done = save.cleared.includes(STAGES.length - 1), at = done ? STAGES.length - 1 : Math.min(STAGES.length - 1, Math.floor(save.unlocked / 5) * 5 + 4), img = art(done ? 'sses_kind' : 'sses_flee');
+    if (!done) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
+    if (ready(img)) { const [px, py] = pinXY(at); x.drawImage(img, px + 18, py - 66, 58, 58); } }
+  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText(save.cleared.includes(STAGES.length - 1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
 }
 // one chapter's strip of the map, 440 x BAND, origin at its top-left: sky and ground, then the things that live there
 function drawBand(x, W, w) {
@@ -4592,7 +4684,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE };
+if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start
