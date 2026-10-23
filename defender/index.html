@@ -61,6 +61,7 @@
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #3a2c20; box-shadow: 0 6px 0 #3a2c20; position: relative; transition: transform 3.2s cubic-bezier(.15,.9,.25,1); } .wheel span { position: absolute; left: 50%; top: 50%; font-size: 24px; width: 40px; margin: -20px; text-align: center; }
   .odds { text-align: left; margin-top: 6px; font: 400 15px/1.3 "Patrick Hand", cursive; } .odds summary { font: 700 14px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
   .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 400 21px/1.3 "Patrick Hand", cursive; margin: 0 0 6px; }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
   .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
@@ -815,6 +816,14 @@
       <div class="row exit"><button class="btn ghost" id="challClose">Done</button></div>
     </div>
   </div>
+  <div class="modal" id="newsm" hidden>
+    <div class="panel newsp" style="text-align:center">
+      <div class="cbanner">✨ New!</div>
+      <div class="newsem" id="newsEm"></div>
+      <p class="newst" id="newsText"></p>
+      <div class="row"><button class="btn green" id="newsOk">Got it</button></div>
+    </div>
+  </div>
   <div class="modal" id="cloudm" hidden>
     <div class="panel" style="text-align:center">
       <h2 class="display">☁️ Another saved game</h2>
@@ -924,6 +933,8 @@ const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
 /* ───────── scale the 440x760 frame to the window ───────── */
+// myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
+const TUNE = { hp: 1, hs: 0, dmg: 1, ds: 0 };
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
@@ -1429,7 +1440,8 @@ const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // friend has joined (★1 to ★5, +4% Power and Quick each). Pages are earned in play, never sold.
 const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 30, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 60, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 120, mul: 1.2 }];
 const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2, shelly: 0, goldie: 0, prickles: 1, jelly: 1, echo: 2, inky: 3, chroma: 3 };
-const STAR_COST = [0, 6, 10, 14, 20], STAR_MAX = 5; // pages to go from ★n to ★n+1, by current star
+const STAR_COST = [0, 6, 10, 14, 20], STAR_MAX = 5, DAD_STAR = [0, 12, 24, 36, 48]; // Dad's pages come from facts, so his stars land across the whole story
+const starCost = id => (id === 'dad' ? DAD_STAR : STAR_COST)[fstars(id)]; // pages to go from ★n to ★n+1, by current star
 const tierOf = id => TIER[CTIER[id] || 0];
 const pagesOf = id => (save.pages || {})[id] || 0;
 const fstars = id => { const c = chr(id); return c.own ? (c.star || 1) : 0; };
@@ -1442,7 +1454,7 @@ function addPages(id, n) {
   if (!c.own && save.pages[id] >= tierOf(id).pages) { save.pages[id] -= tierOf(id).pages; c.own = true; c.star = 1; if (save.party.length < MAX_COMPANIONS && !save.party.includes(id)) save.party.push(id); persist(); return true; }
   persist(); return false;
 }
-function starUp(id) { const c = chr(id), st = fstars(id), cost = STAR_COST[st]; if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
+function starUp(id) { const c = chr(id), st = fstars(id), cost = starCost(id); if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
 // the friend the story is building toward: the next one to join, in the order they used to join for free
 // elements: five on a wheel. A myth hit by one element and then, within a moment, by its neighbour on the wheel
 // sets off a reaction. Two friends of the same element in the party hit 10% harder together.
@@ -2252,10 +2264,10 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
+  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = TUNE.hp * (1 + G.stage * TUNE.hs) * (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg, xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * TUNE.dmg * (1 + G.stage * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
@@ -2715,7 +2727,7 @@ function update(dt) {
 function collectAll() { for (const o of G.orbs) o.pull = true; }
 
 /* ───────── level up & cards ───────── */
-function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(3 + G.lvl * 2); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
+function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(4 + G.lvl * 2.6); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
@@ -3638,7 +3650,10 @@ function loop(ts) {
 
 /* ───────── flow ───────── */
 const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store', '#missions'];
-function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null;
+// one "New!" card for each thing that opened, on the way back home
+function showNews() { const q = save.news || []; if (!q.length || !$('#newsm').hidden || [...document.querySelectorAll('.modal')].some(m => !m.hidden)) return;
+  const t = q[0], m = t.match(/^(\S+)\s+(.*)$/); $('#newsEm').textContent = m ? m[1] : '✨'; $('#newsText').textContent = m ? m[2] : t; say(m ? m[2] : t); $('#newsm').hidden = false; }
+function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; if (id === '#title') setTimeout(showNews, 500);
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
   if (on) { navDots(); updateQuickPlay(); } }
 // Daily Myth: one cleared stage a day with a twist, the same for everyone that day. A small prize the first time, nothing
@@ -3670,7 +3685,7 @@ function updateModes() {
 // Backyard Patrol: rewards build up while you're away (up to 12 hours), and two free quick patrols a day hand over two
 // hours' worth at once. There's no energy to run out of: kids can play as much or as little as they like.
 const PATROL_CAP = 12, QUICK_PER_DAY = 2, QUICK_H = 2;
-function patrolRate() { const P = save.cleared.length; return { coins: 40 + 8 * P, xp: 30 + 4 * P }; }
+function patrolRate() { const P = save.cleared.length; return { coins: 10 + 3 * P, xp: Math.round(4 + P / 2) }; }
 function patrolPay(h) { const R = patrolRate(); return { coins: Math.round(R.coins * h), xp: Math.round(R.xp * h), blank: Math.floor(h / 3), gems: Math.floor(h / 4) * 5 }; }
 const patrolState = () => save.patrol || (save.patrol = { t: Date.now(), qd: '', qn: 0 });
 const patrolHours = () => Math.min(PATROL_CAP, (Date.now() - patrolState().t) / 3.6e6);
@@ -3812,8 +3827,10 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
   if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
-  if (first) notes.push(...newUnlocks().map(t => t.replace(/\.$/, '')));
-  if (first && CHESTS.some(C => C.ok(G.S.w) && !chestGot(G.S.w, C.k))) notes.push('🎁 A Chapter Chest is ready on the World Map');
+  // what just opened is shown on the home screen, one card at a time, instead of in this already-busy card
+  if (first) { const nu = newUnlocks(); if (nu.length) save.news = [...(save.news || []), ...nu]; }
+  { const noted = save.chestNoted || (save.chestNoted = []), fresh = CHESTS.filter(C => C.ok(G.S.w) && !chestGot(G.S.w, C.k) && !noted.includes(G.S.w + ':' + C.k));
+    if (fresh.length) { fresh.forEach(C => noted.push(G.S.w + ':' + C.k)); notes.push('🎁 A Chapter Reward is ready: tap 🎁 on the home screen'); } }
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
   if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150, a 🎟️ Library Card and a 📘 Skill Book. A new one tomorrow.'); }
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
@@ -3989,7 +4006,7 @@ function outfitH(id) {
   return h + '</div>';
 }
 // a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
-const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= STAR_COST[st] : pagesOf(id) >= tierOf(id).pages; };
+const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= starCost(id) : pagesOf(id) >= tierOf(id).pages; };
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
   if (!partySel) { // the grid: the party on top, then everyone
@@ -4015,7 +4032,7 @@ function buildParty() {
     else html += `<button class="btn small" data-join="${id}">Bring in</button>`;
     html += '</div>';
     if (c.own) html += outfitH(id);
-    if (id === 'dad') { const st = fstars('dad'), need = STAR_COST[st], have = pagesOf('dad');
+    if (id === 'dad') { const st = fstars('dad'), need = starCost('dad'), have = pagesOf('dad');
       html += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>${st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
       if (st < STAR_MAX && have + (save.blank || 0) >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
@@ -4242,7 +4259,7 @@ function checkDaily() {
   const day = save.daily.streak % 7;
   $('#dailySub').textContent = save.daily.streak ? `Day ${day + 1} of 7. Come back any day for the next one.` : 'A little something for coming by.';
   $('#days').innerHTML = DAILY.map((d, i) => `<div class="day ${i < day ? 'got' : i === day ? 'now' : ''}"><span class="ie">${d[0]}</span>Day ${i + 1}<br>${d[1]}</div>`).join('');
-  $('#dailyClaim').onclick = () => { const r = DAILY[day][2]; save.blank = (save.blank || 0) + (r.blank || 0); setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
+  $('#dailyClaim').onclick = () => { setTimeout(showNews, 600); const r = DAILY[day][2]; save.blank = (save.blank || 0) + (r.blank || 0); setWallet({ coins: save.coins + (r.coins || 0), gems: save.gems + (r.gems || 0), tix: save.tix + (r.tix || 0) }); save.daily = { last: today(), streak: save.daily.streak + 1 }; persist(); $('#dailym').hidden = true; };
   $('#dailym').hidden = false;
 }
 
@@ -4409,6 +4426,7 @@ function buildTree() {
 }
 function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $('#treem .panel').scrollTop = 0; }
 $('#tClose').onclick = () => { $('#treem').hidden = true; };
+$('#newsOk').onclick = () => { (save.news || []).shift(); persist(); $('#newsm').hidden = true; setTimeout(showNews, 250); };
 // every pop-up with a plain way out gets a big ✕ in the corner, and a tap on the dark area outside does the same
 const XCLOSE = { patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
 for (const [id, sel] of Object.entries(XCLOSE)) { const m = $('#' + id), p = m.querySelector('.panel'), x = document.createElement('button');
@@ -4441,7 +4459,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start
