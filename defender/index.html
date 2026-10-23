@@ -547,7 +547,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 54</div>
+    <div class="build">build 55</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -934,7 +934,8 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 
 /* ───────── scale the 440x760 frame to the window ───────── */
 // myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
-const TUNE = { hp: 1, hs: 0, dmg: 1, ds: 0 };
+const tuneIn = () => Math.min(1, Math.max(0, G.stage - 4) / 5);
+const TUNE = { hp: 1.8, hs: .04, dmg: 1.1, ds: .01 }; // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
@@ -2264,10 +2265,10 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
-  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = TUNE.hp * (1 + G.stage * TUNE.hs) * (1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
+  const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + (TUNE.hp - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.hs) * ( /* eased in over chapter 2 */ 1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * TUNE.dmg * (1 + G.stage * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
@@ -3651,7 +3652,7 @@ function loop(ts) {
 /* ───────── flow ───────── */
 const SCREENS = ['#title', '#map', '#book', '#shop', '#partyScreen', '#items', '#store', '#missions'];
 // one "New!" card for each thing that opened, on the way back home
-function showNews() { const q = save.news || []; if (!q.length || !$('#newsm').hidden || [...document.querySelectorAll('.modal')].some(m => !m.hidden)) return;
+function showNews() { const q = save.news || []; if (!q.length || mode !== 'title' || $('#title').hidden || !$('#newsm').hidden || [...document.querySelectorAll('.modal')].some(m => !m.hidden)) return;
   const t = q[0], m = t.match(/^(\S+)\s+(.*)$/); $('#newsEm').textContent = m ? m[1] : '✨'; $('#newsText').textContent = m ? m[2] : t; say(m ? m[2] : t); $('#newsm').hidden = false; }
 function showScreen(id) { for (const s of SCREENS) $(s).hidden = s !== id; $('#hud').hidden = id !== null; if (id === '#title') setTimeout(showNews, 500);
   const tb = $('#tabbar'), on = !!TAB_OF[id]; if (tb) { tb.hidden = !on; $('#frame').classList.toggle('tabs-on', on); tb.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === TAB_OF[id])); }
@@ -4319,7 +4320,7 @@ $('#bookRoom').onclick = () => openRoom();
 function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // suggested Power for a stage: what a team that clears it with random picks has (from the simulator), a little more for
 // chapter bosses, and a third more on Hard
-function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 18 + Math.max(0, i - 20) * 12; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
+function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
 function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
@@ -4428,7 +4429,7 @@ function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $(
 $('#tClose').onclick = () => { $('#treem').hidden = true; };
 $('#newsOk').onclick = () => { (save.news || []).shift(); persist(); $('#newsm').hidden = true; setTimeout(showNews, 250); };
 // every pop-up with a plain way out gets a big ✕ in the corner, and a tap on the dark area outside does the same
-const XCLOSE = { patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
+const XCLOSE = { newsm: '#newsOk', patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
 for (const [id, sel] of Object.entries(XCLOSE)) { const m = $('#' + id), p = m.querySelector('.panel'), x = document.createElement('button');
   x.className = 'xbtn'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close'); x.onclick = () => $(sel).click(); p.prepend(x); p.classList.add('hasx');
   m.addEventListener('click', e => { if (e.target === m) $(sel).click(); }); }
