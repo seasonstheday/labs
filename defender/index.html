@@ -2488,7 +2488,7 @@ function kill(e) {
       text(CX, CY - 230, '"Fine. I\'ll do it MYSELF."', '#e6d6fa', 20, 2.4); } });
   }
   if (e.kind === 'boss' && e.id === 'sses') { G.sses = 'done'; text(G.dad.x, G.dad.y - 120, 'The Kid: "But… WHY are you so sure?"', '#fff', 16, 3); G.pending.push({ at: G.t + 1.6, fn: () => text(CX, CY - 160, '"I… I don\'t know."', '#e6d6fa', 20, 2.6) }); }
-  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); toast(e.M); }
+  if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); if (G.sses === 'coming') G.pending.push({ at: G.t + 4.5, fn: () => toast(e.M) }); else toast(e.M); } // the shield's fact card waits until he has made his entrance
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
   $('#bustN').textContent = G.busted;
