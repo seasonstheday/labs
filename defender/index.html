@@ -62,6 +62,7 @@
   .odds { text-align: left; margin-top: 6px; font: 400 15px/1.3 "Patrick Hand", cursive; } .odds summary { font: 700 14px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
   .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
   .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 400 21px/1.3 "Patrick Hand", cursive; margin: 0 0 6px; }
+  .itile .rpips { position: absolute; top: 3px; left: 5px; font-size: 9px; letter-spacing: -1px; color: #3a2c20; opacity: .7; }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
   .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
@@ -549,7 +550,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 56</div>
+    <div class="build">build 58</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -909,7 +910,7 @@
     <div class="panel">
       <h2 class="display">How to play</h2>
       <div class="howcards">
-        <div class="hc"><i>🧔🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
+        <div class="hc"><i><img class="fim" src="assets/dad_face.png" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
         <div class="hc"><i>👆</i><b>Tap a myth</b> and everyone goes after it.</div>
         <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
         <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
@@ -984,7 +985,7 @@ const MYTHS = {
   brain:   { em: '🧠', name: 'Ten-Percent Brain',     myth: 'We only use 10% of our brains.', fact: 'You use all of your brain, just not all at once. Brain scans show nearly every part lights up every day.', kind: 'boss', col: '#d67a9a' },
   bolt:    { em: '⚡', name: 'Strikes-Once Storm',    myth: 'Lightning never strikes the same place twice.', fact: 'Lightning loves the same place. The Empire State Building gets hit over 20 times a year.', kind: 'boss', col: '#6c7a9c' },
   // the Pond
-  frogdrink: { em: '🐸', name: 'Thirsty Frog',          myth: 'Frogs drink water through their mouths.', fact: 'Most frogs don\'t drink with their mouths. They soak water in through a patch of thin skin on their bellies.', kind: 'normal', col: '#9ccf7a' },
+  frogdrink: { em: '🐸', name: 'Thirsty Frog',          myth: 'Frogs drink water through their mouths.', fact: 'Most frogs don\'t drink with their mouths. They soak water in through a patch of thin skin on their bellies.', kind: 'pelter', col: '#9ccf7a' },
   fishsleep: { em: '🐠', name: 'Never-Sleeps Fish',     myth: 'Fish never sleep.', fact: 'Fish rest with their eyes open, because they have no eyelids. Some tuck themselves into the sand for the night.', kind: 'fast', col: '#f3b16a' },
   bread:     { em: '🍞', name: 'Bread for Ducks',       myth: 'Bread is good food for ducks.', fact: 'Bread fills a duck up but has almost nothing it needs. Peas, oats and corn are proper duck snacks.', kind: 'gossip', col: '#e2c48c' },
   turtle:    { em: '🐢', name: 'Shell-Less Turtle',     myth: 'A turtle can crawl out of its shell.', fact: 'The shell is part of the turtle\'s skeleton, ribs and spine included. Leaving it would be like you leaving your bones.', kind: 'hardcover', col: '#7fa86b' },
@@ -992,7 +993,7 @@ const MYTHS = {
   dragonfly: { em: '🪰', name: 'Stinging Dragonfly',    myth: 'Dragonflies sting.', fact: 'Dragonflies have no stinger. They are harmless to people and eat lots of mosquitoes.', kind: 'flyer', col: '#7fc3d6' },
   boil:      { em: '🍲', name: 'The Boiling Frog',      myth: 'A frog in slowly warming water will sit there until it boils.', fact: 'A frog jumps out as soon as the water gets uncomfortable. The story is about people who ignore slow changes, not real frogs.', kind: 'boss', col: '#c86a4a' },
   // the Library
-  leftbrain: { em: '🧩', name: 'Left-Brain, Right-Brain', myth: 'People are either left-brained or right-brained.', fact: 'Scans of over a thousand brains found no one who favours one side. Both halves work together on almost everything.', kind: 'normal', col: '#d8a0c8' },
+  leftbrain: { em: '🧩', name: 'Left-Brain, Right-Brain', myth: 'People are either left-brained or right-brained.', fact: 'Scans of over a thousand brains found no one who favours one side. Both halves work together on almost everything.', kind: 'caster', col: '#d8a0c8' },
   einstein:  { em: '🧮', name: 'Flunked-Maths Einstein', myth: 'Einstein failed maths at school.', fact: 'Einstein had mastered calculus by fifteen and got top marks. Shown the rumour, he laughed and said he never failed.', kind: 'hardcover', col: '#c9c9c9' },
   senses:    { em: '👃', name: 'Five Senses',           myth: 'Humans have exactly five senses.', fact: 'You have more: balance, temperature, pain, hunger, and knowing where your arms are without looking.', kind: 'splitter', col: '#f0c080' },
   vikings:   { em: '⛑️', name: 'Horned Viking',         myth: 'Vikings wore horned helmets.', fact: 'No Viking helmet with horns has ever been found. The horns came from an opera costume in the 1870s.', kind: 'tank', col: '#8aa0b8' },
@@ -1006,7 +1007,7 @@ const MYTHS = {
   drain:     { em: '🌀', name: 'Backwards Drain',       myth: 'Water swirls the other way down the drain in Australia.', fact: 'The Earth\'s spin is far too weak to steer a sink. The shape of the basin and how you pulled the plug decide the swirl.', kind: 'rumour', col: '#8fd0e0' },
   triangle:  { em: '🔺', name: 'The Bermuda Triangle',  myth: 'Ships and planes vanish in the Bermuda Triangle.', fact: 'Insurers checked: no more ships go missing there than in any other busy patch of ocean. The triangle isn\'t even on official maps.', kind: 'boss', col: '#4e7fa8' },
   // the Desert
-  cactus:    { em: '🌵', name: 'Cactus Canteen',        myth: 'You can drink water from any cactus.', fact: 'Most cactus pulp is bitter and makes you ill. Desert travellers carry water and leave the cacti alone.', kind: 'normal', col: '#79b27a' },
+  cactus:    { em: '🌵', name: 'Cactus Canteen',        myth: 'You can drink water from any cactus.', fact: 'Most cactus pulp is bitter and makes you ill. Desert travellers carry water and leave the cacti alone.', kind: 'pelter', col: '#79b27a' },
   snake:     { em: '🐍', name: 'Slimy Snake',           myth: 'Snakes are slimy.', fact: 'Snake skin is dry and smooth, like a leather belt. The shine comes from scales, not slime.', kind: 'fast', col: '#b7a860' },
   quicksand: { em: '⏳', name: 'Hungry Quicksand',      myth: 'Quicksand sucks you under.', fact: 'You float in quicksand, because you are lighter than it. Lean back, wiggle slowly, and you drift out.', kind: 'dasher', col: '#d9c08a' },
   mirage:    { em: '🌫️', name: 'Mind-Trick Mirage',     myth: 'A mirage is a trick of a tired mind.', fact: 'A mirage is real light bending in hot air. Cameras photograph them too.', kind: 'rumour', col: '#e8d6a8' },
@@ -1022,7 +1023,7 @@ const MYTHS = {
   bearfur:   { em: '❄️', name: 'White-Fur Bear',        myth: 'Polar bear fur is white.', fact: 'Each hair is clear and hollow. It scatters light so the bear looks white, and the skin underneath is black.', kind: 'gossip', col: '#f4f8fb' },
   penguin:   { em: '🐧', name: 'The North Pole Penguin', myth: 'Penguins live at the North Pole.', fact: 'Almost every wild penguin lives south of the equator. Only Galápagos penguins live right on it, and none live anywhere near the North Pole.', kind: 'boss', col: '#4a5a70' },
   // the Jungle
-  monkey:    { em: '🐒', name: 'Banana Monkey',         myth: 'Monkeys mostly eat bananas.', fact: 'Wild monkeys hardly ever find a banana. They eat leaves, fruit, seeds and bugs. One English zoo stopped giving its monkeys bananas: too sugary.', kind: 'fast', col: '#b07a4a' },
+  monkey:    { em: '🐒', name: 'Banana Monkey',         myth: 'Monkeys mostly eat bananas.', fact: 'Wild monkeys hardly ever find a banana. They eat leaves, fruit, seeds and bugs. One English zoo stopped giving its monkeys bananas: too sugary.', kind: 'pelter', col: '#b07a4a' },
   raindrop:  { em: '💧', name: 'Teardrop Rain',         myth: 'Raindrops are shaped like teardrops.', fact: 'Falling raindrops are round, then squash flat on the bottom like a burger bun as the air pushes up.', kind: 'normal', col: '#7fb8e6' },
   butterfly: { em: '🦋', name: 'Fragile Butterfly',     myth: 'Touching a butterfly\'s wings kills it.', fact: 'A touch rubs off a few scales, but the butterfly flies on. Be gentle anyway; wings tear.', kind: 'flyer', col: '#f0a0c0' },
   sloth:     { em: '🦥', name: 'Lazy Sloth',            myth: 'Sloths are lazy.', fact: 'Sloths move slowly to save energy, because leaves give them very little. They\'re surprisingly good swimmers, too.', kind: 'hardcover', col: '#a89a7a' },
@@ -1061,7 +1062,7 @@ const MYTHS = {
   poolpee: { em: '🛟', name: 'Tattletale Pool', myth: 'Pool water changes colour if someone pees in it.', fact: 'There is no such dye. Pools tell that story so nobody tries it.', kind: 'rumour', col: '#f2c14e' },
   redeyes: { em: '👁️', name: 'Chlorine Eyes', myth: 'Chlorine on its own is what makes your eyes red in the pool.', fact: 'Red eyes come from chlorine mixing with the pee, sweat and dirt that swimmers bring in. A shower before you swim helps.', kind: 'gossip', col: '#e88a8a' },
   // the Library
-  dimlight: { em: '🕯️', name: 'Dim-Light Reading', myth: 'Reading in dim light ruins your eyes.', fact: 'It can make your eyes tired, but it does no lasting harm. A good lamp just makes reading comfier.', kind: 'normal', col: '#e8c97a' },
+  dimlight: { em: '🕯️', name: 'Dim-Light Reading', myth: 'Reading in dim light ruins your eyes.', fact: 'It can make your eyes tired, but it does no lasting harm. A good lamp just makes reading comfier.', kind: 'pelter', col: '#e8c97a' },
   tvclose: { em: '📺', name: 'Square Eyes', myth: 'Sitting close to the TV damages your eyes.', fact: 'It doesn\'t. Children can focus up close better than grown-ups, so they often sit near. Eyes can still get tired, so take breaks.', kind: 'fast', col: '#8fa0b8' },
   blood: { em: '🩸', name: 'Blue Blood', myth: 'The blood in your veins is blue.', fact: 'Blood is always red: dark red in your veins, bright red in your arteries. Veins only look blue because of how light shines through your skin.', kind: 'normal', col: '#c94a4a' },
   twins: { em: '👯', name: 'Copycat Twins', myth: 'Identical twins have the same fingerprints.', fact: 'Fingerprints form from tiny bumps and pushes before you\'re born, so even identical twins have different ones.', kind: 'splitter', col: '#d9a0c0' },
@@ -1079,7 +1080,7 @@ const MYTHS = {
   whalefish: { em: '🐳', name: 'Fish-Shaped Whale', myth: 'Whales are fish.', fact: 'Whales are mammals, like us. They breathe air, have warm blood and feed their babies milk.', kind: 'tank', col: '#6f9fd0' },
   dolphin: { em: '🐬', name: 'No-Sleep Dolphin', myth: 'Dolphins never sleep.', fact: 'Dolphins sleep with half their brain at a time. The other half keeps them breathing and watching for danger.', kind: 'fast', col: '#8ab8d8' },
   bluesea: { em: '💙', name: 'Sky-Mirror Sea', myth: 'The sea is blue only because it reflects the sky.', fact: 'Water itself soaks up red light and leaves the blue. That\'s why deep, clean water looks blue even on a cloudy day.', kind: 'splitter', col: '#4f8fc0' },
-  octoarms: { em: '🦑', name: 'Eight Tentacles', myth: 'An octopus has eight tentacles.', fact: 'An octopus has eight arms. Tentacles are longer, with suckers only at the tip. Squid have two tentacles as well as eight arms.', kind: 'normal', col: '#e090a0' },
+  octoarms: { em: '🦑', name: 'Eight Tentacles', myth: 'An octopus has eight tentacles.', fact: 'An octopus has eight arms. Tentacles are longer, with suckers only at the tip. Squid have two tentacles as well as eight arms.', kind: 'pelter', col: '#e090a0' },
   coral: { em: '🪨', name: 'Rocky Coral', myth: 'Coral is a rock or a plant.', fact: 'Coral is made of tiny animals called polyps. Each builds a stony cup around itself, and millions together make a reef.', kind: 'hardcover', col: '#f0a090' },
   treasure: { em: '🏴‍☠️', name: 'Buried Treasure', myth: 'Pirates buried their treasure on islands.', fact: 'Real pirates almost never buried treasure. They spent or shared it quickly. The idea comes mostly from the book "Treasure Island".', kind: 'swarm', col: '#e6c35a' },
   // the Desert
@@ -1087,17 +1088,17 @@ const MYTHS = {
   snakejaw: { em: '🥚', name: 'Unhinged Snake', myth: 'Snakes unhinge their jaws to swallow big meals.', fact: 'A snake\'s jaw never comes apart. The two halves of its lower jaw are joined by stretchy tissue, so they spread wide.', kind: 'tank', col: '#a8b060' },
   sandy: { em: '🏖️', name: 'All-Sand Desert', myth: 'Deserts are mostly sand.', fact: 'Most deserts are rock and gravel. Sand dunes cover only a small part, about a tenth to a fifth of the world\'s deserts.', kind: 'splitter', col: '#e8cf98' },
   greensahara: { em: '🌿', name: 'Forever Desert', myth: 'The Sahara has always been a desert.', fact: 'Thousands of years ago the Sahara was green, with lakes, grass, hippos and giraffes. People painted them on the rocks.', kind: 'hardcover', col: '#9cc07a' },
-  curse: { em: '🏺', name: 'Mummy\'s Curse', myth: 'Everyone who opened Tutankhamun\'s tomb was cursed.', fact: 'Most of the team lived long lives. Howard Carter, who found the tomb, lived for more than fifteen years afterwards.', kind: 'rumour', col: '#c89a5a' },
+  curse: { em: '🏺', name: 'Mummy\'s Curse', myth: 'Everyone who opened Tutankhamun\'s tomb was cursed.', fact: 'Most of the team lived long lives. Howard Carter, who found the tomb, lived for more than fifteen years afterwards.', kind: 'caster', col: '#c89a5a' },
   sphinx: { em: '🗿', name: 'Napoleon\'s Nose', myth: 'Napoleon\'s soldiers shot the nose off the Sphinx.', fact: 'Drawings made in the 1730s, long before Napoleon\'s army arrived in 1798, already show the Sphinx without a nose.', kind: 'normal', col: '#d8b880' },
   vulture: { em: '🦅', name: 'Circling Vulture', myth: 'Vultures circle over an animal that is about to die.', fact: 'Vultures circle to ride rising warm air while they look, and sniff, for food. They aren\'t waiting for anyone.', kind: 'flyer', col: '#8a7060' },
   diamond: { em: '💎', name: 'Coal Diamond', myth: 'Diamonds are made from squashed coal.', fact: 'Most diamonds formed deep underground from carbon, long before there were land plants to turn into coal.', kind: 'tank', col: '#b8e0f0' },
   // the Arctic
-  frostbite: { em: '🧤', name: 'Snow-Rub Cure', myth: 'Rubbing snow on frostbite warms it up.', fact: 'Rubbing frozen skin hurts it more. Warm it slowly with body heat or warm (not hot) water, and get help.', kind: 'normal', col: '#c8d8e8' },
+  frostbite: { em: '🧤', name: 'Snow-Rub Cure', myth: 'Rubbing snow on frostbite warms it up.', fact: 'Rubbing frozen skin hurts it more. Warm it slowly with body heat or warm (not hot) water, and get help.', kind: 'pelter', col: '#c8d8e8' },
   wolfmoon: { em: '🐺', name: 'Moon-Howling Wolf', myth: 'Wolves howl at the Moon.', fact: 'Wolves howl to call their pack and tell other wolves to keep away. They point their noses up so the sound carries far.', kind: 'dasher', col: '#8a98a8' },
   narwhal: { em: '🦄', name: 'Unicorn Horn', myth: 'A narwhal\'s horn is a horn.', fact: 'It\'s a tooth! A long spiral tusk that grows right through the narwhal\'s upper lip.', kind: 'fast', col: '#b8c8e0' },
   leftpaw: { em: '🐾', name: 'Lefty Polar Bear', myth: 'Polar bears are all left-handed.', fact: 'Scientists who watch polar bears found they use both paws.', kind: 'gossip', col: '#eef2f6' },
   iceberg: { em: '🏔️', name: 'Salty Iceberg', myth: 'Icebergs are frozen seawater.', fact: 'Icebergs break off glaciers, which are built from snow. So an iceberg is fresh water, even though it floats in the sea.', kind: 'tank', col: '#c8e8f4' },
-  alwaysdark: { em: '🌌', name: 'Always-Dark Arctic', myth: 'It\'s dark all the time in the Arctic.', fact: 'In winter it stays dark for weeks, but in summer the Sun doesn\'t set at all. It\'s called the midnight sun.', kind: 'rumour', col: '#5a6a9a' },
+  alwaysdark: { em: '🌌', name: 'Always-Dark Arctic', myth: 'It\'s dark all the time in the Arctic.', fact: 'In winter it stays dark for weeks, but in summer the Sun doesn\'t set at all. It\'s called the midnight sun.', kind: 'caster', col: '#5a6a9a' },
   owlhead: { em: '🦉', name: 'Spin-Around Owl', myth: 'Owls can turn their heads all the way round.', fact: 'Owls turn their heads about three-quarters of the way round, 270 degrees. That\'s still far more than you can!', kind: 'flyer', col: '#d8d0c0' },
   toocold: { em: '☃️', name: 'Too Cold to Snow', myth: 'It can be too cold to snow.', fact: 'It can snow at almost any temperature below freezing. Very cold air just holds less water, so the snow is lighter.', kind: 'swarm', col: '#e0eef8' },
   // the Jungle
@@ -1108,7 +1109,7 @@ const MYTHS = {
   lionjungle: { em: '🦁', name: 'King of the Jungle', myth: 'Lions live in the jungle.', fact: 'Lions live on open grasslands called savannas. Tigers and leopards are the big cats you might meet in a jungle.', kind: 'dasher', col: '#e0b060' },
   pineapple: { em: '🍍', name: 'Pineapple Tree', myth: 'Pineapples grow on trees.', fact: 'Each pineapple grows on top of a small, spiky plant on the ground, and takes about two years.', kind: 'normal', col: '#f0c850' },
   peanut: { em: '🥜', name: 'Not-a-Nut Peanut', myth: 'Peanuts are nuts.', fact: 'Peanuts are legumes, cousins of peas and beans. They grow underground.', kind: 'swarm', col: '#d0a870' },
-  clapcloud: { em: '🌩️', name: 'Bumping Clouds', myth: 'Thunder is the sound of clouds bumping together.', fact: 'Lightning heats the air hotter than the surface of the Sun in a flash. The air bursts outward with a BOOM.', kind: 'rumour', col: '#7080a0' },
+  clapcloud: { em: '🌩️', name: 'Bumping Clouds', myth: 'Thunder is the sound of clouds bumping together.', fact: 'Lightning heats the air hotter than the surface of the Sun in a flash. The air bursts outward with a BOOM.', kind: 'caster', col: '#7080a0' },
   treeshelter: { em: '🌲', name: 'Shelter Tree', myth: 'A tree is a safe place in a thunderstorm.', fact: 'Tall trees attract lightning. Go inside a building or a car instead.', kind: 'normal', col: '#3f7f4f' },
   sevencol: { em: '🌈', name: 'Seven-Colour Rainbow', myth: 'A rainbow has exactly seven colours.', fact: 'A rainbow has countless colours blending into each other. Isaac Newton picked seven to match the seven notes of a musical scale.', kind: 'splitter', col: '#c0a0e0' },
   // the Night Sky
@@ -1116,7 +1117,7 @@ const MYTHS = {
   seasons: { em: '🍂', name: 'Closer Summer', myth: 'Summer happens when Earth is closest to the Sun.', fact: 'Seasons come from Earth\'s tilt. Earth is actually closest to the Sun in early January, which is winter in the north!', kind: 'splitter', col: '#d88a4a' },
   moonglow: { em: '🌝', name: 'Glowing Moon', myth: 'The Moon makes its own light.', fact: 'Moonlight is sunlight bouncing off the Moon\'s grey rocks.', kind: 'rumour', col: '#f0e0a0' },
   blackhole: { em: '🕳️', name: 'Vacuum Black Hole', myth: 'Black holes suck up everything like a vacuum cleaner.', fact: 'From far away, a black hole pulls just like a star of the same weight. You\'d have to get very close to fall in.', kind: 'hardcover', col: '#3a3050' },
-  bigstar: { em: '💫', name: 'Biggest Sun', myth: 'The Sun is the biggest star there is.', fact: 'The Sun is a medium-sized star. Some giant stars are so big that over a billion Suns could fit inside.', kind: 'normal', col: '#f8d070' },
+  bigstar: { em: '💫', name: 'Biggest Sun', myth: 'The Sun is the biggest star there is.', fact: 'The Sun is a medium-sized star. Some giant stars are so big that over a billion Suns could fit inside.', kind: 'caster', col: '#f8d070' },
   redmars: { em: '🔴', name: 'Hot Red Mars', myth: 'Mars is red because it\'s hot.', fact: 'Mars is red because its dust is rusty. It\'s freezing cold there, colder than Antarctica on most days.', kind: 'fast', col: '#d0603a' },
   rings: { em: '💍', name: 'Only-Rings Saturn', myth: 'Saturn is the only planet with rings.', fact: 'Jupiter, Uranus and Neptune have rings too. Saturn\'s are just the biggest and brightest.', kind: 'gossip', col: '#e8d0a0' },
   fullmoon: { em: '🌕', name: 'Full-Moon Madness', myth: 'A full moon makes people act strange.', fact: 'Scientists have checked hospital and police records many times and found no more trouble on full-moon nights.', kind: 'dasher', col: '#f0e8c0' },
@@ -1171,6 +1172,9 @@ const KIND = {
   healer:   { hp: 40, spd: 20, r: 26, dmg: 5,  xp: 3, coin: .8 },  // patches up the myths around it
   gossip:   { hp: 10, spd: 50, r: 14, dmg: 3,  xp: 1, coin: .3 },  // jumps on a companion and won't shut up
   swarm:    { hp: 6,  spd: 58, r: 11, dmg: 2,  xp: 0, coin: .15 }, // six at once
+  // the ranged ones: they stop inside the ring and attack from there, so the team has to go and get them
+  pelter:   { hp: 14, spd: 32, r: 20, dmg: 4,  xp: 1, coin: .5 },  // throws paper balls at Dad or a friend
+  caster:   { hp: 16, spd: 26, r: 21, dmg: 5,  xp: 2, coin: .6 },  // a spellbook: a slow magic orb from further out
   // made by bosses: a brick that stands in the way, a mirage that pops at a touch
   brick:    { hp: 30, spd: 0,  r: 19, dmg: 0,  xp: 0, coin: .2 },
   mirage:   { hp: 1,  spd: 20, r: 40, dmg: 0,  xp: 0, coin: 0 },
@@ -1201,7 +1205,7 @@ const VARIANT = [
   { name: 'Starry',    em: '✨', tint: '#5b4e9e', desc: 'Night Sky myths fade from sight outside the ring. Everything you learned, at once.', fade: true },
 ];
 const mixCol = (a, b, t) => { const A = parseInt(a.slice(1), 16), B = parseInt(b.slice(1), 16), m = (x, y) => Math.round(x + (y - x) * t); return `rgb(${m(A >> 16, B >> 16)},${m((A >> 8) & 255, (B >> 8) & 255)},${m(A & 255, B & 255)})`; };
-const KIND_NOTE = { dasher: 'It stops, then charges. Stun it while it winds up.', hardcover: 'Armoured in front. Knock it back or stun it to flip it open.', flyer: 'Flies over webs and lullabies.', rumour: 'Hard to see until it gets close.', healer: 'Patches up its friends. Pop it first.', gossip: 'Jumps on a friend and talks their ear off. A Dad Joke shakes it off.', swarm: 'Lots of little ones.' };
+const KIND_NOTE = { dasher: 'It stops, then charges. Stun it while it winds up.', hardcover: 'Armoured in front. Knock it back or stun it to flip it open.', flyer: 'Flies over webs and lullabies.', rumour: 'Hard to see until it gets close.', healer: 'Patches up its friends. Pop it first.', gossip: 'Jumps on a friend and talks their ear off. A Dad Joke shakes it off.', swarm: 'Lots of little ones.', pelter: 'Stops at the edge and throws paper balls. Go and get it.', caster: 'Casts slow spells from far away. A stun breaks the spell.' };
 const DIFF = {
   easy:   { name: 'Easy',   em: '🌤️', hp: .72, spd: .9,  dmg: .7,  coin: .8,  desc: 'Slower, softer myths.' },
   normal: { name: 'Normal', em: '🌳', hp: 1,   spd: 1,   dmg: 1,   coin: 1,   desc: 'The backyard as it is.' },
@@ -1275,25 +1279,25 @@ function strip(D, L = 0, extra = '') {
 }
 // classes: a legible rock-paper-scissors against the creep kinds
 const CLASS = {
-  dad:     { name: 'Detective', em: '🔍', role: 'Finds the weak spot. One myth at a time.', strong: ['hardcover', 'rumour'], weak: ['swarm'] },
+  dad:     { name: 'Detective', em: '🔍', role: 'Finds the weak spot. One myth at a time.', strong: ['hardcover', 'rumour', 'caster'], weak: ['swarm'] },
   webster: { name: 'Trapper',   em: '🕸️', role: 'Slows and traps. Makes everyone else better.', strong: ['dasher', 'swarm'], weak: ['flyer'] },
   sparky:  { name: 'Spark',     em: '⚡', role: 'Chains through crowds. Hits many at once.', strong: ['flyer', 'swarm'], weak: ['hardcover'] },
   hopper:  { name: 'Bard',      em: '🎵', role: 'Sings Patience back, splats the crowd.', strong: ['gossip'], weak: ['dasher'] },
   puddles: { name: 'Herald',    em: '📣', role: 'Shoves and scatters. Breaks up escorts.', strong: ['healer', 'tank'], weak: ['rumour'] },
   dusty:   { name: 'Scholar',   em: '📚', role: 'Marks the weak page. Everyone hits it harder.', strong: ['hardcover', 'healer'], weak: ['swarm'] },
   pip:     { name: 'Keeper',    em: '🐚', role: 'Holds the line. Shells that stop a rush.', strong: ['dasher', 'tank'], weak: ['flyer'] },
-  scuttle: { name: 'Scout',     em: '🔭', role: 'Sees further. Pops up where you least expect.', strong: ['rumour', 'swarm'], weak: ['hardcover'] },
-  nilla:   { name: 'Sage',      em: '🌙', role: 'Quiet and far-seeing. Picks off the big one.', strong: ['flyer', 'rumour'], weak: ['tank'] },
+  scuttle: { name: 'Scout',     em: '🔭', role: 'Sees further. Pops up where you least expect.', strong: ['rumour', 'swarm', 'pelter'], weak: ['hardcover'] },
+  nilla:   { name: 'Sage',      em: '🌙', role: 'Quiet and far-seeing. Picks off the big one.', strong: ['flyer', 'rumour', 'caster'], weak: ['tank'] },
   shelly:  { name: 'Guard',     em: '🛡️', role: 'Stands firm and bowls over anything that gets close.', strong: ['dasher', 'swarm'], weak: ['flyer'] },
   goldie:  { name: 'Splasher',  em: '💦', role: 'Bubbles and puddles that slow a crowd.', strong: ['healer', 'swarm'], weak: ['hardcover'] },
   prickles:{ name: 'Brawler',   em: '📍', role: 'Quills in every direction.', strong: ['flyer', 'gossip'], weak: ['tank'] },
   jelly:   { name: 'Stinger',   em: '🪼', role: 'Freezes one myth at a time, and makes it glow.', strong: ['dasher', 'rumour'], weak: ['tank'] },
-  echo:    { name: 'Seeker',    em: '🦇', role: 'Hears everything in the ring and hits it all.', strong: ['rumour', 'flyer'], weak: ['hardcover'] },
+  echo:    { name: 'Seeker',    em: '🦇', role: 'Hears everything in the ring and hits it all.', strong: ['rumour', 'flyer', 'caster'], weak: ['hardcover'] },
   inky:    { name: 'Grappler',  em: '🐙', role: 'Eight arms, eight myths. Ink to stop a rush.', strong: ['swarm', 'tank'], weak: [] },
   chroma:  { name: 'Trickster', em: '🌈', role: 'Every colour at once. Sets off reactions with anyone.', strong: ['hardcover', 'healer'], weak: [] },
   luna:    { name: 'Dreamer',   em: '💤', role: 'Gathers the crowd and sends it to sleep.', strong: ['swarm', 'gossip'], weak: ['dasher'] },
 };
-const KNAME = { normal: 'Books', fast: 'Beetles', tank: 'Backpacks', splitter: 'Sticky notes', dasher: 'Dashers', hardcover: 'Hardcovers', flyer: 'Flyers', rumour: 'Rumours', healer: 'Thesauruses', gossip: 'Gossips', swarm: 'Swarms', boss: 'Bosses' };
+const KNAME = { normal: 'Books', fast: 'Beetles', tank: 'Backpacks', splitter: 'Sticky notes', dasher: 'Dashers', hardcover: 'Hardcovers', flyer: 'Flyers', rumour: 'Rumours', healer: 'Thesauruses', gossip: 'Gossips', swarm: 'Swarms', boss: 'Bosses', pelter: 'Pelters', caster: 'Spellbooks' };
 const clsMul = (id, kind) => { const C = CLASS[id]; return !C ? 1 : C.strong.includes(kind) ? 1.35 : C.weak.includes(kind) ? .8 : 1; };
 // companion weapon lines: each variant moves two things in opposite directions
 const CWEAP = {
@@ -1370,7 +1374,7 @@ function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS
 
 /* ───────── the party ───────── */
 const CHARS = {
-  dad:     { name: 'Dad',     em: '🧔', desc: 'Never moves. Always has his magnifying glass, and a drawer full of lenses for it.', abil: ['weapon', 'story', 'joke'], price: 0 },
+  dad:     { name: 'Dad',     em: '🔍', desc: 'Never moves. Always has his magnifying glass, and a drawer full of lenses for it.', abil: ['weapon', 'story', 'joke'], price: 0 },
   webster: { name: 'Webster', em: '🕷️', desc: 'The spider from the tub. Shoots sticky webs and never, ever bites.', abil: ['web', 'trap', 'eyes'], freeAfter: 0, starter: true },
   sparky:  { name: 'Sparky',  em: '✨', desc: 'A firefly who took the electricity episode very seriously.', abil: ['zap', 'glow', 'surge'], freeAfter: 2 },
   hopper:  { name: 'Hopper',  em: '🐸', desc: 'A toad. Does not give warts. Does give tongue-lashings.', abil: ['tongue', 'hop', 'song'], freeAfter: 1 },
@@ -1730,11 +1734,11 @@ Object.assign(EVO, { buzzshot: ['Swarm Darts', 'Two more darts every time.'], wr
 Object.assign(CLASS, {
   bumble:  { name: 'Buzzer',    em: '🐝', role: 'Fast darts and pollen that slows a crowd.', strong: ['flyer', 'swarm'], weak: ['hardcover'] },
   wiggles: { name: 'Digger',    em: '🪱', role: 'Pops up under crowds and trips the big ones.', strong: ['tank', 'dasher'], weak: ['flyer'] },
-  coco:    { name: 'Thrower',   em: '🌰', role: 'Acorns at range, and a stash for emergencies.', strong: ['healer', 'normal'], weak: ['tank'] },
+  coco:    { name: 'Thrower',   em: '🌰', role: 'Acorns at range, and a stash for emergencies.', strong: ['healer', 'normal', 'pelter'], weak: ['tank'] },
   dot:     { name: 'Lucky',     em: '🍀', role: 'Spreads spots and lands lucky hits.', strong: ['splitter', 'swarm'], weak: ['hardcover'] },
   rosie:   { name: 'Dancer',    em: '🦩', role: 'Pecks that jump, stomps that scatter.', strong: ['gossip', 'splitter'], weak: ['flyer'] },
   gizmo:   { name: 'Scavenger', em: '🦝', role: 'Quick paws on three at once. Bin lids that stun.', strong: ['healer', 'rumour'], weak: ['tank'] },
-  bramble: { name: 'Hunter',    em: '🦊', role: 'Fast nips and a pounce on the biggest myth.', strong: ['fast', 'dasher'], weak: ['swarm'] },
+  bramble: { name: 'Hunter',    em: '🦊', role: 'Fast nips and a pounce on the biggest myth.', strong: ['fast', 'dasher', 'pelter'], weak: ['swarm'] },
   pinch:   { name: 'Bruiser',   em: '🦞', role: 'Claws that go through, slams that stun.', strong: ['hardcover', 'tank'], weak: ['flyer'] },
   sol:     { name: 'Showoff',   em: '🦚', role: 'Feather fans, and a display that stops everyone.', strong: ['swarm', 'gossip'], weak: ['tank'] },
   frost:   { name: 'Heavy',     em: '🐻‍❄️', role: 'Big paws up close, ice on a crowd.', strong: ['tank', 'dasher'], weak: ['rumour'] },
@@ -1855,6 +1859,11 @@ const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Qui
 const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
 const BASE_RADIUS = 170;
 const DAD_H = 102; // Dad's height in the arena
+// Dad's drawn battle poses (assets/bdad_*.png, facing right): where the lens is and where his feet are, as fractions of the picture,
+// the lens radius in picture heights, and a size match so his head stays the same size between poses
+const DPOSE = { idle: { lens: [.862, .332], r: .073, feet: .43, k: 1 }, aim: { lens: [.907, .274], r: .075, feet: .37, k: .9 }, ouch: { lens: [.664, .441], r: .03, feet: .6, k: .94 } };
+for (const k in DPOSE) art('bdad_' + k); // loaded up front, so the first shot already leaves from the drawn lens
+function dadPose(m) { const a = m.anim, p = a ? a.t / a.dur : 0; if (a && p > .28 && p < .86) return 'aim'; return G.flash > 0 && !a ? 'ouch' : 'idle'; }
 // where each companion stands, relative to Dad
 const SPOTS = [[-70, 28], [70, 28], [0, 82]];
 
@@ -2078,13 +2087,13 @@ function powerOf(id) {
   return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
 const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1) * (1 + .03 * SYNERGY.filter(sy => synOn(sy)).length));
-const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">⚡ ${n.toLocaleString()}</span>`;
+const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">💪 ${n.toLocaleString()}</span>`;
 // any change outside a match that moves the team's Power gets a little note: equip, polish, forge, ranks, stars, swaps
 function powWatch() {
   let tp; try { if (typeof G !== 'undefined' && G) return; tp = teamPower(); } catch (e) { return; }
   if (lastTP == null) { lastTP = tp; return; }
   if (tp === lastTP) return; const from = lastTP; lastTP = tp; clearTimeout(tpT);
-  tpT = setTimeout(() => { const d = tp - from; toastMsg(`⚡ Team Power ${from.toLocaleString()} → ${tp.toLocaleString()} (${d > 0 ? '+' : ''}${d})`); $$('.teampow b').forEach(b => b.textContent = '⚡ ' + tp.toLocaleString()); }, 250);
+  tpT = setTimeout(() => { const d = tp - from; toastMsg(`💪 Team Power ${from.toLocaleString()} → ${tp.toLocaleString()} (${d > 0 ? '+' : ''}${d})`); $$('.teampow b').forEach(b => b.textContent = '💪 ' + tp.toLocaleString()); }, 250);
 }
 // the Friends tab's family chips: lit when two are in the party, gold when three
 function famRow() {
@@ -2236,7 +2245,7 @@ function newRun(stage) {
   const known = new Set(save.facts);
   G = {
     stage, S: STAGES[stage], wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
-    enemies: [], shots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
+    enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
     boss: null, focus: null, shake: 0, cleared: false, freePicks: Math.min(6, Math.floor(stage / 2)) + (mastered(7) ? 1 : 0), hintT: 0, nopes: 2 + (mastered(2) ? 1 : 0), known, knownSaid: new Set(), slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
@@ -2277,7 +2286,7 @@ function spawn(id, at = null, q = {}) {
   const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + (TUNE.hp - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.hs) * ( /* eased in over chapter 2 */ 1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
-  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0 };
+  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.stage, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0, atkT: rnd(.6, 1.6) };
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
   if (e.kind !== 'boss' && !q.kindOf) { e.hp = e.maxhp = e.hp * .65 * .85; e.dmg *= .75; e.r *= .88; e.coin *= .7; if (Math.random() > .78) e.xp = Math.max(0, e.xp - 1); } // a crowd of smaller, softer myths rather than a few big ones
@@ -2287,6 +2296,72 @@ function spawn(id, at = null, q = {}) {
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; }
   G.enemies.push(e); return e;
+}
+// ranged myths: a pelter stands at the ring's edge, a spellbook a little further out; both aim at Dad most of the time
+function rangedMyth(e, d, dt) {
+  const cast = e.kind === 'caster', stand = G.radius * (cast ? .84 : .7);
+  if (e.lured > 0) e.hold = false; else if (d < stand) e.hold = true; else if (d > stand + 40) e.hold = false;
+  if (e.aim > 0 && e.stun > 0) { e.aim = 0; e.atkT = 1.4; G.fx.push({ k: 'puff', x: e.x, y: e.y - e.r * 1.4, vx: 0, vy: -30, t: 0, life: .45, col: cast ? '#c9a6f2' : '#fbf3df', r: e.r * .5 }); text(e.x, e.y - e.r - 18, cast ? 'fizzle' : 'oops', '#fff', 13, .7); return; }
+  if (!e.hold || e.stun > 0) return;
+  if (e.aim > 0) { e.aim -= dt; if (e.aim <= 0) throwAt(e); return; }
+  e.atkT -= dt; if (e.atkT > 0) return;
+  const friends = G.party.filter(m => m !== G.dad && !m.jump && dist(m, e) < 330);
+  e.tgt = friends.length && Math.random() < .35 ? pick(friends) : G.dad; e.aimDur = e.aim = cast ? .85 : .55; e.atkT = (cast ? 4.2 : 2.8) * rnd(.9, 1.15);
+}
+function throwAt(e) {
+  const cast = e.kind === 'caster', T = e.tgt && (e.tgt === G.dad || G.party.includes(e.tgt)) ? e.tgt : G.dad, dir = T.x < e.x ? -1 : 1;
+  const o = { x: e.x + dir * e.r * .5, y: e.y - e.r * (cast ? 2.2 : 1.6) };
+  G.eshots.push({ k: cast ? 'orb' : 'ball', x: o.x, y: o.y, sx: o.x, sy: o.y, tgt: T, dmg: e.dmg * (cast ? 1.4 : 1), t: 0, dur: cast ? 0 : Math.max(.45, dist(o, T) / 300), spin: rnd(0, 6), col: e.col || e.M.col });
+  e.thrown = .25; sfx(cast ? 'zap' : 'pop');
+}
+const aimPt = T => ({ x: T.x, y: T.y - (T === G.dad ? 48 : 16) });
+function moveEshots(dt) {
+  for (const s of G.eshots) {
+    s.t += dt; const T = s.tgt, P = aimPt(T);
+    if (s.k === 'ball') { const q = Math.min(1, s.t / s.dur); s.x = s.sx + (P.x - s.sx) * q; s.y = s.sy + (P.y - s.sy) * q - Math.sin(q * Math.PI) * 46; if (q >= 1) s.hit = true; }
+    else { const a = Math.atan2(P.y - s.y, P.x - s.x), v = 150 + s.t * 40, w = Math.sin(s.t * 9) * 40; s.x += (Math.cos(a) * v - Math.sin(a) * w) * dt; s.y += (Math.sin(a) * v + Math.cos(a) * w) * dt; if (dist(s, P) < 14 || s.t > 4) s.hit = true;
+      if (!lowFx && Math.random() < .5) G.fx.push({ k: 'puff', x: s.x, y: s.y, vx: rnd(-15, 15), vy: rnd(-15, 15), t: 0, life: .35, col: '#c9a6f2', r: rnd(2, 4) }); }
+    if (!s.hit) continue;
+    G.fx.push({ k: 'splash', x: s.x, y: s.y, R: s.k === 'orb' ? 16 : 12, t: 0, life: .35, col: s.k === 'orb' ? '#b48be6' : '#fbf3df' });
+    if (T === G.dad) { G.hp -= patHit(s.dmg); G.dropped = true; G.flash = .2; G.shake = .1; sfx('bonk'); text(T.x + rnd(-14, 14), T.y - 86, s.k === 'orb' ? 'Zap!' : 'Splat!', s.k === 'orb' ? '#c9a6f2' : '#fff', 16, .7); }
+    else { T.muted = Math.max(T.muted || 0, s.k === 'orb' ? 1.6 : .8); T.daze = G.t + T.muted; T.dazeIc = s.k === 'orb' ? '✨' : '💫'; T.land = .12; text(T.x, T.y - 46, s.k === 'orb' ? '✨ hexed' : 'Bonk!', s.k === 'orb' ? '#c9a6f2' : '#fff', 14, .8); }
+  }
+  G.eshots = G.eshots.filter(s => !s.hit);
+}
+// what tells a ranged myth apart: a pelter's paper ball (raised overhead on a wind-up), a spellbook's pointy hat, wand glow and rune circle
+function rangedGear(e, x, top, dir) {
+  const r = e.r, w = e.aim > 0 ? 1 - e.aim / e.aimDur : 0; if (e.thrown > 0) e.thrown -= 1 / 60;
+  ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineJoin = 'round';
+  if (e.kind === 'pelter') {
+    if (!(e.thrown > 0)) { const bx = x - dir * r * (.55 + w * .25), by = top + r * (1.15 - w * 1.1); ctx.translate(bx, by); ctx.rotate(G.t * (w ? 8 : 1)); ctx.fillStyle = '#fbf3df'; ctx.lineWidth = 2; ctx.beginPath(); for (let k = 0; k < 9; k++) { const a = k / 9 * Math.PI * 2, rr = r * (.34 + (k % 3 ? .06 : -.04)); ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.closePath(); ctx.fill(); ctx.stroke(); }
+    ctx.restore();
+    if (w && e.tgt) { const P = aimPt(e.tgt); ctx.save(); ctx.globalAlpha = .55 * w; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.setLineDash([3, 6]); ctx.beginPath(); ctx.moveTo(x, top + r); ctx.quadraticCurveTo((x + P.x) / 2, Math.min(top, P.y) - 40, P.x, P.y); ctx.stroke(); ctx.restore(); }
+    return;
+  }
+  // spellbook: a rune circle under it while it casts, a hat, a wand tip that brightens, and a ring closing on whoever it's aiming at
+  if (w) { ctx.save(); ctx.translate(x, e.y + r * .9); ctx.scale(1, .4); ctx.rotate(G.t * 2); ctx.strokeStyle = `rgba(180,139,230,${.4 + w * .5})`; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(0, 0, r * (1.1 + w * .3), 0, 7); ctx.stroke(); ctx.restore(); }
+  const tilt = Math.sin(G.t * 2 + e.walk) * .08 - dir * .1; ctx.translate(x, top + r * .25); ctx.rotate(tilt);
+  ctx.fillStyle = '#6b4fa8'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-r * .62, 0); ctx.quadraticCurveTo(-r * .1, -r * .4, r * .12, -r * 1.3); ctx.quadraticCurveTo(r * .2, -r * .5, r * .62, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(0, 0, r * .8, r * .18, 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#ffe36b'; ctx.font = `${Math.round(r * .42)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('★', r * .02, -r * .55); ctx.textBaseline = 'alphabetic';
+  ctx.restore();
+  const wx = x + dir * r * .95, wy = top + r * 1.3 - w * r * .5; ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(wx - dir * r * .3, wy + r * .5); ctx.lineTo(wx, wy); ctx.stroke(); ctx.strokeStyle = '#8a5a32'; ctx.lineWidth = 2; ctx.stroke();
+  const glow = 4 + w * 9 + Math.sin(G.t * 9) * 1.2, g = ctx.createRadialGradient(wx, wy, 0, wx, wy, glow * 2); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.4, 'rgba(190,150,240,.8)'); g.addColorStop(1, 'rgba(150,100,220,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(wx, wy, glow * 2, 0, 7); ctx.fill();
+  if (w && e.tgt) { const P = aimPt(e.tgt); ctx.globalAlpha = .4 + w * .5; ctx.strokeStyle = '#b48be6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(P.x, P.y + (e.tgt === G.dad ? 70 : 16), 30 * (1.6 - w), 0, 7); ctx.stroke(); }
+  ctx.restore();
+}
+function drawEshots() {
+  for (const s of G.eshots) {
+    ctx.save(); ctx.translate(s.x, s.y); ctx.strokeStyle = '#3a2c20'; ctx.lineJoin = 'round';
+    if (s.k === 'ball') { // a crumpled page: a lumpy cream ball with a few printed lines, spinning
+      ctx.rotate(s.spin + s.t * 12); ctx.fillStyle = '#fbf3df'; ctx.lineWidth = 2.2; ctx.beginPath(); for (let k = 0; k < 9; k++) { const a = k / 9 * Math.PI * 2, rr = 8 + (k % 3 ? 1.5 : -1); ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = s.col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-4, -2); ctx.lineTo(3, -4); ctx.moveTo(-3, 2); ctx.lineTo(4, 1); ctx.stroke();
+    } else { // a magic orb: a purple glow, a bright core and a turning star
+      const g = ctx.createRadialGradient(0, 0, 1, 0, 0, 18); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(.35, 'rgba(190,150,240,.9)'); g.addColorStop(1, 'rgba(150,100,220,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 18, 0, 7); ctx.fill();
+      ctx.rotate(s.t * 5); ctx.fillStyle = '#fff'; ctx.beginPath(); for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2, rr = k % 2 ? 2.5 : 6.5; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
 }
 function spawnMini(parent) {
   const K = KIND.mini;
@@ -2378,9 +2453,24 @@ function hint(s, life = 2.5) { const h = $('#hint'); h.textContent = s; h.hidden
 /* ───────── attacks ───────── */
 // the point a character's shots leave from
 function handPos(m) {
-  if (m.id === 'dad') { const h = DAD_H, w = h * 320 / 700, A = HAND.pointing; return { x: m.x + m.face * (A[0] - .5) * w, y: m.y + 30 - h + A[1] * h }; }
-  return { x: m.x + m.face * 12, y: m.y - 14 };
+  if (m.id === 'dad') { const img = art('bdad_aim'); if (!ready(img)) { const h = DAD_H, w = h * 320 / 700, A = HAND.pointing; return { x: m.x + m.face * (A[0] - .5) * w, y: m.y + 30 - h + A[1] * h }; }
+    const P = DPOSE.aim, h = DAD_H * 1.12 * P.k, w = h * img.naturalWidth / img.naturalHeight; return { x: m.x + m.face * (P.lens[0] - P.feet) * w, y: m.y + 30 - h + P.lens[1] * h }; } // the lens, held out in the lunge
+  return mouth(m);
 }
+// where a friend's moves leave from: the mouth, beak, claw, hand or horn on its drawing, as [across, down] fractions of the picture (facing right)
+const EMIT = { bluey: [.88, .65], bramble: [.84, .38], bumble: [.78, .58], chroma: [.91, .63], coco: [.84, .69], dot: [.88, .56], dusty: [.82, .53], echo: [.63, .41], frost: [.77, .35],
+  gizmo: [.71, .6], goldie: [.72, .5], hopper: [.93, .42], inky: [.6, .58], jelly: [.59, .41], luna: [.6, .4], nilla: [.72, .29], pinch: [.9, .25], pip: [.9, .37], prickles: [.73, .48],
+  puddles: [.73, .27], rosie: [.75, .17], scuttle: [.9, .6], shelly: [.93, .53], sol: [.67, .42], sparky: [.85, .46], uni: [.9, .06], webster: [.67, .7], wiggles: [.82, .36] };
+// the attack drawings (assets/pet_<id>_atk.png): their own mouth points, and a size match where a wide pose (spread wings) came out smaller
+const EMIT_ATK = { bluey: [.62, .1], bramble: [.78, .3], bumble: [.97, .72], chroma: [.84, .62], coco: [.28, .38], dot: [.6, .6], dusty: [.83, .6], echo: [.49, .56], frost: [.86, .19],
+  gizmo: [.93, .59], goldie: [.68, .56], hopper: [.7, .5], inky: [.9, .6], jelly: [.5, .55], luna: [.5, .45], nilla: [.49, .6], pinch: [.88, .2], pip: [.87, .37], prickles: [.85, .5],
+  puddles: [.68, .43], rosie: [.75, .15], scuttle: [.72, .55], shelly: [.88, .54], sol: [.57, .38], sparky: [.75, .4], uni: [.83, .05], webster: [.55, .6], wiggles: [.73, .5] };
+const ATK_K = { bramble: 1.22, bumble: 1.17, dusty: 1.18, goldie: 1.17, luna: 1.07, nilla: 1.5, prickles: 1.09, puddles: 1.17, scuttle: 1.06, shelly: 1.07 };
+for (const id in EMIT_ATK) art('pet_' + id + '_atk');
+// a friend shows its attack drawing through the middle of a move, and while its tongue (or anything else it holds out) is still out
+function atkPose(m) { const a = m.anim, p = a ? a.t / a.dur : 0; return EMIT_ATK[m.id] && ready(art('pet_' + m.id + '_atk')) && ((a && p > .2 && p < .82) || m.holdAtk > G.t); }
+function mouth(m) { if (atkPose(m)) { const E = EMIT_ATK[m.id], h = (PET_H[m.id] || 48) * (ATK_K[m.id] || 1), o = m.drawn || { x: m.x, y: m.y + 4 - (m.z || 0) }; return { x: o.x + m.face * (E[0] - .5) * h, y: o.y - h + E[1] * h }; }
+  const E = EMIT[m.id] || [.8, .45], h = PET_H[m.id] || 48, o = m.drawn || { x: m.x, y: m.y + 4 - (m.z || 0) }; return { x: o.x + m.face * (E[0] - .5) * h, y: o.y - h + E[1] * h }; }
 // wind up (lean, item in hand), then do the real thing from the hand at the release moment
 function windup(m, kind, tgt, release) {
   if (tgt) { m.face = tgt.x < m.x ? -1 : 1; m.aim = Math.atan2(tgt.y - m.y, tgt.x - m.x); }
@@ -2416,9 +2506,9 @@ function useAbility(m, a) {
     case 'tongue': {
       if (!tgt) return false;
       windup(m, 'tongue', tgt, () => {
-        const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, a2 = Math.atan2(t.y - m.y, t.x - m.x), len = 210 + sk('hopper', 'tongue') * 25;
+        const t = tgt.hp > 0 ? tgt : nearest(m) || tgt, mo = mouth(m), a2 = Math.atan2(t.y - mo.y, t.x - mo.x), len = 210 + sk('hopper', 'tongue') * 25;
         for (const e of G.enemies) { if (e.hp <= 0) continue; const dx = e.x - m.x, dy = e.y - m.y, proj = dx * Math.cos(a2) + dy * Math.sin(a2); if (proj < 0 || proj > len) continue; const off = Math.abs(-dx * Math.sin(a2) + dy * Math.cos(a2)); const V = cweapOf('hopper') || {}; if (off < e.r + 10 + (V.fx === 'Wide' ? 22 : 0)) hurt(e, D.dmg[L] * mul, evolved(m, 'tongue') ? -140 : V.fx === 'Big knockback' ? 170 : 90, m); }
-        G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: a2, len, t: 0, life: .32 });
+        G.fx.push({ k: 'tongue', x: mo.x, y: mo.y, m, a: a2, len, t: 0, life: .32 }); m.holdAtk = G.t + .32;
       });
       return true; }
     case 'hop': {
@@ -2464,7 +2554,7 @@ function useAbility(m, a) {
       return true; }
     case 'quack': {
       if (!tgt) return false;
-      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6 * (1 + sk('puddles', 'quack') * .15)) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', x: m.x, y: m.y - 10, a: a2, t: 0, life: .4 }); };
+      const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6 * (1 + sk('puddles', 'quack') * .15)) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', ...mouth(m), a: a2, t: 0, life: .4 }); };
       windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15 + sk('puddles', 'echo') * .05) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap && synOn(SYNERGY[3])) { sp.cds.zap = 0; } } }); });
       return true; }
     case 'spin': {
@@ -2485,7 +2575,7 @@ function useAbility(m, a) {
       return true; }
     case 'quills': {
       const list = G.enemies.filter(e => e.hp > 0 && inRing(e) && seen(e)).sort((x, y) => dist(x, m) - dist(y, m)).slice(0, D.n[L] + sk('prickles', 'quills')); if (!list.length) return false;
-      windup(m, 'quills', list[0], () => { for (const e of list) { if (e.hp <= 0) continue; hurt(e, D.dmg[L] * mul, 15, m); G.fx.push({ k: 'bolt', x1: m.x, y1: m.y - 14, x2: e.x, y2: e.y, t: 0, life: .18 }); } });
+      windup(m, 'quills', list[0], () => { for (const e of list) { if (e.hp <= 0) continue; hurt(e, D.dmg[L] * mul, 15, m); const q = mouth(m); G.fx.push({ k: 'bolt', x1: q.x, y1: q.y, x2: e.x, y2: e.y, t: 0, life: .18 }); } });
       return true; }
     case 'rollup': case 'drift': {
       if (!tgt || m.jump) return false;
@@ -2493,7 +2583,7 @@ function useAbility(m, a) {
       return true; }
     case 'sting': {
       if (!tgt) return false;
-      windup(m, 'sting', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 0, m); t.stun = Math.max(t.stun, .35 + sk('jelly', 'sting') * .1); t.stung = G.t + 3 + sk('jelly', 'shine'); G.fx.push({ k: 'bolt', x1: m.x, y1: m.y - 14, x2: t.x, y2: t.y, t: 0, life: .2 }); });
+      windup(m, 'sting', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 0, m); t.stun = Math.max(t.stun, .35 + sk('jelly', 'sting') * .1); t.stung = G.t + 3 + sk('jelly', 'shine'); const q = mouth(m); G.fx.push({ k: 'bolt', x1: q.x, y1: q.y, x2: t.x, y2: t.y, t: 0, life: .2 }); });
       return true; }
     case 'sonar': {
       if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
@@ -2516,7 +2606,7 @@ function useAbility(m, a) {
       return true; }
     case 'flick': {
       if (!tgt) return false;
-      windup(m, 'flick', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 20, m); G.fx.push({ k: 'tongue', x: m.x, y: m.y - 10, a: Math.atan2(t.y - m.y, t.x - m.x), len: dist(t, m), t: 0, life: .25, rainbow: true }); });
+      windup(m, 'flick', tgt, () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; hurt(t, D.dmg[L] * mul, 20, m); const mo = mouth(m); G.fx.push({ k: 'tongue', x: mo.x, y: mo.y, m, a: Math.atan2(t.y - mo.y, t.x - mo.x), len: dist(t, mo), t: 0, life: .25, rainbow: true }); m.holdAtk = G.t + .25; });
       return true; }
     case 'colours': {
       if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
@@ -2531,7 +2621,7 @@ function fireWeapon(m, tgt) {
   if (!tgt && id !== 'bubble') return false;
   switch (id) {
     case 'glass':
-      windup(m, 'glass', tgt, () => { const ts = (evolved(m, 'weapon') ? nearest(m, null, 8) : D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg, 0, m); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y - 6, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y - 6, t: 0, life: .3 }); }); break;
+      windup(m, 'glass', tgt, () => { const ts = (evolved(m, 'weapon') ? nearest(m, null, 8) : D.n[L] === 1 ? [tgt] : nearest(m, null, D.n[L])).filter(e => e && e.hp > 0); if (!ts.length) { const t2 = nearest(m); if (t2) ts.push(t2); } const hp = handPos(m); for (const e of ts) { hurt(e, dmg, 0, m); G.fx.push({ k: 'beam', x: e.x, y: e.y, sx: hp.x, sy: hp.y, t: 0, life: .2 }); } G.fx.push({ k: 'lens', x: hp.x, y: hp.y, t: 0, life: .3 }); }); break;
     case 'yoyo':
       windup(m, 'yoyo', tgt, () => { const hp = handPos(m), t = tgt.hp > 0 ? tgt : nearest(m) || tgt; for (let i = 0; i < D.n[L]; i++) { const a = Math.atan2(t.y - hp.y, t.x - hp.x) + (i - (D.n[L] - 1) / 2) * .5; G.shots.push({ k: 'yoyo', m, x: hp.x, y: hp.y, ox: hp.x, oy: hp.y, a, d: 0, max: 190, out: true, dmg, hitset: new Set(), spin: 0 }); } }); break;
     case 'bat':
@@ -2671,7 +2761,10 @@ function update(dt) {
       const tgtM = G.party.filter(m => m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0)).sort((p1, p2) => dist(p1, e) - dist(p2, e))[0];
       if (tgtM) { const a2 = Math.atan2(tgtM.y - e.y, tgtM.x - e.x); if (e.stun <= 0) { e.x += Math.cos(a2) * sp * dt; e.y += Math.sin(a2) * sp * dt; e.walk += dt * 14; } e.x += e.kx * dt; e.y += e.ky * dt; const kd2 = Math.exp(-dt * 9); e.kx *= kd2; e.ky *= kd2; continue; }
     }
-    if (e.stun > 0 || e.winding > 0 || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
+    // pelter and spellbook: stop inside the ring, wind up (a stun breaks it), then throw at Dad or a friend
+    if (e.kind === 'pelter' || e.kind === 'caster') rangedMyth(e, d, dt);
+    if (e.hold) sp = 0;
+    if (e.stun > 0 || e.winding > 0 || e.hold || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
     if (flies) e.z = 26 + Math.sin(e.walk * .7) * 10;
     // steer toward Dad with a little inertia so turns and recoveries from knockback read as motion, not teleports
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
@@ -2683,6 +2776,7 @@ function update(dt) {
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
   }
   G.enemies = G.enemies.filter(e => e.hp > 0);
+  moveEshots(dt);
   // party: each member runs its active abilities, one wind-up at a time per member
   for (const m of G.party) {
     if (m.anim) { m.anim.t += dt; if (m.anim.t >= m.anim.dur) m.anim = null; }
@@ -3073,7 +3167,9 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
     drawSheet(c, S3, 'idle', phi, t, 0, bob * .3, (PET_H[id] || 48) * 1.1, { props: opts.gear ? petProps(id, opts.held) : null });
     c.restore(); c.restore(); return;
   }
-  if (ready(png)) { const h = PET_H[id] || 48, w = h * png.naturalWidth / png.naturalHeight; c.drawImage(unplate(png), -w / 2, -h + bob * .3, w, h); }
+  const atk = opts.atk && art('pet_' + id + '_atk');
+  if (ready(atk)) { const h = (PET_H[id] || 48) * (ATK_K[id] || 1); c.drawImage(unplate(atk), -h / 2, -h, h, h); }
+  else if (ready(png)) { const h = PET_H[id] || 48, w = h * png.naturalWidth / png.naturalHeight; c.drawImage(unplate(png), -w / 2, -h + bob * .3, w, h); }
   else switch (id) {
     case 'webster': { // the real spider from episode 20 (sprite faces left)
       const img = IMG.webster; if (ready(img)) { const h = 44 + bob * .3, w = h * img.naturalWidth / img.naturalHeight; c.save(); c.scale(-1, 1); c.drawImage(img, -w / 2, -h, w, h); c.restore(); }
@@ -3192,12 +3288,15 @@ function drawMember(m) {
     const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * m.face : 0;
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
-    const S3 = sheet('dad');
-    if (S3) { // the 3D Dad: faces the target, plays throw on a wind-up, idle otherwise
-      const phi = m.aim != null ? m.aim : (m.face > 0 ? .35 : Math.PI - .35);
-      const TH = S3.meta.anims.throw, tt = a && TH ? (p < .33 ? p / .33 * 6 : 6 + (p - .33) / .67 * 6.9) / TH.frames * TH.dur : G.t;
-      drawSheet(ctx, S3, a && TH ? 'throw' : 'idle', phi, tt, m.x + step, m.y + 30 - hop, DAD_H * 1.25, { outline: true, cheat: true, lean: lean * .5, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1, props: dadProps(a ? a.kind : save.weapon, a ? p : null) });
-      return;
+    const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
+    if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
+      const h = DAD_H * 1.12 * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
+      const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up
+      const fx = m.x + step * .6, fy = m.y + 30 - hop * .5;
+      ctx.save(); ctx.translate(fx, fy); ctx.rotate(lean * .6); ctx.scale(m.face * (1 + pop * .07 + wind * .03), 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
+      ctx.drawImage(img, -P.feet * w, -h, w, h);
+      const T = lensTint(); if (T) { ctx.fillStyle = T; ctx.globalAlpha = alpha * .45; ctx.beginPath(); ctx.arc((P.lens[0] - P.feet) * w, -h + P.lens[1] * h, P.r * h, 0, 7); ctx.fill(); }
+      ctx.restore(); m.lensAt = { x: fx + m.face * (P.lens[0] - P.feet) * w, y: fy - h + P.lens[1] * h }; return;
     }
     drawDadAt(ctx, m.x + step, m.y + 30 + Math.sin(G.t * 4) * 2 - hop, DAD_H, m.face, a ? 'pointing' : 'wave', { lean, item: a ? a.kind : null, p, alpha: G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1 });
     return;
@@ -3214,8 +3313,10 @@ function drawMember(m) {
   if (m.land > 0) m.land -= 1 / 60;
   const cheer = m.cheer > 0 ? Math.sin((1 - m.cheer / .5) * Math.PI) * 9 : 0; if (m.cheer > 0) m.cheer -= 1 / 60;
   const step = a ? (p < .33 ? -5 * (p / .33) : 12 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 8 : 0;
-  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop - cheer, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : a && p < .33 ? p / .33 : 0, stretch: (hop + cheer) / 8, gear: true, held: a ? p : null, aim: m.aim });
-  if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
+  m.drawn = { x: m.x + step, y: m.y + 4 - z - hop - cheer };
+  const atk = atkPose(m), pop = atk && a && p > .2 ? Math.max(0, 1 - (p - .2) / .12) : 0; // a little squash the moment it snaps into the attack drawing
+  drawCompanionAt(ctx, m.id, m.x + step, m.y + 4 - z - hop - cheer, 1, m.face, G.t, { lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : pop ? pop * .8 : a && p < .2 ? p / .2 : 0, stretch: (hop + cheer) / 8, gear: true, atk, held: a ? p : null, aim: m.aim });
+  if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(m.daze > G.t ? m.dazeIc : '💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
 
@@ -3271,7 +3372,7 @@ function drawEnemy(e) {
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
   if (e.known) { ctx.save(); ctx.globalAlpha = .7 + Math.sin(G.t * 6) * .3; ctx.fillStyle = '#8fd38a'; ctx.beginPath(); ctx.arc(x - r * .55, y - r * .1, r * .18, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - r * .62, y - r * .1); ctx.lineTo(x - r * .56, y - r * .03); ctx.lineTo(x - r * .46, y - r * .18); ctx.stroke(); ctx.restore(); }
   if (e.marked > 0) { ctx.font = `16px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📝', x + r * .8, y - r - 8 + Math.sin(G.t * 6) * 2); ctx.textBaseline = 'alphabetic'; }
-  const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : 'creep_' + e.kind);
+  const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind);
   if (S3) { // the 3D myth: faces the way it walks, tinted its own colour, with the code's bob, crouch and lean on top
     const mv = Math.hypot(e.vx || 0, e.vy || 0), toDad = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), phi = big || e.kind === 'gossip' || mv < 6 ? toDad : Math.atan2(e.vy, e.vx), dir = Math.cos(toDad) >= 0 ? 1 : -1;
     const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : 0, crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
@@ -3279,8 +3380,9 @@ function drawEnemy(e) {
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
-    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const R = drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
+    if (e.kind === 'pelter' || e.kind === 'caster') rangedGear(e, x, y + r * .95 + hover - h * .92, dir);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
     if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', x + Math.cos(a) * r * .7, y - r * 1.2 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
     if (e.kind === 'dasher' && e.winding > 0) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(toDad) * 60, y + Math.sin(toDad) * 60); ctx.stroke(); ctx.setLineDash([]); }
@@ -3422,6 +3524,7 @@ function draw() {
   // everyone, back to front
   const things = [...G.enemies.map(e => ({ y: e.y + e.r, e })), ...G.party.map(m => ({ y: m.y + (m.id === 'dad' ? 26 : 4), m }))].sort((a, b) => a.y - b.y);
   for (const t of things) t.e ? drawEnemy(t.e) : drawMember(t.m);
+  drawEshots();
   for (const s of G.shots) drawShot(s);
   for (const f of G.fx) {
     const p = f.t / f.life;
@@ -3446,11 +3549,19 @@ function draw() {
     else if (f.k === 'ring') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.col; ctx.lineWidth = 6 - p * 5; ctx.beginPath(); ctx.arc(f.x, f.y, f.R * p, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'bolt') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#fff' : '#ffe36b'; ctx.lineWidth = f.big ? 5 : 3; ctx.beginPath(); ctx.moveTo(f.x1, f.y1); const n = 5; for (let i = 1; i < n; i++) { const q = i / n; ctx.lineTo(f.x1 + (f.x2 - f.x1) * q + rnd(-8, 8), f.y1 + (f.y2 - f.y1) * q + rnd(-8, 8)); } ctx.lineTo(f.x2, f.y2); ctx.stroke(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1; ctx.stroke(); ctx.globalAlpha = 1; }
     else if (f.k === 'tongue' || f.k === 'tentacle') { // a tapered, slightly curving lick (or arm) with a round tip; out fast, back slower
+      if (f.m && f.m.drawn) { const o = mouth(f.m); f.x = o.x; f.y = o.y; } // stays in the mouth if the friend moves
       const ext = p < .35 ? p / .35 : 1 - (p - .35) / .65, L = f.len * ext, ca = Math.cos(f.a), sa = Math.sin(f.a), tent = f.k === 'tentacle';
       const bend = (tent ? 26 * (f.w || 1) : 10) * Math.sin(p * Math.PI), mx = f.x + ca * L * .5 - sa * bend, my = f.y + sa * L * .5 + ca * bend, ex = f.x + ca * L, ey = f.y + sa * L;
       const col = tent ? '#9a6fd0' : f.rainbow ? (() => { const g = ctx.createLinearGradient(f.x, f.y, ex, ey); ['#e05a5a', '#f0b23c', '#5fbf6a', '#4f8fe0', '#a05ad6'].forEach((c, k) => g.addColorStop(k / 4, c)); return g; })() : '#ef8d9a';
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      for (const [w, st] of [[tent ? 9 : 7, '#3a2c20'], [tent ? 6 : 4.5, col]]) { ctx.strokeStyle = st; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.quadraticCurveTo(mx, my, ex, ey); ctx.stroke(); }
+      // a filled ribbon, thin at the mouth and wide at the tip, outlined along its sides only, so it comes out of the mouth with no visible root
+      const N = 12, Lp = [], Rp = [], w0 = tent ? 3 : 1.6, w1 = tent ? 4.5 : 3.6;
+      for (let k = 0; k <= N; k++) { const q = k / N, px = (1 - q) * (1 - q) * f.x + 2 * (1 - q) * q * mx + q * q * ex, py = (1 - q) * (1 - q) * f.y + 2 * (1 - q) * q * my + q * q * ey;
+        const tx = 2 * (1 - q) * (mx - f.x) + 2 * q * (ex - mx), ty = 2 * (1 - q) * (my - f.y) + 2 * q * (ey - my), tl = Math.hypot(tx, ty) || 1, hw = w0 + (w1 - w0) * q;
+        Lp.push([px - ty / tl * hw, py + tx / tl * hw]); Rp.push([px + ty / tl * hw, py - tx / tl * hw]); }
+      ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(...Lp[0]); for (const q of Lp) ctx.lineTo(...q); for (let k = N; k >= 0; k--) ctx.lineTo(...Rp[k]); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.8; for (const side of [Lp, Rp]) { ctx.beginPath(); ctx.moveTo(...side[1]); for (const q of side.slice(2)) ctx.lineTo(...q); ctx.stroke(); }
+      if (!tent) { ctx.fillStyle = '#5a2a2a'; ctx.beginPath(); ctx.ellipse(f.x, f.y, 3.2, 2.4, f.a, 0, 7); ctx.fill(); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(f.x + ca * 1.5, f.y + sa * 1.5, w0 + .6, 0, 7); ctx.fill(); } // the open mouth it comes from
       ctx.fillStyle = tent ? '#b892e6' : f.rainbow ? '#a05ad6' : '#f4a7b2'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ex, ey, tent ? 5 : 6, 0, 7); ctx.fill(); ctx.stroke();
       if (tent) { ctx.fillStyle = '#e6d6fa'; for (let k = 1; k < 4; k++) { const q = k / 4, px = (1 - q) * (1 - q) * f.x + 2 * (1 - q) * q * mx + q * q * ex, py = (1 - q) * (1 - q) * f.y + 2 * (1 - q) * q * my + q * q * ey; ctx.beginPath(); ctx.arc(px, py, 1.6, 0, 7); ctx.fill(); } }
       else { ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(ex - 2, ey - 2, 2, 0, 7); ctx.fill(); } }
@@ -3860,7 +3971,7 @@ function giveXp(cleared) {
   const gain = Math.round((G.busted * .6 + (cleared ? 20 : 5) + G.lvl * 2) * (G.room ? .5 : 1)), lines = [];
   for (const m of G.party) {
     const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
-    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${CHARS[m.id].em} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
+    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
   }
   persist(); $('#grew').innerHTML = `✨ Everyone gained ${gain} XP.` + (lines.length ? '<br>' + lines.join('<br>') : ''); return true;
 }
@@ -4026,7 +4137,7 @@ function buildParty() {
       return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
-    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>⚡ ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
+    box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>💪 ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
       + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
       + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
     box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
@@ -4175,7 +4286,7 @@ function bindBag(root, after) {
 function buildItems() {
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
-    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
+    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
   box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
   box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { bagFilter = b.dataset.f; buildItems(); });
@@ -4293,7 +4404,7 @@ const UNLOCKS = [
   { k: 'wheel', at: 5, t: '🎡 The Prize Wheel is on (home screen): one free spin a day.' },
   { k: 'missions', at: 4, t: '📋 Missions are open (top of the home screen): little goals with prizes.' },
   { k: 'bag', at: 3, tab: 'bag', t: '🎒 The Bag is open: items from matches go there. Put them on from a friend\'s card.' },
-  { k: 'power', at: 5, t: '⚡ Power is on: the Play button shows how strong your team is next to what the stage needs.' },
+  { k: 'power', at: 5, t: '💪 Team Power is on: the Play button shows how strong your team is next to what the stage needs. Playing is always free.' },
   { k: 'polish', at: 6, t: '✨ Polishing is open: make any item a bit stronger in the Bag.' },
   { k: 'month', at: 7, t: '📅 Myth of the Month is on: a featured friend gets pages from every stage this month.' },
   { k: 'families', at: 8, t: '🐛 Families are on: two friends of a kind give a boost, three add a team move.' },
@@ -4333,8 +4444,8 @@ function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // chapter bosses, and a third more on Hard
 function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; if (d === 'master') v *= 1.8; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
-  return `<span class="pchk ${cls}">⚡ ${mine.toLocaleString()} <i>/ ${rec.toLocaleString()} suggested</i></span>`; }
-function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name}</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
+  return `<span class="pchk ${cls}">${cls === 'ok' ? '✔' : cls === 'close' ? '≈' : '⚠'} 💪 Team ${mine.toLocaleString()} <i>· needs ${rec.toLocaleString()}</i></span>`; }
+function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name} · free</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
 $('#quickPlay').onclick = () => { const i = nextStage(); if (!diffOpen(save.diff, i)) save.diff = 'normal'; startGame(i); };
 $('#openMissions').onclick = () => { buildMissions(); persist(); showScreen('#missions'); };
 $('#openStore').onclick = () => { save.tixSeen = save.tix; persist(); buildStore(); showScreen('#store'); };
@@ -4454,7 +4565,7 @@ $('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() 
 $('#dailyBtn').onclick = () => { $('#challm').hidden = true; startDaily(); }; $('#endlessBtn').onclick = () => { $('#challm').hidden = true; startEndless(); };
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
-  G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
+  G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.eshots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
   G.coins = 0; G.busted = 0; $('#coinN').textContent = 0; $('#bustN').textContent = 0; G.breakT = 2.2; G.nopes = Math.max(G.nopes, 1);
   for (const m of G.party) { m.anim = null; m.jump = null; m.x = m.home.x; m.y = m.home.y; }
   $('#overm').hidden = true; text(CX, CY - 150, 'One more try!', '#ecb23c', 30, 1.4);
@@ -4472,7 +4583,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps };
+if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start

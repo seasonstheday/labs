@@ -95,6 +95,19 @@ await test('a real match: myths walk in and get popped', async () => {
   expect(busted > 5, `myths popped (got ${busted})`); await close(); return errs;
 });
 
+await test('ranged myths: a Pelter and a Spellbook stop, wind up, and hit Dad or a friend', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  const r = await p.evaluate(async () => {
+    dbg.startGame(8); const G = dbg.G; document.querySelectorAll('.modal').forEach(el => el.hidden = true); G.paused = false; G.freePicks = 0; G.toSpawn = []; G.enemies = []; G.breakT = 9999;
+    for (const m of G.party) for (const k in m.cds) m.cds[k] = 999; // the team stands still so the myths live long enough to throw
+    const es = [dbg.spawn('dimlight', { x: 360, y: 390 }), dbg.spawn('leftbrain', { x: 70, y: 480 })]; for (const e of es) e.hp = e.maxhp = 1e6;
+    const hp0 = G.hp; let seen = 0; for (let i = 0; i < 40; i++) { dbg.step(15, 1 / 60); seen = Math.max(seen, G.eshots.length); }
+    return { kinds: es.map(e => e.kind), held: es.every(e => e.hold), seen, hurt: hp0 - G.hp + G.party.filter(m => m.daze > 0).length };
+  });
+  expect(r.kinds.join() === 'pelter,caster', `kinds ${r.kinds}`); expect(r.held, 'both stopped at range'); expect(r.seen > 0, 'they threw something'); expect(r.hurt > 0, 'a throw landed');
+  await close(); return errs;
+});
+
 await test('every attack, all 28 friends and all 7 of Dad\'s lenses', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   const n = await p.evaluate(async () => {
