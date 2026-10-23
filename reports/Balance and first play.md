@@ -66,3 +66,21 @@ A brand-new player played the first seven stages. Every pop-up, note and toast w
 | A "New!" card could pop up in the middle of a match | It only shows on the home screen |
 | Around ten level-up cards per stage | About a quarter fewer |
 | With the first tuning, a player who never upgraded lost the chapter 1 boss | Chapter 1 is unchanged; the tuning starts in chapter 2 |
+
+## Myth Master (build 56)
+
+Myth Master is a fourth difficulty. It opens stage by stage once that stage is beaten on Hard.
+
+**How it's harder:**
+- Myths have 2× health, move 1.15× faster and hit 1.15× harder.
+- Two extra elites join every wave.
+- Bosses use their moves 30% more often.
+- No Patience comes back during the match.
+
+**Rewards** (prizes only, never story power):
+- On the first win of each stage: a crown on the map pin, +40 gems, a Library Card, a Skill Book, and an extra item with better rarity odds.
+- Beating all five stages of a chapter opens a 🔥 Myth Master chest in Chapter Rewards: gems, a Legendary item and two Skill Books. It also turns that chapter's Diary tile gold.
+
+**Tuning:** I tested it with the campaign sim's saved teams. The first version, at 2.1× health and 1.6× damage, was lost by almost every team inside a minute. Tanks and healers piled up on Dad, each one draining Patience every second.
+
+The final numbers keep most of the extra challenge in health and elites. A fully upgraded late-game team now wins about half its attempts, often with little Patience left.
