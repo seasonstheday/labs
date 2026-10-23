@@ -223,6 +223,18 @@ await test('the finale: the Flat Earth shield, then Sir Ever-So-Sure, the ending
   await close(); return errs;
 });
 
+await test('the soundtrack: a piece per place, and the boss theme for a boss', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.mouse.click(20, 400); await p.waitForTimeout(1500);
+  const home = await p.evaluate(() => dbg.musNow());
+  await p.evaluate(() => dbg.startGame(6)); await p.waitForTimeout(1500);
+  const pond = await p.evaluate(() => dbg.musNow());
+  await p.evaluate(() => { const G = dbg.G; document.querySelectorAll('.modal').forEach(el => el.hidden = true); dbg.spawn(G.S.W.boss); }); await p.waitForTimeout(1500);
+  const boss = await p.evaluate(() => dbg.musNow());
+  expect(home && home.name === 'home' && home.t > 0, `home theme playing (${JSON.stringify(home)})`); expect(pond && pond.name === 'w1' && pond.t > 0, `pond theme (${JSON.stringify(pond)})`); expect(boss && boss.name === 'boss', `boss theme (${JSON.stringify(boss)})`);
+  await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);
