@@ -78,7 +78,7 @@ Myth Master is a fourth difficulty. It opens stage by stage once that stage is b
 - No Patience comes back during the match.
 
 **Rewards** (prizes only, never story power):
-- On the first win of each stage: a crown on the map pin, +40 gems, a Library Card, a Skill Book, and an extra item with better rarity odds.
+- On the first win of each stage: a flame on the map pin, +40 gems, a Library Card, a Skill Book, and an extra item with better rarity odds.
 - Beating all five stages of a chapter opens a 🔥 Myth Master chest in Chapter Rewards: gems, a Legendary item and two Skill Books. It also turns that chapter's Diary tile gold.
 
 **Tuning:** I tested it with the campaign sim's saved teams. The first version, at 2.1× health and 1.6× damage, was lost by almost every team inside a minute. Tanks and healers piled up on Dad, each one draining Patience every second.

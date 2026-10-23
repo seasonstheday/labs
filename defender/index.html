@@ -147,7 +147,7 @@
   .mapcard { background: var(--card); border-top: 4px solid #3a2c20; padding: 12px 14px 14px; box-shadow: 0 -10px 30px rgba(58,44,32,.2); }
   .mapcard h3 { margin: 0; font: 700 24px/1.1 "Fredoka", Arial, sans-serif; }
   .mapcard .d { font: 400 16px/1.25 "Patrick Hand", cursive; color: var(--muted); margin: 2px 0 8px; }
-  .diffs { display: flex; gap: 5px; margin-bottom: 8px; } .diffs button[data-d="master"] { background: linear-gradient(#ffe2c4, #ffc08a); } .diffs button[data-d="master"].on { background: linear-gradient(#ffb36a, #f0803a); } .pin .crown { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 16px; }
+  .diffs { display: flex; gap: 5px; margin-bottom: 8px; } .diffs button[data-d="master"] { background: linear-gradient(#ffe2c4, #ffc08a); } .diffs button[data-d="master"].on { background: linear-gradient(#ffb36a, #f0803a); } .pin .crown { position: absolute; top: -10px; right: -10px; font-style: normal; font-size: 16px; }
   
   .diffs button { flex: 1; min-width: 0; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .diffs button.on { background: var(--gold); }
@@ -584,7 +584,7 @@
       <div id="mapPow"></div>
       <div class="diffs" id="diffs"></div>
       <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
-      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Chests</button>
+      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Rewards</button>
     </div>
   </section>
 
@@ -848,7 +848,7 @@
   </div>
   <div class="modal" id="chestm" hidden>
     <div class="panel chestp">
-      <div class="cbanner">📚 Chapter Chests</div>
+      <div class="cbanner">🎁 Chapter Rewards</div>
       <div class="chead"><button class="btn icon ghost" id="chPrev">◀</button><div class="cflag" id="chFlag"></div><button class="btn icon ghost" id="chNext">▶</button></div>
       <div id="chList"></div>
       <div class="row exit"><button class="btn" id="chClose">Done</button></div>
@@ -3821,7 +3821,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   $('#starrow').innerHTML = [1, 2, 3].map(i => `<span class="${i <= stars ? 'on' : ''}" style="animation-delay:${.3 + i * .25}s">⭐</span>`).join('');
   $('#starwhy').textContent = stars === 3 ? 'Nothing got past Dad. Perfect!' : stars === 2 ? 'Dad kept more than half his Patience. For three stars, let nothing reach him.' : 'Cleared! For two stars, finish with more than half of Dad\'s Patience.';
   const hardFirst = save.diff === 'hard' && prev === 0, masterFirst = save.diff === 'master' && prev === 0;
-  const masterNote = !masterFirst ? '' : (save.books = (save.books || 0) + 1, `👑 Myth Master! A crown for this stage, +💎40 and a 📘 Skill Book${mastered5(G.S.w) ? `. Every ${G.S.W.name} stage on Myth Master: a crown chest is waiting in Chapter Rewards` : ''}`);
+  const masterNote = !masterFirst ? '' : (save.books = (save.books || 0) + 1, `🔥 Myth Master! A flame on this stage's pin, +💎40 and a 📘 Skill Book${mastered5(G.S.w) ? `. Every ${G.S.W.name} stage on Myth Master: a Myth Master chest is waiting in Chapter Rewards` : ''}`);
   missionAdd('clear'); if (stars === 3) missionAdd('star3'); if (G.bossDown) missionAdd('boss'); if (G.coins) missionAdd('coin', G.coins);
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + (masterFirst ? 40 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst || masterFirst ? 1 : 0) });
@@ -3927,7 +3927,7 @@ function buildMap(scroll = true) {
     const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard'), starsOf(i, 'master')), b = document.createElement('button'), [px, py] = pinXY(i);
     b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
     b.style.left = px + 'px'; b.style.top = py + 'px';
-    b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}${starsOf(i, 'master') ? '<i class="crown">👑</i>' : ''}`;
+    b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}${starsOf(i, 'master') ? '<i class="crown">🔥</i>' : ''}`;
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
     box.appendChild(b);
   });
@@ -4408,7 +4408,7 @@ function claimChest(w, k) {
   persist(); sfx('book'); buzz('HEAVY');
   $('#chTiles').innerHTML = payTiles(p).map(tileH).join(''); $('#chReveal').hidden = false; buildChests(); updateChestBtn();
 }
-function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Chests${anyChest() ? '<i class="dot"></i>' : ''}`; }
+function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Rewards${anyChest() ? '<i class="dot"></i>' : ''}`; }
 let treeId = null;
 const tCost = (r) => skCost(r);
 function buildTree() {
