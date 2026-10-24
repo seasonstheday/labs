@@ -521,6 +521,10 @@
   .tabs button { flex: none; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 999px; background: var(--card); padding: 8px 12px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .tabs button.on { background: var(--gold); }
   .marks { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .bmk { position: relative; display: inline-block; width: .62em; height: 1.05em; vertical-align: middle; } .bmk svg { width: 100%; height: 100%; display: block; } .bmk i { position: absolute; left: 0; right: 0; top: 18%; text-align: center; font-style: normal; font-size: .3em; line-height: 1; }
+  .itile .ie .bmk { font-size: 46px; } .itm .ie .bmk { font-size: 40px; } .lootc .ie .bmk { font-size: 34px; } .mark .bmk { font-size: 26px; }
+  .itile small.mstat { color: #3a2c20; font-weight: 600; margin-top: -2px; }
+  .forgebar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; } .forgebar .btn { flex: 1; } .forgebar small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
   .mark { width: 30px; height: 30px; border-radius: 8px; border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; background: #fff; cursor: pointer; }
   .mark.empty { border-style: dashed; background: rgba(58,44,32,.05); font-size: 12px; color: var(--muted); }
   .itm .txt .marks { margin-top: 4px; }
@@ -556,7 +560,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 61</div>
+    <div class="build">build 63</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -657,7 +661,7 @@
   </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Tap anything to polish ✨, forge 🔨 or sell it. A red dot means three of a kind are ready to forge.</p>
+    <p class="intro" id="bagIntro">Tap anything to wear it, polish it ✨ or sell it.</p>
     <div class="list" id="itemList"></div>
   </section>
 
@@ -1397,6 +1401,11 @@ const CWEAP = {
 // bookmarks (our runes): colour = stat. Slots on an item come from its rarity.
 const MARKS = { red: ['🔴', 'Red', 'pow', 4], blue: ['🔵', 'Blue', 'quick', 3], green: ['🟢', 'Green', 'ring', 8], gold: ['🟡', 'Gold', 'coin', 5], purple: ['🟣', 'Purple', 'crit', 2], silver: ['⚪', 'Silver', 'pat', 6] };
 const SLOTS_BY_RAR = [1, 1, 2, 3];
+// a bookmark looks like one: a ribbon in its colour with a notched tail, and the symbol of the stat it gives
+const MARK_LOOK = { red: ['#d9443a', '⚔️'], blue: ['#3f74d6', '⚡'], green: ['#4fae4a', '🎯'], gold: ['#e7b52f', '🪙'], purple: ['#9a5ad6', '💥'], silver: ['#c3c8d0', '❤️'] };
+const markSvg = (mk, cls = '') => { const [c, sym] = MARK_LOOK[mk.col] || ['#ccc', '?'];
+  return `<span class="bmk ${cls}"><svg viewBox="0 0 24 40" aria-hidden="true"><path d="M3 1.5h18v36l-9-7.5-9 7.5z" fill="${c}" stroke="#3a2c20" stroke-width="2.2" stroke-linejoin="round"/><path d="M6 3.5v28" stroke="rgba(255,255,255,.45)" stroke-width="2.2" stroke-linecap="round"/></svg><i>${sym}</i></span>`; };
+const icon = it => it.type === 'mark' ? markSvg(it) : it.em;
 function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS)), M = MARKS[c]; return { uid: Date.now().toString(36) + (uidN++).toString(36), type: 'mark', rar, col: c, name: `${RADJ[rar]}${M[1]} Bookmark`, em: M[0], stat: M[2], val: Math.round(M[3] * RAR[rar].mul) }; }
 
 /* ───────── the party ───────── */
@@ -1884,10 +1893,11 @@ const SYNERGY = [
 function synStat(st, id) { let v = 0; for (const sy of SYNERGY) if (sy.eff && sy.eff[st] && (id ? !sy.party && sy.ids.includes(id) : sy.party) && synOn(sy)) v += sy.eff[st]; return v; }
 const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
 const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
-const BASE_RADIUS = 170;
+const BASE_RADIUS = 170, RING_W = 186; // RING_W: the widest the ring gets, so it stays on screen (440 wide)
 const DAD_H = 102; // Dad's height in the arena
 // Dad's drawn battle poses (assets/bdad_*.png, facing right): where the lens is and where his feet are, as fractions of the picture,
 // the lens radius in picture heights, and a size match so his head stays the same size between poses
+const DAD_DRAW = DAD_H * .9; // the drawn poses fill their picture, so they're drawn a little smaller than the old 3D Dad
 const DPOSE = { idle: { lens: [.862, .332], r: .073, feet: .43, k: 1 }, aim: { lens: [.907, .274], r: .075, feet: .37, k: .9 }, ouch: { lens: [.664, .441], r: .03, feet: .6, k: .94 } };
 for (const k in DPOSE) art('bdad_' + k); // loaded up front, so the first shot already leaves from the drawn lens
 function dadPose(m) { const a = m.anim, p = a ? a.t / a.dur : 0; if (a && p > .28 && p < .86) return 'aim'; return G.flash > 0 && !a ? 'ouch' : 'idle'; }
@@ -2351,7 +2361,7 @@ function spawn(id, at = null, q = {}) {
 // ranged myths: a pelter stands at the ring's edge, a spellbook a little further out; both aim at Dad most of the time
 function rangedMyth(e, d, dt) {
   const cast = e.kind === 'caster', stand = G.radius * (cast ? .84 : .7);
-  if (e.lured > 0) e.hold = false; else if (d < stand) e.hold = true; else if (d > stand + 40) e.hold = false;
+  const rd = ringD(e); if (e.lured > 0) e.hold = false; else if (rd < stand) e.hold = true; else if (rd > stand + 40) e.hold = false;
   if (e.aim > 0 && e.stun > 0) { e.aim = 0; e.atkT = 1.4; G.fx.push({ k: 'puff', x: e.x, y: e.y - e.r * 1.4, vx: 0, vy: -30, t: 0, life: .45, col: cast ? '#c9a6f2' : '#fbf3df', r: e.r * .5 }); text(e.x, e.y - e.r - 18, cast ? 'fizzle' : 'oops', '#fff', 13, .7); return; }
   if (!e.hold || e.stun > 0) return;
   if (e.aim > 0) { e.aim -= dt; if (e.aim <= 0) throwAt(e); return; }
@@ -2441,8 +2451,12 @@ function spawnMini(parent) {
 
 /* ───────── helpers ───────── */
 function text(x, y, s, col = '#fff', size = 18, life = 1) { G.texts.push({ x, y, s, col, size, t: 0, life }); }
-function inRing(e) { return dist(e, G.dad) < G.radius + e.r * .5; }
-const seen = e => e.kind !== 'rumour' || dist(e, G.dad) < G.radius * .72 + rankOf('webster', 'eyes') * 25 + rankOf('nilla', 'nighteyes') * 30;
+// distance as the ring sees it: past RING_W the ring stops getting wider and becomes an upright oval
+// past the pond's width, more Ring still helps but less and less, up to RING_MAX: the oval stays clear of the Patience bar
+const RING_MAX = 232, ringSoft = r => r <= RING_W ? r : RING_W + (RING_MAX - RING_W) * (1 - Math.exp(-(r - RING_W) / 90));
+const ringK = () => Math.min(1, RING_W / G.radius), ringD = e => Math.hypot((e.x - G.dad.x) / ringK(), e.y - G.dad.y);
+function inRing(e) { return ringD(e) < G.radius + e.r * .5; }
+const seen = e => e.kind !== 'rumour' || ringD(e) < G.radius * .72 + rankOf('webster', 'eyes') * 25 + rankOf('nilla', 'nighteyes') * 30;
 function nearest(from, exclude = null, n = 1) {
   const list = G.enemies.filter(e => e !== exclude && !(exclude && exclude.has && exclude.has(e)) && e.hp > 0 && (inRing(e) || e.host) && seen(e));
   list.sort((a, b) => dist(a, from) - dist(b, from));
@@ -2532,7 +2546,7 @@ function hint(s, life = 2.5) { const h = $('#hint'); h.textContent = s; h.hidden
 // the point a character's shots leave from
 function handPos(m) {
   if (m.id === 'dad') { const img = art('bdad_aim'); if (!ready(img)) { const h = DAD_H, w = h * 320 / 700, A = HAND.pointing; return { x: m.x + m.face * (A[0] - .5) * w, y: m.y + 30 - h + A[1] * h }; }
-    const P = DPOSE.aim, h = DAD_H * 1.12 * P.k, w = h * img.naturalWidth / img.naturalHeight; return { x: m.x + m.face * (P.lens[0] - P.feet) * w, y: m.y + 30 - h + P.lens[1] * h }; } // the lens, held out in the lunge
+    const P = DPOSE.aim, h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight; return { x: m.x + m.face * (P.lens[0] - P.feet) * w, y: m.y + 30 - h + P.lens[1] * h }; } // the lens, held out in the lunge
   return mouth(m);
 }
 // where a friend's moves leave from: the mouth, beak, claw, hand or horn on its drawing, as [across, down] fractions of the picture (facing right)
@@ -2812,11 +2826,11 @@ function update(dt) {
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.stage, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
   // enemies
   const story = rankOf('dad', 'story'), storyR = (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * (.15 + sk('luna', 'moonlight') * .05) + sk('dad', 'story') * .12);
-  G.radius = (G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
+  G.radius = ringSoft(G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
     e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
-    if (e.V && e.V.hurry && !e.hurried && dist(e, G.dad) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
+    if (e.V && e.V.hurry && !e.hurried && ringD(e) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
     if (e.hurry > 0) { e.hurry -= dt; sp *= 2.4; }
@@ -2828,7 +2842,7 @@ function update(dt) {
     e.flipped = Math.max(0, (e.flipped || 0) - dt);
     const Lp = e.lured > 0 && G.lure ? G.lure : dad, a = Math.atan2(Lp.y - e.y, Lp.x - e.x), d = dist(e, dad);
     // dasher: stop, crouch, then charge the last stretch (a stun during the crouch cancels it)
-    if (e.kind === 'dasher' && !e.dashed && e.winding == null && d < G.radius * .85 && d > e.r + 40) { e.winding = .7; text(e.x, e.y - e.r - 16, '…', '#fff', 18, .7); }
+    if (e.kind === 'dasher' && !e.dashed && e.winding == null && ringD(e) < G.radius * .85 && d > e.r + 40) { e.winding = .7; text(e.x, e.y - e.r - 16, '…', '#fff', 18, .7); }
     if (e.kind !== 'boss' && e.winding > 0) { e.winding -= dt; if (e.stun > 0) { e.winding = null; e.dashed = true; } else if (e.winding <= 0) { e.winding = null; e.dashed = true; e.charging = .5; } }
     if (e.charging > 0 && e.kind !== 'boss') { e.charging -= dt; sp = e.spd * 5; }
     // healer: patches up everyone nearby every few seconds
@@ -3370,7 +3384,7 @@ function drawMember(m) {
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
     const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
     if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
-      const h = DAD_H * 1.12 * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
+      const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
       const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up
       const fx = m.x + step * .6, fy = m.y + 30 - hop * .5;
       ctx.save(); ctx.translate(fx, fy); ctx.rotate(lean * .6); ctx.scale(m.face * (1 + pop * .07 + wind * .03), 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
@@ -3581,10 +3595,10 @@ function draw() {
   ctx.drawImage(G.bg.c, -20, -20);
   if (G.S.w === 7) for (let i = 0; i < 12; i++) { const a = G.t * .4 + i * 2.1, fx = CX + Math.cos(a) * (120 + i * 12), fy = CY + Math.sin(a * 1.3) * (160 + i * 9); ctx.fillStyle = `rgba(255,240,150,${.3 + Math.sin(G.t * 3 + i) * .3})`; ctx.beginPath(); ctx.arc(fx, fy, 2.5, 0, 7); ctx.fill(); }
   // attention ring
-  ctx.beginPath(); ctx.arc(dad.x, dad.y, G.radius, 0, 7); ctx.fillStyle = 'rgba(251,243,223,.08)'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(dad.x, dad.y, G.radius * ringK(), G.radius, 0, 0, 7); ctx.fillStyle = 'rgba(251,243,223,.08)'; ctx.fill();
   ctx.setLineDash([10, 8]); ctx.lineDashOffset = -G.t * 20; ctx.strokeStyle = G.fog > 0 ? 'rgba(180,139,230,.9)' : 'rgba(251,243,223,.75)'; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([]);
   if (G.heat) { const H = G.heat, p = Math.min(1, H.t / H.dur); ctx.fillStyle = `rgba(240,138,75,${.12 + p * .22})`; ctx.beginPath(); ctx.arc(dad.x, dad.y, G.radius * (.5 + p * .5), 0, 7); ctx.fill(); for (let i = 0; i < 5; i++) { const t = (G.t * .6 + i / 5) % 1; ctx.globalAlpha = (1 - t) * .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(dad.x - 60 + i * 30, dad.y + 30 - t * 90); ctx.quadraticCurveTo(dad.x - 50 + i * 30, dad.y + 10 - t * 90, dad.x - 60 + i * 30, dad.y - 10 - t * 90); ctx.stroke(); } ctx.globalAlpha = 1; }
-  if (G.fog > 0) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, G.radius * 1.66, 0, 7); ctx.arc(dad.x, dad.y, G.radius, 0, 7, true); ctx.fill(); }
+  if (G.fog > 0) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.ellipse(dad.x, dad.y, G.radius * 1.66 * ringK(), G.radius * 1.66, 0, 0, 7); ctx.ellipse(dad.x, dad.y, G.radius * ringK(), G.radius, 0, 0, 7, true); ctx.fill(); }
   if (G.strikes) for (const sp of G.strikes.spots) { ctx.strokeStyle = '#ffe36b'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(sp.x, sp.y, 30 + Math.sin(G.t * 10) * 3, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.font = `20px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('⚡', sp.x, sp.y - 46); ctx.textBaseline = 'alphabetic'; }
   // bedtime story aura
   const story = rankOf('dad', 'story'); if (story) { ctx.fillStyle = 'rgba(180,139,230,.12)'; ctx.beginPath(); ctx.arc(dad.x, dad.y, (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * (.15 + sk('luna', 'moonlight') * .05) + sk('dad', 'story') * .12), 0, 7); ctx.fill(); if (Math.floor(G.t * 2) % 2) { ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.textAlign = 'center'; ctx.fillText('z', dad.x + 30, dad.y - 110 - Math.sin(G.t * 2) * 6); } }
@@ -3817,7 +3831,7 @@ function answerQuiz(saidFact) {
   setTimeout(() => {
     $('#quizm').hidden = true;
     if (G.check) { G.check = null; G.paused = false; if (right) text(G.dad.x, G.dad.y - 110, `${MYTHS[q.id].em} I KNOW THIS ONE!`, '#8fd38a', 20, 1.4); return; }
-    if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
+    if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${icon(it)}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
     G.paused = false;
     if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
   }, right ? 1400 : 2600);
@@ -4040,7 +4054,7 @@ function stats(el, coins, gems) {
 // random items at the end of a match; more and better for clears and later stages
 function dropLoot(el, n, bonus) {
   const drops = []; for (let i = 0; i < n; i++) { const it = Math.random() < .15 ? makeMark(rollRar(bonus)) : randItem(bonus); save.items.push(it); drops.push(it); }
-  persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
+  persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
 let sessionMatches = 0;
@@ -4060,7 +4074,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + (masterFirst ? 40 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst || masterFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0) + (G.D.loot ? 1 : 0), Math.min(.9, G.stage * .03) + .1 + (G.D.loot || 0));
-  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${icon(it)}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
   // friends are earned with pages. Only Webster, who teaches the first stage, comes by himself.
@@ -4328,8 +4342,8 @@ function buildParty() {
 
 /* ───────── equip picker ───────── */
 let pickFor = null;
-const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${markSvg(mk)}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${icon(it)}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
 // spending or leaving: the first tap asks ("Sure?"), a second tap within 3 seconds does it
 function sure(b, ask = 'Sure? Tap again') { if (b.dataset.sure && Date.now() - +b.dataset.sure < 3000) { delete b.dataset.sure; b.classList.remove('sure'); return true; }
   const old = b.innerHTML; b.dataset.sure = Date.now(); b.innerHTML = '✔ ' + ask; b.classList.add('sure'); buzz('LIGHT');
@@ -4378,10 +4392,10 @@ function forgeFlow(it, after) {
 let bagFilter = 'all';
 const BAG_F = [['all', 'All'], ['weapon', '⚔️ Weapons'], ['armor', '🛡️ Armor'], ['book', '📚 Books'], ['mark', '🔖 Marks']];
 function bagBtns(it) {
-  if (it.type === 'mark') return `<div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
+  if (it.type === 'mark') return `<p class="sheethint" style="margin:10px 0">🔖 Slots into the dashed + spaces on weapons, armor and books: tap a + on the item to add it. Common and Rare items have 1 space, Epic 2, Legendary 3.</p><div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
   const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0, w = wornBy(it.uid);
   return `<div class="sheetbtns">${!has('polish') ? '' : lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
-    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
+    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : it.rar < 3 ? `<button class="btn ghost" disabled>🔒 Forging opens at ${forgeAt()}</button>` : '')
     + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
     + '</div>';
 }
@@ -4409,14 +4423,38 @@ function bindBag(root, after) {
   });
   root.querySelectorAll('[data-unmark]').forEach(b => b.onclick = () => { const [uid, i] = b.dataset.unmark.split(':'), it = itemBy(uid); if (!it || save.coins < 20) return; const mk = it.marks.splice(+i, 1)[0]; save.items.push(mk); setWallet({ coins: save.coins - 20 }); after(); });
 }
+// where forging opens, by stage name
+const forgeAt = () => { const u = UNLOCKS.find(x => x.k === 'forge'); return u ? STAGES[u.at].name : 'a later stage'; };
+// forge everything that can be forged, lowest rarity first (so three new Rares can go on to make an Epic), keeping
+// what's being worn and the best of each three, then show what came of it
+function forgeable() { const seen = new Set(), out = [];
+  for (const it of [...save.items].sort((a, b) => a.rar - b.rar || (wornBy(b.uid) ? 1 : 0) - (wornBy(a.uid) ? 1 : 0) || (b.lv || 0) - (a.lv || 0) || b.val - a.val)) {
+    if (it.type === 'mark' || it.rar >= 3 || it.legend && it.rar >= 3 || seen.has(it)) continue;
+    const tw = twinsOf(it).filter(o => !seen.has(o)).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (tw.length < 2) continue;
+    seen.add(it); tw.forEach(o => seen.add(o)); out.push([it, tw]); }
+  return out; }
+function autoForge() {
+  const made = []; let refund = 0, back = 0, guard = 0, batch;
+  while ((batch = forgeable()).length && guard++ < 30) for (const [it, use] of batch) {
+    if (!save.items.includes(it) || use.some(o => !save.items.includes(o))) continue;
+    for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) { save.items.push(mk); back++; } } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); missionTick('merge');
+    const was = made.find(m => m.it === it); if (was) was.n++; else made.push({ it, n: 1 }); }
+  if (!made.length) return; setWallet({ coins: save.coins + refund }); persist(); buildItems(); powWatch();
+  pickFor = null; $('#pickTitle').textContent = '🔨 Forged!'; $('#pickSub').textContent = `${made.reduce((a, m) => a + m.n, 0)} forge${made.length > 1 || made[0].n > 1 ? 's' : ''}, three items into one each time.${refund ? ` Polish coins back: 🪙 ${refund}.` : ''}${back ? ` ${back} bookmark${back > 1 ? 's' : ''} back in the bag.` : ''}`; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = made.map(m => itemRow(m.it, m.n > 1 ? `<b class="fx2">×${m.n}</b>` : '')).join('');
+  $('#pickm').hidden = false;
+}
 function buildItems() {
+  $('#bagIntro').textContent = has('forge') ? 'Tap anything to wear it, polish it ✨, forge it 🔨 or sell it. A red dot: three of a kind, ready to forge.' : `Tap anything to wear it, polish it ✨ or sell it. 🔒 Forging opens at ${forgeAt()}.`;
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
-    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
-  box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
+    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${icon(it)}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot" title="3 ready to forge"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small>${it.type === 'mark' ? `<small class="mstat">${itemDesc(it)}</small>` : ''}</button>`; };
+  const nf = has('forge') ? forgeable().length : 0;
+  box.innerHTML = (nf ? `<div class="forgebar"><button class="btn green" id="autoForge">🔨 Auto-forge · ${nf} ready</button></div>` : '') + `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
   box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { bagFilter = b.dataset.f; buildItems(); });
   box.querySelectorAll('[data-it]').forEach(b => b.onclick = () => itemSheet(b.dataset.it));
+  const af = $('#autoForge'); if (af) af.onclick = () => { if (sure(af, 'Forge them all?')) autoForge(); };
 }
 
 /* ───────── the store ───────── */
@@ -4467,7 +4505,7 @@ function buildStore() {
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
-  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
 /* ───────── library card draws ───────── */
