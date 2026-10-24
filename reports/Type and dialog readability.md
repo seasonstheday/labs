@@ -86,3 +86,22 @@ The same screens were set in four fonts at a larger size with the darker grey. I
 Expected result: the smallest text goes from 7–10 pt to about 11.6 pt or more, body text from about 13 pt to 15–16 pt, every grey label passes contrast, and the Stage cleared card drops from about 150 words to about 60.
 
 Sources: [Apple HIG, Typography](https://developer.apple.com/design/human-interface-guidelines/typography.md), [Game Accessibility Guidelines](https://gameaccessibilityguidelines.com/?p=3285), [Xbox Accessibility Guideline 101: text display](https://devdocs.xbox.com/gaming/accessibility/xbox-accessibility-guidelines/101), [UXmatters: typography in applications for children](https://www.uxmatters.com/mt/archives/2011/06/effective-use-of-typography-in-applications-for-children-3.php), [type.today: children's book typography](https://type.today/en/journal/childrens_book_typography), [Made Good Designs: best fonts for kids](https://madegooddesigns.com/best-fonts-for-kids/).
+
+## Done (build 64)
+
+- Reading text is now Nunito: SemiBold for normal text, ExtraBold where the old font was bold. Fredoka stays for titles, buttons and numbers. The home-screen tagline keeps the handwriting font.
+- Sizes went up, with a floor:
+  - nothing on screen is under 13 px in the frame (about 11.6 pt on an iPhone), except tiny number badges;
+  - body text is 16–18 px (about 14–16 pt).
+- The muted grey is now #6b5236, which passes WCAG AA on every background.
+- Stage cleared:
+  - three big numbers for Myths, Coins and Gems;
+  - one short line for new facts, level and the Diary bonus;
+  - larger loot tiles;
+  - one note per line;
+  - no flavour line except at a chapter's end.
+- All 87 ability descriptions are 8 words or fewer.
+- The Diary shows the next milestone only on the topic you've picked.
+- Screen intros are one sentence each.
+
+Before and after: `img/type_before_after.png`.
