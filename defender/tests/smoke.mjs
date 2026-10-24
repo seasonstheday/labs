@@ -235,6 +235,16 @@ await test('the soundtrack: a piece per place, and the boss theme for a boss', a
   await close(); return errs;
 });
 
+await test('Auto-forge: forges every three of a kind, chaining up, and shows what it made', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), unlocked: 12, cleared: [...Array(12).keys()], seenUnlocks: ['forge'] });
+  const r = await p.evaluate(() => { const S = dbg.save; S.items = []; for (let i = 0; i < 9; i++) S.items.push(dbg.makeItem('armor', 0)); S.items.push(dbg.makeMark(1, 'red')); dbg.persist();
+    const n0 = S.items.length; document.querySelectorAll('.modal').forEach(m => m.hidden = true); [...document.querySelectorAll('button')].find(x => /^.*Bag$/.test(x.textContent.trim())).click();
+    const b = document.querySelector('#autoForge'); const label = b && b.textContent; b.click(); b.click();
+    return { label, n0, n1: S.items.length, rars: S.items.filter(i => i.type === 'armor').map(i => i.rar).sort().join(), shown: !document.querySelector('#pickm').hidden && document.querySelector('#pickTitle').textContent }; });
+  expect(/3 ready/.test(r.label || ''), `button counts the forges (${r.label})`); expect(r.rars === '2', `nine Commons became one Epic (${r.rars})`); expect(r.n1 === 2, `the bookmark stays (${r.n1})`); expect(/Forged/.test(r.shown || ''), 'a summary of what it made');
+  await close(); return errs;
+});
+
 await test('stage clear, the next one opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { dbg.startGame(12); document.querySelector('#comicm').hidden = true; document.querySelector('#levelup').hidden = true; dbg.G.freePicks = 0; dbg.stageClear(); }); await p.waitForTimeout(500);

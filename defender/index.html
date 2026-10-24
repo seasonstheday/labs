@@ -521,6 +521,10 @@
   .tabs button { flex: none; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 999px; background: var(--card); padding: 8px 12px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .tabs button.on { background: var(--gold); }
   .marks { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .bmk { position: relative; display: inline-block; width: .62em; height: 1.05em; vertical-align: middle; } .bmk svg { width: 100%; height: 100%; display: block; } .bmk i { position: absolute; left: 0; right: 0; top: 18%; text-align: center; font-style: normal; font-size: .3em; line-height: 1; }
+  .itile .ie .bmk { font-size: 46px; } .itm .ie .bmk { font-size: 40px; } .lootc .ie .bmk { font-size: 34px; } .mark .bmk { font-size: 26px; }
+  .itile small.mstat { color: #3a2c20; font-weight: 600; margin-top: -2px; }
+  .forgebar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; } .forgebar .btn { flex: 1; } .forgebar small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
   .mark { width: 30px; height: 30px; border-radius: 8px; border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; background: #fff; cursor: pointer; }
   .mark.empty { border-style: dashed; background: rgba(58,44,32,.05); font-size: 12px; color: var(--muted); }
   .itm .txt .marks { margin-top: 4px; }
@@ -556,7 +560,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 62</div>
+    <div class="build">build 63</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -657,7 +661,7 @@
   </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Tap anything to polish ✨, forge 🔨 or sell it. A red dot means three of a kind are ready to forge.</p>
+    <p class="intro" id="bagIntro">Tap anything to wear it, polish it ✨ or sell it.</p>
     <div class="list" id="itemList"></div>
   </section>
 
@@ -1397,6 +1401,11 @@ const CWEAP = {
 // bookmarks (our runes): colour = stat. Slots on an item come from its rarity.
 const MARKS = { red: ['🔴', 'Red', 'pow', 4], blue: ['🔵', 'Blue', 'quick', 3], green: ['🟢', 'Green', 'ring', 8], gold: ['🟡', 'Gold', 'coin', 5], purple: ['🟣', 'Purple', 'crit', 2], silver: ['⚪', 'Silver', 'pat', 6] };
 const SLOTS_BY_RAR = [1, 1, 2, 3];
+// a bookmark looks like one: a ribbon in its colour with a notched tail, and the symbol of the stat it gives
+const MARK_LOOK = { red: ['#d9443a', '⚔️'], blue: ['#3f74d6', '⚡'], green: ['#4fae4a', '🎯'], gold: ['#e7b52f', '🪙'], purple: ['#9a5ad6', '💥'], silver: ['#c3c8d0', '❤️'] };
+const markSvg = (mk, cls = '') => { const [c, sym] = MARK_LOOK[mk.col] || ['#ccc', '?'];
+  return `<span class="bmk ${cls}"><svg viewBox="0 0 24 40" aria-hidden="true"><path d="M3 1.5h18v36l-9-7.5-9 7.5z" fill="${c}" stroke="#3a2c20" stroke-width="2.2" stroke-linejoin="round"/><path d="M6 3.5v28" stroke="rgba(255,255,255,.45)" stroke-width="2.2" stroke-linecap="round"/></svg><i>${sym}</i></span>`; };
+const icon = it => it.type === 'mark' ? markSvg(it) : it.em;
 function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS)), M = MARKS[c]; return { uid: Date.now().toString(36) + (uidN++).toString(36), type: 'mark', rar, col: c, name: `${RADJ[rar]}${M[1]} Bookmark`, em: M[0], stat: M[2], val: Math.round(M[3] * RAR[rar].mul) }; }
 
 /* ───────── the party ───────── */
@@ -3822,7 +3831,7 @@ function answerQuiz(saidFact) {
   setTimeout(() => {
     $('#quizm').hidden = true;
     if (G.check) { G.check = null; G.paused = false; if (right) text(G.dad.x, G.dad.y - 110, `${MYTHS[q.id].em} I KNOW THIS ONE!`, '#8fd38a', 20, 1.4); return; }
-    if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
+    if (G.popQuiz) { G.popQuiz = false; if (right) { const it = randItem(.1); save.items.push(it); setWallet({ coins: save.coins + 30 }); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${icon(it)}</span>${it.name}<br><small>quiz prize +🪙30</small></div>`; } $('#quizRow').hidden = true; $('#clearm').hidden = false; return; }
     G.paused = false;
     if (b && b.hp > 0) { if (right) { b.stun = 5; b.weak = 5; b.winding = null; b.charging = 0; text(b.x, b.y - b.r - 50, 'WIDE OPEN!', '#ecb23c', 30, 1.6); G.slowmo = .5; } else { b.chargeT = Math.min(b.chargeT, 2); text(b.x, b.y - b.r - 50, '"Ha!"', '#fff', 20, 1); } }
   }, right ? 1400 : 2600);
@@ -4045,7 +4054,7 @@ function stats(el, coins, gems) {
 // random items at the end of a match; more and better for clears and later stages
 function dropLoot(el, n, bonus) {
   const drops = []; for (let i = 0; i < n; i++) { const it = Math.random() < .15 ? makeMark(rollRar(bonus)) : randItem(bonus); save.items.push(it); drops.push(it); }
-  persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
+  persist(); el.innerHTML = drops.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${.2 + i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join('');
   return drops;
 }
 let sessionMatches = 0;
@@ -4065,7 +4074,7 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
   const factGems = payFacts();
   const k = payout(true), gems = (first ? 15 + G.stage * 3 + (G.S.boss ? 10 : 0) : 0) + newStars * 5 + (hardFirst ? 20 : 0) + (masterFirst ? 40 : 0) + factGems; setWallet({ coins: save.coins + k, gems: save.gems + gems, tix: save.tix + (first && G.S.boss ? 1 : 0) + (hardFirst || masterFirst ? 1 : 0) });
   dropLoot($('#clearLoot'), 2 + (G.bossDown ? 1 : 0) + (G.D.loot ? 1 : 0), Math.min(.9, G.stage * .03) + .1 + (G.D.loot || 0));
-  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${it.em}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
+  if (G.bossDown && first) { const big = G.S.idx === 4, it = itOfBoss(big); save.items.push(it); $('#clearLoot').innerHTML += `<div class="lootc r${it.rar}"><span class="ie">${icon(it)}</span>${it.name}<br><small>boss prize</small></div>`; persist(); } if (G.elites) { for (let i = 0; i < G.elites; i++) save.items.push(Math.random() < .5 ? makeMark(rollRar(.2)) : randItem(.3, 1)); $('#clearLoot').innerHTML += `<div class="lootc r1"><span class="ie">👑</span>${G.elites} elite item${G.elites > 1 ? 's' : ''}<br><small>in the bag</small></div>`; persist(); }
   $('#grew').hidden = !giveXp(true);
   // a friend who joins for free after this stage
   // friends are earned with pages. Only Webster, who teaches the first stage, comes by himself.
@@ -4333,8 +4342,8 @@ function buildParty() {
 
 /* ───────── equip picker ───────── */
 let pickFor = null;
-const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${mk.em}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
-const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${it.em}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
+const markRow = it => it.type === 'mark' ? '' : `<div class="marks">${(it.marks || []).map((mk, i) => `<div class="mark" title="${mk.name} ${itemDesc(mk)}" data-unmark="${it.uid}:${i}">${markSvg(mk)}</div>`).join('')}${Array.from({ length: Math.max(0, SLOTS_BY_RAR[it.rar] - (it.marks || []).length) }).map(() => `<div class="mark empty" data-addmark="${it.uid}">+🔖</div>`).join('')}</div>`;
+const itemRow = (it, btn) => `<div class="itm r${it.rar}"><div class="ie">${icon(it)}</div><div class="txt"><b>${itemName(it)}</b><span>${RAR[it.rar].n} ${it.type === 'mark' ? 'Bookmark' : it.type === 'weapon' && it.owner ? `${CHARS[it.owner].name}'s ${sing(lineOf(it.owner).line)}` : ITEMS[it.type].slot} · ${itemDesc(it)}${wornBy(it.uid) ? ' · on ' + CHARS[wornBy(it.uid)].name : ''}</span>${it.desc ? `<span class="flav">${it.desc}</span>` : ''}${markRow(it)}</div>${btn}</div>`;
 // spending or leaving: the first tap asks ("Sure?"), a second tap within 3 seconds does it
 function sure(b, ask = 'Sure? Tap again') { if (b.dataset.sure && Date.now() - +b.dataset.sure < 3000) { delete b.dataset.sure; b.classList.remove('sure'); return true; }
   const old = b.innerHTML; b.dataset.sure = Date.now(); b.innerHTML = '✔ ' + ask; b.classList.add('sure'); buzz('LIGHT');
@@ -4383,10 +4392,10 @@ function forgeFlow(it, after) {
 let bagFilter = 'all';
 const BAG_F = [['all', 'All'], ['weapon', '⚔️ Weapons'], ['armor', '🛡️ Armor'], ['book', '📚 Books'], ['mark', '🔖 Marks']];
 function bagBtns(it) {
-  if (it.type === 'mark') return `<div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
+  if (it.type === 'mark') return `<p class="sheethint" style="margin:10px 0">🔖 Slots into the dashed + spaces on weapons, armor and books: tap a + on the item to add it. Common and Rare items have 1 space, Epic 2, Legendary 3.</p><div class="sheetbtns"><button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell}</button></div>`;
   const lv = it.lv || 0, pc = lv < POLISH_MAX ? POLISH[it.rar][lv] : 0, tw = it.rar < 3 ? twinsOf(it).length : 0, w = wornBy(it.uid);
   return `<div class="sheetbtns">${!has('polish') ? '' : lv < POLISH_MAX ? `<button class="btn" data-polish="${it.uid}" ${save.coins < pc ? 'disabled' : ''}>✨ Polish to +${lv + 1} · 🪙 ${pc}</button>` : '<button class="btn" disabled>✨ Polished to +5</button>'}`
-    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : '')
+    + (it.rar < 3 && has('forge') ? `<button class="btn ${tw >= 2 ? 'green' : ''}" data-merge="${it.uid}" ${tw >= 2 ? '' : 'disabled'}>🔨 Forge into ${RAR[it.rar + 1].n} · ${Math.min(tw, 2) + 1}/3</button>` : it.rar < 3 ? `<button class="btn ghost" disabled>🔒 Forging opens at ${forgeAt()}</button>` : '')
     + (w ? `<button class="btn ghost" disabled>${it.type === 'weapon' ? 'Held' : 'Worn'} by ${CHARS[w].name}</button>` : `<button class="btn ghost" data-sell="${it.uid}">Sell · 🪙 ${RAR[it.rar].sell + Math.round((it.spent || 0) / 2)}</button>`)
     + '</div>';
 }
@@ -4414,14 +4423,38 @@ function bindBag(root, after) {
   });
   root.querySelectorAll('[data-unmark]').forEach(b => b.onclick = () => { const [uid, i] = b.dataset.unmark.split(':'), it = itemBy(uid); if (!it || save.coins < 20) return; const mk = it.marks.splice(+i, 1)[0]; save.items.push(mk); setWallet({ coins: save.coins - 20 }); after(); });
 }
+// where forging opens, by stage name
+const forgeAt = () => { const u = UNLOCKS.find(x => x.k === 'forge'); return u ? STAGES[u.at].name : 'a later stage'; };
+// forge everything that can be forged, lowest rarity first (so three new Rares can go on to make an Epic), keeping
+// what's being worn and the best of each three, then show what came of it
+function forgeable() { const seen = new Set(), out = [];
+  for (const it of [...save.items].sort((a, b) => a.rar - b.rar || (wornBy(b.uid) ? 1 : 0) - (wornBy(a.uid) ? 1 : 0) || (b.lv || 0) - (a.lv || 0) || b.val - a.val)) {
+    if (it.type === 'mark' || it.rar >= 3 || it.legend && it.rar >= 3 || seen.has(it)) continue;
+    const tw = twinsOf(it).filter(o => !seen.has(o)).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); if (tw.length < 2) continue;
+    seen.add(it); tw.forEach(o => seen.add(o)); out.push([it, tw]); }
+  return out; }
+function autoForge() {
+  const made = []; let refund = 0, back = 0, guard = 0, batch;
+  while ((batch = forgeable()).length && guard++ < 30) for (const [it, use] of batch) {
+    if (!save.items.includes(it) || use.some(o => !save.items.includes(o))) continue;
+    for (const o of use) { refund += o.spent || 0; for (const mk of o.marks || []) { save.items.push(mk); back++; } } save.items = save.items.filter(o => !use.includes(o)); mergeInto(it); missionTick('merge');
+    const was = made.find(m => m.it === it); if (was) was.n++; else made.push({ it, n: 1 }); }
+  if (!made.length) return; setWallet({ coins: save.coins + refund }); persist(); buildItems(); powWatch();
+  pickFor = null; $('#pickTitle').textContent = '🔨 Forged!'; $('#pickSub').textContent = `${made.reduce((a, m) => a + m.n, 0)} forge${made.length > 1 || made[0].n > 1 ? 's' : ''}, three items into one each time.${refund ? ` Polish coins back: 🪙 ${refund}.` : ''}${back ? ` ${back} bookmark${back > 1 ? 's' : ''} back in the bag.` : ''}`; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = made.map(m => itemRow(m.it, m.n > 1 ? `<b class="fx2">×${m.n}</b>` : '')).join('');
+  $('#pickm').hidden = false;
+}
 function buildItems() {
+  $('#bagIntro').textContent = has('forge') ? 'Tap anything to wear it, polish it ✨, forge it 🔨 or sell it. A red dot: three of a kind, ready to forge.' : `Tap anything to wear it, polish it ✨ or sell it. 🔒 Forging opens at ${forgeAt()}.`;
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
-    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${it.em}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small></button>`; };
-  box.innerHTML = `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
+    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${icon(it)}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot" title="3 ready to forge"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small>${it.type === 'mark' ? `<small class="mstat">${itemDesc(it)}</small>` : ''}</button>`; };
+  const nf = has('forge') ? forgeable().length : 0;
+  box.innerHTML = (nf ? `<div class="forgebar"><button class="btn green" id="autoForge">🔨 Auto-forge · ${nf} ready</button></div>` : '') + `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
   box.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { bagFilter = b.dataset.f; buildItems(); });
   box.querySelectorAll('[data-it]').forEach(b => b.onclick = () => itemSheet(b.dataset.it));
+  const af = $('#autoForge'); if (af) af.onclick = () => { if (sure(af, 'Forge them all?')) autoForge(); };
 }
 
 /* ───────── the store ───────── */
@@ -4472,7 +4505,7 @@ function buildStore() {
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
-  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${it.em}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
 /* ───────── library card draws ───────── */
