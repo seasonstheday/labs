@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <meta name="description" content="Dad and his backyard friends stand their ground while grumpy Myths march in. Every wrong idea that pops turns into a real fact. No dodging. Only wondering.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;700;800&family=Patrick+Hand&display=swap">
 <style>
-  :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
+  :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #6b5236; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
   html, body { height: 100%; margin: 0; }
@@ -27,15 +27,15 @@
   #gatem input { width: 120px; font: 700 28px/1 "Fredoka", Arial, sans-serif; text-align: center; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px; margin: 8px 0; background: #fff; }
   #gatem .q { font: 700 26px/1.2 "Fredoka", Arial, sans-serif; margin: 6px 0; }
   .iaphead { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 16px 0 4px; display: flex; align-items: center; gap: 8px; }
-  .iaphead small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .iaphead small { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .offer.owned { background: #e8f3df; }
   .offer .price { font: 700 15px/1 "Fredoka", Arial, sans-serif; }
-  .privacy { font: 400 14px/1.3 "Patrick Hand", cursive; color: var(--muted); margin: 10px 0 0; text-align: left; }
-  .privacy b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
-  #fps { position: absolute; left: 8px; bottom: 4px; font: 700 11px/1 monospace; color: #fff; background: rgba(0,0,0,.4); padding: 2px 5px; border-radius: 6px; pointer-events: none; display: none; }
+  .privacy { font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 10px 0 0; text-align: left; }
+  .privacy b { font: 700 14px/1 "Fredoka", Arial, sans-serif; }
+  #fps { position: absolute; left: 8px; bottom: 4px; font: 700 13px/1 monospace; color: #fff; background: rgba(0,0,0,.4); padding: 2px 5px; border-radius: 6px; pointer-events: none; display: none; }
   body { background: #2b2219; color: var(--ink); font: 17px/1.4 Georgia, "Times New Roman", serif; overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
   .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
-  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .hand { font-family: "Nunito", system-ui, sans-serif; } .tag { font-family: "Patrick Hand", "Segoe Print", cursive; } /* the tagline stays handwritten */
   [hidden] { display: none !important; }
 
   /* the game is a fixed 440x760 "phone" that scales to fit */
@@ -53,31 +53,31 @@
   @keyframes breathe { 50% { transform: scale(1.02, .975); } } #frame.calm .fcard canvas.pc, #frame.calm .thead .fc { animation: none; }
   .hopin canvas.pc, .cheer { animation: hopin .6s cubic-bezier(.3,1.6,.5,1) both !important; } @keyframes hopin { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-14px) scale(.95, 1.08); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
   #title .hub { position: absolute; top: 236px; display: flex; flex-direction: column; gap: 10px; z-index: 2; } #title .hub-l { left: 10px; } #title .hub-r { right: 10px; }
-  #title .hub .btn { width: 72px; height: 72px; font-size: 30px; border-radius: 18px; } #title .hub .btn small { font-size: 10px; line-height: 1; white-space: normal; text-align: center; }
+  #title .hub .btn { width: 72px; height: 72px; font-size: 30px; border-radius: 18px; } #title .hub .btn small { font-size: 13px; line-height: 1; white-space: normal; text-align: center; }
   #title .hub .btn.locked { filter: grayscale(1); opacity: .6; } #title .hub .btn.locked::after { content: '🔒'; position: absolute; top: -6px; right: -6px; font-size: 16px; }
   .patrolart { font-size: 40px; margin: 6px 0; letter-spacing: 4px; animation: breathe 2.4s ease-in-out infinite; } .ptime { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .ptbar { height: 12px; border: 2.5px solid #3a2c20; border-radius: 8px; background: #eee; overflow: hidden; margin: 6px 20px; } .ptbar div { height: 100%; background: var(--green); }
   .rtiles.big { justify-content: center; margin: 10px 0; } .rtiles.big .rt { min-width: 70px; height: auto; padding: 6px 6px 4px; font-size: 28px; display: flex; flex-direction: column; align-items: center; gap: 2px; } .rtiles.big .rt small { position: static; font-size: 13px; color: #3a2c20; text-shadow: none; }
   .wheelwrap { position: relative; width: 250px; height: 250px; margin: 6px auto; } .wpin { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 26px; color: #c94a4a; z-index: 2; text-shadow: 0 2px 0 #3a2c20; }
   .wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #3a2c20; box-shadow: 0 6px 0 #3a2c20; position: relative; transition: transform 3.2s cubic-bezier(.15,.9,.25,1); } .wheel span { position: absolute; left: 50%; top: 50%; font-size: 24px; width: 40px; margin: -20px; text-align: center; }
-  .odds { text-align: left; margin-top: 6px; font: 400 15px/1.3 "Patrick Hand", cursive; } .odds summary { font: 700 14px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
-  .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
-  .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 400 21px/1.3 "Patrick Hand", cursive; margin: 0 0 6px; }
-  .itile .rpips { position: absolute; top: 3px; left: 5px; font-size: 9px; letter-spacing: -1px; color: #3a2c20; opacity: .7; }
+  .odds { text-align: left; margin-top: 6px; font: 600 16px/1.3 "Nunito", system-ui, sans-serif; } .odds summary { font: 700 15px/1 "Fredoka", Arial, sans-serif; cursor: pointer; } .odds div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; margin-top: 6px; }
+  .chrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .chrow .cem { font-size: 30px; width: 40px; text-align: center; } .chrow .cmid { flex: 1; } .chrow b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .chrow small { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 600 21px/1.3 "Nunito", system-ui, sans-serif; margin: 0 0 6px; }
+  .itile .rpips { position: absolute; top: 3px; left: 5px; font-size: 11px; letter-spacing: -1px; color: #3a2c20; opacity: .7; }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
-  .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
   .btn.icon { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 22px; }
   /* the frame is drawn at about 89% on a phone, so 50px here is Apple's 44pt minimum */
   .btn.small { min-height: 50px; } .btn { min-height: 50px; }
   .btn.big-icon { width: 64px; height: 64px; padding: 0; border-radius: 18px; font-size: 30px; flex-direction: column; gap: 2px; }
-  .btn.big-icon small { font-size: 11px; }
+  .btn.big-icon small { font-size: 13px; }
   .btn.big-icon { position: relative; } .dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; box-sizing: border-box; pointer-events: none; } .btn .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid #3a2c20; }
   .mis { background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
-  .mis h3 { margin: 0 0 6px; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; } .mis h3 small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
-  .mrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; font: 400 15px/1.15 "Patrick Hand", cursive; } .mrow .em { font-size: 20px; width: 26px; text-align: center; } .mrow .t { flex: 1; } .mrow.done .t { text-decoration: line-through; opacity: .6; }
+  .mis h3 { margin: 0 0 6px; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; } .mis h3 small { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .mrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; font: 600 16px/1.15 "Nunito", system-ui, sans-serif; } .mrow .em { font-size: 20px; width: 26px; text-align: center; } .mrow .t { flex: 1; } .mrow.done .t { text-decoration: line-through; opacity: .6; }
   .mrow .bar { width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.12); overflow: hidden; } .mrow .bar div { height: 100%; background: var(--water); } .mrow.done .bar div { background: #6fbf5a; }
-  .mrow .n { font: 700 12px/1 "Fredoka", Arial, sans-serif; width: 52px; text-align: right; }
-  .chest { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 2px dashed var(--line); font: 400 14px/1.2 "Patrick Hand", cursive; } .chest .em { font-size: 28px; } .chest .t { flex: 1; }
+  .mrow .n { font: 700 13px/1 "Fredoka", Arial, sans-serif; width: 52px; text-align: right; }
+  .chest { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 2px dashed var(--line); font: 600 16px/1.2 "Nunito", system-ui, sans-serif; } .chest .em { font-size: 28px; } .chest .t { flex: 1; }
   .pill { font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(58,44,32,.88); padding: 9px 12px; border-radius: 999px; border: 3px solid #3a2c20; white-space: nowrap; }
   .pill.know { background: var(--teal); }
 
@@ -98,7 +98,7 @@
   #title .tag { position: relative; margin: 8px 0 0; font-size: 22px; color: #3a2c20; }
   #titleParty { position: absolute; left: 0; top: 226px; width: 440px; height: 330px; z-index: 1; }
   @keyframes idle { 0%, 100% { transform: rotate(-.6deg); } 50% { transform: rotate(.6deg) translateY(-4px); } }
-  #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 11px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
+  #title .build { position: absolute; left: 12px; bottom: 8px; font: 700 13px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: rgba(58,44,32,.55); }
   #title .menu { position: absolute; left: 0; right: 0; bottom: 86px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   #title .menu .btn.ghost.small { background: rgba(255,250,238,.92); }
   #title h1 { z-index: 1; } #title .tag { z-index: 1; text-shadow: 0 2px 0 rgba(255,255,255,.6); }
@@ -106,7 +106,7 @@
   #title .corner-l { position: absolute; left: 12px; top: 58px; } #title .corner-r { position: absolute; right: 12px; top: 12px; display: flex; gap: 8px; }
   #title .corner-l .btn, #title .corner-r .btn { position: relative; }
   #tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: #3a2c20; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 0 4px calc(4px + env(safe-area-inset-bottom, 0px)); z-index: 6; }
-  #tabbar button { position: relative; appearance: none; border: 0; background: none; color: #f1e4c8; font: 700 12px/1 "Fredoka", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0 6px; border-radius: 14px 14px 0 0; cursor: pointer; min-height: 60px; justify-content: flex-end; }
+  #tabbar button { position: relative; appearance: none; border: 0; background: none; color: #f1e4c8; font: 700 13px/1 "Fredoka", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0 6px; border-radius: 14px 14px 0 0; cursor: pointer; min-height: 60px; justify-content: flex-end; }
   #tabbar button .ti { font-size: 24px; line-height: 1; }
   #tabbar button.on { background: var(--paper); color: #3a2c20; }
   #tabbar button.locked { color: #8a7a62; } #tabbar button.locked .ti { filter: grayscale(1) opacity(.45); } #tabbar button.locked::after { content: '🔒'; position: absolute; top: 6px; right: 26%; font-size: 14px; }
@@ -115,17 +115,17 @@
   #tabbar .dot { position: absolute; top: 4px; right: 22%; } #tabbar .playtab .dot { top: -18px; right: 18%; }
   #frame.tabs-on .list-screen .list { padding-bottom: 86px; } #frame.tabs-on #map .mapcard { padding-bottom: 84px; } #frame.tabs-on #title .build { bottom: 76px; }
   .seg { display: flex; gap: 6px; padding: 0 14px 8px; } .seg button { flex: 1; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; padding: 9px 0; cursor: pointer; color: #3a2c20; } .seg button.on { background: var(--gold); }
-  .pgrid-h { font: 700 15px/1 "Fredoka", Arial, sans-serif; margin: 6px 2px 2px; display: flex; justify-content: space-between; align-items: baseline; } .pgrid-h small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .pgrid-h { font: 700 15px/1 "Fredoka", Arial, sans-serif; margin: 6px 2px 2px; display: flex; justify-content: space-between; align-items: baseline; } .pgrid-h small { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .pslots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .fcard { position: relative; background: #fff; border: 3px solid #3a2c20; border-top-width: 8px; border-radius: 14px; padding: 4px 4px 6px; text-align: center; cursor: pointer; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .fcard { position: relative; background: #fff; border: 3px solid #3a2c20; border-top-width: 8px; border-radius: 14px; padding: 4px 4px 6px; text-align: center; cursor: pointer; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .fcard canvas { width: 76px; height: 76px; display: block; margin: 0 auto; } .fcard.locked canvas { filter: grayscale(1) brightness(.75); opacity: .7; }
   .fcard .el { position: absolute; top: 4px; left: 6px; font-size: 14px; } .fcard .inp { position: absolute; top: 2px; right: 6px; color: #4f8a5b; font-size: 15px; }
-  .fcard .st { color: #ecb23c; font-size: 12px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .fcard .st i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
+  .fcard .st { color: #ecb23c; font-size: 13px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .fcard .st i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
   .fcard .pb { height: 7px; margin: 4px 6px 0; border: 2px solid #3a2c20; border-radius: 5px; background: rgba(58,44,32,.12); overflow: hidden; } .fcard .pb div { height: 100%; background: #ecb23c; }
-  .fcard small { display: block; font: 400 12px/1.1 "Patrick Hand", cursive; color: var(--muted); margin-top: 2px; }
+  .fcard small { display: block; font: 600 14px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
   .fcard .dot { position: absolute; top: -6px; right: -6px; }
-  .pslot { background: rgba(58,44,32,.08); border: 3px dashed rgba(58,44,32,.35); border-radius: 14px; min-height: 96px; display: flex; align-items: center; justify-content: center; font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); text-align: center; padding: 4px; }
+  .pslot { background: rgba(58,44,32,.08); border: 3px dashed rgba(58,44,32,.35); border-radius: 14px; min-height: 96px; display: flex; align-items: center; justify-content: center; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; padding: 4px; }
   .backrow { display: flex; gap: 8px; } .backrow .btn { flex: 1; }
   /* ───────── world map ───────── */
   #map { background: #d9c49a; }
@@ -135,69 +135,69 @@
   #mapInner { position: relative; width: 440px; }
   #mapc { position: absolute; left: 0; top: 0; width: 440px; }
   .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 10px; pointer-events: none; }
-  .wlab small { display: block; font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); margin-top: 2px; }
+  .wlab small { display: block; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
   .wlab.locked { opacity: .6; }
   .pin { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
-  .pin .st { font-size: 10px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; line-height: 1; margin-top: 2px; }
+  .pin .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; line-height: 1; margin-top: 2px; }
   .pin.done { background: var(--green); color: #fff; }
   .pin.on { background: var(--gold); color: #3a2c20; transform: scale(1.15); z-index: 2; }
   .pin.on .st { color: #3a2c20; text-shadow: none; }
   .pin.locked { background: #b8a784; color: #7a6a4e; box-shadow: none; cursor: default; }
   .pin.rough::after, .pin.bossp::after { content: '👑'; position: absolute; top: -16px; right: -10px; font-size: 16px; } .pin.rough::after { content: '📝'; }
-  .pin .lab { display: none; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 400 14px/1 "Patrick Hand", cursive; color: #3a2c20; background: rgba(251,243,223,.85); border: 2px solid #3a2c20; border-radius: 8px; padding: 3px 7px; }
+  .pin .lab { display: none; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 16px/1 "Nunito", system-ui, sans-serif; color: #3a2c20; background: rgba(251,243,223,.85); border: 2px solid #3a2c20; border-radius: 8px; padding: 3px 7px; }
   .pin.on .lab { font-weight: 700; }
   .mapcard { background: var(--card); border-top: 4px solid #3a2c20; padding: 12px 14px 14px; box-shadow: 0 -10px 30px rgba(58,44,32,.2); }
   .mapcard h3 { margin: 0; font: 700 24px/1.1 "Fredoka", Arial, sans-serif; }
-  .mapcard .d { font: 400 16px/1.25 "Patrick Hand", cursive; color: var(--muted); margin: 2px 0 8px; }
+  .mapcard .d { font: 600 17px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 2px 0 8px; }
   .diffs { display: flex; gap: 5px; margin-bottom: 8px; } .diffs button[data-d="master"] { background: linear-gradient(#ffe2c4, #ffc08a); } .diffs button[data-d="master"].on { background: linear-gradient(#ffb36a, #f0803a); } .pin .crown { position: absolute; top: -10px; right: -10px; font-style: normal; font-size: 16px; }
   
-  .diffs button { flex: 1; min-width: 0; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .diffs button { flex: 1; min-width: 0; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .diffs button.on { background: var(--gold); }
   .diffs button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
-  .diffs .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
+  .diffs .st { font-size: 13px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
   .diffs button.on .st, .diffs button:disabled .st { color: #3a2c20; text-shadow: none; }
   /* ───────── comics ───────── */
   #comicm .panel { padding: 12px; }
   .cpanel { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; animation: pop .4s cubic-bezier(.2,1.4,.4,1) both; }
   .cpanel.kid { flex-direction: row-reverse; }
   .cpanel canvas { width: 78px; height: 96px; flex: none; }
-  .cpanel .bub { flex: 1; background: #fff; border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 12px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
+  .cpanel .bub { flex: 1; background: #fff; border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 12px; font: 600 18px/1.25 "Nunito", system-ui, sans-serif; position: relative; }
   .cpanel .bub::before { content: ''; position: absolute; bottom: 14px; left: -12px; border: 7px solid transparent; border-right-color: #3a2c20; border-left: 0; }
   .cpanel.kid .bub::before { left: auto; right: -12px; border-right: 0; border-left: 7px solid #3a2c20; }
-  .cpanel .bub b { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-bottom: 4px; letter-spacing: .5px; }
-  #comicm .tap { text-align: center; color: var(--muted); font: 400 15px/1 "Patrick Hand", cursive; margin: 2px 0 6px; }
+  .cpanel .bub b { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-bottom: 4px; letter-spacing: .5px; }
+  #comicm .tap { text-align: center; color: var(--muted); font: 600 16px/1 "Nunito", system-ui, sans-serif; margin: 2px 0 6px; }
   /* ───────── diary ───────── */
   .dtabs { display: flex; gap: 6px; padding: 0 14px 8px; }
   .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .dtabs button.on { background: var(--gold); }
   .cat.gold { border-color: #d9971c; box-shadow: 0 0 0 3px #ffd76a; background: linear-gradient(#fff8dc, #ffe08a); }
   .catgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px 14px 10px; }
-  .dbon { grid-column: 1 / -1; background: #3a2c20; color: #fff; border-radius: 14px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; } .dbon b { flex-basis: 100%; font: 700 14px/1.2 "Fredoka", Arial, sans-serif; } .dbon span { font: 400 15px/1.2 "Patrick Hand", cursive; color: #ffe08a; }
+  .dbon { grid-column: 1 / -1; background: #3a2c20; color: #fff; border-radius: 14px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; } .dbon b { flex-basis: 100%; font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .dbon span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: #ffe08a; }
   .ctile { border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; } .ctile.on { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c; } .ctile.done { border-color: #4f9a5a; }
-  .ctile i { font-style: normal; font-size: 26px; line-height: 1; } .ctile b { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; } .ctile small { font: 700 11px/1 "Fredoka", Arial, sans-serif; color: var(--muted); } .ctile em { font: 700 11px/1.1 "Fredoka", Arial, sans-serif; color: #2f7a2a; font-style: normal; } .ctile small.nx { font: 400 11px/1.1 "Patrick Hand", cursive; }
+  .ctile i { font-style: normal; font-size: 26px; line-height: 1; } .ctile b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; } .ctile small { font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--muted); } .ctile em { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #2f7a2a; font-style: normal; } .ctile small.nx { font: 600 13px/1.1 "Nunito", system-ui, sans-serif; }
   .cbar { position: relative; width: 100%; height: 8px; border: 2px solid #3a2c20; border-radius: 6px; background: #eee; overflow: hidden; } .cbar div { height: 100%; background: var(--gold); } .cbar span { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #3a2c20; }
   .cats { display: flex; gap: 8px; overflow-x: auto; padding: 4px 14px 10px; scrollbar-width: none; }
-  .cat { flex: none; width: 74px; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; cursor: pointer; font: 700 11px/1.1 "Fredoka", Arial, sans-serif; }
+  .cat { flex: none; width: 74px; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; cursor: pointer; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; }
   .cat.on { background: var(--gold); }
   .cat .ring { width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 4px; background: conic-gradient(var(--green) calc(var(--p) * 1%), #e4d9bd 0); display: flex; align-items: center; justify-content: center; border: 2px solid #3a2c20; }
   .cat .ring span { width: 28px; height: 28px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; }
   .cat.done .ring { background: var(--gold); }
-  .fact .meta { display: block; font: 400 12px/1.2 "Patrick Hand", cursive; color: var(--muted); margin-top: 4px; }
-  .fact .kid { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 4px; }
-  .study { margin: 0 14px 10px; border: 3px dashed #3a2c20; border-radius: 14px; padding: 10px 12px; background: rgba(255,255,255,.5); display: flex; align-items: center; gap: 10px; font: 400 15px/1.25 "Patrick Hand", cursive; }
+  .fact .meta { display: block; font: 600 14px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 4px; }
+  .fact .kid { font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 4px; }
+  .study { margin: 0 14px 10px; border: 3px dashed #3a2c20; border-radius: 14px; padding: 10px 12px; background: rgba(255,255,255,.5); display: flex; align-items: center; gap: 10px; font: 600 16px/1.25 "Nunito", system-ui, sans-serif; }
   .study b { font: 700 15px/1 "Fredoka", Arial, sans-serif; display: block; margin-bottom: 2px; }
   .study .btn { flex: none; }
   #studym .fact { margin-bottom: 8px; }
   /* skill tree on the party screen */
-  .tierrow { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; flex-wrap: wrap; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
-  .tier { color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 3px 9px; font: 700 12px/1 "Fredoka", Arial, sans-serif; }
+  .tierrow { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; flex-wrap: wrap; font: 700 14px/1 "Fredoka", Arial, sans-serif; }
+  .tier { color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 3px 9px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   .stars { color: #ecb23c; font-size: 16px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .stars i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
   .tierrow .pg { white-space: nowrap; } .tierrow .pbar { flex: 1; min-width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.15); overflow: hidden; } .tierrow .pbar div { height: 100%; background: #ecb23c; }
   .pgbtns { display: flex; gap: 6px; margin: 4px 0; }
-  .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } .reacts span { font: 400 13px/1 "Patrick Hand", cursive; background: rgba(95,191,174,.15); border: 2px solid rgba(58,44,32,.25); border-radius: 999px; padding: 3px 8px; } .reacts .team { background: rgba(236,178,60,.25); border-color: #ecb23c; }
+  .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } .reacts span { font: 600 15px/1 "Nunito", system-ui, sans-serif; background: rgba(95,191,174,.15); border: 2px solid rgba(58,44,32,.25); border-radius: 999px; padding: 3px 8px; } .reacts .team { background: rgba(236,178,60,.25); border-color: #ecb23c; }
   .msgpop { position: absolute; left: 50%; top: 42%; transform: translateX(-50%); z-index: 60; background: #3a2c20; color: #fff; font: 700 17px/1.2 "Fredoka", Arial, sans-serif; padding: 10px 16px; border-radius: 14px; border: 3px solid #ecb23c; pointer-events: none; animation: msgup 2.6s ease forwards; white-space: nowrap; }
   @keyframes msgup { 0% { opacity: 0; transform: translate(-50%, 10px); } 12% { opacity: 1; transform: translate(-50%, 0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px); } }
-  .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  .xpbar { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; font: 700 14px/1 "Fredoka", Arial, sans-serif; }
   .xpbar .bar { flex: 1; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: #fff; overflow: hidden; }
   .xpbar .bar div { height: 100%; background: var(--water); }
   .skills { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
@@ -205,29 +205,29 @@
   .skill.locked { opacity: .55; background: #f1e9d6; }
   .skill .em { font-size: 24px; width: 30px; text-align: center; }
   .skill .txt { flex: 1; min-width: 0; }
-  .skill .txt b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; }
-  .skill .txt span { display: block; font: 400 13px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .skill .txt b { display: block; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; }
+  .skill .txt span { display: block; font: 600 15px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .skill .txt em { font-style: normal; color: var(--ink); }
   .skill .pips i { width: 10px; height: 10px; }
-  .statsum { font: 400 14px/1.3 "Patrick Hand", cursive; color: var(--ink); background: rgba(255,255,255,.55); border-radius: 10px; padding: 6px 8px; margin: 6px 0; }
-  .statsum b { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 2px; }
+  .statsum { font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--ink); background: rgba(255,255,255,.55); border-radius: 10px; padding: 6px 8px; margin: 6px 0; }
+  .statsum b { font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-right: 2px; }
   /* in-match skill icons */
   #party .slot { height: 62px; }
   #party .slot .ap { gap: 4px; }
-  #party .slot .ab s { position: absolute; right: 0; bottom: 0; z-index: 1; font: 700 8px/1 "Fredoka", Arial, sans-serif; text-decoration: none; background: #3a2c20; color: #fff; border-radius: 4px 0 4px 0; padding: 1px 2px; }
+  #party .slot .ab s { position: absolute; right: 0; bottom: 0; z-index: 1; font: 700 11px/1 "Fredoka", Arial, sans-serif; text-decoration: none; background: #3a2c20; color: #fff; border-radius: 4px 0 4px 0; padding: 1px 2px; }
   #party .slot .ab.up { animation: abUp .9s ease-out; } @keyframes abUp { 0% { transform: scale(1.9); box-shadow: 0 0 0 4px var(--gold); } 100% { transform: none; } }
   #party .slot.slot { border-top: 5px solid var(--ec, #3a2c20); }
   #party .slot .ab { position: relative; width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid #3a2c20; background: #fff; font-size: 14px; line-height: 17px; text-align: center; overflow: hidden; }
   #party .slot .ab i { position: absolute; left: 0; right: 0; bottom: 0; top: auto; width: auto; margin: 0; border: 0; border-radius: 0; background: rgba(58,44,32,.35); height: 0; }
   #party .slot .ab.off { opacity: .35; } #party .slot .ab.r5 { border-color: var(--red); box-shadow: 0 0 0 1.5px var(--red); } #party .slot .ab.r3 { border-color: var(--gold); }
   .wh { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
-  .wh small { font: 400 14px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .wh small { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   #clearm .panel { overflow-y: auto; } #clearm canvas.m { margin-top: 0; }
   #quizRow { margin-top: 6px; }
   .starrow { display: flex; justify-content: center; gap: 6px; font-size: 34px; margin: 4px 0 8px; }
   .starrow span { filter: grayscale(1) opacity(.35); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .starrow span.on { filter: none; }
-  .starwhy { font: 400 15px/1.25 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 0 0 8px; }
+  .starwhy { font: 600 16px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 0 0 8px; }
   .stages { display: flex; gap: 8px; margin-bottom: 4px; }
   .stages button { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #3a2c20; background: var(--card); font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .stages button.on { background: var(--gold); } .stages button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
@@ -238,12 +238,12 @@
   .list-screen .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
   .list-screen h2 { margin: 0; flex: 1; font-size: 26px; }
   .list-screen .list { flex: 1; overflow: auto; padding: 0 14px 20px; display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
-  .list-screen .intro { margin: 0 14px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; color: var(--muted); }
+  .list-screen .intro { margin: 0 14px 10px; font: 600 18px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .fact { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .fact .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
   .fact b { font: 700 19px/1.15 "Fredoka", Arial, sans-serif; display: block; }
-  .fact s { color: var(--red); font: 400 16px/1.25 "Patrick Hand", cursive; display: block; }
-  .fact p { margin: 6px 0 0; font: 400 18px/1.3 "Patrick Hand", cursive; }
+  .fact s { color: var(--red); font: 600 17px/1.25 "Nunito", system-ui, sans-serif; display: block; }
+  .fact p { margin: 6px 0 0; font: 600 18px/1.3 "Nunito", system-ui, sans-serif; }
   .fact.locked { opacity: .5; } .fact.locked p { font-style: italic; }
   .item { background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .item.inparty { border-color: var(--green); box-shadow: inset 0 0 0 2px var(--green); }
@@ -251,13 +251,13 @@
   .item .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
   .item canvas.pc { width: 56px; height: 56px; flex: none; }
   .item b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .item span.d { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .item span.d { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .item .top > div:nth-child(2) { flex: 1; }
   .item.locked .top { opacity: .6; }
   .abils { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .abils span { font: 400 14px/1 "Patrick Hand", cursive; background: rgba(58,44,32,.08); border: 2px solid var(--line); border-radius: 999px; padding: 5px 9px; }
+  .abils span { font: 600 16px/1 "Nunito", system-ui, sans-serif; background: rgba(58,44,32,.08); border: 2px solid var(--line); border-radius: 999px; padding: 5px 9px; }
   .ranks { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-  .rank { display: flex; align-items: center; gap: 8px; font: 400 16px/1.2 "Patrick Hand", cursive; }
+  .rank { display: flex; align-items: center; gap: 8px; font: 600 17px/1.2 "Nunito", system-ui, sans-serif; }
   .rank .nm { width: 86px; }
   .pips { display: flex; gap: 3px; flex: 1; }
   .pips i { height: 12px; flex: 1; border: 2px solid #3a2c20; border-radius: 4px; background: rgba(58,44,32,.12); }
@@ -280,18 +280,18 @@
   #wstrip .marks span { position: absolute; left: 50%; width: 8px; height: 8px; margin-left: -4px; margin-top: -4px; border-radius: 50%; background: #fff; border: 2px solid #3a2c20; box-sizing: border-box; }
   #wstrip .marks span.done { background: var(--gold); }
   #wstrip .top { position: absolute; left: 50%; top: -18px; transform: translate(-50%, -50%); font-size: 24px; line-height: 1; filter: drop-shadow(0 2px 0 #3a2c20); }
-  #wstrip .cnt { position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; white-space: nowrap; }
+  #wstrip .cnt { position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; white-space: nowrap; }
   #hud .coins { position: absolute; left: 10px; top: 82px; display: flex; gap: 6px; flex-direction: column; }
   #hud .coins .pill { align-self: flex-start; font-size: 14px; padding: 6px 10px; }
   #bossbar { position: absolute; left: 60px; right: 60px; top: 84px; }
-  #bossbar .nm { font: 700 13px/1.2 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; text-align: center; margin-bottom: 2px; }
+  #bossbar .nm { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; text-align: center; margin-bottom: 2px; }
   #bossbar .bar { height: 12px; border: 3px solid #3a2c20; border-radius: 8px; background: rgba(0,0,0,.4); overflow: hidden; }
   #bossbar .bar div { height: 100%; background: var(--red); width: 100%; }
   #hud .bottom { position: absolute; left: 10px; right: 10px; bottom: 12px; pointer-events: none; }
   #patience { height: 22px; border: 3px solid #3a2c20; border-radius: 12px; background: rgba(58,44,32,.6); overflow: hidden; position: relative; }
   #patience div { height: 100%; width: 100%; background: linear-gradient(#8fd38a, #4f8a5b); transition: width .2s; }
   #patience.low div { background: linear-gradient(#f3a08f, #cb382e); }
-  #patience span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20; }
+  #patience span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 14px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20; }
   #party { display: flex; gap: 8px; margin-top: 8px; pointer-events: auto; }
   #party .slot { flex: 1; height: 58px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
   #party .slot .face { font-size: 24px; line-height: 1; }
@@ -301,14 +301,14 @@
   #party .slot .ap > i.r1 { background: var(--water); } #party .slot .ap > i.r3 { background: var(--gold); } #party .slot .ap > i.r5 { background: var(--red); }
   #xp { height: 8px; margin-top: 8px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(0,0,0,.35); overflow: hidden; }
   #xp div { height: 100%; width: 0; background: var(--purple); }
-  #lvl { position: absolute; right: 0; bottom: 118px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
-  #hint { position: absolute; left: 7%; right: 7%; bottom: 124px; text-align: center; font: 400 15px/1.2 "Patrick Hand", cursive; color: #fff; background: rgba(58,44,32,.8); padding: 6px 12px; border-radius: 10px; animation: pop .4s both; }
+  #lvl { position: absolute; right: 0; bottom: 118px; font: 700 14px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
+  #hint { position: absolute; left: 7%; right: 7%; bottom: 124px; text-align: center; font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: #fff; background: rgba(58,44,32,.8); padding: 6px 12px; border-radius: 10px; animation: pop .4s both; }
 
 
   /* ───────── fact toast ───────── */
   #toast { position: absolute; left: 14px; right: 14px; top: 118px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 10px 14px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; pointer-events: none; z-index: 5; }
   #toast b { display: block; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; color: var(--red); }
-  #toast p { margin: 3px 0 0; font: 400 17px/1.2 "Patrick Hand", cursive; }
+  #toast p { margin: 3px 0 0; font: 600 18px/1.2 "Nunito", system-ui, sans-serif; }
   #toast.out { animation: fadeout .4s forwards; }
   @keyframes fadeout { to { opacity: 0; transform: translateY(-10px); } }
 
@@ -331,7 +331,7 @@
   .card b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
   .card b em { font-style: normal; color: var(--teal); font-size: 13px; margin-left: 6px; }
   .card b em.new { color: var(--red); }
-  .card span { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .card span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .cards.tall { flex-direction: row; gap: 8px; align-items: stretch; margin-top: 14px; }
   .tcard { flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; background: linear-gradient(#fff 60%, color-mix(in srgb, var(--ec) 16%, #fff)); border: 3px solid #3a2c20; border-top: 9px solid var(--ec); border-radius: 16px; padding: 12px 5px 10px; cursor: pointer; overflow: visible; box-shadow: 0 5px 0 #3a2c20; font: inherit; color: inherit; animation: cardIn .4s cubic-bezier(.2,1.4,.4,1) backwards; }
   .tcard:nth-child(2) { animation-delay: .08s; } .tcard:nth-child(3) { animation-delay: .16s; }
@@ -340,14 +340,14 @@
   .tcard .ic { position: relative; width: 62px; height: 62px; border-radius: 50%; border: 3px solid var(--ec); background: radial-gradient(#fff 55%, color-mix(in srgb, var(--ec) 30%, #fff)); display: grid; place-items: center; font-size: 34px; line-height: 1; flex: none; }
   .tcard .ic small { position: absolute; right: -9px; bottom: -6px; width: 26px; height: 26px; border-radius: 50%; background: var(--card); border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; }
   .tcard b { font: 700 15px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; }
-  .tcard .who { font: 700 11px/1 "Fredoka", Arial, sans-serif; color: var(--teal); } .tcard .who.new { color: var(--red); }
+  .tcard .who { font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--teal); } .tcard .who.new { color: var(--red); }
   .tcard .pp { display: flex; gap: 3px; } .tcard .pp i { width: 9px; height: 9px; border-radius: 50%; background: #e4d9bd; border: 1.5px solid #3a2c20; } .tcard .pp i.on { background: var(--gold); } .tcard .pp i.nw { background: var(--gold); animation: pulse .8s infinite; box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--gold); }
-  .tcard span { font: 400 13px/1.15 "Patrick Hand", cursive; color: var(--muted); }
-  .tcard .tag { position: absolute; z-index: 2; top: -17px; font-style: normal; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 700 11px/1 "Fredoka", Arial, sans-serif; background: var(--gold); border: 2px solid #3a2c20; border-radius: 999px; padding: 4px 7px; }
+  .tcard span { font: 600 15px/1.15 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .tcard .tag { position: absolute; z-index: 2; top: -17px; font-style: normal; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 700 13px/1 "Fredoka", Arial, sans-serif; background: var(--gold); border: 2px solid #3a2c20; border-radius: 999px; padding: 4px 7px; }
   .tcard .tag.evo { background: #b48be6; color: #fff; }
   .apbar { margin: 12px auto 0; height: 8px; border-radius: 6px; background: #e4d9bd; overflow: hidden; border: 2px solid #3a2c20; } .apbar div { height: 100%; background: var(--teal); animation: apdown linear forwards; }
   @keyframes apdown { from { width: 100%; } to { width: 0; } }
-  .aplbl { text-align: center; font: 400 15px/1 "Patrick Hand", cursive; color: var(--muted); margin-top: 5px; }
+  .aplbl { text-align: center; font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 5px; }
   #notem { background: rgba(20,14,10,.78); }
   #notem .rays { position: absolute; left: 50%; top: 42%; width: 760px; height: 760px; margin: -380px 0 0 -380px; background: repeating-conic-gradient(rgba(255,236,170,.22) 0 9deg, transparent 9deg 22deg); border-radius: 50%; animation: spin 14s linear infinite; pointer-events: none; -webkit-mask: radial-gradient(closest-side, #000 30%, transparent); mask: radial-gradient(closest-side, #000 30%, transparent); }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -365,20 +365,20 @@
   .snote:nth-child(1) { --nc: #ffe58a; --rot: -5deg; animation-delay: .7s; } .snote:nth-child(2) { --nc: #ffc2d6; --rot: 3deg; animation-delay: 1s; } .snote:nth-child(3) { --nc: #bfe6f5; --rot: -2deg; animation-delay: 1.3s; }
   @keyframes noteUp { from { transform: translateY(70px) rotate(0) scale(.4); opacity: 0; } }
   .snote .e { font-size: 32px; line-height: 1; position: relative; } .snote .e small { position: absolute; right: -14px; bottom: -4px; font-size: 15px; }
-  .snote b { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; } .snote i { font: 700 11px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
+  .snote b { font: 700 14px/1.05 "Fredoka", Arial, sans-serif; } .snote i { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
   #notem .btn { margin-top: 26px; min-width: 200px; animation: pop .3s 1.4s backwards; }
   .fim { width: 1.2em; height: 1.2em; border-radius: 50%; object-fit: cover; vertical-align: -.25em; background: #f3d2b0; }
   .tcard .ic small .fim, .snote .e small .fim, #party .slot .face .fim { width: 100%; height: 100%; vertical-align: top; display: block; }
   #party .slot .face .fim { width: 26px; height: 26px; border: 2px solid #3a2c20; }
-  .pow { display: inline-flex; align-items: center; gap: 3px; font: 700 13px/1 "Fredoka", Arial, sans-serif; background: #3a2c20; color: #ffd76a; border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
+  .pow { display: inline-flex; align-items: center; gap: 3px; font: 700 14px/1 "Fredoka", Arial, sans-serif; background: #3a2c20; color: #ffd76a; border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
   .pow.big { font-size: 16px; padding: 6px 11px; }
-  .fcard .pow { font-size: 11px; padding: 2px 6px; margin-top: 3px; }
-  .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 13px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
+  .fcard .pow { font-size: 13px; padding: 2px 6px; margin-top: 3px; }
+  .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 14px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
-  #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 400 14px/1.2 "Patrick Hand", cursive; color: #b0442f; margin-top: 4px; }
+  #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: #b0442f; margin-top: 4px; }
   .breaknote { border-color: #6fa8c8 !important; background: #eef7fb !important; }
-  .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 400 15px/1.1 "Patrick Hand", cursive; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
-  .monthpill b { font: 700 13px/1 "Fredoka", Arial, sans-serif; }
+  .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 600 16px/1.1 "Nunito", system-ui, sans-serif; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
+  .monthpill b { font: 700 14px/1 "Fredoka", Arial, sans-serif; }
   .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
   .sframe { position: relative; aspect-ratio: 4 / 3; border: 4px solid #3a2c20; border-radius: 16px; overflow: hidden; background: #e9dcc0; box-shadow: 0 5px 0 rgba(58,44,32,.35); }
   .sframe img { width: 100%; height: 100%; object-fit: cover; display: block; animation: kenburns 9s ease-out both; }
@@ -390,61 +390,66 @@
   #strip .sline { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; animation: noteUp .35s ease-out backwards; }
   #strip .sline .face { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 2.5px solid #3a2c20; overflow: hidden; background: #f3d2b0; }
   #strip .sline .face img { width: 100%; height: 100%; object-fit: cover; }
-  #strip .sline .bub { flex: 1; background: #fff; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 7px 10px; font: 400 17px/1.25 "Patrick Hand", cursive; position: relative; }
-  #strip .sline .bub b { display: block; font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+  #strip .sline .bub { flex: 1; background: #fff; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 7px 10px; font: 600 18px/1.25 "Nunito", system-ui, sans-serif; position: relative; }
+  #strip .sline .bub b { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
   #strip .sline.kid { flex-direction: row-reverse; } #strip .sline.kid .bub { background: #eef6ff; }
   #creditsm .credits { text-align: center; } #creditsm .cwin { height: 420px; overflow: hidden; position: relative; -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
   #creditsm .roll { animation: roll 26s linear forwards; padding: 380px 8px 40px; } #creditsm .roll h3 { font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 22px 0 6px; }
-  #creditsm .roll p { font: 400 18px/1.3 "Patrick Hand", cursive; margin: 0; } #creditsm .cimg { width: 120px; } @keyframes roll { to { transform: translateY(-100%); } }
+  #creditsm .roll p { font: 600 18px/1.3 "Nunito", system-ui, sans-serif; margin: 0; } #creditsm .cimg { width: 120px; } @keyframes roll { to { transform: translateY(-100%); } }
   @media (prefers-reduced-motion: reduce) { #creditsm .roll { animation: none; padding-top: 8px; } #creditsm .cwin { overflow-y: auto; } }
   #strip .sline.vil .bub { background: #f3ecff; border-color: #6b4fa8; } #strip .sline.vil .bub b { color: #6b4fa8; } #strip .sline.vil .face { background: #fbf3df; border-color: #6b4fa8; }
   #strip .sline.narr .bub { background: transparent; border: 0; text-align: center; font-size: 18px; font-style: italic; color: #5a4a3a; padding: 4px 6px; }
   .chestp { position: relative; } .cbanner { margin: -6px auto 10px; width: max-content; padding: 8px 22px; background: linear-gradient(#ffe08a, #e6b84a); border: 3px solid #3a2c20; border-radius: 10px; font: 700 20px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 4px 0 #3a2c20; }
   .chead { display: flex; align-items: center; gap: 8px; } .cflag { flex: 1; text-align: center; background: linear-gradient(#7b5bc8, #5a3fa0); color: #fff; border: 3px solid #e6b84a; border-radius: 10px 10px 40% 40% / 10px 10px 22% 22%; padding: 10px 6px 18px; box-shadow: 0 4px 0 #3a2c20; }
-  .cflag small { display: block; font: 700 12px/1 "Fredoka", Arial, sans-serif; opacity: .85; margin-bottom: 4px; } .cflag b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .cflag i { display: block; font-style: normal; font-size: 26px; margin-bottom: 2px; }
+  .cflag small { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; opacity: .85; margin-bottom: 4px; } .cflag b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .cflag i { display: block; font-style: normal; font-size: 26px; margin-bottom: 2px; }
   #treem .panel { overflow-y: auto; padding: 14px 12px; } .thead { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; } .thead .fc { font-size: 34px; width: 46px; text-align: center; } .thead .fc .fim { width: 44px; }
-  .thead .tm { flex: 1; } .thead b { display: block; font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .thead small { font: 400 14px/1.1 "Patrick Hand", cursive; color: var(--muted); } .tpts { background: #8fd38a; border: 2.5px solid #3a2c20; border-radius: 12px; padding: 4px 10px; font: 700 16px/1 "Fredoka", Arial, sans-serif; text-align: center; } .tpts small { display: block; font: 700 10px/1.2 "Fredoka", Arial, sans-serif; color: #2f4a26; }
-  .tbook { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; padding: 6px 8px; background: #eef4ff; border: 2px dashed #6f8fc0; border-radius: 12px; font: 400 14px/1.15 "Patrick Hand", cursive; } .tbook span { flex: 1; }
-  .tbr { margin-top: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; } .tbr.locked { opacity: .55; } .tbr h3 { margin: 0 0 6px; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; display: flex; gap: 6px; align-items: center; } .tbr h3 small { margin-left: auto; font: 400 13px/1 "Patrick Hand", cursive; color: var(--muted); }
-  .ttier { display: flex; gap: 6px; } .ttier + .ttier { margin-top: 6px; } .tlab { font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 3px; }
-  .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 12px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 12px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 400 12px/1.1 "Patrick Hand", cursive; color: #5a4a3a; flex: 1; }
-  .tn .pips { flex: none; width: 72%; } .tn .pips i { height: 10px; } .tn button { width: 100%; padding: 4px 2px; font-size: 12px; } .tn.on { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 2px #ffd76a; } .tn.off { opacity: .5; } .tn.fin.on { background: linear-gradient(#ffe6f6, #f7c4ea); box-shadow: 0 0 0 2px #e58fd0; }
-  .backup { margin-top: 12px; padding: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .backup > b { display: block; font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .backup > span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .thead .tm { flex: 1; } .thead b { display: block; font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .thead small { font: 600 16px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); } .tpts { background: #8fd38a; border: 2.5px solid #3a2c20; border-radius: 12px; padding: 4px 10px; font: 700 16px/1 "Fredoka", Arial, sans-serif; text-align: center; } .tpts small { display: block; font: 700 12px/1.2 "Fredoka", Arial, sans-serif; color: #2f4a26; }
+  .tbook { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; padding: 6px 8px; background: #eef4ff; border: 2px dashed #6f8fc0; border-radius: 12px; font: 600 16px/1.15 "Nunito", system-ui, sans-serif; } .tbook span { flex: 1; }
+  .tbr { margin-top: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; } .tbr.locked { opacity: .55; } .tbr h3 { margin: 0 0 6px; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; display: flex; gap: 6px; align-items: center; } .tbr h3 small { margin-left: auto; font: 600 15px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .ttier { display: flex; gap: 6px; } .ttier + .ttier { margin-top: 6px; } .tlab { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 3px; }
+  .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 12px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 600 14px/1.1 "Nunito", system-ui, sans-serif; color: #5a4a3a; flex: 1; }
+  .tn .pips { flex: none; width: 72%; } .tn .pips i { height: 10px; } .tn button { width: 100%; padding: 4px 2px; font-size: 13px; } .tn.on { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 2px #ffd76a; } .tn.off { opacity: .5; } .tn.fin.on { background: linear-gradient(#ffe6f6, #f7c4ea); box-shadow: 0 0 0 2px #e58fd0; }
+  .backup { margin-top: 12px; padding: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .backup > b { display: block; font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .backup > span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .backup textarea { width: 100%; margin-top: 8px; font: 12px/1.3 monospace; border: 2px solid #3a2c20; border-radius: 10px; padding: 6px; box-sizing: border-box; }
   .tbtn { width: 100%; margin-top: 8px; } .tbtn b { color: #2f7a2a; }
-  .tn small.why { font: 400 11px/1.1 "Patrick Hand", cursive; color: var(--muted); }
+  .tn small.why { font: 600 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .crow { display: flex; gap: 8px; align-items: center; margin-top: 10px; padding: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .crow.got { opacity: .6; } .crow.ready { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 3px #ffd76a; }
-  .crow .cem { font-size: 30px; width: 40px; text-align: center; } .crow .cmid { flex: 1; min-width: 0; } .crow .cmid b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; } .crow .cmid small { font: 400 13px/1.1 "Patrick Hand", cursive; color: var(--muted); }
+  .crow .cem { font-size: 30px; width: 40px; text-align: center; } .crow .cmid { flex: 1; min-width: 0; } .crow .cmid b { display: block; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; } .crow .cmid small { font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .rtiles { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; } .rt { position: relative; min-width: 34px; height: 34px; padding: 0 4px; border-radius: 8px; border: 2px solid #3a2c20; background: #8fd38a; display: grid; place-items: center; font-size: 18px; } .rt.y { background: #ffd76a; } .rt.b { background: #9fc4ff; } .rt.p { background: #c9a6ff; }
-  .rt small { position: absolute; right: 1px; bottom: -3px; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20, 0 0 2px #3a2c20; }
+  .rt small { position: absolute; right: 1px; bottom: -3px; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20, 0 0 2px #3a2c20; }
   .creveal { position: absolute; inset: 0; background: rgba(20,14,30,.86); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; border-radius: 20px; z-index: 5; }
-  .crtitle { color: #fff; font: 700 20px/1 "Fredoka", Arial, sans-serif; } .crhint { color: #cfc6e6; font: 400 15px/1 "Patrick Hand", cursive; }
+  .crtitle { color: #fff; font: 700 20px/1 "Fredoka", Arial, sans-serif; } .crhint { color: #cfc6e6; font: 600 16px/1 "Nunito", system-ui, sans-serif; }
   .crtiles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 0 12px; } .crtiles .rt { min-width: 64px; height: 64px; font-size: 32px; border-width: 3px; border-radius: 14px; animation: noteUp .45s cubic-bezier(.2,1.5,.4,1) backwards; } .crtiles .rt small { font-size: 13px; bottom: -6px; }
   .crtiles .rt:nth-child(2) { animation-delay: .12s; } .crtiles .rt:nth-child(3) { animation-delay: .24s; } .crtiles .rt:nth-child(4) { animation-delay: .36s; } .crtiles .rt:nth-child(5) { animation-delay: .48s; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
   .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
-  .fam b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 400 13px/1.1 "Patrick Hand", cursive; }
+  .fam b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 600 15px/1.1 "Nunito", system-ui, sans-serif; }
   .fam.on { background: #fff; opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: var(--teal); } .fam.full { background: linear-gradient(#fff3c4, #ffd76a); opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: #3a2c20; }
-  .teampow { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #3a2c20; color: #fbf3df; border-radius: 14px; padding: 8px 12px; margin: 4px 0 8px; font: 400 16px/1.1 "Patrick Hand", cursive; }
+  .teampow { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #3a2c20; color: #fbf3df; border-radius: 14px; padding: 8px 12px; margin: 4px 0 8px; font: 600 17px/1.1 "Nunito", system-ui, sans-serif; }
   .teampow b { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #ffd76a; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
   .row .btn { flex: 1; }
-  .stat { display: flex; justify-content: space-between; font: 400 20px/1.5 "Patrick Hand", cursive; border-bottom: 2px dashed var(--line); }
+  .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
+  .bigstats b { display: block; font: 700 30px/1 "Fredoka", Arial, sans-serif; } .bigstats .know b { color: var(--teal); } .bigstats span { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; color: var(--muted); }
+  .statline { margin: 2px 0 6px; text-align: center; font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .joined .nline { text-align: left; padding: 2px 0; } .joined .nline + .nline { border-top: 1px dashed var(--line); margin-top: 3px; padding-top: 5px; }
+  .chips2 { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; } .chips2 .joined { margin: 0; text-align: left; }
+  .stat { display: flex; justify-content: space-between; font: 600 20px/1.5 "Nunito", system-ui, sans-serif; border-bottom: 2px dashed var(--line); }
   .stat b { font: 700 20px/1.5 "Fredoka", Arial, sans-serif; }
   .stat.know { color: var(--teal); font-weight: 700; }
   .panel canvas.m { width: 100px; height: 125px; display: block; margin: -46px auto 0; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
   .runs { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
   .runs i { width: 46px; height: 46px; border-radius: 12px; border: 3px solid #3a2c20; background: #d7c9a7; display: grid; place-items: center; font-size: 22px; font-style: normal; }
   .runs i.on { background: var(--gold); }
-  .timer { font: 400 16px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 0 0 8px; }
-  .quizcard { background: #fff; border: 4px solid #3a2c20; border-radius: 14px; padding: 14px 16px; font: 400 22px/1.25 "Patrick Hand", cursive; text-align: center; margin: 6px 0 12px; box-shadow: var(--shadow); transform: rotate(-1.5deg); }
-  .quizcard small { display: block; font: 700 11px/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+  .timer { font: 600 17px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 0 0 8px; }
+  .quizcard { background: #fff; border: 4px solid #3a2c20; border-radius: 14px; padding: 14px 16px; font: 600 22px/1.25 "Nunito", system-ui, sans-serif; text-align: center; margin: 6px 0 12px; box-shadow: var(--shadow); transform: rotate(-1.5deg); }
+  .quizcard small { display: block; font: 700 13px/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
   #kidc { width: 120px; height: 120px; display: block; margin: -56px auto 0; }
   .colors { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
   .colors button { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; font-size: 24px; cursor: pointer; box-shadow: 0 3px 0 #3a2c20; }
   .colors button.on { background: var(--gold); transform: scale(1.1); }
-  .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 12px; font: 400 17px/1.2 "Patrick Hand", cursive; text-align: center; }
-  .howcards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .hc { border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; font: 400 16px/1.2 "Patrick Hand", cursive; text-align: center; } .hc i { display: block; font-style: normal; font-size: 34px; margin-bottom: 4px; } .hc b { font-family: "Fredoka", Arial, sans-serif; }
+  .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 12px; font: 600 18px/1.2 "Nunito", system-ui, sans-serif; text-align: center; }
+  .howcards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .hc { border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; font: 600 17px/1.2 "Nunito", system-ui, sans-serif; text-align: center; } .hc i { display: block; font-style: normal; font-size: 34px; margin-bottom: 4px; } .hc b { font-family: "Fredoka", Arial, sans-serif; }
   .howto li { margin-bottom: 6px; }
 
   /* ───────── wallet, items, store, draws, daily ───────── */
@@ -459,64 +464,64 @@
   .otiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
   .otile { appearance: none; position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; border: 3px solid var(--rc, #3a2c20); border-radius: 14px; background: linear-gradient(#fff, color-mix(in srgb, var(--rc, #fff) 14%, #fff)); padding: 6px 4px 7px; box-shadow: 0 3px 0 rgba(58,44,32,.3); cursor: pointer; color: #3a2c20; min-width: 0; }
   .otile.empty { border-style: dashed; background: rgba(255,255,255,.4); box-shadow: none; }
-  .otile small { font: 700 10px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .otile small { font: 700 12px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
   .otile .ie { font-size: 30px; line-height: 1.1; position: relative; } .otile .ie i, .vt span i { position: absolute; right: -10px; bottom: -4px; font-size: 13px; font-style: normal; }
-  .otile b { font: 700 12px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .otile em { font: 400 12px/1.1 "Patrick Hand", cursive; font-style: normal; color: var(--muted); }
+  .otile b { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .otile em { font: 600 14px/1.1 "Nunito", system-ui, sans-serif; font-style: normal; color: var(--muted); }
   .albumh { appearance: none; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border: 2.5px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 10px; cursor: pointer; color: #3a2c20; }
-  .albumh b { font: 700 14px/1 "Fredoka", Arial, sans-serif; } .albumh span { font: 400 15px/1 "Patrick Hand", cursive; color: var(--muted); }
-  .vtier { margin-top: 6px; } .vtier > small { font: 700 11px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
+  .albumh b { font: 700 15px/1 "Fredoka", Arial, sans-serif; } .albumh span { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .vtier { margin-top: 6px; } .vtier > small { font: 700 13px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
   .vgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 4px; }
   .vt { border: 2.5px solid #3a2c20; border-radius: 10px; background: #fff; padding: 4px 2px; text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 0; }
-  .vt span { font-size: 22px; line-height: 1.1; position: relative; } .vt b { font: 700 10px/1.05 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .vt small { font: 400 11px/1 "Patrick Hand", cursive; color: var(--muted); }
+  .vt span { font-size: 22px; line-height: 1.1; position: relative; } .vt b { font: 700 12px/1.05 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .vt small { font: 600 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .vt.unk { background: rgba(58,44,32,.08); border-style: dashed; color: var(--muted); } .vt.unk span { opacity: .6; }
-  .slotb { flex: 1; height: 54px; border-radius: 12px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 10px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .slotb { flex: 1; height: 54px; border-radius: 12px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
   .slotb .ie { font-size: 22px; line-height: 1; }
   .slotb.empty { border-style: dashed; background: rgba(58,44,32,.05); }
   .itm { display: flex; gap: 10px; align-items: center; background: #fff; border: 3px solid var(--rc); border-radius: 14px; padding: 8px 10px; }
   .itm .ie { font-size: 30px; width: 40px; text-align: center; flex: none; }
   .itm .txt { flex: 1; }
   .itm b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; color: var(--rc); }
-  .itm span { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .itm span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .itm .btn { min-width: 70px; }
   .itm .flav { font-style: italic; opacity: .8; }
   .chips { flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; } .chips::-webkit-scrollbar { display: none; }
-  .chips button { flex: none; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 14px/1 "Fredoka", Arial, sans-serif; padding: 7px 13px; min-height: 46px; color: #3a2c20; cursor: pointer; } .chips button.on { background: var(--gold); } .chips small { opacity: .6; }
+  .chips button { flex: none; appearance: none; border: 3px solid #3a2c20; border-radius: 999px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; padding: 7px 13px; min-height: 46px; color: #3a2c20; cursor: pointer; } .chips button.on { background: var(--gold); } .chips small { opacity: .6; }
   .igrid { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .itile { position: relative; appearance: none; aspect-ratio: 1 / 1.15; background: linear-gradient(#fff, color-mix(in srgb, var(--rc) 18%, #fff)); border: 3px solid var(--rc); border-radius: 14px; box-shadow: 0 3px 0 rgba(58,44,32,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; cursor: pointer; font: 400 11px/1.05 "Patrick Hand", cursive; color: #3a2c20; overflow: visible; }
-  .itile .ie { font-size: 30px; line-height: 1; } .itile small { font: 700 11px/1.05 "Fredoka", Arial, sans-serif; color: var(--rc); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
-  .itile .lv { position: absolute; top: 3px; left: 5px; font: 700 11px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .itile .own { position: absolute; bottom: 18px; right: 3px; font-size: 14px; } .itile .worn { position: absolute; top: 2px; right: 5px; color: #4f8a5b; font-style: normal; font-weight: 700; } .itile .dot { top: -6px; right: -6px; }
-  .sheetbtns { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .sheethint { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 8px 0 0; }
+  .itile { position: relative; appearance: none; aspect-ratio: 1 / 1.15; background: linear-gradient(#fff, color-mix(in srgb, var(--rc) 18%, #fff)); border: 3px solid var(--rc); border-radius: 14px; box-shadow: 0 3px 0 rgba(58,44,32,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 2px; cursor: pointer; font: 600 13px/1.05 "Nunito", system-ui, sans-serif; color: #3a2c20; overflow: visible; }
+  .itile .ie { font-size: 30px; line-height: 1; } .itile small { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; color: var(--rc); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+  .itile .lv { position: absolute; top: 3px; left: 5px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .itile .own { position: absolute; bottom: 18px; right: 3px; font-size: 14px; } .itile .worn { position: absolute; top: 2px; right: 5px; color: #4f8a5b; font-style: normal; font-weight: 700; } .itile .dot { top: -6px; right: -6px; }
+  .sheetbtns { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .sheethint { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 8px 0 0; }
   .rackh { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; margin: 12px 2px 6px; }
   .variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
-  .var { background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 6px; text-align: center; font: 400 12px/1.15 "Patrick Hand", cursive; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 12px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
-  .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 12px; padding: 5px 8px; }
+  .var { background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 6px; text-align: center; font: 600 14px/1.15 "Nunito", system-ui, sans-serif; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
+  .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 13px; padding: 5px 8px; }
   .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
-  .lootc { width: 64px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 10px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
-  .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; }
-  .lootc.big { width: 90px; font-size: 12px; } .lootc.big .ie { font-size: 36px; }
+  .lootc { width: 84px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; } .lootc small { display: block; font-size: 13px; margin-top: 2px; color: var(--ink); opacity: .85; }
+  .lootc.big { width: 96px; font-size: 14px; } .lootc.big .ie { font-size: 36px; }
   .offer { display: flex; gap: 12px; align-items: center; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
   .offer .em { font-size: 34px; width: 46px; text-align: center; flex: none; }
   .offer .txt { flex: 1; }
   .offer b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .offer span { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .offer span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .offer .btn { min-width: 96px; }
   .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
-  .day { border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 4px; text-align: center; font: 700 11px/1.2 "Fredoka", Arial, sans-serif; }
+  .day { border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 4px; text-align: center; font: 700 13px/1.2 "Fredoka", Arial, sans-serif; }
   .day .ie { font-size: 22px; display: block; } .day.got { background: var(--green); color: #fff; opacity: .75; } .day.now { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
   .cardback { width: 150px; height: 200px; margin: 0 auto 12px; border: 4px solid #3a2c20; border-radius: 16px; background: repeating-linear-gradient(45deg, #20525c 0 12px, #2a6a76 12px 24px); display: grid; place-items: center; font-size: 60px; box-shadow: var(--shadow); transition: transform .4s; }
   .cardback.flip { transform: rotateY(180deg); }
   .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
   .lootc.shelf { cursor: pointer; font-family: inherit; } .lootc.shelf:disabled { opacity: .55; cursor: default; } .lootc.shelf:not(:disabled):active { transform: scale(.96); }
-  .pity { font: 400 15px/1.2 "Patrick Hand", cursive; color: var(--muted); text-align: center; margin: 4px 0 8px; }
+  .pity { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 4px 0 8px; }
   .nope { margin-top: 10px; display: flex; justify-content: center; }
-  .cls { display: inline-flex; align-items: center; gap: 6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; background: var(--teal); border: 2px solid #3a2c20; border-radius: 999px; padding: 5px 10px; margin-top: 6px; }
-  .vs { font: 400 14px/1.3 "Patrick Hand", cursive; margin-top: 4px; } .vs b { color: var(--green); } .vs s { color: var(--red); text-decoration: none; }
+  .cls { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1 "Fredoka", Arial, sans-serif; color: #fff; background: var(--teal); border: 2px solid #3a2c20; border-radius: 999px; padding: 5px 10px; margin-top: 6px; }
+  .vs { font: 600 16px/1.3 "Nunito", system-ui, sans-serif; margin-top: 4px; } .vs b { color: var(--green); } .vs s { color: var(--red); text-decoration: none; }
   .strip { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-  .strip span { font: 700 11px/1 "Fredoka", Arial, sans-serif; letter-spacing: .04em; background: rgba(58,44,32,.08); border: 2px solid var(--line); border-radius: 8px; padding: 4px 7px; color: var(--ink); }
+  .strip span { font: 700 13px/1 "Fredoka", Arial, sans-serif; letter-spacing: .04em; background: rgba(58,44,32,.08); border: 2px solid var(--line); border-radius: 8px; padding: 4px 7px; color: var(--ink); }
   .strip span i { font-style: normal; color: var(--muted); font-weight: 400; margin-right: 3px; }
   .strip span.fx { background: #fff; border-color: var(--teal); color: var(--teal); }
-  .best { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); margin-top: 4px; }
+  .best { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 4px; }
   .tabs { display: flex; gap: 6px; padding: 0 14px 10px; overflow-x: auto; }
   .tabs button { flex: none; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 999px; background: var(--card); padding: 8px 12px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .tabs button.on { background: var(--gold); }
@@ -524,25 +529,25 @@
   .bmk { position: relative; display: inline-block; width: .62em; height: 1.05em; vertical-align: middle; } .bmk svg { width: 100%; height: 100%; display: block; } .bmk i { position: absolute; left: 0; right: 0; top: 18%; text-align: center; font-style: normal; font-size: .3em; line-height: 1; }
   .itile .ie .bmk { font-size: 46px; } .itm .ie .bmk { font-size: 40px; } .lootc .ie .bmk { font-size: 34px; } .mark .bmk { font-size: 26px; }
   .itile small.mstat { color: #3a2c20; font-weight: 600; margin-top: -2px; }
-  .forgebar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; } .forgebar .btn { flex: 1; } .forgebar small { font: 400 14px/1.2 "Patrick Hand", cursive; color: var(--muted); }
+  .forgebar { display: flex; gap: 8px; align-items: center; margin: 4px 0 10px; } .forgebar .btn { flex: 1; } .forgebar small { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .mark { width: 30px; height: 30px; border-radius: 8px; border: 2px solid #3a2c20; display: grid; place-items: center; font-size: 15px; background: #fff; cursor: pointer; }
-  .mark.empty { border-style: dashed; background: rgba(58,44,32,.05); font-size: 12px; color: var(--muted); }
+  .mark.empty { border-style: dashed; background: rgba(58,44,32,.05); font-size: 13px; color: var(--muted); }
   .itm .txt .marks { margin-top: 4px; }
   .syn { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .syn span { font: 400 14px/1 "Patrick Hand", cursive; background: #fff; border: 2px solid var(--green); color: var(--green); border-radius: 999px; padding: 5px 9px; }
+  .syn span { font: 600 16px/1 "Nunito", system-ui, sans-serif; background: #fff; border: 2px solid var(--green); color: var(--green); border-radius: 999px; padding: 5px 9px; }
   .syn span.off { border-color: var(--line); color: var(--muted); background: transparent; }
   .toggles { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; text-align: left; }
   .tog { display: flex; align-items: center; gap: 10px; background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px 12px; cursor: pointer; }
   .tog .em { font-size: 24px; width: 32px; text-align: center; }
   .tog b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; }
-  .tog span { font: 400 14px/1.15 "Patrick Hand", cursive; color: var(--muted); display: block; }
+  .tog span { font: 600 16px/1.15 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .tog .txt { flex: 1; }
   .tog .sw { width: 44px; height: 26px; border-radius: 999px; border: 3px solid #3a2c20; background: #d7c9a7; position: relative; flex: none; }
   .tog .sw::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid #3a2c20; transition: left .15s; }
   .tog.on .sw { background: var(--green); } .tog.on .sw::after { left: 20px; }
   .evo { position: absolute; left: 0; right: 0; top: 38%; text-align: center; pointer-events: none; z-index: 8; animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .evo b { display: block; font: 700 44px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.4); }
-  .evo span { display: inline-block; margin-top: 6px; font: 400 20px/1.2 "Patrick Hand", cursive; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 14px; }
+  .evo span { display: inline-block; margin-top: 6px; font: 600 20px/1.2 "Nunito", system-ui, sans-serif; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 14px; }
   @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
@@ -560,7 +565,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 63</div>
+    <div class="build">build 64</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -641,7 +646,7 @@
   <section id="shop" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
     <div class="seg"><button data-seg="friends">🧑‍🤝‍🧑 Friends</button><button data-seg="weapons" class="on">⚔️ Weapons</button></div>
-    <p class="intro" id="shopIntro">Everyone has one weapon. Hold a version you like, ✨ polish it, or 🔨 forge three of a colour into a stronger one.</p>
+    <p class="intro" id="shopIntro">Pick the weapon each friend holds.</p>
     <div class="tabs" id="shopTabs"></div>
     <div class="list" id="shopList"></div>
   </section>
@@ -649,26 +654,26 @@
   <!-- ───────── party: collect & upgrade characters ───────── -->
   <section id="partyScreen" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Friends</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro">Tap a friend for their outfit, moves and stars. Fill a friend's book with 📄 pages and they join.</p>
+    <p class="intro">Tap a friend to see their moves. Fill a book with 📄 pages to join.</p>
     <div class="list" id="partyList"></div>
   </section>
 
   <!-- ───────── items: the bag ───────── -->
   <section id="missions" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Missions</h2><span class="pill tix">📄 <span id="blankN">0</span></span></div>
-    <p class="intro">Little jobs that fill up as you play. No timers, and nothing is lost if you miss a day.</p>
+    <p class="intro">Little jobs that fill up as you play. No timers.</p>
     <div class="list" id="missionList"></div>
   </section>
   <section id="items" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Bag</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <p class="intro" id="bagIntro">Tap anything to wear it, polish it ✨ or sell it.</p>
+    <p class="intro" id="bagIntro">Tap anything to use it.</p>
     <div class="list" id="itemList"></div>
   </section>
 
   <!-- ───────── store ───────── -->
   <section id="store" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">Shop</h2><span class="pill gems">💎 <span class="gemsN">0</span></span></div>
-    <p class="intro">Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.</p>
+    <p class="intro">Nothing here costs real money.</p>
     <div class="list" id="storeList"></div>
   </section>
 
@@ -1431,55 +1436,55 @@ const CHARS = {
 const ABIL = {
   weapon: { name: 'Weapon', em: '🔍', desc: 'Whatever Dad picked in the garage.' },
   story:  { name: 'Bedtime Story', em: '📖', desc: 'Myths near Dad get sleepy and slow.', passive: true },
-  joke:   { name: 'Dad Joke',      em: '🥁', desc: 'Every so often, every myth in the ring groans and stops.', cd: [8, 7, 6, 5, 4], dmg: [12, 17, 23, 30, 38] },
-  web:    { name: 'Web Shot',      em: '🕸️', desc: 'A sticky web that slows whatever it hits.', cd: [1.3, 1.15, 1.0, .9, .75], dmg: [13, 17, 21, 26, 32] },
-  trap:   { name: 'Silk Trap',     em: '🪤', desc: 'Webs on the lawn that myths get stuck in.', cd: [7, 6.5, 6, 5, 4], n: [1, 1, 2, 2, 3] },
-  eyes:   { name: 'Eight Eyes',    em: '👀', desc: 'Webster spots weak points. +6% critical hits for everyone, per rank.', passive: true },
-  zap:    { name: 'Zap',           em: '⚡', desc: 'A spark that jumps from myth to myth.', cd: [1.4, 1.25, 1.1, .95, .8], dmg: [12, 15, 19, 24, 30], n: [2, 3, 3, 4, 5] },
-  glow:   { name: 'Glow',          em: '🔆', desc: 'Myths near Sparky are lit up and take more damage.', passive: true },
+  joke:   { name: 'Dad Joke',      em: '🥁', desc: 'Every myth in the ring groans and stops.', cd: [8, 7, 6, 5, 4], dmg: [12, 17, 23, 30, 38] },
+  web:    { name: 'Web Shot',      em: '🕸️', desc: 'A sticky web that slows a myth.', cd: [1.3, 1.15, 1.0, .9, .75], dmg: [13, 17, 21, 26, 32] },
+  trap:   { name: 'Silk Trap',     em: '🪤', desc: 'Sticky webs on the lawn.', cd: [7, 6.5, 6, 5, 4], n: [1, 1, 2, 2, 3] },
+  eyes:   { name: 'Eight Eyes',    em: '👀', desc: 'Weak spots: team crits +6% a rank.', passive: true },
+  zap:    { name: 'Zap',           em: '⚡', desc: 'A spark that jumps myth to myth.', cd: [1.4, 1.25, 1.1, .95, .8], dmg: [12, 15, 19, 24, 30], n: [2, 3, 3, 4, 5] },
+  glow:   { name: 'Glow',          em: '🔆', desc: 'Lit-up myths near Sparky take more damage.', passive: true },
   surge:  { name: 'Surge',         em: '💥', desc: 'Every few zaps, a big one.', passive: true },
-  tongue: { name: 'Tongue Lash',   em: '👅', desc: 'A long lick through a line of myths.', cd: [1.8, 1.6, 1.4, 1.2, 1.0], dmg: [14, 18, 22, 28, 35] },
+  tongue: { name: 'Tongue Lash',   em: '👅', desc: 'A long lick through a line.', cd: [1.8, 1.6, 1.4, 1.2, 1.0], dmg: [14, 18, 22, 28, 35] },
   hop:    { name: 'Big Hop',       em: '🐸', desc: 'Hopper leaps onto a crowd. Splat.', cd: [8, 7, 6, 5, 4], dmg: [20, 26, 33, 42, 55] },
-  song:   { name: 'Toad Song',     em: '🎵', desc: 'A croaky lullaby. Dad\'s Patience slowly comes back.', passive: true },
-  quack:  { name: 'Quack',         em: '📣', desc: 'A sound wave that shoves myths back.', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [16, 20, 25, 31, 38] },
-  echo:   { name: 'Echo',          em: '🔊', desc: 'The quack echoes. (It does.) Chance of a second wave.', passive: true },
-  pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Puddles finds things. +10% coins found per rank.', passive: true },
-  toss:   { name: 'Bookmark Toss', em: '🔖', desc: 'A sharp bookmark that goes through two myths and marks them.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [14, 18, 23, 29, 36] },
-  footnote: { name: 'Footnote',    em: '📝', desc: 'Everyone hits a marked myth 5% harder per rank.', passive: true },
-  speedread: { name: 'Speed Read', em: '⏩', desc: 'The whole party acts 3% sooner per rank.', passive: true },
-  shell:  { name: 'Shell Toss',    em: '🐚', desc: 'A lobbed shell. Splash, and a shove.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [18, 23, 29, 36, 45] },
-  shellwall: { name: 'Shell Wall', em: '🧱', desc: 'Shells on the lawn that myths get stuck behind.', cd: [8, 7.5, 7, 6, 5], n: [1, 1, 2, 2, 3] },
-  thickshell: { name: 'Thick Shell', em: '🛡️', desc: 'Dad loses 6% less Patience per rank when a myth gets through.', passive: true },
-  roll:   { name: 'Sand Ball',     em: '🟤', desc: 'A rolling ball that flattens a whole line.', cd: [2.0, 1.8, 1.6, 1.4, 1.2], dmg: [15, 19, 24, 30, 38] },
-  dig:    { name: 'Dig',           em: '⛏️', desc: 'Scuttle burrows and pops up under a crowd. Surprise!', cd: [8, 7, 6, 5, 4], dmg: [20, 26, 33, 42, 55] },
-  antennae: { name: 'Antennae',    em: '📡', desc: 'Scuttle feels them coming. The ring grows by 8 per rank.', passive: true },
-  hoot:   { name: 'Hoot',          em: '🎶', desc: 'A chilly hoot that passes through myths and slows them.', cd: [1.6, 1.45, 1.3, 1.15, 1.0], dmg: [13, 17, 21, 27, 34] },
-  swoop:  { name: 'Swoop',         em: '🪽', desc: 'Nilla dives on the biggest myth in the ring.', cd: [8, 7, 6, 5, 4], dmg: [40, 52, 66, 84, 110] },
-  nighteyes: { name: 'Night Eyes', em: '👁️', desc: 'Rumours show up sooner, and +4% critical hits for everyone per rank.', passive: true },
-  dust:   { name: 'Dust Puff',     em: '✨', desc: 'A puff of sleepy dust that bursts on the first myth it meets.', cd: [1.7, 1.55, 1.4, 1.25, 1.1], dmg: [12, 16, 20, 25, 32] },
-  lamp:   { name: 'Lamp Dance',    em: '🏮', desc: 'Every myth in the ring is drawn to the light.', cd: [9, 8, 7, 6, 5] },
-  spin:    { name: 'Shell Spin',    em: '🌀', desc: 'Shelly spins and bowls over every myth close by.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [16, 21, 27, 34, 42] },
-  snap:    { name: 'Snap',          em: '🐢', desc: 'A slow, mighty bite. The myth stops right where it is.', cd: [6, 5.5, 5, 4.5, 4], dmg: [40, 52, 66, 84, 105] },
-  steady:  { name: 'Slow and Steady', em: '🐌', desc: 'Myths near Shelly move 6% slower per rank.', passive: true },
-  bubbles: { name: 'Bubble Blow',   em: '🫧', desc: 'Floaty bubbles that slow whatever they pop on.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [10, 13, 16, 20, 25], n: [2, 2, 3, 3, 4] },
-  splash:  { name: 'Big Splash',    em: '💦', desc: 'A splash on the crowd that leaves a slippery puddle.', cd: [7, 6.5, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
-  memory:  { name: 'Long Memory',   em: '🧠', desc: 'Goldfish remember for months! Myths you already know take 5% more damage per rank.', passive: true },
-  quills:  { name: 'Quill Burst',   em: '📍', desc: 'Prickles puffs up and shoots quills at the myths around.', cd: [1.8, 1.6, 1.45, 1.3, 1.15], dmg: [11, 14, 18, 22, 28], n: [3, 3, 4, 4, 5] },
-  rollup:  { name: 'Roll Up',       em: '🦔', desc: 'Prickles curls into a ball and bowls into a crowd.', cd: [8, 7, 6, 5, 4.5], dmg: [22, 28, 36, 45, 57] },
-  static:  { name: 'Static',        em: '⚡', desc: 'Spark hits from the whole party do 4% more per rank.', passive: true },
-  sting:   { name: 'Sting',         em: '🪼', desc: 'A quick sting that freezes a myth for a moment.', cd: [1.2, 1.1, 1, .9, .8], dmg: [11, 14, 18, 22, 28] },
-  drift:   { name: 'Drift',         em: '🌊', desc: 'Jelly floats over a crowd and stings everything below.', cd: [8, 7, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
-  shine:   { name: 'Glow Sting',    em: '💡', desc: 'Stung myths glow for a while and take 4% more damage per rank from everyone.', passive: true },
-  sonar:   { name: 'Sonar',         em: '🦇', desc: 'A squeak that bounces off every myth in the ring.', cd: [2.4, 2.2, 2, 1.8, 1.6], dmg: [8, 10, 13, 16, 20] },
-  dive:    { name: 'Night Dive',    em: '🌌', desc: 'Echo dives straight through a line of myths.', cd: [7, 6.5, 6, 5, 4.5], dmg: [26, 33, 42, 53, 66] },
-  echoes:  { name: 'Echoes',        em: '🔁', desc: '15% chance per rank that a squeak bounces back for a second hit.', passive: true },
-  arms:    { name: 'Eight Arms',    em: '🐙', desc: 'Inky grabs up to eight myths at once.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [12, 15, 19, 24, 30], n: [4, 5, 6, 7, 8] },
-  ink:     { name: 'Ink Cloud',     em: '🖤', desc: 'A cloud of ink on a crowd. Myths inside stop, and take 20% more damage for a while.', cd: [9, 8, 7, 6, 5] },
-  clever:  { name: 'Clever Arms',   em: '🪙', desc: 'Each grab has a 5% chance per rank to pull out a coin.', passive: true },
-  flick:   { name: 'Rainbow Flick', em: '🌈', desc: 'A long tongue flick in whichever colour sets off a reaction.', cd: [1.4, 1.25, 1.1, 1, .9], dmg: [16, 20, 25, 31, 39] },
-  colours: { name: 'Colour Swap',   em: '🎨', desc: 'Chroma flashes its colours and gives every myth in the ring an element.', cd: [10, 9, 8, 7, 6] },
-  camo:    { name: 'Camouflage',    em: '🦎', desc: 'Reactions do 8% more damage per rank, and Gossips can\'t find Chroma.', passive: true },
-  moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Dad\'s Bedtime Story reaches 15% further per rank, and Patience trickles back.', passive: true },
+  song:   { name: 'Toad Song',     em: '🎵', desc: 'A croaky lullaby. Patience comes back.', passive: true },
+  quack:  { name: 'Quack',         em: '📣', desc: 'A sound wave shoves myths back.', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [16, 20, 25, 31, 38] },
+  echo:   { name: 'Echo',          em: '🔊', desc: 'The quack echoes. Sometimes twice.', passive: true },
+  pond:   { name: 'Duck Pond',     em: '🪙', desc: 'Finds coins: +10% a rank.', passive: true },
+  toss:   { name: 'Bookmark Toss', em: '🔖', desc: 'A bookmark through two myths. Marks them.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [14, 18, 23, 29, 36] },
+  footnote: { name: 'Footnote',    em: '📝', desc: 'Marked myths take 5% more a rank.', passive: true },
+  speedread: { name: 'Speed Read', em: '⏩', desc: 'Team acts 3% sooner a rank.', passive: true },
+  shell:  { name: 'Shell Toss',    em: '🐚', desc: 'A lobbed shell: splash and shove.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [18, 23, 29, 36, 45] },
+  shellwall: { name: 'Shell Wall', em: '🧱', desc: 'Shells on the lawn block myths.', cd: [8, 7.5, 7, 6, 5], n: [1, 1, 2, 2, 3] },
+  thickshell: { name: 'Thick Shell', em: '🛡️', desc: 'Dad loses 6% less Patience a rank.', passive: true },
+  roll:   { name: 'Sand Ball',     em: '🟤', desc: 'A rolling ball flattens a line.', cd: [2.0, 1.8, 1.6, 1.4, 1.2], dmg: [15, 19, 24, 30, 38] },
+  dig:    { name: 'Dig',           em: '⛏️', desc: 'Pops up under a crowd. Surprise!', cd: [8, 7, 6, 5, 4], dmg: [20, 26, 33, 42, 55] },
+  antennae: { name: 'Antennae',    em: '📡', desc: 'Feels them coming: ring +8 a rank.', passive: true },
+  hoot:   { name: 'Hoot',          em: '🎶', desc: 'A chilly hoot that slows a line.', cd: [1.6, 1.45, 1.3, 1.15, 1.0], dmg: [13, 17, 21, 27, 34] },
+  swoop:  { name: 'Swoop',         em: '🪽', desc: 'Dives on the biggest myth.', cd: [8, 7, 6, 5, 4], dmg: [40, 52, 66, 84, 110] },
+  nighteyes: { name: 'Night Eyes', em: '👁️', desc: 'Spots rumours. Team crits +4% a rank.', passive: true },
+  dust:   { name: 'Dust Puff',     em: '✨', desc: 'Sleepy dust on the first myth hit.', cd: [1.7, 1.55, 1.4, 1.25, 1.1], dmg: [12, 16, 20, 25, 32] },
+  lamp:   { name: 'Lamp Dance',    em: '🏮', desc: 'Every myth is drawn to the light.', cd: [9, 8, 7, 6, 5] },
+  spin:    { name: 'Shell Spin',    em: '🌀', desc: 'Spins and bowls over nearby myths.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [16, 21, 27, 34, 42] },
+  snap:    { name: 'Snap',          em: '🐢', desc: 'A mighty bite. The myth stops.', cd: [6, 5.5, 5, 4.5, 4], dmg: [40, 52, 66, 84, 105] },
+  steady:  { name: 'Slow and Steady', em: '🐌', desc: 'Nearby myths 6% slower a rank.', passive: true },
+  bubbles: { name: 'Bubble Blow',   em: '🫧', desc: 'Floaty bubbles that slow myths.', cd: [1.5, 1.35, 1.2, 1.05, .9], dmg: [10, 13, 16, 20, 25], n: [2, 2, 3, 3, 4] },
+  splash:  { name: 'Big Splash',    em: '💦', desc: 'A big splash leaves a slippery puddle.', cd: [7, 6.5, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
+  memory:  { name: 'Long Memory',   em: '🧠', desc: 'Known myths take 5% more a rank.', passive: true },
+  quills:  { name: 'Quill Burst',   em: '📍', desc: 'Quills fly at every myth around.', cd: [1.8, 1.6, 1.45, 1.3, 1.15], dmg: [11, 14, 18, 22, 28], n: [3, 3, 4, 4, 5] },
+  rollup:  { name: 'Roll Up',       em: '🦔', desc: 'Curls up and bowls into a crowd.', cd: [8, 7, 6, 5, 4.5], dmg: [22, 28, 36, 45, 57] },
+  static:  { name: 'Static',        em: '⚡', desc: 'Team sparks hit 4% harder a rank.', passive: true },
+  sting:   { name: 'Sting',         em: '🪼', desc: 'A sting that freezes one myth.', cd: [1.2, 1.1, 1, .9, .8], dmg: [11, 14, 18, 22, 28] },
+  drift:   { name: 'Drift',         em: '🌊', desc: 'Floats over a crowd, stinging below.', cd: [8, 7, 6, 5, 4.5], dmg: [18, 23, 29, 36, 45] },
+  shine:   { name: 'Glow Sting',    em: '💡', desc: 'Stung myths take 4% more a rank.', passive: true },
+  sonar:   { name: 'Sonar',         em: '🦇', desc: 'A squeak hits every myth in the ring.', cd: [2.4, 2.2, 2, 1.8, 1.6], dmg: [8, 10, 13, 16, 20] },
+  dive:    { name: 'Night Dive',    em: '🌌', desc: 'Dives through a line of myths.', cd: [7, 6.5, 6, 5, 4.5], dmg: [26, 33, 42, 53, 66] },
+  echoes:  { name: 'Echoes',        em: '🔁', desc: '15% a rank: the squeak hits twice.', passive: true },
+  arms:    { name: 'Eight Arms',    em: '🐙', desc: 'Grabs up to eight myths at once.', cd: [2.2, 2, 1.8, 1.6, 1.4], dmg: [12, 15, 19, 24, 30], n: [4, 5, 6, 7, 8] },
+  ink:     { name: 'Ink Cloud',     em: '🖤', desc: 'Ink stops a crowd. They take more damage.', cd: [9, 8, 7, 6, 5] },
+  clever:  { name: 'Clever Arms',   em: '🪙', desc: 'Grabs find coins: 5% a rank.', passive: true },
+  flick:   { name: 'Rainbow Flick', em: '🌈', desc: 'A tongue flick that sets off reactions.', cd: [1.4, 1.25, 1.1, 1, .9], dmg: [16, 20, 25, 31, 39] },
+  colours: { name: 'Colour Swap',   em: '🎨', desc: 'Gives every myth in the ring a colour.', cd: [10, 9, 8, 7, 6] },
+  camo:    { name: 'Camouflage',    em: '🦎', desc: 'Reactions +8% a rank. Gossips miss Chroma.', passive: true },
+  moonlight: { name: 'Moonlight',  em: '🌙', desc: 'Bedtime Story reaches 15% further a rank.', passive: true },
 };
 const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // friends come in tiers: rarer ones take more pages to join and hit a little harder. Pages also raise stars once a
@@ -1725,42 +1730,42 @@ Object.assign(CHARS, {
   uni:     { name: 'Uni',     em: '🦄', desc: 'The only myth in the Big Book of Wrong who decided to help. Nobody knows how she got out.', abil: ['horn', 'wish', 'magic'] },
 });
 const GEN_ABIL = {
-  buzzshot: { name: 'Stinger Dart',  em: '🐝', desc: 'A quick buzzing dart at the nearest myth.', kind: 'shot', proj: '🐝', psize: 16, spd: 520, cd: [1.1, 1, .9, .8, .7], dmg: [9, 12, 15, 19, 24] },
-  pollen:   { name: 'Pollen Puff',   em: '🌼', desc: 'A cloud of pollen on a crowd. Myths inside slow right down.', kind: 'lob', R: 70, slow: 2, col: '#ffe58a', cd: [7, 6.5, 6, 5.5, 5], dmg: [14, 18, 23, 29, 36] },
-  hive:     { name: 'Hive Mind',     em: '🍯', desc: 'The whole party works 3% faster per rank.', passive: true, aura: 'quick', per: 3 },
-  wriggle:  { name: 'Wriggle Up',    em: '🪱', desc: 'Wiggles pops out of the ground under the nearest crowd.', kind: 'lob', R: 55, col: '#c9a27a', cd: [1.8, 1.65, 1.5, 1.35, 1.2], dmg: [13, 17, 21, 26, 33] },
-  tunnel:   { name: 'Tunnel Trip',   em: '🕳️', desc: 'Wiggles tunnels under the biggest myth in the ring and trips it up.', kind: 'big', stun: 1.2, shout: 'TRIPPED!', cd: [8, 7, 6, 5.5, 5], dmg: [30, 39, 50, 63, 80] },
-  compost:  { name: 'Compost',       em: '🌱', desc: 'Good soil, good mood: Dad gets 0.15 Patience back every second per rank.', passive: true, aura: 'regen', per: .15 },
-  acorn:    { name: 'Acorn Toss',    em: '🌰', desc: 'An acorn, thrown hard at the nearest myth.', kind: 'shot', proj: '🌰', spd: 460, knock: 25, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [12, 15, 19, 24, 30] },
-  stash:    { name: 'Nut Stash',     em: '🥜', desc: 'Coco empties the stash: a fan of nuts at the crowd.', kind: 'shot', proj: '🥜', n: [5, 5, 6, 6, 7], spread: .3, cd: [7, 6.5, 6, 5.5, 5], dmg: [12, 15, 19, 24, 30] },
-  hoard:    { name: 'Squirrel Away', em: '🪙', desc: '+4% coins per rank.', passive: true, aura: 'coin', per: 4 },
+  buzzshot: { name: 'Stinger Dart',  em: '🐝', desc: 'A buzzing dart at the nearest myth.', kind: 'shot', proj: '🐝', psize: 16, spd: 520, cd: [1.1, 1, .9, .8, .7], dmg: [9, 12, 15, 19, 24] },
+  pollen:   { name: 'Pollen Puff',   em: '🌼', desc: 'A pollen cloud slows a crowd.', kind: 'lob', R: 70, slow: 2, col: '#ffe58a', cd: [7, 6.5, 6, 5.5, 5], dmg: [14, 18, 23, 29, 36] },
+  hive:     { name: 'Hive Mind',     em: '🍯', desc: 'Team works 3% faster a rank.', passive: true, aura: 'quick', per: 3 },
+  wriggle:  { name: 'Wriggle Up',    em: '🪱', desc: 'Pops up under the nearest crowd.', kind: 'lob', R: 55, col: '#c9a27a', cd: [1.8, 1.65, 1.5, 1.35, 1.2], dmg: [13, 17, 21, 26, 33] },
+  tunnel:   { name: 'Tunnel Trip',   em: '🕳️', desc: 'Trips up the biggest myth.', kind: 'big', stun: 1.2, shout: 'TRIPPED!', cd: [8, 7, 6, 5.5, 5], dmg: [30, 39, 50, 63, 80] },
+  compost:  { name: 'Compost',       em: '🌱', desc: 'Patience trickles back. More each rank.', passive: true, aura: 'regen', per: .15 },
+  acorn:    { name: 'Acorn Toss',    em: '🌰', desc: 'An acorn at the nearest myth.', kind: 'shot', proj: '🌰', spd: 460, knock: 25, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [12, 15, 19, 24, 30] },
+  stash:    { name: 'Nut Stash',     em: '🥜', desc: 'A fan of nuts at the crowd.', kind: 'shot', proj: '🥜', n: [5, 5, 6, 6, 7], spread: .3, cd: [7, 6.5, 6, 5.5, 5], dmg: [12, 15, 19, 24, 30] },
+  hoard:    { name: 'Squirrel Away', em: '🪙', desc: 'Coins +4% a rank.', passive: true, aura: 'coin', per: 4 },
   spots:    { name: 'Spot Shot',     em: '🔴', desc: 'Little spots fired in a spread.', kind: 'shot', proj: '🔴', psize: 12, n: [3, 3, 3, 4, 4], spread: .25, spd: 480, cd: [1.5, 1.35, 1.2, 1.1, 1], dmg: [6, 8, 10, 13, 16] },
-  lucky:    { name: 'Lucky Break',   em: '🍀', desc: 'A lucky hit on the biggest myth in the ring.', kind: 'big', shout: 'LUCKY!', cd: [7, 6.5, 6, 5.5, 5], dmg: [40, 52, 66, 84, 105] },
-  luckspot: { name: 'Lucky Spots',   em: '🐞', desc: '+2% critical hits for everyone per rank.', passive: true, aura: 'crit', per: 2 },
-  peck:     { name: 'Peck',          em: '🦩', desc: 'A sharp peck that jumps on to a second myth.', kind: 'chain', j: 1, col: '#ff8fb8', cd: [1.3, 1.2, 1.1, 1, .9], dmg: [14, 18, 23, 29, 36] },
-  stomp:    { name: 'Flamingo Stomp', em: '🦶', desc: 'Rosie stomps and sends every myth close by flying.', kind: 'burst', R: 85, knock: 110, col: '#ffb8d0', cd: [7, 6.5, 6, 5.5, 5], dmg: [22, 28, 36, 45, 57] },
-  pink:     { name: 'Pink Power',    em: '🦐', desc: 'Shrimp for breakfast: the whole party hits 3% harder per rank.', passive: true, aura: 'pow', per: 3 },
-  swipe:    { name: 'Swipe',         em: '🦝', desc: 'Quick paws that hit three myths in a row.', kind: 'chain', j: 2, col: '#c9c2ff', cd: [1.6, 1.45, 1.3, 1.15, 1], dmg: [11, 14, 18, 22, 28] },
-  lid:      { name: 'Bin Lid',       em: '🗑️', desc: 'A clanging bin lid on a crowd. Myths underneath see stars.', kind: 'lob', R: 70, stun: .9, col: '#b8b8c8', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
-  nightpaws:{ name: 'Night Paws',    em: '🌙', desc: '+2% critical hits for everyone per rank.', passive: true, aura: 'crit', per: 2 },
-  nip:      { name: 'Quick Nip',     em: '🦊', desc: 'A fast dart and nip at the nearest myth.', kind: 'shot', proj: '💨', spd: 600, cd: [1, .92, .84, .76, .68], dmg: [10, 13, 16, 20, 25] },
-  pounce:   { name: 'Pounce',        em: '🐾', desc: 'Bramble leaps on the biggest myth in the ring.', kind: 'big', stun: .6, knock: 40, shout: 'POUNCE!', cd: [7, 6.5, 6, 5.5, 5], dmg: [44, 57, 72, 90, 115] },
-  sly:      { name: 'Sly',           em: '🍂', desc: 'The whole party works 3% faster per rank.', passive: true, aura: 'quick', per: 3 },
-  claw:     { name: 'Claw Snap',     em: '🦞', desc: 'A snapping claw that goes through two myths.', kind: 'shot', proj: '🦞', rot: true, pierce: 1, spd: 400, cd: [1.5, 1.35, 1.2, 1.1, 1], dmg: [14, 18, 23, 29, 36] },
-  slam:     { name: 'Shell Slam',    em: '💥', desc: 'Pinch slams down and stuns every myth close by.', kind: 'burst', R: 80, stun: .8, knock: 60, col: '#e06a4a', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
-  hardshell:{ name: 'Hard Shell',    em: '🛡️', desc: 'Dad loses 3% less Patience per rank.', passive: true, aura: 'guard', per: 3 },
+  lucky:    { name: 'Lucky Break',   em: '🍀', desc: 'A lucky hit on the biggest myth.', kind: 'big', shout: 'LUCKY!', cd: [7, 6.5, 6, 5.5, 5], dmg: [40, 52, 66, 84, 105] },
+  luckspot: { name: 'Lucky Spots',   em: '🐞', desc: 'Team crits +2% a rank.', passive: true, aura: 'crit', per: 2 },
+  peck:     { name: 'Peck',          em: '🦩', desc: 'A peck that jumps to a second myth.', kind: 'chain', j: 1, col: '#ff8fb8', cd: [1.3, 1.2, 1.1, 1, .9], dmg: [14, 18, 23, 29, 36] },
+  stomp:    { name: 'Flamingo Stomp', em: '🦶', desc: 'A stomp that sends myths flying.', kind: 'burst', R: 85, knock: 110, col: '#ffb8d0', cd: [7, 6.5, 6, 5.5, 5], dmg: [22, 28, 36, 45, 57] },
+  pink:     { name: 'Pink Power',    em: '🦐', desc: 'Team hits 3% harder a rank.', passive: true, aura: 'pow', per: 3 },
+  swipe:    { name: 'Swipe',         em: '🦝', desc: 'Quick paws hit three myths.', kind: 'chain', j: 2, col: '#c9c2ff', cd: [1.6, 1.45, 1.3, 1.15, 1], dmg: [11, 14, 18, 22, 28] },
+  lid:      { name: 'Bin Lid',       em: '🗑️', desc: 'A bin lid on a crowd. Stars!', kind: 'lob', R: 70, stun: .9, col: '#b8b8c8', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
+  nightpaws:{ name: 'Night Paws',    em: '🌙', desc: 'Team crits +2% a rank.', passive: true, aura: 'crit', per: 2 },
+  nip:      { name: 'Quick Nip',     em: '🦊', desc: 'A quick nip at the nearest myth.', kind: 'shot', proj: '💨', spd: 600, cd: [1, .92, .84, .76, .68], dmg: [10, 13, 16, 20, 25] },
+  pounce:   { name: 'Pounce',        em: '🐾', desc: 'Leaps on the biggest myth.', kind: 'big', stun: .6, knock: 40, shout: 'POUNCE!', cd: [7, 6.5, 6, 5.5, 5], dmg: [44, 57, 72, 90, 115] },
+  sly:      { name: 'Sly',           em: '🍂', desc: 'Team works 3% faster a rank.', passive: true, aura: 'quick', per: 3 },
+  claw:     { name: 'Claw Snap',     em: '🦞', desc: 'A claw snap through two myths.', kind: 'shot', proj: '🦞', rot: true, pierce: 1, spd: 400, cd: [1.5, 1.35, 1.2, 1.1, 1], dmg: [14, 18, 23, 29, 36] },
+  slam:     { name: 'Shell Slam',    em: '💥', desc: 'Slams down and stuns nearby myths.', kind: 'burst', R: 80, stun: .8, knock: 60, col: '#e06a4a', cd: [8, 7, 6.5, 6, 5], dmg: [20, 26, 33, 41, 52] },
+  hardshell:{ name: 'Hard Shell',    em: '🛡️', desc: 'Dad loses 3% less Patience a rank.', passive: true, aura: 'guard', per: 3 },
   fan:      { name: 'Feather Fan',   em: '🪶', desc: 'Feathers in a wide fan.', kind: 'shot', proj: '🪶', rot: true, n: [5, 5, 6, 6, 7], spread: .2, spd: 500, cd: [1.6, 1.45, 1.3, 1.15, 1], dmg: [8, 10, 13, 16, 20] },
-  display:  { name: 'Grand Display', em: '🦚', desc: 'Sol fans out and every myth in the ring stops to stare.', kind: 'all', stun: 1.2, shout: 'TA-DA!', col: '#3fb0a0', cd: [11, 10, 9, 8, 7], dmg: [10, 13, 16, 20, 25] },
-  pride:    { name: 'Pride',         em: '👑', desc: 'The whole party hits 4% harder per rank.', passive: true, aura: 'pow', per: 4 },
-  maul:     { name: 'Big Paw',       em: '🐾', desc: 'A heavy swipe at everything close by.', kind: 'burst', R: 75, knock: 70, slow: 1, col: '#dff3ff', cd: [1.9, 1.75, 1.6, 1.45, 1.3], dmg: [16, 21, 27, 34, 42] },
-  floe:     { name: 'Ice Floe',      em: '🧊', desc: 'A slab of ice on a crowd. Myths underneath slip and slow.', kind: 'lob', R: 95, slow: 2.5, col: '#bfe6f5', cd: [8, 7, 6.5, 6, 5], dmg: [30, 39, 50, 63, 80] },
-  thickfur: { name: 'Thick Fur',     em: '❄️', desc: 'Dad loses 4% less Patience per rank.', passive: true, aura: 'guard', per: 4 },
-  spout:    { name: 'Spout',         em: '🐋', desc: 'A huge spout that comes down on a crowd and washes it back.', kind: 'lob', R: 85, knock: 90, col: '#8fc7f0', cd: [2, 1.85, 1.7, 1.55, 1.4], dmg: [20, 26, 33, 41, 52] },
-  whalesong:{ name: 'Whale Song',    em: '🎶', desc: 'A deep song: every myth in the ring slows right down, and Dad gets Patience back.', kind: 'all', slow: 2.5, heal: [6, 8, 10, 12, 15], shout: 'WHOOOOO!', col: '#4fa3e0', cd: [12, 11, 10, 9, 8], dmg: [12, 15, 19, 24, 30] },
-  deep:     { name: 'Deep Blue',     em: '🌊', desc: 'The whole party hits 5% harder per rank.', passive: true, aura: 'pow', per: 5 },
-  horn:     { name: 'Horn Beam',     em: '🦄', desc: 'A sparkling beam from the horn that goes through four myths.', kind: 'shot', proj: '✨', pierce: 3, spd: 700, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [18, 23, 29, 36, 45] },
-  wish:     { name: 'Make a Wish',   em: '🌠', desc: 'Every myth in the ring takes a shower of wishes.', kind: 'all', shout: 'WISH!', col: '#ffd76a', cd: [10, 9, 8, 7, 6], dmg: [36, 46, 58, 73, 92] },
-  magic:    { name: 'Real Magic',    em: '💫', desc: 'The whole party works 4% faster per rank.', passive: true, aura: 'quick', per: 4 },
+  display:  { name: 'Grand Display', em: '🦚', desc: 'Every myth in the ring stops to stare.', kind: 'all', stun: 1.2, shout: 'TA-DA!', col: '#3fb0a0', cd: [11, 10, 9, 8, 7], dmg: [10, 13, 16, 20, 25] },
+  pride:    { name: 'Pride',         em: '👑', desc: 'Team hits 4% harder a rank.', passive: true, aura: 'pow', per: 4 },
+  maul:     { name: 'Big Paw',       em: '🐾', desc: 'A heavy swipe at everything close.', kind: 'burst', R: 75, knock: 70, slow: 1, col: '#dff3ff', cd: [1.9, 1.75, 1.6, 1.45, 1.3], dmg: [16, 21, 27, 34, 42] },
+  floe:     { name: 'Ice Floe',      em: '🧊', desc: 'An ice slab: myths slip and slow.', kind: 'lob', R: 95, slow: 2.5, col: '#bfe6f5', cd: [8, 7, 6.5, 6, 5], dmg: [30, 39, 50, 63, 80] },
+  thickfur: { name: 'Thick Fur',     em: '❄️', desc: 'Dad loses 4% less Patience a rank.', passive: true, aura: 'guard', per: 4 },
+  spout:    { name: 'Spout',         em: '🐋', desc: 'A huge spout washes a crowd back.', kind: 'lob', R: 85, knock: 90, col: '#8fc7f0', cd: [2, 1.85, 1.7, 1.55, 1.4], dmg: [20, 26, 33, 41, 52] },
+  whalesong:{ name: 'Whale Song',    em: '🎶', desc: 'Every myth slows. Patience comes back.', kind: 'all', slow: 2.5, heal: [6, 8, 10, 12, 15], shout: 'WHOOOOO!', col: '#4fa3e0', cd: [12, 11, 10, 9, 8], dmg: [12, 15, 19, 24, 30] },
+  deep:     { name: 'Deep Blue',     em: '🌊', desc: 'Team hits 5% harder a rank.', passive: true, aura: 'pow', per: 5 },
+  horn:     { name: 'Horn Beam',     em: '🦄', desc: 'A horn beam through four myths.', kind: 'shot', proj: '✨', pierce: 3, spd: 700, cd: [1.3, 1.2, 1.1, 1, .9], dmg: [18, 23, 29, 36, 45] },
+  wish:     { name: 'Make a Wish',   em: '🌠', desc: 'Wishes shower every myth in the ring.', kind: 'all', shout: 'WISH!', col: '#ffd76a', cd: [10, 9, 8, 7, 6], dmg: [36, 46, 58, 73, 92] },
+  magic:    { name: 'Real Magic',    em: '💫', desc: 'Team works 4% faster a rank.', passive: true, aura: 'quick', per: 4 },
 };
 for (const a in GEN_ABIL) { if (ABIL[a]) throw new Error('ability clash: ' + a); ABIL[a] = GEN_ABIL[a]; const D = GEN_ABIL[a];
   SKILL[a] = D.passive ? ['Stronger', `+${D.per / 2}${D.aura === 'regen' ? ' Patience a second' : '%'} more per rank.`] : ['Sharper', '+8% damage per rank.']; }
@@ -4048,8 +4053,10 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
 const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
+// the scoreboard: three big numbers, then one small line for the rest
 function stats(el, coins, gems) {
-  el.innerHTML = `<div class="stat"><span>Myths popped</span><b>${G.busted}</b></div><div class="stat"><span>New facts learned</span><b>${G.newFacts.length}</b></div><div class="stat"><span>Level reached</span><b>${G.lvl}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${coins}</b></div>${gems ? `<div class="stat know"><span>💎 Gems (clears, stars, new facts)</span><b>+${gems}</b></div>` : ''}${save.facts.length ? `<div class="stat"><span>📔 Diary bonus on coins</span><b>+${save.facts.length}%</b></div>` : ''}`;
+  el.innerHTML = `<div class="bigstats"><div><b>${G.busted}</b><span>🎈 Myths</span></div><div class="know"><b>+${coins}</b><span>🪙 Coins</span></div>${gems ? `<div class="know"><b>+${gems}</b><span>💎 Gems</span></div>` : ''}</div>`
+    + `<p class="statline">📖 ${G.newFacts.length} new fact${G.newFacts.length === 1 ? '' : 's'} · Level ${G.lvl}${save.facts.length ? ` · Diary +${save.facts.length}% coins` : ''}</p>`;
 }
 // random items at the end of a match; more and better for clears and later stages
 function dropLoot(el, n, bonus) {
@@ -4093,9 +4100,11 @@ function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const daily
     if (fresh.length) { fresh.forEach(C => noted.push(G.S.w + ':' + C.k)); notes.push('🎁 A Chapter Reward is ready: tap 🎁 on the home screen'); } }
   const pageNote = notes.join('. ') + (notes.length ? '.' : '');
   if (dailyWin) { notes.unshift('📅 Daily Myth done: +🪙150, a 🎟️ Library Card and a 📘 Skill Book. A new one tomorrow.'); }
-  $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').textContent = notes.join('. '); if (joined) $('#joined').textContent = CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} was watching and wants to help. ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full. ${CHARS[joined].name} joined the party!${pageNote ? ' ' + pageNote : ''}`; else if (pageNote && !dailyWin) $('#joined').textContent = pageNote;
+  // one note per line instead of one long paragraph
+  const nl = list => list.map(n => `<div class="nline">${n}</div>`).join('');
+  $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').innerHTML = nl(notes); if (joined) $('#joined').innerHTML = nl([CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full: ${CHARS[joined].name} joined the party!`, ...(dailyWin ? [] : notes)]); else if (pageNote && !dailyWin) $('#joined').innerHTML = nl(notes);
   const last = G.stage === STAGES.length - 1;
-  $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong. Dad is very, very proud.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : `${G.S.name} went pop, page by page.`;
+  $('#clearSub').textContent = last ? 'You popped every page of the Big Book of Wrong.' : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${G.S.w + 1} of 8, closed.` : ''; $('#clearSub').hidden = !$('#clearSub').textContent;
   $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
@@ -4149,7 +4158,7 @@ function drawMap() {
   { const done = save.cleared.includes(STAGES.length - 1), at = done ? STAGES.length - 1 : Math.min(STAGES.length - 1, Math.floor(save.unlocked / 5) * 5 + 4), img = art(done ? 'sses_kind' : 'sses_flee');
     if (!done) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
     if (ready(img)) { const [px, py] = pinXY(at); x.drawImage(img, px + 18, py - 66, 58, 58); } }
-  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Patrick Hand", cursive'; x.textAlign = 'center'; x.fillText(save.cleared.includes(STAGES.length - 1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
+  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Nunito", system-ui, sans-serif'; x.textAlign = 'center'; x.fillText(save.cleared.includes(STAGES.length - 1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
 }
 // one chapter's strip of the map, 440 x BAND, origin at its top-left: sky and ground, then the things that live there
 function drawBand(x, W, w) {
@@ -4209,8 +4218,8 @@ function buildBook() {
     const cats = $('#cats'); cats.className = 'catgrid';
     const bon = Object.keys(CATBON).map(c => [c, catBonus(c)]).filter(([, v]) => v > 0);
     cats.innerHTML = `<div class="dbon"><b>📔 Your Diary gives the whole team</b>${bon.length ? bon.map(([c, v]) => `<span>${CATS[c][0]} +${v}${CATBON[c].u} ${CATBON[c].n}</span>`).join('') : '<span>Bust myths to fill it: every fact makes the team a little stronger.</span>'}</div>`
-      + Object.keys(CATS).map(c => { const { got, all } = catCount(c), B = CATBON[c], next = got * 2 < all ? `half: +${B.half}${B.u} more` : got < all ? `all: +${B.all}${B.u} more` : 'complete!';
-        return `<div class="ctile ${c === diaryCat ? 'on' : ''} ${got === all ? 'done' : ''}" data-cat="${c}"><i>${CATS[c][0]}</i><b>${CATS[c][1]}</b><small>${got} / ${all}</small><div class="cbar"><div style="width:${got / all * 100}%"></div><span></span></div><em>+${catBonus(c)}${B.u} ${B.n}</em><small class="nx">${next}</small></div>`; }).join('');
+      + Object.keys(CATS).map(c => { const { got, all } = catCount(c), B = CATBON[c], next = got * 2 < all ? `At half: +${B.half}${B.u}` : got < all ? `At all: +${B.all}${B.u}` : 'Complete!';
+        return `<div class="ctile ${c === diaryCat ? 'on' : ''} ${got === all ? 'done' : ''}" data-cat="${c}"><i>${CATS[c][0]}</i><b>${CATS[c][1]}</b><small>${got} / ${all}</small><div class="cbar"><div style="width:${got / all * 100}%"></div><span></span></div><em>+${catBonus(c)}${B.u} ${B.n}</em>${c === diaryCat ? `<small class="nx">${next}</small>` : ''}</div>`; }).join(''); // the next milestone only on the topic you picked
     cats.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { diaryCat = b.dataset.cat; buildBook(); });
     const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat), got = ids.filter(id => save.facts.includes(id));
     const today = new Date().toISOString().slice(0, 10), studied = save.study === today, can = got.length >= 3;
@@ -4445,7 +4454,7 @@ function autoForge() {
   $('#pickm').hidden = false;
 }
 function buildItems() {
-  $('#bagIntro').textContent = has('forge') ? 'Tap anything to wear it, polish it ✨, forge it 🔨 or sell it. A red dot: three of a kind, ready to forge.' : `Tap anything to wear it, polish it ✨ or sell it. 🔒 Forging opens at ${forgeAt()}.`;
+  $('#bagIntro').textContent = has('forge') ? 'Tap anything to use it. 🔴 dot: ready to forge.' : `Tap anything to use it. 🔒 Forging opens at ${forgeAt()}.`;
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
     return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${icon(it)}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot" title="3 ready to forge"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small>${it.type === 'mark' ? `<small class="mstat">${itemDesc(it)}</small>` : ''}</button>`; };
@@ -4504,7 +4513,7 @@ function buildStore() {
   setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
-  $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Coins come from matches, gems from first clears and daily gifts. Nothing here costs real money.';
+  $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Nothing here costs real money.';
   box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
