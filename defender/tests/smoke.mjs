@@ -231,6 +231,8 @@ await test('the soundtrack: a piece per place, and the boss theme for a boss', a
   const pond = await p.evaluate(() => dbg.musNow());
   await p.evaluate(() => { const G = dbg.G; document.querySelectorAll('.modal').forEach(el => el.hidden = true); dbg.spawn(G.S.W.boss); }); await p.waitForTimeout(1500);
   const boss = await p.evaluate(() => dbg.musNow());
+  const st = await p.evaluate(() => dbg.stings()); expect(st.length === 4, `the four stingers load (${st})`);
+  const vp = await p.evaluate(() => { const f = dbg.MYTHS.fish.fact; dbg.voSet([dbg.vkey('Busted!', 'd'), dbg.vkey(f, 'd')]); const r = dbg.voParts('Busted! ' + f, 'd'); dbg.voSet([]); return r && r.length; }); expect(vp === 2, 'a spoken line splits into its recorded clips');
   expect(home && home.name === 'home' && home.t > 0, `home theme playing (${JSON.stringify(home)})`); expect(pond && pond.name === 'w1' && pond.t > 0, `pond theme (${JSON.stringify(pond)})`); expect(boss && boss.name === 'boss', `boss theme (${JSON.stringify(boss)})`);
   await close(); return errs;
 });
