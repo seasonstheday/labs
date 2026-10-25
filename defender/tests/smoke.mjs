@@ -35,7 +35,7 @@ async function open(save) {
 async function play(p, ms) {
   for (let t = 0; t < ms; t += 250) { await p.waitForTimeout(250);
     if (await p.isVisible('#clearm') || await p.isVisible('#overm')) return;
-    await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (l && !l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip')).click(); } });
+    await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (l && !l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip') || l.querySelector('#nope')).click(); } });
     if (await p.isVisible('#quizm')) await p.click('#ansMyth', { timeout: 300 }).catch(() => {}); }
 }
 
@@ -264,7 +264,7 @@ await test('Myth Check asks about a myth that is due', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(300); await p.click('#speed', { force: true });
   let asked = false; for (let t = 0; t < 40000 && !asked; t += 250) { await p.waitForTimeout(250); asked = await p.evaluate(() => !!(dbg.G && dbg.G.check));
-    if (!asked) await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (!l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip')).click(); } }); }
+    if (!asked) await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (!l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip') || l.querySelector('#nope')).click(); } }); }
   expect(asked, 'a Myth Check card'); await p.click('#ansMyth'); await p.waitForTimeout(300);
   expect(await p.evaluate(() => Object.keys(dbg.save.review || {}).length === 1), 'the answer to be scheduled'); await close(); return errs;
 });

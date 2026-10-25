@@ -429,6 +429,8 @@
   .teampow b { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #ffd76a; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
   .row .btn { flex: 1; }
+  .remlist { display: flex; flex-direction: column; gap: 6px; width: 100%; } .rem { display: grid; grid-template-columns: 40px 1fr; align-items: center; column-gap: 8px; background: #fff; border: 3px solid var(--line); border-radius: 12px; padding: 6px 10px; text-align: left; }
+  .rem .ic { grid-row: span 2; font-size: 28px; text-align: center; } .rem b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .rem i { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; color: var(--muted); }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
   .bigstats b { display: block; font: 700 30px/1 "Fredoka", Arial, sans-serif; } .bigstats .know b { color: var(--teal); } .bigstats span { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; color: var(--muted); }
   .statline { margin: 2px 0 6px; text-align: center; font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -565,7 +567,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 65</div>
+    <div class="build">build 66</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -782,7 +784,9 @@
       <p class="sub hand" style="text-align:center">Too many questions at once. Everyone keeps what they learned.</p>
       <div id="overStats"></div>
       <div class="lootrow" id="overLoot"></div>
+      <p class="statline" id="overTip" hidden></p>
       <div class="row exit"><button class="btn" id="retryWave">Try that wave again</button></div>
+      <div class="row" id="powRow" hidden style="margin-top:8px"><button class="btn green" id="powUp">💪 Power up the team</button></div>
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="retry">Restart stage</button><button class="btn ghost small" id="overHome">Home</button></div>
     </div>
   </div>
@@ -2814,7 +2818,7 @@ function updateShots(dt) {
 function update(dt) {
   G.t += dt; const dad = G.dad, S = G.S;
   if (G.pendingCheck && !G.over) { const id = G.pendingCheck; G.pendingCheck = null; askCheck(id); return; }
-  if (G.freePicks > 0) { G.freePicks--; offerCards(G.freePicks + 1); return; }
+  if (G.freePicks > 0) { const n = G.freePicks; G.freePicks = 0; rememberAll(n); return; }
   if (G.room) {
     const b = G.boss;
     if (b && b.hp > 0) { const th = [.75, .5, .25][G.qAsked]; if (th != null && b.hp < b.maxhp * th && $('#quizm').hidden) { G.qAsked++; askQuiz(); return; } if (b.weak > 0) b.weak -= dt; }
@@ -2980,7 +2984,24 @@ function learn(o) {
   if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a);
 }
 let apT = 0;
+// at the start of a match the team remembers tricks from last time: the best of three each time, all at once, one card to read
+function rememberAll(n) {
+  const got = [];
+  for (let i = 0; i < n; i++) { const opts = trickOpts(); if (!opts.length) break; const three = []; while (three.length < 3 && opts.length) three.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
+    for (const o of three) o.score = (willEvolve(o) ? 4 : 0) + (comboOf(o) ? 3 : 0) + (o.lvl === 1 ? 1 : 0) + o.lvl * .2 + Math.random() * .1;
+    const best = three.sort((x, y) => y.score - x.score)[0]; learn(best); got.push(best); }
+  if (!got.length) return;
+  clearTimeout(apT); $('#apwrap').innerHTML = ''; $('#toast').hidden = true;
+  $('#levelup h2').textContent = got.length > 1 ? `The team remembered ${got.length} tricks!` : 'The team remembered a trick!';
+  $('#levelup .sub').textContent = 'From last time:';
+  const box = $('#cards'); box.classList.remove('tall');
+  const rows = []; for (const o of got) { const r = rows.find(x => x.m === o.m && x.a === o.a); if (r) { r.lvl = o.lvl; r.n++; } else rows.push({ m: o.m, a: o.a, lvl: o.lvl, n: 1 }); } // one row per trick, at the rank it ended on
+  box.innerHTML = `<div class="remlist">${rows.map(o => `<div class="rem"><span class="ic">${abilEm(o.a)}</span><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}${o.n > 1 ? ` (+${o.n})` : ''} · ${CHARS[o.m.id].name}</i></div>`).join('')}</div>`;
+  $('#nope').textContent = "Let's go ▶"; $('#nope').disabled = false; $('#nope').classList.remove('ghost'); $('#nope').onclick = () => { $('#nope').classList.add('ghost'); $('#levelup').hidden = true; G.paused = false; };
+  G.paused = true; $('#levelup').hidden = false;
+}
 function offerCards(free = 0) {
+  $('#nope').classList.add('ghost'); $('#toast').hidden = true; // the card is what to read now; the fact waits in the Diary
   clearTimeout(apT); $('#apwrap').innerHTML = '';
   const opts = trickOpts();
   if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; $('#coinN').textContent = G.coins; return; }
@@ -4080,7 +4101,7 @@ $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
+const patHit = d => d * (1 - (G && G.pep ? G.pep * .1 : 0)) * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
 // the scoreboard: three big numbers, then one small line for the rest
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="bigstats"><div><b>${G.busted}</b><span>🎈 Myths</span></div><div class="know"><b>+${coins}</b><span>🪙 Coins</span></div>${gems ? `<div class="know"><b>+${gems}</b><span>💎 Gems</span></div>` : ''}</div>`
@@ -4147,7 +4168,7 @@ function giveXp(cleared) {
     const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
     if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
   }
-  persist(); $('#grew').innerHTML = `✨ Everyone gained ${gain} XP.` + (lines.length ? '<br>' + lines.join('<br>') : ''); return true;
+  persist(); $('#grew').innerHTML = [`✨ +${gain} XP for everyone`, ...lines].map(n => `<div class="nline">${n}</div>`).join(''); return true;
 }
 // a one-time gem for every fact, a Library Card for every finished topic, a trait for every finished chapter
 function payFacts() {
@@ -4160,7 +4181,9 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { sfx('lose'); if (G.endless) { const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { sfx('lose'); if (G.endless) { $('#powRow').hidden = $('#overTip').hidden = true; const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { { const weak = !G.room && !G.twist && teamPower() < recPower(G.stage); $('#powRow').hidden = !weak; $('#overTip').hidden = !weak && !(G.tries >= 1);
+    $('#overTip').textContent = (weak ? `💪 Team ${teamPower().toLocaleString()} · this stage likes ${recPower(G.stage).toLocaleString()}. Upgrades help a lot.` : '') + (G.tries >= 1 ? ' 🍪 Next try, Dad has a snack: more Patience.' : ''); }
+    $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
@@ -4659,6 +4682,7 @@ $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
 $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; buildToggles($('#pauseToggles')); $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
+$('#powUp').onclick = () => { goHome(); const t = document.querySelector('#tabbar [data-tab="friends"]'); if (t) t.click(); };
 $('#quit').onclick = () => { if (sure($('#quit'), 'Leave?')) goHome(); }; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
 // the grown-ups' page, behind the gate: this week's learning and play, and the switches that matter to a parent
@@ -4766,10 +4790,11 @@ $('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() 
 $('#dailyBtn').onclick = () => { $('#challm').hidden = true; startDaily(); }; $('#endlessBtn').onclick = () => { $('#challm').hidden = true; startEndless(); };
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
+  G.tries = (G.tries || 0) + 1; const pep = G.tries >= 2 ? Math.min(3, G.tries - 1) : 0; if (pep > (G.pep || 0)) { G.pep = pep; G.maxhp = Math.round(G.maxhp * 1.2); } // after two tries, Dad has a snack: more Patience, and myths bump a little softer
   G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.eshots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
   G.coins = 0; G.busted = 0; $('#coinN').textContent = 0; $('#bustN').textContent = 0; G.breakT = 2.2; G.nopes = Math.max(G.nopes, 1);
   for (const m of G.party) { m.anim = null; m.jump = null; m.x = m.home.x; m.y = m.home.y; }
-  $('#overm').hidden = true; text(CX, CY - 150, 'One more try!', '#ecb23c', 30, 1.4);
+  $('#overm').hidden = true; text(CX, CY - 150, G.pep ? 'Dad had a snack! +Patience' : 'One more try!', '#ecb23c', 30, 1.4);
 };
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
 
