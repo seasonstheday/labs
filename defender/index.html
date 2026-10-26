@@ -52,8 +52,8 @@
   .fcard canvas.pc, .thead .fc { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 90%; } .fcard:nth-child(2n) canvas.pc { animation-delay: -1.1s; } .fcard:nth-child(3n) canvas.pc { animation-delay: -2.2s; }
   @keyframes breathe { 50% { transform: scale(1.02, .975); } } #frame.calm .fcard canvas.pc, #frame.calm .thead .fc { animation: none; }
   .hopin canvas.pc, .cheer { animation: hopin .6s cubic-bezier(.3,1.6,.5,1) both !important; } @keyframes hopin { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-14px) scale(.95, 1.08); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
-  #title .hub { position: absolute; top: 236px; display: flex; flex-direction: column; gap: 10px; z-index: 2; } #title .hub-l { left: 10px; } #title .hub-r { right: 10px; }
-  #title .hub .btn { width: 72px; height: 72px; font-size: 30px; border-radius: 18px; } #title .hub .btn small { font-size: 13px; line-height: 1; white-space: normal; text-align: center; }
+  #title .hub { position: absolute; top: 230px; display: flex; flex-direction: column; gap: 8px; z-index: 2; } #title .hub-l { left: 10px; } #title .hub-r { right: 10px; }
+  #title .hub .btn { width: 66px; height: 66px; font-size: 27px; border-radius: 18px; } #title .hub .btn small { font-size: 13px; line-height: 1; white-space: normal; text-align: center; }
   #title .hub .btn.locked { filter: grayscale(1); opacity: .6; } #title .hub .btn.locked::after { content: '🔒'; position: absolute; top: -6px; right: -6px; font-size: 16px; }
   .patrolart { font-size: 40px; margin: 6px 0; letter-spacing: 4px; animation: breathe 2.4s ease-in-out infinite; } .ptime { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .ptbar { height: 12px; border: 2.5px solid #3a2c20; border-radius: 8px; background: #eee; overflow: hidden; margin: 6px 20px; } .ptbar div { height: 100%; background: var(--green); }
   .rtiles.big { justify-content: center; margin: 10px 0; } .rtiles.big .rt { min-width: 70px; height: auto; padding: 6px 6px 4px; font-size: 28px; display: flex; flex-direction: column; align-items: center; gap: 2px; } .rtiles.big .rt small { position: static; font-size: 13px; color: #3a2c20; text-shadow: none; }
@@ -434,6 +434,16 @@
   .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px; } .wt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 12px; font: inherit; color: var(--ink); cursor: pointer; }
   .wt.on { border-color: var(--green); background: #eef7e6; } .wt.buy { background: #f7efe0; } .wt:disabled { opacity: .5; } .wt b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; } .wt small { font: 700 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .wt .wem { font-size: 28px; line-height: 34px; } .wt .what { width: 44px; height: 44px; object-fit: contain; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
+  #socBody .intro { font: 600 15px/1.35 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 6px 2px; text-align: left; }
+  .soctabs { display: flex; gap: 6px; margin: 2px 0 8px; } .soctabs button { flex: 1; padding: 8px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); } .soctabs button.on { background: var(--gold); }
+  .lvbar { position: relative; height: 24px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; overflow: hidden; margin: 6px 0; } .lvbar i { position: absolute; inset: 0 auto 0 0; background: var(--purple); } .lvbar.goal i { background: var(--green); }
+  .lvbar span { position: relative; display: block; text-align: center; font: 700 14px/19px "Nunito", system-ui, sans-serif; } .steps { display: flex; gap: 6px; } .steps .btn { flex: 1; padding: 6px 2px; }
+  .mates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .mate { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #fff; border: 2px solid var(--line); border-radius: 10px; } .mate.me { border-color: var(--gold); background: #fff6dc; }
+  .mate span { font-size: 22px; } .mate b { flex: 1; font: 700 14px/1.1 "Nunito", system-ui, sans-serif; } .mate i { font: 700 15px/1 "Fredoka", Arial, sans-serif; font-style: normal; }
+  .bracket { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; } .brow { display: grid; grid-template-columns: 1fr auto; padding: 8px 10px; background: #fff; border: 2.5px solid var(--line); border-radius: 12px; } .brow small { grid-column: 1 / -1; font: 700 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .brow b { font: 700 16px/1.2 "Fredoka", Arial, sans-serif; } .brow span { font: 700 14px/1.4 "Nunito", system-ui, sans-serif; color: var(--green); } .brow.cur { border-color: var(--gold); background: #fff6dc; } .brow.won { border-color: var(--green); }
+  .cupres { text-align: center; padding: 8px; } .cupres > b { font: 700 28px/1.1 "Fredoka", Arial, sans-serif; display: block; } .cupres.win > b { color: var(--green); } .cupres .vs { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 14px 0; } .cupres .vs span { flex: 1; font: 700 15px/1.2 "Nunito", system-ui, sans-serif; }
+  .cupres .vs i { font: 700 30px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; } .cupres .vs em { font: 700 18px/1 "Fredoka", Arial, sans-serif; } .cupres small { font: 600 16px/1.3 "Nunito", system-ui, sans-serif; }
   .trophy { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; background: #fff; border: 3px solid var(--line); border-radius: 12px; opacity: .7; } .trophy.got { opacity: 1; border-color: var(--gold); }
   .trophy .em { font-size: 26px; text-align: center; } .trophy b { display: block; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; } .trophy small { font: 600 15px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); } .trophy i { font-style: normal; color: var(--green); font-size: 20px; }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
@@ -572,11 +582,11 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 68</div>
+    <div class="build">build 69</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
-    <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
-    <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button></div>
+    <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubClub" data-lock="club">🏡<small>Club</small><i class="dot" hidden></i></button></div>
+    <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubCup" data-lock="cup">🥇<small>Myth Cup</small><i class="dot" hidden></i></button></div>
     <div class="side" hidden>
       <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
@@ -705,7 +715,7 @@
     </div>
     <div id="prog"><div></div></div>
     <div id="wstrip" hidden><div class="fill"></div><div class="marks"></div><div class="top"></div><div class="cnt"></div></div>
-    <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div></div>
+    <div class="coins"><div class="pill">🪙 <span id="coinN">0</span></div><div class="pill">💥 <span id="bustN">0</span></div><div class="pill" id="cupHud" hidden>🥇 <span id="cupMe">0</span> · rival <span id="cupThem">0</span></div></div>
     <div id="bossbar" hidden><div class="nm" id="bossName"></div><div class="bar"><div id="bossHp"></div></div></div>
     <div id="hint" hidden></div>
     <div class="bottom">
@@ -847,6 +857,14 @@
       <p class="hand" id="wheelWon" style="min-height:1.3em;margin:6px 0 0"></p>
       <details class="odds"><summary>What's on the wheel</summary><div id="wheelOdds"></div></details>
       <div class="row exit"><button class="btn ghost" id="wheelClose">Done</button></div>
+    </div>
+  </div>
+  <div class="modal" id="socm" hidden>
+    <div class="panel">
+      <h2 class="display" id="socTitle">🏡 The Clubhouse</h2>
+      <p class="sub hand" id="socSub"></p>
+      <div id="socBody" style="max-height:440px; overflow:auto"></div>
+      <div class="row exit"><button class="btn ghost" id="socClose">Done</button></div>
     </div>
   </div>
   <div class="modal" id="challm" hidden>
@@ -2038,7 +2056,7 @@ function misState() {
   if (!(M.days || (M.days = [])).includes(M.day)) { M.days.push(M.day); for (const x of M.w) if (x.k === 'days') x.have = Math.min(x.n, x.have + 1); }
   M.story = M.story || []; return M;
 }
-function missionAdd(kind, n = 1) { const M = misState(); for (const x of [...M.d, ...M.w]) if (x.k === kind && x.have < x.n) x.have = Math.min(x.n, x.have + n); }
+function missionAdd(kind, n = 1) { clubAdd(kind, n); const M = misState(); for (const x of [...M.d, ...M.w]) if (x.k === kind && x.have < x.n) x.have = Math.min(x.n, x.have + n); }
 function missionTick(kind, n = 1) { missionAdd(kind, n); persist(); misDot(); }
 const misReady = () => { const M = misState(); return (!M.dGot && M.d.every(x => x.have >= x.n)) || (!M.wGot && M.w.every(x => x.have >= x.n)) || MSTORY.some(x => !M.story.includes(x.id) && x.done()); };
 function misDot() { const d = $('#misDot'); if (d) d.hidden = !misReady(); }
@@ -2134,6 +2152,8 @@ const ACH = [
   { id: 'endless10', em: '♾️', n: 'Still Standing', d: 'Reach wave 10 in the Endless Stacks.', ok: () => (save.endlessBest || 0) >= 10 },
   { id: 'master1', em: '🔥', n: 'Myth Master', d: 'Clear a stage on Myth Master.', ok: () => Object.entries(save.stars || {}).some(([k, v]) => k.endsWith(':master') && v > 0) },
   { id: 'masterch', em: '👑', n: 'Master of a Chapter', d: 'Clear a whole chapter on Myth Master.', ok: () => WORLDS.some((W, w) => mastered5(w)) },
+  { id: 'club5', em: '🏡', n: 'Pillar of the Club', d: 'Reach club level 5.', ok: () => clubLv() >= 5 },
+  { id: 'cup', em: '🥇', n: 'Myth Cup Champion', d: 'Win a weekly Myth Cup.', ok: () => (save.cupWins || 0) > 0 },
   { id: 'legend', em: '🔨', n: 'Forged a Legend', d: 'Forge something Legendary.', ok: () => !!save.forgedLegend },
 ];
 function checkAch() { if (!save) return; save.ach = save.ach || []; const gc = window.native && window.native.gc;
@@ -2414,6 +2434,7 @@ function startWave() {
   text(CX, CY - 160, w === S.waves - 1 ? (S.boss ? 'BOSS!' : 'LAST WAVE!') : `Wave ${w + 1}`, w === S.waves - 1 ? '#cb382e' : '#fff', 34);
 }
 function spawn(id, at = null, q = {}) {
+  if (G && G.cup) G.cup.n++;
   const M = MYTHS[id], K = KIND[q.kindOf || M.kind], hpMul = (1 + (TUNE.hp - 1) * tuneIn()) * (1 + Math.max(0, G.stage - 4) * TUNE.hs) * ( /* eased in over chapter 2 */ 1 + G.stage * .18 + G.stage * G.stage * .003 + G.wave * .1) * G.D.hp * (1 + Math.max(0, G.stage - 20) * .02); // the later chapters were easy for every team in the sim, and Skill Trees add more
   let x, y;
   if (at) { x = at.x; y = at.y; } else { const a = q.ang != null ? q.ang : rnd(0, Math.PI * 2), R = 470; x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; }
@@ -2601,7 +2622,7 @@ function kill(e) {
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); if (G.sses === 'coming') G.pending.push({ at: G.t + 4.5, fn: () => toast(e.M) }); else toast(e.M); } // the shield's fact card waits until he has made his entrance
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
-  $('#bustN').textContent = G.busted;
+  $('#bustN').textContent = G.busted; if (G.cup) { $('#cupMe').textContent = G.busted * 10; $('#cupThem').textContent = Math.round(G.cup.n * 10 * cupFrac(G.cup.round, G.cup.rival)); }
 }
 let toastT = 0;
 // a small note that floats up over any screen for a moment
@@ -3804,21 +3825,21 @@ const WARD = {
   sweater: { name: 'Sweaters', items: [
     { id: 'classic', n: 'Old Faithful', c: 0 }, { id: 'sky', n: 'Sky Blue', c: 600, h: 208 }, { id: 'leaf', n: 'Leaf Green', c: 900, h: 112, s: .85 },
     { id: 'berry', n: 'Berry Red', c: 1200, h: 356 }, { id: 'grape', n: 'Grape', c: 1600, h: 272, s: .8 }, { id: 'bubble', n: 'Bubblegum', c: 2000, h: 326, s: .55, v: 1.08 },
-    { id: 'storm', n: 'Storm Grey', c: 2500, h: 210, s: .12 }, { id: 'night', n: 'Midnight', c: 3000, h: 226, v: .62 }, { id: 'rainbow', n: 'Rainbow', c: 8000, rainbow: true }] },
+    { id: 'storm', n: 'Storm Grey', c: 2500, h: 210, s: .12 }, { id: 'night', n: 'Midnight', c: 3000, h: 226, v: .62 }, { id: 'club', n: 'Club Colours', c: 250, h: 174, s: .8, only: 'club' }, { id: 'gold', n: 'Gold Medal', c: 150, h: 46, v: 1.1, only: 'cup' }, { id: 'rainbow', n: 'Rainbow', c: 8000, rainbow: true }] },
   hat: { name: 'Hats for Dad', items: [
     { id: 'none', n: 'No hat', c: 0, em: '🙂' }, { id: 'cap', n: 'Ball Cap', c: 1000, em: '🧢' }, { id: 'sun', n: 'Sun Hat', c: 1500, em: '👒' },
-    { id: 'grad', n: 'Thinking Cap', c: 2500, em: '🎓' }, { id: 'top', n: 'Top Hat', c: 4000, em: '🎩' }, { id: 'crown', n: 'Crown of Why', c: 10000, em: '👑' }] },
+    { id: 'grad', n: 'Thinking Cap', c: 2500, em: '🎓' }, { id: 'top', n: 'Top Hat', c: 4000, em: '🎩' }, { id: 'crown', n: 'Crown of Why', c: 10000, em: '👑' }, { id: 'laurel', n: 'Champion\'s Laurels', c: 250, em: '🌿', only: 'cup' }] },
   team: { name: 'Team hats', items: [
     { id: 'none', n: 'Bare heads', c: 0, em: '🙂' }, { id: 'bow', n: 'Bows', c: 1500, em: '🎀' }, { id: 'flower', n: 'Daisies', c: 1500, em: '🌼' },
-    { id: 'party', n: 'Party Hats', c: 2500, em: '🥳' }, { id: 'wizard', n: 'Wizard Hats', c: 4000, em: '🧙' }, { id: 'crown', n: 'Little Crowns', c: 8000, em: '👑' }] },
+    { id: 'party', n: 'Party Hats', c: 2500, em: '🥳' }, { id: 'wizard', n: 'Wizard Hats', c: 4000, em: '🧙' }, { id: 'crown', n: 'Little Crowns', c: 8000, em: '👑' }, { id: 'clubcap', n: 'Club Caps', c: 300, em: '🧢', only: 'club' }] },
   yard: { name: 'Backyard', many: true, items: [
     { id: 'sunflower', n: 'Sunflowers', c: 800, em: '🌻', at: [38, 290, 32] }, { id: 'mush', n: 'Mushrooms', c: 1000, em: '🍄', at: [408, 266, 24] },
     { id: 'balloons', n: 'Balloons', c: 1500, em: '🎈', at: [340, 176, 34] }, { id: 'kite', n: 'Kite', c: 2000, em: '🪁', at: [116, 64, 34] },
     { id: 'flamingo', n: 'Lawn Flamingo', c: 2500, em: '🦩', at: [46, 226, 30] }, { id: 'tent', n: 'Tent', c: 4000, em: '⛺', at: [396, 232, 36] },
-    { id: 'fountain', n: 'Fountain', c: 5000, em: '⛲', at: [112, 236, 40] }, { id: 'rainbow', n: 'Rainbow', c: 8000, em: '🌈', at: [312, 70, 56] }] },
+    { id: 'fountain', n: 'Fountain', c: 5000, em: '⛲', at: [112, 236, 40] }, { id: 'rainbow', n: 'Rainbow', c: 8000, em: '🌈', at: [312, 70, 56] }, { id: 'pennant', n: 'Club Pennant', c: 200, em: '🚩', at: [150, 96, 30], only: 'club' }, { id: 'trophy', n: 'Cup Trophy', c: 200, em: '🏆', at: [286, 262, 30], only: 'cup' }] },
 };
 const look = () => save.look || (save.look = { sweater: 'classic', hat: 'none', team: 'none', yard: [] });
-const wardOwns = (cat, id) => !WARD[cat].items.find(i => i.id === id).c || (save.wardrobe || []).includes(cat + ':' + id);
+const wardOwns = (cat, id) => { const it = WARD[cat].items.find(i => i.id === id); return !it.c && !it.only || (save.wardrobe || []).includes(cat + ':' + id); };
 const wardItem = cat => WARD[cat].items.find(i => i.id === look()[cat]) || WARD[cat].items[0];
 // a recoloured copy of a Dad drawing, cached per picture and sweater; the lens rim (same gold) is left alone
 const DRESSED = new Map();
@@ -3848,8 +3869,8 @@ function headOf(img) {
 // a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
 // hats are drawings (assets/hat_<id>.png, brim at the bottom): [width, how far the brim sits below the top of the head], both
 // in head widths, so the brim comes down over the hair; the emoji stands in until the drawing loads
-const HATFIT = { cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
-const HATEM = { cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
+const HATFIT = { laurel: [1.3, .62], clubcap: [1.3, .5], cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
+const HATEM = { laurel: '🌿', clubcap: '🧢', cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
 function hatOn(c, img, x0, y0, w, h, id, k = 1) { if (!id || !HATFIT[id] || !ready(img)) return; const [hx, hy, hw] = headOf(img), head = hw * w, [fw, sink] = HATFIT[id], cx = x0 + hx * w, by = y0 + hy * h + head * sink * Math.min(1, k + .2), art0 = art('hat_' + id);
   c.save(); if (ready(art0)) { const s = head * fw * k; c.drawImage(art0, cx - s / 2, by - s, s, s); }
   else { const s = head * .95 * k; c.fillStyle = '#000'; c.font = `${s}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(HATEM[id], cx, by); }
@@ -3860,7 +3881,7 @@ function openWardrobe() { const L = look();
   pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.`; $('#pickUnequip').hidden = true;
   $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
     const sw = cat === 'sweater' ? `<span class="swatch" style="background:${it.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : it.c ? `hsl(${it.h},${Math.round((it.s ?? 1) * 70)}%,${Math.round((it.v ?? 1) * 52)}%)` : '#d59e3d'}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.png" alt="">` : `<span class="wem">${it.em}</span>`);
-    return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && save.coins < it.c ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
+    return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && (it.only || save.coins < it.c) ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : it.only ? (it.only === 'club' ? '🏡 Club Shop' : '🥇 Cup Shop') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
   $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
     const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
     if (WARD[cat].many) L.yard = L.yard.includes(id) && !fresh ? L.yard.filter(y => y !== id) : [...new Set([...L.yard, id])]; else L[cat] = id;
@@ -3997,7 +4018,7 @@ $('#ansMyth').onclick = () => answerQuiz(false); $('#ansFact').onclick = () => a
 let roomColor = 'red';
 function roomWin() {
   G.cleared = true; G.paused = true; collectAll(); $('#prog').hidden = false;
-  const k = G.busted * 2 + G.coins + 60; setWallet({ coins: save.coins + k });
+  const k = Math.round((G.busted * 2 + G.coins + 60) * clubCoinMul()); setWallet({ coins: save.coins + k });
   $('#roomStats').innerHTML = `<div class="stat"><span>Questions right</span><b>${G.right || 0} / ${G.qAsked}</b></div><div class="stat know"><span>🪙 Coins earned</span><b>+${k}</b></div>`;
   const box = $('#colors'); box.innerHTML = Object.keys(MARKS).map(c => `<button class="${c === roomColor ? 'on' : ''}" data-c="${c}" title="${MARKS[c][1]}: ${STAT[MARKS[c][2]][0]}">${MARKS[c][0]}</button>`).join('');
   box.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { roomColor = b.dataset.c; roomWin(); });
@@ -4109,11 +4130,12 @@ function homeBg() {
 }
 function updateHub() { homeBg(); const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
   const D = dailyToday();
-  set('hubPatrol', 'patrol', patrolHours() >= 1 || quickLeft() > 0 && patrolHours() >= .5); set('hubWheel', 'wheel', spinReady()); set('hubChall', 'daily', D && !D.done); set('hubChests', 'chests', anyChest()); }
+  set('hubPatrol', 'patrol', patrolHours() >= 1 || quickLeft() > 0 && patrolHours() >= .5); set('hubWheel', 'wheel', spinReady()); set('hubChall', 'daily', D && !D.done); set('hubChests', 'chests', anyChest()); set('hubClub', 'club', !(save.club && save.club.name) || clubReady()); set('hubCup', 'cup', (cupState(), (save.cupt || 0) > 0 && !save.cup.champ && !save.cup.out)); }
 const lockedHub = b => { if (!b.classList.contains('locked')) return false; const U = UNLOCKS.find(u => u.k === b.dataset.lock), n = Math.max(1, U.at - save.cleared.length); toastMsg(`🔒 Opens after ${n} more stage${n > 1 ? 's' : ''}. Keep playing!`); return true; };
 $('#hubPatrol').onclick = function () { if (!lockedHub(this)) openPatrol(); };
 $('#hubWheel').onclick = function () { if (!lockedHub(this)) openWheel(); };
 $('#hubChall').onclick = function () { if (lockedHub(this)) return; updateModes(); $('#challm').hidden = false; };
+$('#hubClub').onclick = function () { if (!lockedHub(this)) openSoc('club'); }; $('#hubCup').onclick = function () { if (!lockedHub(this)) openSoc('cup'); };
 $('#hubChests').onclick = function () { if (!lockedHub(this)) openChests(anyChest() ? null : STAGES[nextStage()].w); };
 $('#challClose').onclick = () => { $('#challm').hidden = true; };
 $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
@@ -4123,6 +4145,7 @@ function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), 
 function startGame(stage, how = {}) { music(STAGES[stage].w);
   newRun(stage); G.monthCat = monthEv().cat;
   if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
+  $('#cupHud').hidden = !how.cup; if (how.cup) { G.cup = { ...how.cup, n: 0 }; $('#stageName').textContent = `🥇 ${CUP_ROUNDS[how.cup.round]} vs ${how.cup.rival.em}`; setTimeout(() => { if (G) hint(`🥇 Myth Cup: beat ${how.cup.rival.n}! Pop everything and keep Dad's Patience.`, 4); }, 700); }
   if (how.endless) { G.endless = true; G.S = { ...G.S, waves: 9999, boss: null }; $('#stageName').textContent = '♾️ The Endless Stacks'; $('#prog').hidden = true; }
   const pids = G.party.filter(m => m.id !== 'dad').map(m => m.id); G.fam = famLive(pids); G.famQuick = famStat('quick', pids); G.famGuard = famStat('guard', pids); G.famPow = famStat('pow', pids); G.famSpiky = G.fam.some(f => f.k === 'shell' && f.full);
   if (G.fam.length) setTimeout(() => { if (G && G.t < 6) hint(G.fam.map(f => `${f.F.em} ${f.F.n}: ${f.F.twoT}${f.full ? ` + ${f.F.mv.em} ${f.F.mv.n}` : ''}`).join(' · '), 4); }, 600);
@@ -4135,6 +4158,113 @@ function startGame(stage, how = {}) { music(STAGES[stage].w);
   if (G.S.idx === 0 && !save.comics.includes(ck)) { save.comics.push(ck); persist(); G.paused = true; showComic(G.S.W, 'in', () => { if (G) G.paused = false; }); }
   else if (G.S.finale && !G.endless && !G.twist && !G.room && !save.comics.includes(G.S.w + ':showdown')) { save.comics.push(G.S.w + ':showdown'); persist(); G.paused = true; music('villain'); showComic(G.S.W, 'showdown', () => { if (G) { G.paused = false; music(G.S.w); } }); }
 }
+/* ───────── The Clubhouse and the Myth Cup. Offline for now: the clubmates and rival teams are storybook characters and
+   say so on screen. Their numbers come from the date, so they are the same every time you look; a real server could
+   later stand in for clubMates() and cupRivalScore() without changing the screens. ───────── */
+const hashS = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0; return h; };
+const rnd01 = s => (hashS(s) % 10007) / 10007;
+const CLUBMATES = [{ n: 'Grandma Rosa', em: '👵' }, { n: 'Mr. Okafor', em: '👨🏿‍🦳' }, { n: 'Coach Lee', em: '🧑‍🏫' }, { n: 'Aunt Mei', em: '👩' },
+  { n: 'Big Sis Ada', em: '👧' }, { n: 'Ranger Sam', em: '🧑‍🌾' }, { n: 'Professor Hoot', em: '🦉' }, { n: 'Little Theo', em: '🧒' }];
+const CLUB_NAMES = ['The Curious Crew', 'The Why Team', 'Question Club', 'The Fact Finders', 'The Backyard Brains', 'The Wonder Gang'];
+const CLUB_EMS = ['🔍', '💡', '📚', '🌻', '🚀', '🐢'];
+const CLUB_JOBS = [{ k: 'pop', em: '💥', t: 'Pop 80 myths', n: 80 }, { k: 'clear', em: '🏁', t: 'Clear 2 stages', n: 2 }, { k: 'star3', em: '⭐', t: 'Clear a stage with 3 stars', n: 1 },
+  { k: 'abil', em: '✨', t: 'Friends use their moves 40 times', n: 40 }, { k: 'elite', em: '👑', t: 'Pop 3 elites', n: 3 }, { k: 'react', em: '⚡', t: 'Set off 10 reactions', n: 10 },
+  { k: 'fact', em: '💡', t: 'Learn a fact or get a quiz right', n: 1 }, { k: 'cup', em: '🥇', t: 'Play a Myth Cup match', n: 1 }];
+const CLUB_GOAL = 7000, CLUB_STEPS = [[.25, { badges: 20, coins: 300 }], [.5, { badges: 30, gems: 20 }], [.75, { badges: 40, coins: 800 }], [1, { badges: 60, gems: 50, tix: 1 }]];
+const JOB_PAY = 10, CLUB_LV_XP = 150, CLUB_MAX = 10;
+function clubState() { const C = save.club || (save.club = { name: null, em: '🔍', xp: 0 });
+  if (C.week !== weekKey()) { C.week = weekKey(); C.pops = 0; C.got = []; }
+  if (C.day !== today()) { C.day = today(); C.jobs = seedPick(CLUB_JOBS, 3, 'club' + C.day).map(x => ({ ...x, have: 0 })); C.jobsGot = []; }
+  return C; }
+const clubLv = () => Math.min(CLUB_MAX, 1 + Math.floor(((save.club || {}).xp || 0) / CLUB_LV_XP));
+const clubCoinMul = () => has('club') && save.club && save.club.name ? 1 + (clubLv() - 1) * .02 : 1; // +2% coins a level, up to +18%
+// how many myths each clubmate has popped this week so far: a steady 40–150 a day, by name and date
+function clubMates() { const C = clubState(), start = Date.parse(C.week + 'T00:00:00Z'), now = Date.now();
+  return CLUBMATES.map(m => { let t = 0; for (let d = 0; d < 7; d++) { const t0 = start + d * 864e5; if (t0 > now) break; t += Math.min(1, (now - t0) / 864e5) * (40 + rnd01(m.n + C.week + d) * 110); } return { ...m, pops: Math.round(t) }; }); }
+const clubTotal = () => clubState().pops + clubMates().reduce((a, m) => a + m.pops, 0);
+function clubAdd(kind, n) { if (!save || !has('club') || !save.club || !save.club.name) return; const C = clubState(); if (kind === 'pop') C.pops += n;
+  for (const j of C.jobs) if (j.k === kind && j.have < j.n) j.have = Math.min(j.n, j.have + n); }
+const clubReady = () => { if (!has('club') || !save.club || !save.club.name) return false; const C = clubState(), T = clubTotal();
+  return C.jobs.some((j, i) => j.have >= j.n && !C.jobsGot.includes(i)) || CLUB_STEPS.some(([f], i) => T >= CLUB_GOAL * f && !C.got.includes(i)); };
+function payBadges(pay) { const got = []; if (pay.badges) { save.badges = (save.badges || 0) + pay.badges; save.club.xp += pay.badges; got.push(`🎖️ ${pay.badges}`); } const rest = { ...pay }; delete rest.badges; const r = payPrize(rest); return [...got, r].filter(Boolean).join(' · '); }
+
+// the Myth Cup: a weekly bracket of four rounds against computer rival teams, one Cup Ticket a match
+const RIVALS = [{ n: "Sir Ever-So-Sure's Squad", em: '🧐' }, { n: 'The Puddle Jumpers', em: '🐸' }, { n: 'Dusty Shelf Society', em: '📚' }, { n: 'The Night Owls', em: '🦉' },
+  { n: 'Sandy Scuttlers', em: '🦂' }, { n: 'The Frosty Five', em: '❄️' }, { n: 'Jungle Jammers', em: '🐒' }, { n: 'Captain Coral\'s Crew', em: '🐠' }, { n: 'The Rumour Mill', em: '🗞️' }, { n: 'Moon Cheese Club', em: '🧀' }];
+const CUP_ROUNDS = ['Round of 16', 'Quarter-final', 'Semi-final', 'Final'], CUP_PTS = [10, 15, 25, 50], CUP_TICKETS_MAX = 3;
+function cupState() { const C = save.cup || (save.cup = {});
+  if (C.week !== weekKey()) Object.assign(C, { week: weekKey(), round: 0, out: false, champ: false, log: [], opp: seedPick(RIVALS, 4, 'cup' + weekKey()) });
+  if (!C.log.length) { const ok = save.cleared.filter(i => !STAGES[i].finale), fit = ok.filter(i => recPower(i) <= teamPower()), top = Math.max(0, ...(fit.length ? fit : ok)); /* the hardest stage this team is ready for */ C.stage = Math.max(0, top - Math.floor(rnd01('cs' + weekKey()) * 4)); while (C.stage > 0 && STAGES[C.stage].finale) C.stage--; } // the week's stage settles with its first match
+  if (save.cupDay !== today()) { save.cupDay = today(); save.cupt = Math.min(CUP_TICKETS_MAX, (save.cupt || 0) + 1); } // a free ticket a day, up to three waiting
+  return C; }
+// the rival's score: a share of the best possible score that grows each round, so a clean clear wins the early rounds and the Final needs a near-perfect one
+const cupFrac = (round, rival) => [.5, .6, .7, .8][round] + (rnd01(rival.n + weekKey() + round) - .5) * .08;
+const cupScore = (won) => G.busted * 10 + (won ? Math.round(Math.max(0, G.hp) / G.maxhp * 500) : 0);
+function startCup() { const C = cupState(); if (C.out || C.champ || (save.cupt || 0) < 1) return; save.cupt--; persist();
+  $('#socm').hidden = true; startGame(C.stage, { cup: { round: C.round, rival: C.opp[C.round] } }); clubAdd('cup', 1); }
+function cupEnd(won) { const C = cupState(), R = G.cup, me = cupScore(won), them = Math.round((G.cup.n * 10 + 500) * cupFrac(R.round, R.rival)), win = won && me > them;
+  C.log.push({ r: R.round, rival: R.rival.n, me, them, win });
+  let note;
+  if (win) { const pts = CUP_PTS[R.round]; save.cupp = (save.cupp || 0) + pts; C.round++; if (C.round >= CUP_ROUNDS.length) { C.champ = true; save.cupWins = (save.cupWins || 0) + 1; setWallet({ gems: save.gems + 50 }); note = `🏆 Myth Cup champions! +🏅 ${pts} and 💎 50`; } else note = `On to the ${CUP_ROUNDS[C.round]}! +🏅 ${pts}`; }
+  else note = (save.cupt || 0) > 0 ? 'So close. Try this round again with another ticket.' : 'So close. A new ticket comes tomorrow.';
+  persist(); G.cleared = true; G.paused = true; $('#cupHud').hidden = true;
+  openSoc('cup', `<div class="cupres ${win ? 'win' : ''}"><b>${win ? 'You win!' : won ? 'They pipped you!' : 'Dad needed a nap.'}</b><div class="vs"><span>🧔 You<br><i>${me}</i></span><em>vs</em><span>${R.rival.em} ${R.rival.n}<br><i>${them}</i></span></div><small>${note}</small></div>`);
+  $('#socClose').textContent = 'Home'; $('#socClose').onclick = () => { $('#socm').hidden = true; $('#socClose').textContent = 'Done'; $('#socClose').onclick = closeSoc; goHome(); };
+}
+// Cup and Club shops: their own currencies; some looks are only sold here
+const SHOP2 = {
+  club: { cur: 'badges', em: '🎖️', items: [
+    { n: '5 Blank pages', em: '📄', c: 40, run: () => { save.blank = (save.blank || 0) + 5; } }, { n: 'A Library Card', em: '🎟️', c: 60, run: () => setWallet({ tix: save.tix + 1 }) },
+    { n: 'A Cup Ticket', em: '🎫', c: 50, run: () => { save.cupt = (save.cupt || 0) + 1; } }, { n: 'An Epic item', em: '🎁', c: 180, run: () => { save.items.push(makeItem(Math.random() < .5 ? 'armor' : 'book', 2, false)); } },
+    { ward: 'sweater:club', c: 250 }, { ward: 'yard:pennant', c: 200 }, { ward: 'team:clubcap', c: 300 }] },
+  cup: { cur: 'cupp', em: '🏅', items: [
+    { n: '💎 40 gems', em: '💎', c: 30, run: () => setWallet({ gems: save.gems + 40 }) }, { n: '10 Blank pages', em: '📄', c: 40, run: () => { save.blank = (save.blank || 0) + 10; } },
+    { n: 'A Legendary item', em: '🌟', c: 400, run: () => { save.items.push(makeItem(Math.random() < .5 ? 'armor' : 'book', 3, false)); } },
+    { ward: 'sweater:gold', c: 150 }, { ward: 'hat:laurel', c: 250 }, { ward: 'yard:trophy', c: 200 }] },
+};
+let socTab = 'club';
+function closeSoc() { $('#socm').hidden = true; updateHub(); }
+function openSoc(tab, html) { socTab = tab; const P = $('#socBody'); $('#socm').hidden = false;
+  if (html) { $('#socTitle').textContent = '🥇 Myth Cup'; $('#socSub').textContent = ''; P.innerHTML = html; return; }
+  if (tab === 'club' || tab === 'clubshop') buildClub(); else buildCup(); }
+const socTabs = which => `<div class="soctabs">${which.map(([k, t]) => `<button data-st="${k}" class="${socTab === k ? 'on' : ''}">${t}</button>`).join('')}</div>`;
+function wireSoc() { $$('#socBody [data-st]').forEach(b => b.onclick = () => openSoc(b.dataset.st)); }
+function buildClub() { const C = clubState(), P = $('#socBody');
+  if (!C.name) { $('#socTitle').textContent = '🏡 The Clubhouse'; $('#socSub').textContent = 'Join the neighbourhood club: shared goals, club jobs and the Club Shop.';
+    P.innerHTML = `<p class="intro">Pick a name and a badge. You can change them any time.</p><div class="ward">${CLUB_NAMES.map(n => `<button class="wt" data-cn="${n}"><b>${n}</b></button>`).join('')}</div><div class="ward">${CLUB_EMS.map(e => `<button class="wt ${C.em === e ? 'on' : ''}" data-ce="${e}"><span class="wem">${e}</span></button>`).join('')}</div>`;
+    P.querySelectorAll('[data-ce]').forEach(b => b.onclick = () => { C.em = b.dataset.ce; buildClub(); });
+    P.querySelectorAll('[data-cn]').forEach(b => b.onclick = () => { C.name = b.dataset.cn; persist(); buildClub(); updateHub(); }); return; }
+  const T = clubTotal(), lv = clubLv(), xpIn = C.xp % CLUB_LV_XP;
+  $('#socTitle').textContent = `${C.em} ${C.name}`; $('#socSub').textContent = `Level ${lv} · +${(lv - 1) * 2}% coins · 🎖️ ${save.badges || 0} badges`;
+  let h = socTabs([['club', '🏡 Club'], ['clubshop', '🛍️ Club Shop']]);
+  if (socTab === 'clubshop') { P.innerHTML = h + shop2H('club'); wireSoc(); wireShop2('club'); return; }
+  h += `<div class="lvbar"><i style="width:${lv >= CLUB_MAX ? 100 : xpIn / CLUB_LV_XP * 100}%"></i><span>${lv >= CLUB_MAX ? 'Top level!' : `${xpIn} / ${CLUB_LV_XP} to level ${lv + 1}`}</span></div>`;
+  h += `<h3 class="rackh">This week: pop ${CLUB_GOAL.toLocaleString()} myths together</h3><div class="lvbar goal"><i style="width:${Math.min(100, T / CLUB_GOAL * 100)}%"></i><span>${Math.min(T, CLUB_GOAL).toLocaleString()} / ${CLUB_GOAL.toLocaleString()}</span></div>`;
+  h += `<div class="steps">${CLUB_STEPS.map(([f, pay], i) => { const ok = T >= CLUB_GOAL * f, got = C.got.includes(i); return `<button class="btn small ${ok && !got ? 'green' : ''}" data-step="${i}" ${ok && !got ? '' : 'disabled'}>${got ? '✔' : '🎁'} ${Math.round(f * 100)}%</button>`; }).join('')}</div>`;
+  h += `<h3 class="rackh">Today's club jobs</h3>` + C.jobs.map((j, i) => { const done = j.have >= j.n, got = C.jobsGot.includes(i); return `<div class="chrow"><div class="cem">${j.em}</div><div class="cmid"><b>${j.t}</b><small>${Math.min(j.have, j.n)} / ${j.n}</small></div><button class="btn small ${done && !got ? 'green' : ''}" data-job="${i}" ${done && !got ? '' : 'disabled'}>${got ? '✔' : `🎖️ ${JOB_PAY}`}</button></div>`; }).join('');
+  const mates = clubMates().sort((a, b) => b.pops - a.pops);
+  h += `<h3 class="rackh">Clubmates this week</h3><p class="intro">Your clubmates are storybook neighbours, not real players.</p><div class="mates"><div class="mate me"><span>🧔</span><b>You</b><i>${C.pops}</i></div>${mates.map(m => `<div class="mate"><span>${m.em}</span><b>${m.n}</b><i>${m.pops}</i></div>`).join('')}</div>`;
+  P.innerHTML = h; wireSoc();
+  P.querySelectorAll('[data-job]').forEach(b => b.onclick = () => { const i = +b.dataset.job; C.jobsGot.push(i); toastMsg('Club job done! ' + payBadges({ badges: JOB_PAY })); sfx('coin'); persist(); buildClub(); });
+  P.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { const i = +b.dataset.step; C.got.push(i); toastMsg('🎁 Club chest: ' + payBadges(CLUB_STEPS[i][1])); sfx('coin'); persist(); buildClub(); });
+}
+function buildCup() { const C = cupState(), P = $('#socBody'), t = save.cupt || 0;
+  $('#socTitle').textContent = '🥇 Myth Cup'; $('#socSub').textContent = `This week's stage: ${STAGES[C.stage].W.em} ${STAGES[C.stage].name} · 🎫 ${t} · 🏅 ${save.cupp || 0}`;
+  let h = socTabs([['cup', '🥇 Cup'], ['cupshop', '🛍️ Cup Shop']]);
+  if (socTab === 'cupshop') { P.innerHTML = h + shop2H('cup'); wireSoc(); wireShop2('cup'); return; }
+  h += `<p class="intro">Four rounds, one a match. Beat each rival's score on the same stage: every myth popped is 10, and Dad's Patience left at the end adds up to 500. The rival teams are storybook teams.</p>`;
+  h += `<div class="bracket">${CUP_ROUNDS.map((r, i) => { const R = C.opp[i], L = C.log.filter(x => x.r === i), won = L.some(x => x.win), cur = i === C.round && !C.champ;
+    return `<div class="brow ${won ? 'won' : cur ? 'cur' : ''}"><small>${r}</small><b>${i > C.round ? '❓ Who will it be?' : `${R.em} ${R.n}`}</b><span>${won ? '✔ ' + L.find(x => x.win).me : cur && L.length ? `${L.length} tr${L.length > 1 ? 'ies' : 'y'}` : ''}</span></div>`; }).join('')}</div>`;
+  h += C.champ ? `<p class="intro">🏆 You won this week's Cup! A new one starts on Monday.</p>` : `<div class="sheetbtns"><button class="btn green" id="cupGo" ${t ? '' : 'disabled'}>Play the ${CUP_ROUNDS[C.round]} · 🎫 1</button></div>${t ? '' : '<p class="intro">No tickets left. A free one comes every day (up to 3), and the Club Shop sells them.</p>'}`;
+  P.innerHTML = h; wireSoc(); const g = $('#cupGo'); if (g) g.onclick = startCup;
+}
+function shop2H(k) { const S = SHOP2[k], have = save[S.cur] || 0;
+  return `<div class="ward">${S.items.map((it, i) => { const W = it.ward && it.ward.split(':'), wi = W && WARD[W[0]].items.find(x => x.id === W[1]), own = W && wardOwns(W[0], W[1]);
+    const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:hsl(${wi.h},${Math.round((wi.s ?? 1) * 70)}%,${Math.round((wi.v ?? 1) * 52)}%)"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.png" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
+    return `<button class="wt ${own ? 'on' : 'buy'}" data-s2="${i}" ${own || have < it.c ? 'disabled' : ''}>${pic}<b>${W ? wi.n : it.n}</b><small>${own ? 'Yours: in the Wardrobe' : `${S.em} ${it.c}`}</small></button>`; }).join('')}</div>`; }
+function wireShop2(k) { const S = SHOP2[k]; $$('#socBody [data-s2]').forEach(b => b.onclick = () => { const it = S.items[+b.dataset.s2]; if ((save[S.cur] || 0) < it.c || !sure(b, `Buy · ${S.em} ${it.c}?`)) return;
+  save[S.cur] -= it.c; if (it.ward) { (save.wardrobe = save.wardrobe || []).push(it.ward); const [c, id] = it.ward.split(':'); if (WARD[c].many) look().yard.push(id); else look()[c] = id; toastMsg('👕 Wearing it now. Change it in the Wardrobe.'); } else { it.run(); toastMsg(`${it.em} ${it.n}!`); }
+  sfx('coin'); persist(); drawStatics(); openSoc(socTab); }); }
 /* ───────── comics: three panels, tap through, always skippable ───────── */
 // the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
 // is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
@@ -4220,7 +4350,7 @@ function dropLoot(el, n, bonus) {
 }
 let sessionMatches = 0;
 setInterval(() => { if (mode === 'game' && G && !G.paused && !G.over && !document.hidden) { const p = save.play || (save.play = {}); p[today()] = (p[today()] || 0) + 10; } }, 10000);
-function stageClear() { sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); save.books = (save.books || 0) + 1; } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
+function stageClear() { if (G.cup) { sfx('win'); collectAll(); return cupEnd(true); } sfx('win'); buzz('HEAVY'); sessionMatches++; const dailyWin = G.twist && save.dailyMyth !== today(); if (dailyWin) { save.dailyMyth = today(); setWallet({ coins: save.coins + 150, tix: save.tix + 1 }); save.books = (save.books || 0) + 1; } { const bn = $('#breakNote'); bn.hidden = sessionMatches % 3 !== 0 || save.opt.breaks === false; bn.textContent = `🧃 That's ${sessionMatches} pages in a row. A good moment for a stretch, a snack or a story. Your friends will be right here.`; }
   G.cleared = true; G.paused = true; collectAll();
   const first = !save.cleared.includes(G.stage); if (first) save.cleared.push(G.stage);
   save.unlocked = Math.max(save.unlocked, Math.min(G.stage + 1, STAGES.length - 1));
@@ -4286,7 +4416,7 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { sfx('lose'); if (G.endless) { $('#powRow').hidden = $('#overTip').hidden = true; const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { { const weak = !G.room && !G.twist && teamPower() < recPower(G.stage); $('#powRow').hidden = !weak; $('#overTip').hidden = !weak && !(G.tries >= 1);
+function gameOver() { if (G.cup) { sfx('lose'); return cupEnd(false); } sfx('lose'); if (G.endless) { $('#powRow').hidden = $('#overTip').hidden = true; const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { { const weak = !G.room && !G.twist && teamPower() < recPower(G.stage); $('#powRow').hidden = !weak; $('#overTip').hidden = !weak && !(G.tries >= 1);
     $('#overTip').textContent = (weak ? `💪 Team ${teamPower().toLocaleString()} · this stage likes ${recPower(G.stage).toLocaleString()}. Upgrades help a lot.` : '') + (G.tries >= 1 ? ' 🍪 Next try, Dad has a snack: more Patience.' : ''); }
     $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
@@ -4541,7 +4671,7 @@ function openPick(id, t) {
   $('#pickm').hidden = false;
 }
 $('#pickUnequip').onclick = () => { delete equipOf(pickFor.id)[pickFor.t]; syncWeapons(); persist(); $('#pickm').hidden = true; if (!$('#shop').hidden) buildShop(); else buildParty(); };
-$('#pickClose').onclick = () => $('#pickm').hidden = true;
+$('#pickClose').onclick = () => $('#pickm').hidden = true; $('#socClose').onclick = closeSoc;
 
 /* ───────── the bag ───────── */
 const twinsOf = it => save.items.filter(o => o !== it && o.type === it.type && o.rar === it.rar && (it.type !== 'weapon' || o.owner === it.owner) && !wornBy(o.uid));
@@ -4740,6 +4870,8 @@ const UNLOCKS = [
   { k: 'tree', at: 9, tab: 'friends', t: '🌳 Skill Trees are open: every level gives a friend a point. Tap 🌳 on a friend\'s card.' },
   { k: 'forge', at: 10, t: '🔨 Forging is open: three items of a rarity make one of the next.' },
   { k: 'daily', at: 6, t: '🏆 Challenges are open (home screen): a Daily Myth with a new twist every day.' },
+  { k: 'club', at: 8, t: '🏡 The Clubhouse is open (home screen): club jobs, a weekly club goal and the Club Shop.' },
+  { k: 'cup', at: 10, t: '🥇 The Myth Cup is open (home screen): a weekly bracket against rival teams, with its own shop.' },
   { k: 'endless', at: 12, t: '♾️ The Endless Stacks are open: how many waves can you last?' },
 ];
 const has = k => { const U = UNLOCKS.find(u => u.k === k); return !U || save.cleared.length >= U.at || (save.seenUnlocks || []).includes(k); };
@@ -4882,7 +5014,7 @@ function openTree(id) { treeId = id; buildTree(); $('#treem').hidden = false; $(
 $('#tClose').onclick = () => { $('#treem').hidden = true; };
 $('#newsOk').onclick = () => { (save.news || []).shift(); persist(); $('#newsm').hidden = true; setTimeout(showNews, 250); };
 // every pop-up with a plain way out gets a big ✕ in the corner, and a tap on the dark area outside does the same
-const XCLOSE = { newsm: '#newsOk', patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
+const XCLOSE = { newsm: '#newsOk', patrolm: '#patrolClose', wheelm: '#wheelClose', challm: '#challClose', socm: '#socClose', settingsm: '#closeSettings', treem: '#tClose', howm: '#closeHow', parentm: '#closeParent', chestm: '#chClose', pickm: '#pickClose', drawm: '#drawClose', roomm: '#roomClose', pausem: '#resume', studym: '#studyDone' };
 for (const [id, sel] of Object.entries(XCLOSE)) { const m = $('#' + id), p = m.querySelector('.panel'), x = document.createElement('button');
   x.className = 'xbtn'; x.textContent = '✕'; x.setAttribute('aria-label', 'Close'); x.onclick = () => $(sel).click(); p.prepend(x); p.classList.add('hasx');
   m.addEventListener('click', e => { if (e.target === m) $(sel).click(); }); }
@@ -4914,7 +5046,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });

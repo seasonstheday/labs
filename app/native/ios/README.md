@@ -26,7 +26,7 @@ Android keeps the phone copy and the save code; Google Play Games saved games wo
 ## Achievements and leaderboards
 
 The game reports these through the same plugin (`achieve`, `score`, `dashboard`; the bridge is `window.native.gc`).
-Create them in App Store Connect → the app → **Game Center**, with exactly these IDs. Every achievement is one step
+Create them in App Store Connect → the app → **Game Center**, with exactly these IDs. There are 21. Every achievement is one step
 (reported at 100%), so any point value works; Apple allows up to 1,000 points in total.
 
 | Achievement ID | Name | Earned by |
@@ -42,6 +42,8 @@ Create them in App Store Connect → the app → **Game Center**, with exactly t
 | `whydad.endless10` | Still Standing | Reaching wave 10 in the Endless Stacks |
 | `whydad.master1` | Myth Master | Clearing a stage on Myth Master |
 | `whydad.masterch` | Master of a Chapter | Clearing a whole chapter on Myth Master |
+| `whydad.club5` | Pillar of the Club | Reaching club level 5 |
+| `whydad.cup` | Myth Cup Champion | Winning a weekly Myth Cup |
 | `whydad.legend` | Forged a Legend | Forging something Legendary |
 
 Leaderboards (classic, "high score is best", integer):

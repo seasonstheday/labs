@@ -313,6 +313,21 @@ await test('Trophies and the Wardrobe', async () => {
   await close(); return errs;
 });
 
+await test('the Clubhouse and the Myth Cup', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
+  await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.club.name === 'The Why Team' && dbg.clubState().jobs.length === 3 && dbg.clubMates().length === 8), 'joined a club with jobs and clubmates');
+  await p.evaluate(() => { const C = dbg.clubState(); C.jobs[0].have = C.jobs[0].n; }); await p.click('[data-st="clubshop"]'); await p.click('[data-st="club"]'); await p.waitForTimeout(200);
+  await p.click('[data-job="0"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.badges === 10 && dbg.save.club.xp === 10), 'a club job pays badges and club xp');
+  await p.click('#socClose'); await p.click('#hubCup'); await p.waitForTimeout(300); await p.click('#cupGo'); await p.waitForTimeout(800);
+  expect(await p.evaluate(() => !!dbg.G.cup && dbg.save.cupt === 0 && !document.querySelector('#cupHud').hidden), 'a Cup match costs a ticket and shows the scores');
+  await p.evaluate(() => { dbg.G.busted = 99; dbg.G.cup.n = 40; dbg.stageClear(); }); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => dbg.cupState().round === 1 && dbg.save.cupp === 10 && !document.querySelector('#socm').hidden), 'winning a round moves you on and pays Cup points');
+  await p.click('#socClose'); await p.waitForTimeout(300); expect(await p.isVisible('#title'), 'back home');
+  await close(); return errs;
+});
+
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);

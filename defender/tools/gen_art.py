@@ -195,6 +195,8 @@ HATS = {
     'hat_wizard': 'a floppy purple wizard hat with a wide brim and little gold stars, the tip bending over to the right',
     'hat_bow': 'a big pink bow with two loops and two short ribbon tails, like one worn on top of the head',
     'hat_flower': 'a small crown of white daisies with yellow centres woven together in a ring',
+    'hat_laurel': 'a champion\'s golden laurel crown: a flat oval ring of small gold-green leaves, seen from the front and a little above like a headband worn around the top of a head, a tiny red ribbon at the side',
+    'hat_clubcap': 'a teal baseball cap with a short curved brim pointing to the right and a small yellow star badge on the front',
 }
 HAT = (" Just the hat by itself, seen from the front and a little above, as if worn, with nobody wearing it: no head, no hair, no face, no person. "
        "Centred on a plain pure white background, nothing else in the picture.")
