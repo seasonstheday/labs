@@ -111,7 +111,7 @@ def make(name, prompt, kind):
     png = call(prompt, {'arena': '9:16', 'map': '21:9', 'story': '4:3'}.get(kind, '1:1'), refs=REFS); tmp = out + '.tmp.png'
     with open(tmp, 'wb') as f: f.write(png)
     if RAW: open(os.path.join(RAW, name + '.png'), 'wb').write(png)  # keep the model's output for re-processing
-    if kind == 'pet': sprite_fix(tmp, 400)
+    if kind in ('pet', 'hat'): sprite_fix(tmp, 400)
     elif kind == 'kid': sprite_fix(tmp, 800)
     elif kind == 'arena': subprocess.run(['convert', tmp, '-resize', '480x800^', '-gravity', 'center', '-extent', '480x800', tmp], check=True)
     elif kind == 'map': subprocess.run(['convert', tmp, '-resize', '928x422^', '-gravity', 'center', '-extent', '880x400', tmp], check=True)  # a little overscan trims any margin the model paints
@@ -184,7 +184,24 @@ HOMES = {
   7: 'A rainforest clearing: giant leaves, vines and a big tree trunk on the left and right edges, misty green jungle across the middle, and a soft mossy clearing in front with a few ferns along the bottom edge.',
   8: 'A grassy hilltop at dusk: a deep blue sky with the first stars and a crescent moon instead of clouds, a small telescope on a stand at the right edge, a leafy bush on the left edge, faraway hills across the middle, and soft dark-green grass in front.',
 }
+# hats for the Wardrobe: worn by Dad and the friends, drawn on their own so the game can fit them to any head
+HATS = {
+    'hat_cap': 'a red baseball cap with a short curved brim pointing to the right and a little button on top',
+    'hat_sun': 'a wide straw sun hat with a pale blue ribbon band and a small daisy tucked in the band',
+    'hat_grad': 'a black graduation mortarboard cap with a gold tassel hanging from the top button',
+    'hat_top': 'a tall black top hat with a red silk band, slightly tilted, a little shine on the crown',
+    'hat_crown': 'a golden king\'s crown with five rounded points, red and blue gems and a red velvet cushion inside',
+    'hat_party': 'a pointy cone party hat with red and yellow stripes and a yellow pompom on top',
+    'hat_wizard': 'a floppy purple wizard hat with a wide brim and little gold stars, the tip bending over to the right',
+    'hat_bow': 'a big pink bow with two loops and two short ribbon tails, like one worn on top of the head',
+    'hat_flower': 'a small crown of white daisies with yellow centres woven together in a ring',
+    'hat_laurel': 'a champion\'s golden laurel crown: a flat oval ring of small gold-green leaves, seen from the front and a little above like a headband worn around the top of a head, a tiny red ribbon at the side',
+    'hat_clubcap': 'a teal baseball cap with a short curved brim pointing to the right and a small yellow star badge on the front',
+}
+HAT = (" Just the hat by itself, seen from the front and a little above, as if worn, with nobody wearing it: no head, no hair, no face, no person. "
+       "Centred on a plain pure white background, nothing else in the picture.")
 def jobs():
+    for k, d in HATS.items(): yield k, STYLE + ' ' + d + '.' + HAT, 'hat', 'hats'
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
     yield 'kid', STYLE + ' ' + KID + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'kid', 'kid'
     yield 'home_bg', HOME + ' ' + STYLE, 'arena', 'home'
