@@ -295,6 +295,24 @@ await test("the grown-ups' page, behind the gate", async () => {
   expect(await p.isVisible('#parentm'), "the grown-ups' page"); await close(); return errs;
 });
 
+await test('Trophies and the Wardrobe', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), coins: 5000 });
+  await p.evaluate(() => { dbg.persist(); }); await p.waitForTimeout(600);
+  expect(await p.evaluate(() => (dbg.save.ach || []).includes('ch1')), 'clearing chapter 1 earns its trophy');
+  await p.evaluate(() => { document.querySelector('#challm').hidden = false; }); await p.click('#challTrophy'); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => document.querySelectorAll('#pickList .trophy').length > 15 && document.querySelectorAll('#pickList .trophy.got').length >= 1), 'the trophy list');
+  await p.click('#pickClose'); await p.evaluate(() => { document.querySelector('#challm').hidden = true; });
+  await p.click('[data-tab="shop"]'); await p.waitForTimeout(400); await p.click('#wardGo'); await p.waitForTimeout(300);
+  await p.click('[data-w="sweater:sky"]'); await p.click('[data-w="sweater:sky"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.coins === 4400 && dbg.save.look.sweater === 'sky' && dbg.save.wardrobe.includes('sweater:sky')), 'buying a sweater spends coins and puts it on');
+  await p.click('[data-w="yard:sunflower"]'); await p.click('[data-w="yard:sunflower"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.look.yard.includes('sunflower')), 'a bought decoration goes straight out');
+  await p.click('[data-w="yard:sunflower"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => !dbg.save.look.yard.includes('sunflower') && dbg.save.coins === 3600), 'tapping it again puts it away, for free');
+  expect(await p.evaluate(() => document.querySelector('[data-w="hat:crown"]').disabled), 'too dear is greyed out');
+  await close(); return errs;
+});
+
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);

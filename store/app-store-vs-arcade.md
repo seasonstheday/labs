@@ -18,7 +18,8 @@ The decision is yours. This sets out what each one asks of the game as it stands
 3. The privacy policy page is drafted at `defender/privacy.html` (https://seasonstheday.github.io/labs/defender/privacy.html once merged); review the wording and replace SUPPORT_EMAIL with the support address you want public.
 4. An Xcode build on a Mac: add the two Swift files and the Game Center and iCloud capabilities (`app/native/ios/README.md`), the 1024 icon, then archive and upload to TestFlight.
 5. A real-iPhone test (still on the backlog).
-6. The voices, once the Gemini account has credit again (`defender/tools/gen_voice.py`).
+6. The rest of the voices: 99 of 414 lines are recorded. Google allows 100 clips a day on this account's tier, so `defender/tools/gen_voice.py` needs about four more daily runs. Lines without a clip use the phone's own voice.
+7. The 19 achievements and 2 leaderboards in App Store Connect, with the IDs in `app/native/ios/README.md`.
 
 **Risks:**
 - Ads in a game that clearly appeals to kids get extra scrutiny in App Review, and from parents.
@@ -29,7 +30,7 @@ The decision is yours. This sets out what each one asks of the game as it stands
 
 **What changes in the game:**
 1. **Remove ads and purchases entirely:** the AdMob and purchase plugins, the grown-up store shelf, and the video-for-reward buttons. The rewards they gave, such as double coins, would become normal play rewards or go away.
-2. **Keep and polish Game Center.** It's already there. Achievements and leaderboards (Endless best wave, Myth Master crowns) would fit naturally and are expected.
+2. **Keep Game Center.** Saves, 19 achievements and two leaderboards (Endless best wave, facts learned) are already built.
 3. **Controller and iPad/Mac support** count in its favour. The game is touch-first and portrait-only today.
 4. **Localisation** helps. Spanish is on the backlog.
 

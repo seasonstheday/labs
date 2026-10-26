@@ -431,6 +431,11 @@
   .row .btn { flex: 1; }
   .remlist { display: flex; flex-direction: column; gap: 6px; width: 100%; } .rem { display: grid; grid-template-columns: 40px 1fr; align-items: center; column-gap: 8px; background: #fff; border: 3px solid var(--line); border-radius: 12px; padding: 6px 10px; text-align: left; }
   .rem .ic { grid-row: span 2; font-size: 28px; text-align: center; } .rem b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .rem i { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; color: var(--muted); }
+  .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px; } .wt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 12px; font: inherit; color: var(--ink); cursor: pointer; }
+  .wt.on { border-color: var(--green); background: #eef7e6; } .wt.buy { background: #f7efe0; } .wt:disabled { opacity: .5; } .wt b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; } .wt small { font: 700 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .wt .wem { font-size: 28px; line-height: 34px; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
+  .trophy { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; background: #fff; border: 3px solid var(--line); border-radius: 12px; opacity: .7; } .trophy.got { opacity: 1; border-color: var(--gold); }
+  .trophy .em { font-size: 26px; text-align: center; } .trophy b { display: block; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; } .trophy small { font: 600 15px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); } .trophy i { font-style: normal; color: var(--green); font-size: 20px; }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
   .bigstats b { display: block; font: 700 30px/1 "Fredoka", Arial, sans-serif; } .bigstats .know b { color: var(--teal); } .bigstats span { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; color: var(--muted); }
   .statline { margin: 2px 0 6px; text-align: center; font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -567,7 +572,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 66</div>
+    <div class="build">build 67</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -851,6 +856,7 @@
       <div class="chrow"><div class="cem">📅</div><div class="cmid"><b>Daily Myth</b><small id="dailyTxt"></small></div><button class="btn small" id="dailyBtn">Play</button></div>
       <div class="chrow"><div class="cem">♾️</div><div class="cmid"><b>Endless Stacks</b><small id="endlessTxt"></small></div><button class="btn small" id="endlessBtn">Play</button></div>
       <div class="chrow"><div class="cem">📚</div><div class="cmid"><b>Reading Room</b><small id="roomTxt"></small></div><button class="btn small" id="challRoom">Open</button></div>
+      <div class="chrow"><div class="cem">🏆</div><div class="cmid"><b>Trophies</b><small id="trophyTxt"></small></div><button class="btn small" id="challTrophy">Open</button></div>
       <div class="row exit"><button class="btn ghost" id="challClose">Done</button></div>
     </div>
   </div>
@@ -1993,7 +1999,7 @@ function mergeInto(it) { sfx('forge'); buzz('HEAVY');
   const nr = it.rar + 1, mul = RAR[nr].mul / RAR[it.rar].mul, st = it.stats || { [it.stat]: it.val };
   for (const k in st) st[k] = Math.max(1, Math.round(st[k] * mul));
   const pool = Object.keys(BASEVAL).filter(k => !(k in st)); for (let i = Object.keys(st).length - 1; i < EXTRA_BY_RAR[nr] && pool.length; i++) { const k = pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; st[k] = Math.max(1, Math.round(BASEVAL[k] * RAR[nr].mul * .5)); }
-  it.stats = st; it.rar = nr;
+  it.stats = st; it.rar = nr; if (nr === 3) save.forgedLegend = true;
   if (it.type === 'weapon' && it.owner && !it.legend && Math.random() < .5) { // the forge brings out a theme of the new tier
     const Lw = lineOf(it.owner), opts = Object.keys(Lw.v).filter(k => baseOf(k) === baseOf(it.variant) && vtier(Lw.v[k]) === nr);
     if (opts.length) { const k = pick(opts), V = Lw.v[k]; Object.assign(it, { variant: k, base: V.name, em: V.em }); it.newTheme = true; } }
@@ -2068,7 +2074,7 @@ save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.part
 const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
 var lastTP = null, tpT = 0;
 function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
-const persist = () => { save.savedAt = Date.now(); try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); backupSoon(); };
+const persist = () => { save.savedAt = Date.now(); clearTimeout(persist.ach); persist.ach = setTimeout(checkAch, 400); try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); backupSoon(); };
 // ───────── save backup ─────────
 // Three copies besides the main one: a spare in this browser (in case the main one is ever cut short), and in the app the
 // phone's own storage and iCloud through Game Center (window.native.saves, see app/src/native.js). A save code moves a
@@ -2114,6 +2120,34 @@ const starsOf = (st, d) => save.stars[st + ':' + d] || 0;
 const hardOpen = st => save.cleared.includes(st) && starsOf(st, 'normal') > 0;
 const masterOpen = st => starsOf(st, 'hard') > 0;
 const diffOpen = (d, st) => d === 'hard' ? hardOpen(st) : d === 'master' ? masterOpen(st) : true;
+// trophies: shown in Challenges, and reported to Game Center (IDs whydad.<id>, set up in App Store Connect) when the app is signed in
+const owned = () => Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own).length;
+const ACH = [
+  ...WORLDS.map((W, w) => ({ id: 'ch' + (w + 1), em: W.em, n: `${W.name}, done`, d: `Finish chapter ${w + 1}.`, ok: () => save.cleared.includes(w * 5 + 4) })),
+  { id: 'why', em: '📖', n: 'The Big Book of Why', d: 'Beat Sir Ever-So-Sure.', ok: () => save.cleared.includes(STAGES.length - 1) },
+  { id: 'facts25', em: '💡', n: 'Curious', d: 'Learn 25 facts.', ok: () => save.facts.length >= 25 },
+  { id: 'facts75', em: '🔍', n: 'Investigator', d: 'Learn 75 facts.', ok: () => save.facts.length >= 75 },
+  { id: 'factsall', em: '🎓', n: 'Fact Finder', d: 'Learn every fact.', ok: () => save.facts.length >= Object.keys(MYTHS).length },
+  { id: 'friends10', em: '🧑‍🤝‍🧑', n: 'Backyard Club', d: 'Meet 10 friends.', ok: () => owned() >= 10 },
+  { id: 'friendsall', em: '🏡', n: 'Everybody Home', d: 'Meet all 28 friends.', ok: () => owned() >= 28 },
+  { id: 'stars10', em: '⭐', n: 'Perfect Ten', d: 'Get three stars on 10 stages.', ok: () => Object.values(save.stars || {}).filter(v => v >= 3).length >= 10 },
+  { id: 'endless10', em: '♾️', n: 'Still Standing', d: 'Reach wave 10 in the Endless Stacks.', ok: () => (save.endlessBest || 0) >= 10 },
+  { id: 'master1', em: '🔥', n: 'Myth Master', d: 'Clear a stage on Myth Master.', ok: () => Object.entries(save.stars || {}).some(([k, v]) => k.endsWith(':master') && v > 0) },
+  { id: 'masterch', em: '👑', n: 'Master of a Chapter', d: 'Clear a whole chapter on Myth Master.', ok: () => WORLDS.some((W, w) => mastered5(w)) },
+  { id: 'legend', em: '🔨', n: 'Forged a Legend', d: 'Forge something Legendary.', ok: () => !!save.forgedLegend },
+];
+function checkAch() { if (!save) return; save.ach = save.ach || []; const gc = window.native && window.native.gc;
+  if (gc && !checkAch.synced) { checkAch.synced = true; for (const id of save.ach) gc.achieve('whydad.' + id, true); } // once a launch: anything earned while signed out
+  for (const A of ACH) if (!save.ach.includes(A.id) && A.ok()) { save.ach.push(A.id); if (gc) gc.achieve('whydad.' + A.id); else if (mode === 'title' || (G && G.cleared)) toastMsg(`🏆 ${A.n}!`); }
+  // scores go up only when they beat what Game Center already has, so sending the current best is enough
+  if (gc && save.endlessBest && save.endlessBest !== save.sentEndless) { save.sentEndless = save.endlessBest; gc.score('whydad.endless', save.endlessBest); }
+  if (gc && save.facts.length !== save.sentFacts) { save.sentFacts = save.facts.length; gc.score('whydad.facts', save.facts.length); }
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
+function showTrophies() { checkAch(); const got = save.ach || [];
+  pickFor = null; $('#pickTitle').textContent = `🏆 Trophies · ${got.length}/${ACH.length}`; $('#pickSub').textContent = ''; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = (window.native && window.native.gc ? '<div class="sheetbtns" style="margin:0 0 8px"><button class="btn green" id="gcOpen">Open Game Center</button></div>' : '')
+    + ACH.map(A => `<div class="trophy ${got.includes(A.id) ? 'got' : ''}"><span class="em">${got.includes(A.id) ? A.em : '🔒'}</span><div><b>${A.n}</b><small>${A.d}</small></div>${got.includes(A.id) ? '<i>✔</i>' : ''}</div>`).join('');
+  const o = $('#gcOpen'); if (o) o.onclick = () => window.native.gc.dashboard(); $('#pickm').hidden = false; }
 const mastered5 = w => [0, 1, 2, 3, 4].every(i => starsOf(w * 5 + i, 'master') > 0);
 // what each character is holding: the weapon item in their Weapon slot, or their line's first variant
 function syncWeapons() {
@@ -3282,7 +3316,7 @@ function drawDadAt(c, x, y, h, face, pose, opts = {}) {
   const w = h * img.naturalWidth / img.naturalHeight;
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face, 1);
   if (opts.alpha != null) c.globalAlpha = opts.alpha;
-  c.drawImage(img, -w / 2, -h, w, h);
+  c.drawImage(dressed(img), -w / 2, -h, w, h); hatOn(c, img, -w / 2, -h, w, h, dadHat());
   if (opts.item) { const A = HAND[pose] || HAND.pointing; drawHeldItem(c, [(A[0] - .5) * w, -h + A[1] * h], opts.item, opts.p); }
   c.restore(); c.globalAlpha = 1;
 }
@@ -3442,7 +3476,7 @@ function drawMember(m) {
       const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up
       const fx = m.x + step * .6, fy = m.y + 30 - hop * .5;
       ctx.save(); ctx.translate(fx, fy); ctx.rotate(lean * .6); ctx.scale(m.face * (1 + pop * .07 + wind * .03), 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
-      ctx.drawImage(img, -P.feet * w, -h, w, h);
+      ctx.drawImage(dressed(img, P), -P.feet * w, -h, w, h); hatOn(ctx, img, -P.feet * w, -h, w, h, dadHat());
       const T = lensTint(); if (T) { ctx.fillStyle = T; ctx.globalAlpha = alpha * .45; ctx.beginPath(); ctx.arc((P.lens[0] - P.feet) * w, -h + P.lens[1] * h, P.r * h, 0, 7); ctx.fill(); }
       ctx.restore(); m.lensAt = { x: fx + m.face * (P.lens[0] - P.feet) * w, y: fy - h + P.lens[1] * h }; return;
     }
@@ -3764,6 +3798,75 @@ function unplate(img) {
     x.putImageData(d, 0, y0); } catch (e) { PLATES.set(img, img); return img; }
   PLATES.set(img, c); return c;
 }
+/* ───────── Dad's Wardrobe: things to spend coins on once the team is strong. Looks only, no Power. ───────── */
+// sweaters recolour Dad's drawn jumper (hue in degrees, s/v multipliers; rainbow runs the hue down the jumper)
+const WARD = {
+  sweater: { name: 'Sweaters', items: [
+    { id: 'classic', n: 'Old Faithful', c: 0 }, { id: 'sky', n: 'Sky Blue', c: 600, h: 208 }, { id: 'leaf', n: 'Leaf Green', c: 900, h: 112, s: .85 },
+    { id: 'berry', n: 'Berry Red', c: 1200, h: 356 }, { id: 'grape', n: 'Grape', c: 1600, h: 272, s: .8 }, { id: 'bubble', n: 'Bubblegum', c: 2000, h: 326, s: .55, v: 1.08 },
+    { id: 'storm', n: 'Storm Grey', c: 2500, h: 210, s: .12 }, { id: 'night', n: 'Midnight', c: 3000, h: 226, v: .62 }, { id: 'rainbow', n: 'Rainbow', c: 8000, rainbow: true }] },
+  hat: { name: 'Hats for Dad', items: [
+    { id: 'none', n: 'No hat', c: 0, em: '🙂' }, { id: 'cap', n: 'Ball Cap', c: 1000, em: '🧢' }, { id: 'sun', n: 'Sun Hat', c: 1500, em: '👒' },
+    { id: 'grad', n: 'Thinking Cap', c: 2500, em: '🎓' }, { id: 'top', n: 'Top Hat', c: 4000, em: '🎩' }, { id: 'crown', n: 'Crown of Why', c: 10000, em: '👑' }] },
+  team: { name: 'Team hats', items: [
+    { id: 'none', n: 'Bare heads', c: 0, em: '🙂' }, { id: 'bow', n: 'Bows', c: 1500, em: '🎀' }, { id: 'flower', n: 'Daisies', c: 1500, em: '🌼' },
+    { id: 'party', n: 'Party Hats', c: 2500, em: '🥳' }, { id: 'wizard', n: 'Wizard Hats', c: 4000, em: '🧙' }, { id: 'crown', n: 'Little Crowns', c: 8000, em: '👑' }] },
+  yard: { name: 'Backyard', many: true, items: [
+    { id: 'sunflower', n: 'Sunflowers', c: 800, em: '🌻', at: [38, 290, 32] }, { id: 'mush', n: 'Mushrooms', c: 1000, em: '🍄', at: [408, 266, 24] },
+    { id: 'balloons', n: 'Balloons', c: 1500, em: '🎈', at: [340, 176, 34] }, { id: 'kite', n: 'Kite', c: 2000, em: '🪁', at: [116, 64, 34] },
+    { id: 'flamingo', n: 'Lawn Flamingo', c: 2500, em: '🦩', at: [46, 226, 30] }, { id: 'tent', n: 'Tent', c: 4000, em: '⛺', at: [396, 232, 36] },
+    { id: 'fountain', n: 'Fountain', c: 5000, em: '⛲', at: [112, 236, 40] }, { id: 'rainbow', n: 'Rainbow', c: 8000, em: '🌈', at: [312, 70, 56] }] },
+};
+const look = () => save.look || (save.look = { sweater: 'classic', hat: 'none', team: 'none', yard: [] });
+const wardOwns = (cat, id) => !WARD[cat].items.find(i => i.id === id).c || (save.wardrobe || []).includes(cat + ':' + id);
+const wardItem = cat => WARD[cat].items.find(i => i.id === look()[cat]) || WARD[cat].items[0];
+// a recoloured copy of a Dad drawing, cached per picture and sweater; the lens rim (same gold) is left alone
+const DRESSED = new Map();
+function dressed(img, lens) {
+  const sw = wardItem('sweater'); if (!sw.c || !ready(img)) return img;
+  const key = img.src + '|' + sw.id; if (DRESSED.has(key)) return DRESSED.get(key);
+  const c = document.createElement('canvas'), W = c.width = img.naturalWidth, H = c.height = img.naturalHeight, x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0);
+  try { const d = x.getImageData(0, 0, W, H), p = d.data, lx = lens ? lens.lens[0] * W : -1e9, ly = lens ? lens.lens[1] * H : -1e9, lr = lens ? lens.r * H * 1.6 : 0;
+    for (let y = Math.floor(H * .25); y < H * .78; y++) for (let xx = 0; xx < W; xx++) { const i = (y * W + xx) * 4; if (p[i + 3] < 128) continue;
+      const r = p[i] / 255, g = p[i + 1] / 255, b = p[i + 2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), dd = mx - mn; if (mx < .6 || dd / mx < .4 || mx !== r) continue;
+      const h = 60 * ((g - b) / dd); if (h < 34 || h > 50 || (xx - lx) ** 2 + (y - ly) ** 2 < lr * lr) continue;
+      const hue = sw.rainbow ? (y / H - .25) / .5 * 300 : sw.h, s = Math.min(1, dd / mx * (sw.s ?? 1)), v = Math.min(1, mx * (sw.v ?? 1)), f = k => { const n = (k + hue / 60) % 6; return v - v * s * Math.max(0, Math.min(n, 4 - n, 1)); };
+      p[i] = f(5) * 255; p[i + 1] = f(3) * 255; p[i + 2] = f(1) * 255; }
+    x.putImageData(d, 0, 0); } catch (e) { DRESSED.set(key, img); return img; }
+  DRESSED.set(key, c); return c;
+}
+// the top of a drawing's head, as fractions: [x, y, head width]; from the alpha, once per picture
+const HEADS = new Map();
+function headOf(img) {
+  if (HEADS.has(img.src)) return HEADS.get(img.src);
+  const W = img.naturalWidth, H = img.naturalHeight, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0); let out = [.5, 0, .3];
+  try { const d = x.getImageData(0, 0, W, Math.ceil(H * .3)).data, row = y => { let a = -1, b = -1; for (let xx = 0; xx < W; xx++) if (d[(y * W + xx) * 4 + 3] > 100) { if (a < 0) a = xx; b = xx; } return [a, b]; };
+    let top = 0; while (top < H * .3 && row(top)[0] < 0) top++; const [a, b] = row(Math.min(Math.ceil(H * .3) - 1, top + Math.round(H * .045))), [a0, b0] = row(top + 1);
+    out = [(a0 + b0) / 2 / W, top / H, Math.max(8, b - a) / W]; } catch (e) {}
+  HEADS.set(img.src, out); return out;
+}
+// a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
+function hatOn(c, img, x0, y0, w, h, em, k = 1) { if (!em || !ready(img)) return; const [hx, hy, hw] = headOf(img), s = hw * w * .95 * k;
+  c.save(); c.fillStyle = '#000'; c.font = `${s}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(em, x0 + hx * w, y0 + hy * h + s * .2); c.restore(); }
+const dadHat = () => { const H = wardItem('hat'); return H.c ? H.em : null; };
+const TEAMHAT = { bow: '🎀', flower: '🌼', party: '🎉', wizard: '🧙', crown: '👑' };
+function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t === 'none') return;
+  if (t === 'party' || t === 'wizard') { const [hx, hy, hw] = headOf(img), cx = x0 + hx * w, cy = y0 + hy * h + 4, s = Math.min(34, hw * w * .7);
+    c.save(); c.fillStyle = t === 'party' ? '#e2574c' : '#6b4fa0'; c.strokeStyle = '#3a2c20'; c.lineWidth = 2; c.beginPath(); c.moveTo(cx - s * .45, cy); c.lineTo(cx + s * .45, cy); c.lineTo(cx + (t === 'wizard' ? s * .25 : 0), cy - s * 1.1); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = t === 'party' ? '#ffd34d' : '#ffd34d'; c.font = `${s * .4}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; if (t === 'wizard') c.fillText('⭐', cx, cy - s * .4); else { c.beginPath(); c.arc(cx, cy - s * 1.1, s * .14, 0, 7); c.fill(); c.stroke(); }
+    c.restore(); return; }
+  hatOn(c, img, x0, y0, w, h, TEAMHAT[t], .6);
+}
+function openWardrobe() { const L = look();
+  pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.`; $('#pickUnequip').hidden = true;
+  $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
+    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${it.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : it.c ? `hsl(${it.h},${Math.round((it.s ?? 1) * 70)}%,${Math.round((it.v ?? 1) * 52)}%)` : '#d59e3d'}"></span>` : `<span class="wem">${it.em}</span>`;
+    return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && save.coins < it.c ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
+  $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
+    const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
+    if (WARD[cat].many) L.yard = L.yard.includes(id) && !fresh ? L.yard.filter(y => y !== id) : [...new Set([...L.yard, id])]; else L[cat] = id;
+    persist(); drawStatics(); openWardrobe(); });
+  $('#pickm').hidden = false; }
 // the home team photo: the hand-drawn Dad and friends, which match the painted backyard and face the camera.
 // The 3D sheets are rendered from above for the arena, so up close Dad looked down at his feet.
 function drawTitleParty() {
@@ -3774,11 +3877,12 @@ function drawTitleParty() {
   const n = save.party.length, SPOT = n === 1 ? [[100, 312, 104, 1]] : n === 2 ? [[92, 312, 104, 1], [348, 312, 104, -1]]
     : [[80, 300, 96, 1], [360, 300, 96, -1], [220, 326, 92, 1]];
   // a png standing on its feet at (cx, cy), h tall, breathing a little; false if the art isn't loaded
-  const stand = (img0, cx, cy, h, face, ph, amp = 1) => { if (!ready(img0)) return false; const img = unplate(img0); const w = h * img0.naturalWidth / img0.naturalHeight, br = Math.sin(t * 2.2 + ph);
-    x.save(); x.translate(cx, cy); x.rotate(Math.sin(t * 1.1 + ph) * .015 * amp); x.scale(face * (1 - br * .012 * amp), 1 + br * .018 * amp); x.drawImage(img, -w / 2, -h, w, h); x.restore(); return true; };
+  const stand = (img0, cx, cy, h, face, ph, amp = 1, dad = false) => { if (!ready(img0)) return false; const img = dad ? dressed(img0) : unplate(img0); const w = h * img0.naturalWidth / img0.naturalHeight, br = Math.sin(t * 2.2 + ph);
+    x.save(); x.translate(cx, cy); x.rotate(Math.sin(t * 1.1 + ph) * .015 * amp); x.scale(face * (1 - br * .012 * amp), 1 + br * .018 * amp); x.drawImage(img, -w / 2, -h, w, h); if (dad) hatOn(x, img0, -w / 2, -h, w, h, dadHat()); else teamHat(x, img0, -w / 2, -h, w, h); x.restore(); return true; };
+  for (const id of look().yard) { const Y = WARD.yard.items.find(i => i.id === id); if (!Y) continue; x.save(); x.fillStyle = '#000'; x.font = `${Y.at[2]}px ${EMOJI_FONT}`; x.textAlign = 'center'; x.textBaseline = 'bottom'; x.fillText(Y.em, Y.at[0], Y.at[1] + (save.opt.calm ? 0 : Math.sin(t * 1.3 + Y.at[0]) * (id === 'balloons' || id === 'kite' ? 3 : 0))); x.restore(); } // the yard, behind everyone
   const items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
   for (const it of items) {
-    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8)) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
+    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true)) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
     const [sx, sy, h, face] = SPOT[it.i], ph = it.i * 2.1, hop = Math.max(0, Math.sin(t * 3 + ph * 1.7)) ** 6 * 10; // a little hop now and then
     shadow(sx, sy - 1, 34);
     if (!stand(art('pet_' + it.id), sx, sy - hop, h, face, ph)) drawCompanionAt(x, it.id, sx, sy, 1.85, face, t, { aim: face > 0 ? Math.PI / 2 - .45 : Math.PI / 2 + .45, bob: ph });
@@ -3946,6 +4050,7 @@ const dayHash = (d, k) => { let h = 2166136261 ^ k; for (const ch of d) h = Math
 function dailyToday() { const d = today(), pool = save.cleared.filter(i => i > 0).sort((a, b) => a - b); if (pool.length < 2) return null; return { stage: pool[dayHash(d, 1) % pool.length], tw: TWISTS[dayHash(d, 2) % TWISTS.length], done: save.dailyMyth === d }; }
 function updateModes() {
   const D = dailyToday(), db = $('#dailyBtn'), eb = $('#endlessBtn'); if (!db) return;
+  $('#trophyTxt').textContent = `${(save.ach || []).length} of ${ACH.length}`;
   db.disabled = !D || !has('daily'); $('#dailyTxt').textContent = !has('daily') ? 'Opens after 6 stages.' : !D ? 'Clear two stages first.' : D.done ? `Done today ✔ (${D.tw.em} ${D.tw.n}). A new one tomorrow.` : `Today: ${D.tw.em} ${D.tw.n}. A prize the first time.`;
   const eOpen = save.cleared.includes(4) && has('endless'); eb.disabled = !eOpen; $('#endlessTxt').textContent = !eOpen ? 'Opens after 12 stages.' : save.endlessBest ? `Waves until Dad needs a nap. Best: wave ${save.endlessBest}.` : 'Waves until Dad needs a nap. How far can you go?';
   const lv = partyLevel(); $('#roomTxt').textContent = lv < ROOM_LEVEL ? `Opens at party level ${ROOM_LEVEL} (you're ${lv}).` : `One big boss and three questions. ${roomRunsLeft()} visit${roomRunsLeft() === 1 ? '' : 's'} left.`;
@@ -4013,6 +4118,7 @@ $('#hubChall').onclick = function () { if (lockedHub(this)) return; updateModes(
 $('#hubChests').onclick = function () { if (!lockedHub(this)) openChests(anyChest() ? null : STAGES[nextStage()].w); };
 $('#challClose').onclick = () => { $('#challm').hidden = true; };
 $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
+$('#challTrophy').onclick = () => { $('#challm').hidden = true; showTrophies(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
 function startGame(stage, how = {}) { music(STAGES[stage].w);
@@ -4561,7 +4667,7 @@ const OFFERS = [
 ];
 function buildStore() {
   const box = $('#storeList');
-  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">🎟️</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div><div class="offer" id="wardRow"><div class="em">👕</div><div class="txt"><b>Dad's Wardrobe</b><span>Sweaters, hats and things for the backyard. Just for looks.</span></div><button class="btn small" id="wardGo">Look</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; const wg = $('#wardGo'); if (wg) wg.onclick = openWardrobe; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${o.em}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Nothing here costs real money.';
@@ -4809,7 +4915,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });

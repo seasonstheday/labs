@@ -1,7 +1,7 @@
 # Recorded voices for every fixed line in the game: python3 defender/tools/gen_voice.py [--only d,k,v,n] [--limit N]
 # Needs the game served on :8765 (it asks the page for its lines: dbg.voiceLines) and the Gemini API (the proxy adds the key).
 # Writes defender/assets/voice/<key>.mp3 (mono, 40 kbps) and voice/index.json, skipping clips that already exist,
-# so it can be stopped and run again. Delete a clip to re-record it.
+# so it can be stopped and run again. Delete a clip to re-record it. Tier 1 allows 100 clips a day; it stops cleanly at that.
 import json, os, sys, base64, subprocess, time, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(HERE, '..', 'assets', 'voice'); os.makedirs(OUT, exist_ok=True)
@@ -16,7 +16,10 @@ CAST = {
 def lines():
     js = "import { chromium } from '%s/../tests/node_modules/playwright/index.mjs'; const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium' }); const p = await b.newPage(); await p.goto('http://localhost:8765/defender/?debug'); await p.waitForTimeout(800); console.log(JSON.stringify(await p.evaluate(() => dbg.voiceLines()))); await b.close();" % HERE
     return json.loads(subprocess.run(['node', '--input-type=module', '-e', js], capture_output=True, text=True, check=True).stdout)
+DAILY_OUT = False
 def tts(text, who, out):
+    global DAILY_OUT
+    if DAILY_OUT: return False
     voice, style = CAST[who]
     body = json.dumps({'contents': [{'parts': [{'text': f'{style}: {text}'}]}], 'generationConfig': {'responseModalities': ['AUDIO'], 'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}).encode()
     err = None
@@ -30,13 +33,14 @@ def tts(text, who, out):
         except urllib.error.HTTPError as e:
             err = f'HTTP {e.code}: {e.read()[:160]}'
             if e.code in (401, 402, 403): break  # out of credit or no key: stop trying
+            if e.code == 429 and 'per_day' in err: DAILY_OUT = True; break  # the day's quota (100 clips on Tier 1): try again tomorrow
         except Exception as e: err = repr(e)
         time.sleep(3 + a * 5)
     print('  failed', who, text[:50], err, flush=True); return False
 if __name__ == '__main__':
     a = sys.argv[1:]; only = set(a[a.index('--only') + 1].split(',')) if '--only' in a else set(CAST); limit = int(a[a.index('--limit') + 1]) if '--limit' in a else 10**9
-    L = [x for x in lines() if x['who'] in only]; todo = [x for x in L if not os.path.exists(os.path.join(OUT, x['key'] + '.mp3'))][:limit]
+    L = [x for x in lines() if x['who'] in only]; todo = sorted([x for x in L if not os.path.exists(os.path.join(OUT, x['key'] + '.mp3'))], key=lambda x: x['who'] == 'd')[:limit]  # the story's other voices first, then Dad's facts
     print(f'{len(L)} lines, {len(todo)} to record', flush=True)
     with ThreadPoolExecutor(4) as ex: list(ex.map(lambda x: tts(x['text'], x['who'], os.path.join(OUT, x['key'] + '.mp3')), todo))
     have = sorted(f[:-4] for f in os.listdir(OUT) if f.endswith('.mp3')); json.dump(have, open(os.path.join(OUT, 'index.json'), 'w'))
-    print(f'index: {len(have)} clips', flush=True)
+    print(f'index: {len(have)} clips' + (' (stopped: the daily quota is used up; run again tomorrow)' if DAILY_OUT else ''), flush=True)
