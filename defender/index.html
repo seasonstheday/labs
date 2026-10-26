@@ -582,13 +582,13 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 69</div>
+    <div class="build">build 70</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubClub" data-lock="club">🏡<small>Club</small><i class="dot" hidden></i></button></div>
     <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubCup" data-lock="cup">🥇<small>Myth Cup</small><i class="dot" hidden></i></button></div>
     <div class="side" hidden>
-      <button class="btn big-icon ghost" id="openParty">🧑‍🤝‍🧑<small>Party</small></button>
+      <button class="btn big-icon ghost" id="openParty">🐾<small>Party</small></button>
       <button class="btn big-icon ghost" id="openItems">🎒<small>Items</small></button>
       <button class="btn big-icon ghost" id="openBook">📔<small>Diary</small></button>
       <button class="btn big-icon ghost" id="openMissions">📋<small>Missions</small><i class="dot" id="misDot" hidden></i></button>
@@ -624,7 +624,7 @@
   <!-- ───────── comics: Dad and the Kid, three panels ───────── -->
   <nav id="tabbar" hidden>
     <button data-tab="shop"><span class="ti">🏪</span>Shop<i class="dot" hidden></i></button>
-    <button data-tab="friends"><span class="ti">🧑‍🤝‍🧑</span>Friends<i class="dot" hidden></i></button>
+    <button data-tab="friends"><span class="ti">🐾</span>Friends<i class="dot" hidden></i></button>
     <button data-tab="play" class="playtab"><span class="ti">▶</span>Play<i class="dot" hidden></i></button>
     <button data-tab="bag"><span class="ti">🎒</span>Bag<i class="dot" hidden></i></button>
     <button data-tab="diary"><span class="ti">📔</span>Diary<i class="dot" hidden></i></button>
@@ -662,7 +662,7 @@
   <!-- ───────── garage: dad's weapon ───────── -->
   <section id="shop" class="screen list-screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">The Garage</h2><span class="pill coins">🪙 <span class="coinsN">0</span></span></div>
-    <div class="seg"><button data-seg="friends">🧑‍🤝‍🧑 Friends</button><button data-seg="weapons" class="on">⚔️ Weapons</button></div>
+    <div class="seg"><button data-seg="friends">🐾 Friends</button><button data-seg="weapons" class="on">⚔️ Weapons</button></div>
     <p class="intro" id="shopIntro">Pick the weapon each friend holds.</p>
     <div class="tabs" id="shopTabs"></div>
     <div class="list" id="shopList"></div>
@@ -974,7 +974,7 @@
         <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
         <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
         <div class="hc"><i>📔</i>Every popped myth is a <b>real fact</b> in your Diary. Facts you know make myths weaker.</div>
-        <div class="hc"><i>🧑‍🤝‍🧑</i><b>Friends</b> join with pages, grow with levels, and wear things from your <b>Bag</b>.</div>
+        <div class="hc"><i>🐾</i><b>Friends</b> join with pages, grow with levels, and wear things from your <b>Bag</b>.</div>
       </div>
       <div class="row exit"><button class="btn" id="closeHow">Got it</button></div>
     </div>
@@ -2268,10 +2268,13 @@ function voParts(t, who) { t = String(t).replace(/\s+/g, ' ').trim(); if (!t) re
   for (const L of VO_LEAD) { if (t.startsWith(L + ' ')) { const rest = voParts(t.slice(L.length + 1).replace(/^\.\s*/, ''), who); return VOICES.has(vkey(L, who)) && rest ? [vkey(L, who), ...rest] : null; }
     if (t.endsWith(' ' + L)) { const head = voParts(t.slice(0, -L.length - 1).replace(/\.\s*$/, '.'), who); return head && VOICES.has(vkey(L, who)) ? [...head, vkey(L, who)] : null; } }
   return null; }
-function voStop() { voQ = []; if (voEl) { voEl.pause(); voEl = null; } duck(false); try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} }
+function voStop() { voQ = []; if (voEl) { const e = voEl; voEl = null; try { e.stop ? e.stop() : e.pause(); } catch (x) {} } duck(false); try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} }
 // the music dips while someone talks
 function duck(on) { if (!SND.ctx || !SND.mus) return; const g = SND.mus.gain, t = SND.ctx.currentTime, to = save.opt.music ? (on ? .14 : .34) : 0; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(to, t + (on ? .15 : .6)); }
 function voNext() { const h = voQ.shift(); if (!h) { voEl = null; duck(false); return; }
+  // through Web Audio once a tap has woken it: iPhones refuse an <audio> that starts without a tap, as a fact read after a pop does
+  const c = SND.ctx, q = voQ; if (c && c.state === 'running') { fetch(`assets/voice/${h}.mp3`).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => c.decodeAudioData(b)).then(buf => { if (voQ !== q) return;
+    const src = c.createBufferSource(); src.buffer = buf; src.connect(SND.master || c.destination); src.onended = () => { if (voEl === src) voNext(); }; voEl = src; duck(true); src.start(); }).catch(() => { if (voQ === q) voNext(); }); return; }
   const el = voEl = new Audio(`assets/voice/${h}.mp3`); el.volume = 1; el.onended = voNext; el.onerror = voNext; el.play().then(() => duck(true)).catch(voNext); }
 function say(t, who = 'd') { if (!save.opt.voice) return; voStop(); const parts = VOICES.size ? voParts(t, who) : null;
   if (parts && parts.length) { voQ = parts; voNext(); } else sayTTS(t); }
@@ -4856,7 +4859,7 @@ const TAB_OF = { '#title': 'play', '#map': 'play', '#missions': 'play', '#store'
 // one new idea at a time: each system opens after a number of stages cleared, with a line on the clear screen and a dot
 // on its tab until it's visited. Saves that are already further along have everything open.
 const UNLOCKS = [
-  { k: 'friends', at: 1, tab: 'friends', t: '🧑‍🤝‍🧑 Friends is open: tap it to meet Webster and see his tricks.' },
+  { k: 'friends', at: 1, tab: 'friends', t: '🐾 Friends is open: tap it to meet Webster and see his tricks.' },
   { k: 'shop', at: 2, tab: 'shop', t: '🏪 The Shop is open: spend coins and gems there.' },
   { k: 'patrol', at: 2, t: '🏕️ Backyard Patrol is on (home screen): your friends collect coins while you\'re away.' },
   { k: 'chests', at: 3, t: '🎁 Chapter Rewards are open (home screen): prizes for every chapter you clear.' },
@@ -5046,7 +5049,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
