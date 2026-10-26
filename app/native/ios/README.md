@@ -22,3 +22,35 @@ What players see:
 
 Known GameKit quirk: on the very first launch after installing, saved games can take until the second launch to appear.
 Android keeps the phone copy and the save code; Google Play Games saved games would be the equivalent there.
+
+## Achievements and leaderboards
+
+The game reports these through the same plugin (`achieve`, `score`, `dashboard`; the bridge is `window.native.gc`).
+Create them in App Store Connect → the app → **Game Center**, with exactly these IDs. Every achievement is one step
+(reported at 100%), so any point value works; Apple allows up to 1,000 points in total.
+
+| Achievement ID | Name | Earned by |
+|---|---|---|
+| `whydad.ch1` … `whydad.ch8` | The Backyard, done … The Night Sky, done | Finishing each chapter |
+| `whydad.why` | The Big Book of Why | Beating Sir Ever-So-Sure |
+| `whydad.facts25` | Curious | Learning 25 facts |
+| `whydad.facts75` | Investigator | Learning 75 facts |
+| `whydad.factsall` | Fact Finder | Learning every fact |
+| `whydad.friends10` | Backyard Club | Meeting 10 friends |
+| `whydad.friendsall` | Everybody Home | Meeting all 28 friends |
+| `whydad.stars10` | Perfect Ten | Three stars on 10 stages |
+| `whydad.endless10` | Still Standing | Reaching wave 10 in the Endless Stacks |
+| `whydad.master1` | Myth Master | Clearing a stage on Myth Master |
+| `whydad.masterch` | Master of a Chapter | Clearing a whole chapter on Myth Master |
+| `whydad.legend` | Forged a Legend | Forging something Legendary |
+
+Leaderboards (classic, "high score is best", integer):
+
+| Leaderboard ID | Name | Score |
+|---|---|---|
+| `whydad.endless` | Endless Stacks | Best wave reached |
+| `whydad.facts` | Fact Finders | Facts learned |
+
+Each needs a name, a description (shown before and after earning) and a 512 × 512 or 1024 × 1024 image. The emoji in the
+game's Trophies list (Challenges → 🏆 Trophies) are a starting point for the images. On the web, trophies show as
+toasts and in that same list.

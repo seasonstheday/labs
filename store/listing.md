@@ -75,4 +75,4 @@ Apple already indexes the name and subtitle, so don't repeat their words here; "
 Apple scales the 6.9" set for smaller iPhones. If the app is marked iPad-compatible, iPad 13" shots (2064 × 2752) are also needed. For version 1, consider shipping as iPhone only. The game is portrait and phone-shaped, and it runs on iPads as an iPhone app anyway.
 
 ## App icon
-`icon-1024-draft.png`: 1024 × 1024, square, no transparency, no rounded corners (Apple adds them). It's made from the existing Dad art. Regenerate a crisper one with the image model once the Gemini account has credit again.
+`icon-1024.png`: 1024 × 1024, square, no transparency, no rounded corners (Apple adds them).

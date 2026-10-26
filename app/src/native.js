@@ -2,7 +2,7 @@
 // It gives the game three things it checks for at run time and never finds on the web:
 //   window.rewardedAd()  -> Promise<boolean>   show a rewarded video; true only if it was watched through
 //   window.iap           -> { products(), buy(id), restore() }   the grown-ups store, deterministic goods only
-//   window.native        -> { platform, haptic(), saves }   saves: copies of the save on the phone and in iCloud
+//   window.native        -> { platform, haptic(), saves, gc }   saves: copies of the save on the phone and in iCloud; gc: Game Center achievements and scores
 // Every ad or purchase the game offers sits behind its own adult gate; this file just talks to the SDKs.
 (function () {
   const cap = window.Capacitor;
@@ -78,8 +78,14 @@
     loadCloud: async () => { try { if (!(await signIn())) return null; const r = await GS().load(); return r && r.data || null; } catch (e) { return null; } },
   };
 
+  // Game Center achievements and leaderboards: fire and forget; nothing happens if the player isn't signed in
+  const gc = {
+    achieve: (id, quiet = false) => { signIn().then(ok => ok && GS().achieve({ id, quiet })).catch(() => {}); },
+    score: (board, value) => { signIn().then(ok => ok && GS().score({ board, value })).catch(() => {}); },
+    dashboard: () => { signIn().then(ok => ok && GS().dashboard()).catch(() => {}); },
+  };
   window.native = {
-    platform, saves,
+    platform, saves, gc,
     haptic: async (style = 'LIGHT') => { try { const H = cap.Plugins && cap.Plugins.Haptics; if (H) await H.impact({ style }); } catch (e) {} }, // LIGHT, MEDIUM or HEAVY
   };
 
