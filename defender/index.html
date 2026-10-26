@@ -429,6 +429,8 @@
   .teampow b { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #ffd76a; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
   .row .btn { flex: 1; }
+  .remlist { display: flex; flex-direction: column; gap: 6px; width: 100%; } .rem { display: grid; grid-template-columns: 40px 1fr; align-items: center; column-gap: 8px; background: #fff; border: 3px solid var(--line); border-radius: 12px; padding: 6px 10px; text-align: left; }
+  .rem .ic { grid-row: span 2; font-size: 28px; text-align: center; } .rem b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .rem i { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; color: var(--muted); }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
   .bigstats b { display: block; font: 700 30px/1 "Fredoka", Arial, sans-serif; } .bigstats .know b { color: var(--teal); } .bigstats span { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; color: var(--muted); }
   .statline { margin: 2px 0 6px; text-align: center; font: 600 16px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -565,7 +567,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 64</div>
+    <div class="build">build 66</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -782,7 +784,9 @@
       <p class="sub hand" style="text-align:center">Too many questions at once. Everyone keeps what they learned.</p>
       <div id="overStats"></div>
       <div class="lootrow" id="overLoot"></div>
+      <p class="statline" id="overTip" hidden></p>
       <div class="row exit"><button class="btn" id="retryWave">Try that wave again</button></div>
+      <div class="row" id="powRow" hidden style="margin-top:8px"><button class="btn green" id="powUp">💪 Power up the team</button></div>
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="retry">Restart stage</button><button class="btn ghost small" id="overHome">Home</button></div>
     </div>
   </div>
@@ -2197,7 +2201,26 @@ save.party = save.party.filter(id => CHARS[id] && chr(id).own).slice(0, MAX_COMP
 // buttons say their name when the labels option is on (any button, any screen)
 function sayNow(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = 1; speechSynthesis.speak(u); } catch (e) {} }
 document.addEventListener('pointerdown', e => { if (!save.opt.labels) return; const b = e.target.closest('button, .tog, .pin, .cat, .card'); if (!b) return; const t = (b.getAttribute('title') || b.textContent || '').replace(/[^\p{L}\p{N}'’ .,!?%+-]/gu, ' ').replace(/\s+/g, ' ').trim(); if (t) sayNow(t.slice(0, 80)); }, true);
-function say(t) { try { if (!save.opt.voice || !window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .95; u.pitch = 1; speechSynthesis.speak(u); } catch (e) {} }
+function sayTTS(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = .95; u.pitch = 1; speechSynthesis.speak(u); } catch (e) {} }
+// recorded voices: assets/voice/<hash>.mp3 for every fixed line, by who says it (d Dad, k the Kid, v Sir Ever-So-Sure, n the narrator).
+// voice/index.json lists the clips that exist; a line without one (anything with a changing number) is read by the phone instead.
+const vkey = (t, who) => { t = who + '|' + String(t).replace(/\s+/g, ' ').trim(); let h = 0x811c9dc5; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+let VOICES = new Set(), voQ = [], voEl = null;
+fetch('assets/voice/index.json').then(r => r.ok ? r.json() : []).then(l => { VOICES = new Set(l); }).catch(() => {});
+// a spoken line can be a fixed opener and a fact ("Busted!" + the fact): each piece has its own clip
+const VO_LEAD = ['Busted!', 'Not quite.', 'Myth check!', 'Myth, or fact?', 'Right!'];
+function voParts(t, who) { t = String(t).replace(/\s+/g, ' ').trim(); if (!t) return [];
+  if (VOICES.has(vkey(t, who))) return [vkey(t, who)];
+  for (const L of VO_LEAD) { if (t.startsWith(L + ' ')) { const rest = voParts(t.slice(L.length + 1).replace(/^\.\s*/, ''), who); return VOICES.has(vkey(L, who)) && rest ? [vkey(L, who), ...rest] : null; }
+    if (t.endsWith(' ' + L)) { const head = voParts(t.slice(0, -L.length - 1).replace(/\.\s*$/, '.'), who); return head && VOICES.has(vkey(L, who)) ? [...head, vkey(L, who)] : null; } }
+  return null; }
+function voStop() { voQ = []; if (voEl) { voEl.pause(); voEl = null; } duck(false); try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} }
+// the music dips while someone talks
+function duck(on) { if (!SND.ctx || !SND.mus) return; const g = SND.mus.gain, t = SND.ctx.currentTime, to = save.opt.music ? (on ? .14 : .34) : 0; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(to, t + (on ? .15 : .6)); }
+function voNext() { const h = voQ.shift(); if (!h) { voEl = null; duck(false); return; }
+  const el = voEl = new Audio(`assets/voice/${h}.mp3`); el.volume = 1; el.onended = voNext; el.onerror = voNext; el.play().then(() => duck(true)).catch(voNext); }
+function say(t, who = 'd') { if (!save.opt.voice) return; voStop(); const parts = VOICES.size ? voParts(t, who) : null;
+  if (parts && parts.length) { voQ = parts; voNext(); } else sayTTS(t); }
 const OPTS = [
   ['little', '🧸', 'Little Kid mode', 'Myths walk slower and Dad never runs out of Patience; he just takes a snack break.'],
   ['voice', '🔊', 'Read facts aloud', 'Dad reads every new fact out loud.'],
@@ -2211,12 +2234,16 @@ const OPTS = [
   ['autopick', '⏱️', 'Pick tricks for me', 'If nobody picks a trick within 5 seconds, Dad picks the best one.'],
 ];
 
-/* ───────── sound: every effect and the music are synthesised, so there are no files to load ───────── */
+/* ───────── sound: small effects are synthesised; music, voices and the big moments are recorded files ───────── */
 const SND = { ctx: null, sfx: null, mus: null, last: {} };
 function audio() {
   if (SND.ctx) return SND.ctx; const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
-  const c = SND.ctx = new AC(), master = c.createGain(); master.connect(c.destination);
-  SND.sfx = c.createGain(); SND.sfx.connect(master); SND.mus = c.createGain(); SND.mus.connect(master); volumes(); return c;
+  const c = SND.ctx = new AC(), master = SND.master = c.createGain(); master.connect(c.destination);
+  // effects go through a gentle low-pass and a touch of room, so the little synth sounds sit under the orchestral music
+  SND.sfx = c.createGain(); const soft = c.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 4200; soft.Q.value = .4; SND.sfx.connect(soft); soft.connect(master);
+  try { const len = c.sampleRate * 1.1, ir = c.createBuffer(2, len, c.sampleRate); for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+    const room = c.createConvolver(), wet = c.createGain(); room.buffer = ir; wet.gain.value = .16; soft.connect(room); room.connect(wet); wet.connect(master); } catch (e) {}
+  SND.mus = c.createGain(); SND.mus.connect(master); volumes(); loadStings(c); return c;
 }
 function volumes() { if (!SND.ctx) return; SND.sfx.gain.value = save.opt.sfx ? .8 : 0; SND.mus.gain.value = save.opt.music ? .34 : 0;
   if (!save.opt.music && musEl) { fadeOut(musEl, .2); musEl = null; } else if (save.opt.music && !musEl && musKey != null && typeof playTrack === 'function') { const k = musKey; musKey = null; music(k); } }
@@ -2255,7 +2282,12 @@ const SFX = {
   move:  () => { noise(.3, { vol: .14, f: 600, q: .5 }); tone(330, .4, { type: 'triangle', vol: .11, slide: 1.5 }); },
 };
 // play an effect, at most so often per kind, so a crowd of pops stays a crowd and not a roar
-function sfx(k, arg) { if (!save.opt.sfx || !SND.ctx || SND.ctx.state !== 'running') return; const now = SND.ctx.currentTime, gap = { pop: .035, hit: .03, xp: .05, coin: .05, crit: .06, zap: .08 }[k] || 0; if (gap && now - (SND.last[k] || 0) < gap) return; SND.last[k] = now; try { SFX[k](arg); } catch (e) {} }
+// the big moments play a few seconds of the soundtrack itself (assets/sfx/, cut from the score); the synth version is the fallback
+const STING = { win: null, lose: null, boss: null, level: null };
+function loadStings(c) { for (const k in STING) fetch(`assets/sfx/${k}.mp3`).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => c.decodeAudioData(b)).then(buf => { STING[k] = buf; }).catch(() => {}); }
+function sting(k) { const c = SND.ctx, buf = STING[k]; if (!buf) return false; const src = c.createBufferSource(), g = c.createGain(); src.buffer = buf; g.gain.value = .9; src.connect(g); g.connect(SND.master || c.destination);
+  src.start(); duck(true); clearTimeout(sting.t); sting.t = setTimeout(() => { if (!voEl) duck(false); }, buf.duration * 1000 - 300); return true; }
+function sfx(k, arg) { if (!save.opt.sfx || !SND.ctx || SND.ctx.state !== 'running') return; const now = SND.ctx.currentTime, gap = { pop: .035, hit: .03, xp: .05, coin: .05, crit: .06, zap: .08 }[k] || 0; if (gap && now - (SND.last[k] || 0) < gap) return; SND.last[k] = now; try { if (k in STING && sting(k)) return; SFX[k](arg); } catch (e) {} }
 // a tap on the phone: the native app's haptics, or a short vibration on Android browsers
 function buzz(style = 'LIGHT') { if (!save.opt.buzz) return; try { if (window.native && window.native.haptic) window.native.haptic(style); else if (navigator.vibrate) navigator.vibrate(style === 'HEAVY' ? 28 : style === 'MEDIUM' ? 16 : 6); } catch (e) {} }
 // music: a gentle loop per chapter (and one for home) from its own key, scale and tempo, played on two soft voices
@@ -2786,7 +2818,7 @@ function updateShots(dt) {
 function update(dt) {
   G.t += dt; const dad = G.dad, S = G.S;
   if (G.pendingCheck && !G.over) { const id = G.pendingCheck; G.pendingCheck = null; askCheck(id); return; }
-  if (G.freePicks > 0) { G.freePicks--; offerCards(G.freePicks + 1); return; }
+  if (G.freePicks > 0) { const n = G.freePicks; G.freePicks = 0; rememberAll(n); return; }
   if (G.room) {
     const b = G.boss;
     if (b && b.hp > 0) { const th = [.75, .5, .25][G.qAsked]; if (th != null && b.hp < b.maxhp * th && $('#quizm').hidden) { G.qAsked++; askQuiz(); return; } if (b.weak > 0) b.weak -= dt; }
@@ -2952,7 +2984,24 @@ function learn(o) {
   if (o.lvl === MAX_RANK && evolved(o.m, o.a)) evolveBanner(o.m, o.a);
 }
 let apT = 0;
+// at the start of a match the team remembers tricks from last time: the best of three each time, all at once, one card to read
+function rememberAll(n) {
+  const got = [];
+  for (let i = 0; i < n; i++) { const opts = trickOpts(); if (!opts.length) break; const three = []; while (three.length < 3 && opts.length) three.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
+    for (const o of three) o.score = (willEvolve(o) ? 4 : 0) + (comboOf(o) ? 3 : 0) + (o.lvl === 1 ? 1 : 0) + o.lvl * .2 + Math.random() * .1;
+    const best = three.sort((x, y) => y.score - x.score)[0]; learn(best); got.push(best); }
+  if (!got.length) return;
+  clearTimeout(apT); $('#apwrap').innerHTML = ''; $('#toast').hidden = true;
+  $('#levelup h2').textContent = got.length > 1 ? `The team remembered ${got.length} tricks!` : 'The team remembered a trick!';
+  $('#levelup .sub').textContent = 'From last time:';
+  const box = $('#cards'); box.classList.remove('tall');
+  const rows = []; for (const o of got) { const r = rows.find(x => x.m === o.m && x.a === o.a); if (r) { r.lvl = o.lvl; r.n++; } else rows.push({ m: o.m, a: o.a, lvl: o.lvl, n: 1 }); } // one row per trick, at the rank it ended on
+  box.innerHTML = `<div class="remlist">${rows.map(o => `<div class="rem"><span class="ic">${abilEm(o.a)}</span><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}${o.n > 1 ? ` (+${o.n})` : ''} · ${CHARS[o.m.id].name}</i></div>`).join('')}</div>`;
+  $('#nope').textContent = "Let's go ▶"; $('#nope').disabled = false; $('#nope').classList.remove('ghost'); $('#nope').onclick = () => { $('#nope').classList.add('ghost'); $('#levelup').hidden = true; G.paused = false; };
+  G.paused = true; $('#levelup').hidden = false;
+}
 function offerCards(free = 0) {
+  $('#nope').classList.add('ghost'); $('#toast').hidden = true; // the card is what to read now; the fact waits in the Diary
   clearTimeout(apT); $('#apwrap').innerHTML = '';
   const opts = trickOpts();
   if (!opts.length) { G.hp = Math.min(G.maxhp, G.hp + 30); G.coins += 10; $('#coinN').textContent = G.coins; return; }
@@ -3813,7 +3862,7 @@ function askCheck(id) {
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
   const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
   $('#ansMyth').disabled = $('#ansFact').disabled = false; G.paused = true; $('#quizm').hidden = false; sfx('book');
-  sayNow(`Myth check! ${isFact ? M.fact : M.myth}. Myth, or fact?`);
+  say(`Myth check! ${isFact ? M.fact : M.myth} Myth, or fact?`);
 }
 function askQuiz() { $('#quizm h2').textContent = 'Myth or fact?'; $('#quizCard small').textContent = 'The Kid holds up a card';
   G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
@@ -4035,7 +4084,7 @@ function comicNext() {
   const [who, line] = frames[fi].lines[li++], d = document.createElement('div');
   d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : who === 'v' ? 'vil' : 'narr');
   d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${WHO[who]}</b>`}${line}</div>`;
-  $('#strip').appendChild(d); say(line);
+  $('#strip').appendChild(d); say(line, who);
   const end = fi + 1 >= frames.length && li >= frames[fi].lines.length; $('#comicGo').hidden = !end; $('#comicTap').hidden = end;
 }
 // the Diary can play everything seen so far, from the prologue on
@@ -4045,14 +4094,14 @@ function showCredits(done) {
   const m = $('#creditsm'); m.hidden = false; const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
   $('#creditsGo').onclick = () => { m.hidden = true; done && done(); };
 }
-function closeComic() { $('#comicm').hidden = true; try { speechSynthesis && speechSynthesis.cancel(); } catch (e) {} const f = comicDone; comicDone = null; if (f) f(); }
+function closeComic() { $('#comicm').hidden = true; voStop(); const f = comicDone; comicDone = null; if (f) f(); }
 $('#comicm').onclick = e => { if (e.target.closest('button')) return; comicNext(); };
 $('#bookStory').onclick = playStory;
 $('#comicGo').onclick = closeComic; $('#comicSkip').onclick = closeComic;
 // coins for the match: every pop counts, bosses and clears pay a bonus
 function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ? 30 : 0) + (cleared ? 40 + G.stage * 12 : 0)) * G.D.coin * (1 + save.facts.length * .01)); }
 // Patience lost when a myth gets through, after Pip's shell
-const patHit = d => d * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
+const patHit = d => d * (1 - (G && G.pep ? G.pep * .1 : 0)) * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
 // the scoreboard: three big numbers, then one small line for the rest
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="bigstats"><div><b>${G.busted}</b><span>🎈 Myths</span></div><div class="know"><b>+${coins}</b><span>🪙 Coins</span></div>${gems ? `<div class="know"><b>+${gems}</b><span>💎 Gems</span></div>` : ''}</div>`
@@ -4119,7 +4168,7 @@ function giveXp(cleared) {
     const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
     if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
   }
-  persist(); $('#grew').innerHTML = `✨ Everyone gained ${gain} XP.` + (lines.length ? '<br>' + lines.join('<br>') : ''); return true;
+  persist(); $('#grew').innerHTML = [`✨ +${gain} XP for everyone`, ...lines].map(n => `<div class="nline">${n}</div>`).join(''); return true;
 }
 // a one-time gem for every fact, a Library Card for every finished topic, a trait for every finished chapter
 function payFacts() {
@@ -4132,7 +4181,9 @@ function payFacts() {
 const adToday = () => save.adDay === new Date().toISOString().slice(0, 10);
 function toastLine(msg) { const t = $('#toast'); t.hidden = false; t.classList.remove('out'); t.querySelector('b').textContent = msg; t.querySelector('p').textContent = ''; clearTimeout(toastT); toastT = setTimeout(() => { t.classList.add('out'); setTimeout(() => t.hidden = true, 400); }, 5200); }
 $('#popQuiz').onclick = () => { $('#clearm').hidden = true; G.popQuiz = true; G.asked = G.asked || []; askQuiz(); };
-function gameOver() { sfx('lose'); if (G.endless) { const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
+function gameOver() { sfx('lose'); if (G.endless) { $('#powRow').hidden = $('#overTip').hidden = true; const w = G.wave + 1, best = save.endlessBest || 0; if (w > best) save.endlessBest = w; persist(); setTimeout(() => { $('#overm h2').textContent = w > best ? `New best: wave ${w}!` : `Wave ${w}!`; $('#overm .sub').textContent = `The Endless Stacks kept coming. Your best is wave ${Math.max(w, best)}.`; $('#retryWave').hidden = true; $('#retry').textContent = 'Try again'; }, 0); } else { { const weak = !G.room && !G.twist && teamPower() < recPower(G.stage); $('#powRow').hidden = !weak; $('#overTip').hidden = !weak && !(G.tries >= 1);
+    $('#overTip').textContent = (weak ? `💪 Team ${teamPower().toLocaleString()} · this stage likes ${recPower(G.stage).toLocaleString()}. Upgrades help a lot.` : '') + (G.tries >= 1 ? ' 🍪 Next try, Dad has a snack: more Patience.' : ''); }
+    $('#retry').textContent = 'Restart stage'; $('#overm h2').textContent = 'Dad needs a nap.'; $('#overm .sub').textContent = 'Too many questions at once. Everyone keeps what they learned.'; } G.over = true; G.hp = 0; G.retryWave = G.wave; giveXp(false); $('#retryWave').hidden = !!G.room; $('#prog').hidden = false; if (G.room) $('#quizm').hidden = true; const k = payout(false); setWallet({ coins: save.coins + k }); stats($('#overStats'), k, 0); dropLoot($('#overLoot'), 1, Math.min(.6, G.stage * .015)); portrait('#overDad', 'talking'); $('#overm').hidden = false; }
 function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $('#quizm').hidden = true; $('#roomwin').hidden = true; G = null; lastTP = null; powWatch(); /* levels from the match count quietly */ showScreen('#title'); buildStagePick(); drawStatics(); for (const m of ['#levelup', '#notem', '#pausem', '#clearm', '#overm']) $(m).hidden = true; $('#toast').hidden = true; checkDaily(); }
 
 let pickStage = 0;
@@ -4631,6 +4682,7 @@ $('#closeHow').onclick = () => $('#howm').hidden = true;
 $('#speed').onclick = () => { if (!G) return; G.speed = G.speed === 1 ? 2 : 1; $('#speed').textContent = 'x' + G.speed; $('#speed').classList.toggle('x2', G.speed === 2); };
 $('#pause').onclick = () => { if (!G || G.over || G.cleared || !$('#levelup').hidden) return; G.paused = true; buildToggles($('#pauseToggles')); $('#pausem').hidden = false; };
 $('#resume').onclick = () => { $('#pausem').hidden = true; G.paused = false; };
+$('#powUp').onclick = () => { goHome(); const t = document.querySelector('#tabbar [data-tab="friends"]'); if (t) t.click(); };
 $('#quit').onclick = () => { if (sure($('#quit'), 'Leave?')) goHome(); }; $('#clearHome').onclick = goHome; $('#overHome').onclick = goHome;
 $('#nextStage').onclick = () => { pickStage = Math.min(G.stage + 1, STAGES.length - 1); startGame(pickStage); };
 // the grown-ups' page, behind the gate: this week's learning and play, and the switches that matter to a parent
@@ -4738,10 +4790,11 @@ $('#retry').onclick = () => G.endless ? startEndless() : G.twist ? startDaily() 
 $('#dailyBtn').onclick = () => { $('#challm').hidden = true; startDaily(); }; $('#endlessBtn').onclick = () => { $('#challm').hidden = true; startEndless(); };
 // pick the match back up at the wave that went wrong, keeping every rank and item; the coins so far are already banked
 $('#retryWave').onclick = () => {
+  G.tries = (G.tries || 0) + 1; const pep = G.tries >= 2 ? Math.min(3, G.tries - 1) : 0; if (pep > (G.pep || 0)) { G.pep = pep; G.maxhp = Math.round(G.maxhp * 1.2); } // after two tries, Dad has a snack: more Patience, and myths bump a little softer
   G.over = false; G.hp = G.maxhp; G.enemies = []; G.shots = []; G.eshots = []; G.orbs = []; G.traps = []; G.pending = []; G.toSpawn = []; G.boss = null; $('#bossbar').hidden = true;
   G.coins = 0; G.busted = 0; $('#coinN').textContent = 0; $('#bustN').textContent = 0; G.breakT = 2.2; G.nopes = Math.max(G.nopes, 1);
   for (const m of G.party) { m.anim = null; m.jump = null; m.x = m.home.x; m.y = m.home.y; }
-  $('#overm').hidden = true; text(CX, CY - 150, 'One more try!', '#ecb23c', 30, 1.4);
+  $('#overm').hidden = true; text(CX, CY - 150, G.pep ? 'Dad had a snack! +Patience' : 'One more try!', '#ecb23c', 30, 1.4);
 };
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
 
@@ -4756,7 +4809,12 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, musNow: () => musEl && { name: musEl.name, t: musEl.el.currentTime, paused: musEl.el.paused }, musSeek: t => { if (musEl) musEl.el.currentTime = musEl.el.duration - t; } };
+if (location.search.includes('debug')) window.dbg = { TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+    for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
+    for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
+    WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
+    for (const u of UNLOCKS) { const m = u.t.match(/^(\S+)\s+(.*)$/); add('n', m ? m[2] : u.t); }
+    const seen = new Set(); return L.filter(x => !seen.has(x.key) && seen.add(x.key)); }, musNow: () => musEl && { name: musEl.name, t: musEl.el.currentTime, paused: musEl.el.paused }, musSeek: t => { if (musEl) musEl.el.currentTime = musEl.el.duration - t; } };
 setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily();
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start

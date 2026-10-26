@@ -35,7 +35,7 @@ async function open(save) {
 async function play(p, ms) {
   for (let t = 0; t < ms; t += 250) { await p.waitForTimeout(250);
     if (await p.isVisible('#clearm') || await p.isVisible('#overm')) return;
-    await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (l && !l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip')).click(); } });
+    await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (l && !l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip') || l.querySelector('#nope')).click(); } });
     if (await p.isVisible('#quizm')) await p.click('#ansMyth', { timeout: 300 }).catch(() => {}); }
 }
 
@@ -231,6 +231,8 @@ await test('the soundtrack: a piece per place, and the boss theme for a boss', a
   const pond = await p.evaluate(() => dbg.musNow());
   await p.evaluate(() => { const G = dbg.G; document.querySelectorAll('.modal').forEach(el => el.hidden = true); dbg.spawn(G.S.W.boss); }); await p.waitForTimeout(1500);
   const boss = await p.evaluate(() => dbg.musNow());
+  const st = await p.evaluate(() => dbg.stings()); expect(st.length === 4, `the four stingers load (${st})`);
+  const vp = await p.evaluate(() => { const f = dbg.MYTHS.fish.fact; dbg.voSet([dbg.vkey('Busted!', 'd'), dbg.vkey(f, 'd')]); const r = dbg.voParts('Busted! ' + f, 'd'); dbg.voSet([]); return r && r.length; }); expect(vp === 2, 'a spoken line splits into its recorded clips');
   expect(home && home.name === 'home' && home.t > 0, `home theme playing (${JSON.stringify(home)})`); expect(pond && pond.name === 'w1' && pond.t > 0, `pond theme (${JSON.stringify(pond)})`); expect(boss && boss.name === 'boss', `boss theme (${JSON.stringify(boss)})`);
   await close(); return errs;
 });
@@ -262,7 +264,7 @@ await test('Myth Check asks about a myth that is due', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(300); await p.click('#speed', { force: true });
   let asked = false; for (let t = 0; t < 40000 && !asked; t += 250) { await p.waitForTimeout(250); asked = await p.evaluate(() => !!(dbg.G && dbg.G.check));
-    if (!asked) await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (!l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip')).click(); } }); }
+    if (!asked) await p.evaluate(() => { for (const id of ['#levelup', '#notem', '#comicm']) { const l = document.querySelector(id); if (!l.hidden) (l.querySelector('#cards button') || l.querySelector('#noteGo') || l.querySelector('#comicSkip') || l.querySelector('#nope')).click(); } }); }
   expect(asked, 'a Myth Check card'); await p.click('#ansMyth'); await p.waitForTimeout(300);
   expect(await p.evaluate(() => Object.keys(dbg.save.review || {}).length === 1), 'the answer to be scheduled'); await close(); return errs;
 });
