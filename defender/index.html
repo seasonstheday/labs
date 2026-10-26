@@ -433,7 +433,7 @@
   .rem .ic { grid-row: span 2; font-size: 28px; text-align: center; } .rem b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .rem i { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; color: var(--muted); }
   .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px; } .wt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 12px; font: inherit; color: var(--ink); cursor: pointer; }
   .wt.on { border-color: var(--green); background: #eef7e6; } .wt.buy { background: #f7efe0; } .wt:disabled { opacity: .5; } .wt b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; } .wt small { font: 700 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
-  .wt .wem { font-size: 28px; line-height: 34px; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
+  .wt .wem { font-size: 28px; line-height: 34px; } .wt .what { width: 44px; height: 44px; object-fit: contain; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
   .trophy { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; background: #fff; border: 3px solid var(--line); border-radius: 12px; opacity: .7; } .trophy.got { opacity: 1; border-color: var(--gold); }
   .trophy .em { font-size: 26px; text-align: center; } .trophy b { display: block; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; } .trophy small { font: 600 15px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); } .trophy i { font-style: normal; color: var(--green); font-size: 20px; }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
@@ -572,7 +572,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 67</div>
+    <div class="build">build 68</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button></div>
@@ -3846,21 +3846,20 @@ function headOf(img) {
   HEADS.set(img.src, out); return out;
 }
 // a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
-function hatOn(c, img, x0, y0, w, h, em, k = 1) { if (!em || !ready(img)) return; const [hx, hy, hw] = headOf(img), s = hw * w * .95 * k;
-  c.save(); c.fillStyle = '#000'; c.font = `${s}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(em, x0 + hx * w, y0 + hy * h + s * .2); c.restore(); }
-const dadHat = () => { const H = wardItem('hat'); return H.c ? H.em : null; };
-const TEAMHAT = { bow: '🎀', flower: '🌼', party: '🎉', wizard: '🧙', crown: '👑' };
-function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t === 'none') return;
-  if (t === 'party' || t === 'wizard') { const [hx, hy, hw] = headOf(img), cx = x0 + hx * w, cy = y0 + hy * h + 4, s = Math.min(34, hw * w * .7);
-    c.save(); c.fillStyle = t === 'party' ? '#e2574c' : '#6b4fa0'; c.strokeStyle = '#3a2c20'; c.lineWidth = 2; c.beginPath(); c.moveTo(cx - s * .45, cy); c.lineTo(cx + s * .45, cy); c.lineTo(cx + (t === 'wizard' ? s * .25 : 0), cy - s * 1.1); c.closePath(); c.fill(); c.stroke();
-    c.fillStyle = t === 'party' ? '#ffd34d' : '#ffd34d'; c.font = `${s * .4}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; if (t === 'wizard') c.fillText('⭐', cx, cy - s * .4); else { c.beginPath(); c.arc(cx, cy - s * 1.1, s * .14, 0, 7); c.fill(); c.stroke(); }
-    c.restore(); return; }
-  hatOn(c, img, x0, y0, w, h, TEAMHAT[t], .6);
-}
+// hats are drawings (assets/hat_<id>.png, brim at the bottom): [width, how far the brim sits below the top of the head], both
+// in head widths, so the brim comes down over the hair; the emoji stands in until the drawing loads
+const HATFIT = { cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
+const HATEM = { cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
+function hatOn(c, img, x0, y0, w, h, id, k = 1) { if (!id || !HATFIT[id] || !ready(img)) return; const [hx, hy, hw] = headOf(img), head = hw * w, [fw, sink] = HATFIT[id], cx = x0 + hx * w, by = y0 + hy * h + head * sink * Math.min(1, k + .2), art0 = art('hat_' + id);
+  c.save(); if (ready(art0)) { const s = head * fw * k; c.drawImage(art0, cx - s / 2, by - s, s, s); }
+  else { const s = head * .95 * k; c.fillStyle = '#000'; c.font = `${s}px ${EMOJI_FONT}`; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText(HATEM[id], cx, by); }
+  c.restore(); }
+const dadHat = () => { const H = wardItem('hat'); return H.c ? H.id : null; };
+function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t !== 'none') hatOn(c, img, x0, y0, w, h, t, .8); }
 function openWardrobe() { const L = look();
   pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.`; $('#pickUnequip').hidden = true;
   $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
-    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${it.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : it.c ? `hsl(${it.h},${Math.round((it.s ?? 1) * 70)}%,${Math.round((it.v ?? 1) * 52)}%)` : '#d59e3d'}"></span>` : `<span class="wem">${it.em}</span>`;
+    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${it.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : it.c ? `hsl(${it.h},${Math.round((it.s ?? 1) * 70)}%,${Math.round((it.v ?? 1) * 52)}%)` : '#d59e3d'}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.png" alt="">` : `<span class="wem">${it.em}</span>`);
     return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && save.coins < it.c ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
   $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
     const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
