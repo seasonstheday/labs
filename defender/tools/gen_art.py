@@ -196,6 +196,10 @@ HATS = {
     'hat_bow': 'a big pink bow with two loops and two short ribbon tails, like one worn on top of the head',
     'hat_flower': 'a small crown of white daisies with yellow centres woven together in a ring',
     'hat_laurel': 'a champion\'s golden laurel crown: a flat oval ring of small gold-green leaves, seen from the front and a little above like a headband worn around the top of a head, a tiny red ribbon at the side',
+    'hat_pilgrim': 'a tall brown felt pilgrim hat with a flat top, a wide flat brim and a plain dark band, no buckle',
+    'hat_santa': 'a floppy red Santa hat with a fluffy white trim and a white pompom on the tip, the tip flopping over to the right',
+    'hat_leafcrown': 'a ring-shaped crown of autumn leaves in orange, red and yellow, seen from the front like a headband',
+    'hat_antlers': 'a headband with two soft brown felt reindeer antlers sticking up and a sprig of holly in the middle',
     'hat_clubcap': 'a teal baseball cap with a short curved brim pointing to the right and a small yellow star badge on the front',
 }
 HAT = (" Just the hat by itself, seen from the front and a little above, as if worn, with nobody wearing it: no head, no hair, no face, no person. "

@@ -48,9 +48,10 @@ async function endMatch(p, wave) {
 }
 const results = [];
 async function test(name, fn) {
+  if (process.env.ONLY && !name.includes(process.env.ONLY)) return; // ONLY=Clubhouse node smoke.mjs runs just the matching tests
   const t0 = Date.now(); let ok = true, msg = '';
   try { const errs = await fn(); if (errs && errs.length) { ok = false; msg = 'page errors: ' + [...new Set(errs)].slice(0, 3).join(' | '); } }
-  catch (e) { ok = false; msg = e.message.split('\n')[0]; }
+  catch (e) { ok = false; msg = process.env.ONLY ? e.message.slice(0, 900) : e.message.split('\n')[0]; }
   results.push({ name, ok, msg }); console.log(`${ok ? '✔' : '✘'} ${name} (${((Date.now() - t0) / 1000).toFixed(1)}s)${msg ? ' — ' + msg : ''}`);
 }
 const expect = (c, what) => { if (!c) throw new Error('expected ' + what); };
@@ -256,7 +257,7 @@ await test('stage clear, the next one opens', async () => {
 
 await test('every myth: a myth, a fact, a Diary topic, a source and a stage', async () => {
   const { p, errs, close } = await open(null);
-  const r = await p.evaluate(() => { const ids = Object.keys(dbg.MYTHS), seen = new Set(dbg.STAGES.flatMap(s => [...s.pool, s.boss, s.finale].filter(Boolean)));
+  const r = await p.evaluate(() => { const ids = Object.keys(dbg.MYTHS), seen = new Set([...dbg.STAGES.flatMap(s => [...s.pool, s.boss, s.finale].filter(Boolean)), ...dbg.EVENT_IDS]); // event myths join every stage during their event
     return { n: ids.length, bad: ids.filter(id => { const M = dbg.MYTHS[id]; return !M.myth || !M.fact || !M.em || !M.name || !dbg.CATS[dbg.catOf(id)] || dbg.srcOf(id) === 'Dad' || !seen.has(id); }) }; });
   expect(r.n >= 140, `at least 140 myths, got ${r.n}`); expect(!r.bad.length, `complete myths, these are not: ${r.bad.join(', ')}`); await close(); return errs;
 });
