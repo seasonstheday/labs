@@ -362,11 +362,12 @@
   .book::before { content: ''; position: absolute; inset: 8px -10px -12px; background: #c0533f; border: 4px solid #3a2c20; border-radius: 16px; z-index: -1; }
   @keyframes flipOpen { from { transform: rotateY(-170deg); } }
   .notes { display: flex; justify-content: center; gap: 10px; margin: -112px auto 0; min-height: 132px; position: relative; flex-wrap: wrap; }
-  .snote { width: 100px; min-height: 112px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
+  .snote { width: 118px; min-height: 150px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
   .snote:nth-child(1) { --nc: #ffe58a; --rot: -5deg; animation-delay: .7s; } .snote:nth-child(2) { --nc: #ffc2d6; --rot: 3deg; animation-delay: 1s; } .snote:nth-child(3) { --nc: #bfe6f5; --rot: -2deg; animation-delay: 1.3s; }
   @keyframes noteUp { from { transform: translateY(70px) rotate(0) scale(.4); opacity: 0; } }
-  .snote .e { font-size: 32px; line-height: 1; position: relative; } .snote .e small { position: absolute; right: -14px; bottom: -4px; font-size: 15px; }
-  .snote b { font: 700 14px/1.05 "Fredoka", Arial, sans-serif; } .snote i { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
+  .snote .e { font-size: 32px; line-height: 1; position: relative; }
+  .snote b { font: 700 15px/1.05 "Fredoka", Arial, sans-serif; text-align: center; } .snote .who { display: flex; align-items: center; gap: 3px; font: 700 13px/1 "Nunito", system-ui, sans-serif; } .snote .who .fim { width: 18px; height: 18px; }
+  .snote .d { font: 600 13px/1.2 "Nunito", system-ui, sans-serif; text-align: center; color: #4a3826; } .snote em { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #8a4fb5; } .snote i { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
   #notem .btn { margin-top: 26px; min-width: 200px; animation: pop .3s 1.4s backwards; }
   .fim { width: 1.2em; height: 1.2em; border-radius: 50%; object-fit: cover; vertical-align: -.25em; background: #f3d2b0; }
   .tcard .ic small .fim, .snote .e small .fim, #party .slot .face .fim { width: 100%; height: 100%; vertical-align: top; display: block; }
@@ -585,7 +586,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 72</div>
+    <div class="build">build 73</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -737,10 +738,10 @@
     <div class="rays"></div>
     <div class="nb">
       <h2 class="display">Dad's Notebook!</h2>
-      <p class="sub hand" id="noteSub">It fell out of the fight. Notes for the team:</p>
+      <p class="sub hand" id="noteSub">Free upgrades for this match</p>
       <div class="book"><div class="pg l"></div><div class="pg r"></div></div>
       <div class="notes" id="noteList"></div>
-      <button class="btn" id="noteGo">📖 Read it!</button>
+      <button class="btn" id="noteGo">Learn it! ▶</button>
     </div>
   </div>
   <div class="modal" id="levelup" hidden>
@@ -3139,11 +3140,13 @@ let noteT = 0;
 function openNotebook() { sfx('book'); buzz('MEDIUM');
   const opts = trickOpts(), r = Math.random(), n = Math.min(opts.length, r < .6 ? 1 : r < .9 ? 2 : 3), got = [];
   while (got.length < n) got.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
-  $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><div class="e">${abilEm(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : 'Rank ' + o.lvl}${willEvolve(o) ? ' ✨' : ''}</i></div>`).join('')
-    : '<div class="snote"><div class="e">🍪</div><b>Snack break</b><i>+30 Patience</i></div>';
-  $('#noteSub').textContent = got.length > 1 ? `${got.length} notes for the team!` : 'A note for the team!';
+  // each note says whose trick it is, what it does and how far it goes up, so "Learn" plainly means "these get better now"
+  $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><small class="who">${faceH(o.m.id)} ${o.m.id === 'dad' ? 'Dad' : CHARS[o.m.id].name}</small><div class="e">${abilEm(o.a)}</div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : `Rank ${o.lvl - 1} → ${o.lvl}`}</i><span class="d">${abilDesc(o.a)}</span>${willEvolve(o) ? '<em>✨ Evolves!</em>' : ''}</div>`).join('')
+    : '<div class="snote"><small class="who">Dad</small><div class="e">🍪</div><b>Snack break</b><i>+30 Patience</i><span class="d">No tricks left to learn, so Dad has a snack.</span></div>';
+  $('#noteSub').textContent = got.length ? 'Free upgrades for this match' : 'Nothing left to learn this match';
+  $('#noteGo').textContent = got.length > 1 ? 'Learn them! ▶' : got.length ? 'Learn it! ▶' : 'Yum! ▶';
   const done = () => { clearTimeout(noteT); if ($('#notem').hidden) return; $('#notem').hidden = true; if (got.length) got.forEach(learn); else G.hp = Math.min(G.maxhp, G.hp + 30); G.paused = false; };
-  $('#noteGo').onclick = done; G.paused = true; $('#notem').hidden = false; say(`Dad's notebook! ${got.map(o => abilName(o.a)).join(', ')}`);
+  $('#noteGo').onclick = done; G.paused = true; $('#notem').hidden = false; say(got.length ? `Dad's notebook! Free upgrades: ${got.map(o => abilName(o.a)).join(', ')}` : 'Snack break!');
   clearTimeout(noteT); if (save.opt.autopick) noteT = setTimeout(done, 5000);
 }
 
