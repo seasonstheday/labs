@@ -119,12 +119,46 @@
   .pgrid-h { font: 700 15px/1 "Fredoka", Arial, sans-serif; margin: 6px 2px 2px; display: flex; justify-content: space-between; align-items: baseline; } .pgrid-h small { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .pslots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .fcard { position: relative; background: #fff; border: 3px solid #3a2c20; border-top-width: 8px; border-radius: 14px; padding: 4px 4px 6px; text-align: center; cursor: pointer; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
-  .fcard canvas { width: 76px; height: 76px; display: block; margin: 0 auto; } .fcard.locked canvas { filter: grayscale(1) brightness(.75); opacity: .7; }
-  .fcard .el { position: absolute; top: 4px; left: 6px; font-size: 14px; } .fcard .inp { position: absolute; top: 2px; right: 6px; color: #4f8a5b; font-size: 15px; }
-  .fcard .st { color: #ecb23c; font-size: 13px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .fcard .st i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
-  .fcard .pb { height: 7px; margin: 4px 6px 0; border: 2px solid #3a2c20; border-radius: 5px; background: rgba(58,44,32,.12); overflow: hidden; } .fcard .pb div { height: 100%; background: #ecb23c; }
-  .fcard small { display: block; font: 600 14px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
+  /* friend cards: the tier's colour behind the friend (Common green, Rare blue, Epic purple, Legendary gold), level top-left, element top-right */
+  .fcard { position: relative; --tc: #6f8a5a; background: var(--tc); background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.5), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--tc) 55%, #fff), var(--tc) 75%); border: 3px solid #3a2c20; border-radius: 14px; padding: 0; text-align: center; cursor: pointer; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #fff; box-shadow: 0 3px 0 #3a2c20; }
+  .fcard canvas { width: 84px; height: 84px; display: block; margin: 12px auto 0; } .pslots .fcard canvas { width: 66px; height: 66px; margin-top: 16px; }
+  .fcard .lv, .fhero .lv { position: absolute; top: 4px; left: 6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: -1px -1px 0 #3a2c20, 1px -1px 0 #3a2c20, -1px 1px 0 #3a2c20, 1px 1px 0 #3a2c20, 0 2px 0 #3a2c20; z-index: 1; }
+  .fcard .lv.tn { font-size: 12px; }
+  .fcard .el, .fhero .el { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1.5px #3a2c20; display: grid; place-items: center; font-size: 12px; line-height: 1; z-index: 1; }
+  .fcard .inp { position: absolute; top: 30px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--green); border: 2px solid #fff; box-shadow: 0 0 0 1.5px #3a2c20; color: #fff; font-size: 11px; display: grid; place-items: center; line-height: 1; z-index: 1; }
+  .fcard .st, .fhero .st { position: relative; color: #ffd24a; font-size: 13px; letter-spacing: 1px; margin-top: -6px; text-shadow: 0 0 2px #3a2c20, 0 1px 0 #3a2c20; } .fcard .st i, .fhero .st i { color: rgba(40,30,22,.45); font-style: normal; text-shadow: none; }
+  .fcard .nm { background: rgba(40,30,22,.86); border-radius: 0 0 11px 11px; padding: 4px 2px 5px; margin-top: 2px; } .fcard .nm b { display: block; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fcard .nm .pow { background: none; padding: 0; margin-top: 2px; font-size: 12px; }
+  .fcard .pb { height: 7px; margin: 4px 6px 0; border: 2px solid #ffd24a; border-radius: 5px; background: rgba(255,255,255,.15); overflow: hidden; } .fcard .pb div { height: 100%; background: #ecb23c; }
+  .fcard small { display: block; font: 600 13px/1.1 "Nunito", system-ui, sans-serif; color: #f3e6d0; margin-top: 2px; }
+  .fcard.locked { background: linear-gradient(180deg, #7a6d62, #4a3f36); box-shadow: 0 3px 0 #3a2c20, inset 0 0 0 3px var(--tc); } .fcard.locked canvas { filter: grayscale(1) brightness(.8); opacity: .75; }
+  .pslots .fcard .inp { display: none; }
+  .fcard.locked .lv { background: var(--tc); border: 2px solid #3a2c20; border-radius: 999px; padding: 2px 6px; text-shadow: none; top: 3px; left: 3px; }
+  .efilt { flex: none; display: flex; gap: 6px; margin: 8px 0 2px; overflow-x: auto; scrollbar-width: none; } .efilt::-webkit-scrollbar { display: none; }
+  .efilt button { flex: none; min-width: 40px; height: 36px; border-radius: 999px; border: 2px solid #3a2c20; background: var(--card); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; padding: 0 10px; cursor: pointer; }
+  .efilt button.on { background: var(--ec, #3a2c20); color: #fff; box-shadow: inset 0 0 0 2px #fff; }
+  /* a friend's own page: big art on the tier colour, then stats, skills and tabs */
+  .fhero { position: relative; margin: -10px -12px 0; height: 250px; border-radius: 11px 11px 0 0; overflow: hidden; --tc: #6f8a5a; background: var(--tc); background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.55), rgba(255,255,255,0) 50%), repeating-conic-gradient(from 0deg at 50% 42%, rgba(255,255,255,.07) 0 10deg, rgba(255,255,255,0) 10deg 20deg), linear-gradient(180deg, color-mix(in srgb, var(--tc) 50%, #fff), var(--tc) 80%); }
+  .fhero.locked { background: linear-gradient(180deg, #7a6d62, #4a3f36); } .fhero.locked canvas { filter: grayscale(1) brightness(.8); opacity: .8; }
+  .item .fhero canvas.pc { position: absolute; left: 50%; top: 4px; width: 180px; height: 180px; transform: translateX(-50%); }
+  .fhero .lv { top: 10px; left: 12px; font-size: 18px; } .fhero .el { top: 8px; right: 10px; width: 32px; height: 32px; font-size: 17px; }
+  .fhero .hband { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding: 26px 12px 9px; background: linear-gradient(180deg, rgba(40,30,22,0), rgba(40,30,22,.85) 45%); color: #fff; }
+  .fhero .hn b { display: block; font: 700 26px/1 "Fredoka", Arial, sans-serif; text-shadow: 0 2px 0 #3a2c20; } .fhero .hn small { font: 600 15px/1.2 "Nunito", system-ui, sans-serif; color: #f3e6d0; }
+  .fhero .pills { display: flex; flex-wrap: wrap; gap: 4px; margin: 5px 0 3px; } .fhero .pills .tier { font-size: 12px; padding: 3px 7px; border-width: 1.5px; } .fhero .pills .kls { background: var(--teal); }
+  .fhero .st { margin: 0; font-size: 17px; text-align: left; } .fhero .pow { flex: none; border: 2px solid #ffd76a; }
+  .hfoot { display: flex; gap: 10px; align-items: center; padding: 8px 0 4px; } .hfoot .d { flex: 1; font: 600 16px/1.25 "Nunito", system-ui, sans-serif; } .hfoot .btn { flex: none; }
+  .hfoot .always { flex: none; font: 700 14px/1 "Fredoka", Arial, sans-serif; color: var(--green); }
+  .hstats { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 6px; margin: 4px 0 6px; } .hstats > div { background: rgba(58,44,32,.07); border: 2px solid rgba(58,44,32,.18); border-radius: 10px; padding: 5px 7px; }
+  .hstats small { display: block; font: 600 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); } .hstats b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .hstats em { display: block; font: 600 12px/1 "Nunito", system-ui, sans-serif; font-style: normal; color: var(--muted); margin-top: 3px; }
+  .hstats .mb { height: 6px; border-radius: 3px; background: rgba(58,44,32,.15); overflow: hidden; margin-top: 3px; } .hstats .mb div { height: 100%; background: var(--water); }
+  .skring { display: flex; justify-content: center; gap: 10px; margin: 6px 0 8px; }
+  .skring button { position: relative; width: 56px; height: 56px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; padding: 0; cursor: pointer; box-shadow: 0 2px 0 #3a2c20; overflow: visible; display: grid; place-items: center; font-size: 24px; }
+  .skring button > span { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; } .skring .aic { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); }
+  .skring button.off { background: rgba(58,44,32,.12); box-shadow: none; } .skring i { position: absolute; bottom: -5px; right: -5px; min-width: 20px; height: 20px; border-radius: 999px; background: #3a2c20; color: #ffd76a; font: 700 12px/20px "Fredoka", Arial, sans-serif; font-style: normal; }
+  .ftabs { display: flex; gap: 4px; margin: 2px 0 8px; border-bottom: 3px solid #3a2c20; }
+  .ftabs button { position: relative; flex: 1; height: 40px; border: 3px solid #3a2c20; border-bottom: 0; border-radius: 12px 12px 0 0; background: rgba(58,44,32,.1); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); cursor: pointer; }
+  .ftabs button.on { background: var(--ink, #3a2c20); color: #fff; } .ftabs .dot { top: -5px; right: -3px; }
+  .skill.flash { animation: skflash 1s ease; } @keyframes skflash { 30% { box-shadow: 0 0 0 4px #ecb23c; } }
   .fcard .dot { position: absolute; top: -6px; right: -6px; }
   .pslot { background: rgba(58,44,32,.08); border: 3px dashed rgba(58,44,32,.35); border-radius: 14px; min-height: 96px; display: flex; align-items: center; justify-content: center; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; padding: 4px; }
   .backrow { display: flex; gap: 8px; } .backrow .btn { flex: 1; }
@@ -376,7 +410,6 @@
   #party .slot .face .fim { width: 26px; height: 26px; border: 2px solid #3a2c20; }
   .pow { display: inline-flex; align-items: center; gap: 3px; font: 700 14px/1 "Fredoka", Arial, sans-serif; background: #3a2c20; color: #ffd76a; border-radius: 999px; padding: 4px 8px; white-space: nowrap; }
   .pow.big { font-size: 16px; padding: 6px 11px; }
-  .fcard .pow { font-size: 13px; padding: 2px 6px; margin-top: 3px; }
   .pchk { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font: 700 14px/1 "Fredoka", Arial, sans-serif; border-radius: 999px; padding: 4px 9px; background: #3a2c20; color: #ffd76a; }
   .pchk i { font-style: normal; font-weight: 400; color: #fbf3df; opacity: .85; } .pchk.close { background: #b9781c; color: #fff; } .pchk.low { background: #b0442f; color: #fff; }
   #quickPlay { flex-wrap: wrap; } #quickPlay .pwrap { flex-basis: 100%; display: flex; justify-content: center; } #quickPlay .pchk { margin: 6px 0 0; } #mapPow { margin: 4px 0 6px; } .ptip { display: block; font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: #b0442f; margin-top: 4px; }
@@ -589,7 +622,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 75</div>
+    <div class="build">build 76</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -4684,65 +4717,85 @@ function outfitH(id) {
 }
 // a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
 const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= starCost(id) : pagesOf(id) >= tierOf(id).pages; };
+const tcol = id => id === 'dad' ? '#c0682e' : tierOf(id).col;
+const elOf = id => ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
+const starsH = st => `${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i>`;
+// what a friend's ranks, gear and weapon add: the friend page's stat row and the Gear tab's summary
+function boosts(id) {
+  const c = chr(id), g = gear(id), V = cweapOf(id), parts = [];
+  const powP = (c.pow || 0) * 8 + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = (c.quick || 0) * 6 + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
+  if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
+  const pat = (id === 'dad' ? (c.pat || 0) * 20 : 0) + g.pat, ring = (id === 'dad' ? (c.ring || 0) * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
+  return { powP, qP, parts };
+}
+let fEl = '', fTab = 'moves';
 function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
   if (!partySel) { // the grid: the party on top, then everyone
-    const card = id => { const C = CHARS[id], c = chr(id), T = id === 'dad' ? { col: '#3a2c20' } : tierOf(id), st = fstars(id), EL = ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
-      return `<div class="fcard ${c.own ? '' : 'locked'}" data-pick="${id}" style="border-top-color:${T.col}">${EL ? `<span class="el">${EL.em}</span>` : ''}${id === 'dad' || save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="152" height="152"></canvas>${C.name}${c.own || id === 'dad' ? powH(powerOf(id)) : ''}${c.own ? `<div class="st">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></div>` : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
+    const card = id => { const C = CHARS[id], c = chr(id), own = c.own || id === 'dad', st = fstars(id), EL = elOf(id);
+      return `<div class="fcard ${own ? '' : 'locked'}" data-pick="${id}" style="--tc:${tcol(id)}">${own ? `<span class="lv">Lv.${clv(id)}</span>` : `<span class="lv tn">${tierOf(id).n}</span>`}${EL ? `<span class="el" style="background:${EL.col}">${EL.em}</span>` : ''}${id !== 'dad' && save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="176" height="176"></canvas>${own ? `<div class="st">${starsH(st)}</div>` : ''}<div class="nm"><b>${C.name}</b>${own ? powH(powerOf(id)) : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}</div>${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
-    const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
+    const keep = id => !fEl || CELEM[id] === fEl, els = Object.keys(ELEM).filter(k => Object.values(CELEM).includes(k));
+    const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && keep(id)), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own && keep(id)).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
     box.innerHTML = `<div class="teampow"><span>Team Power<br><small>Dad and the three in the backyard</small></span><b>💪 ${teamPower().toLocaleString()}</b></div>${famRow()}<div class="pgrid-h">In the backyard <small>tap a spot to swap who's in it</small></div><div class="pslots">${card('dad')}${slots.map((id, i) => id ? card(id).replace('data-pick=', `data-slot-i="${i}" data-who=`) : `<div class="pslot" data-slot-i="${i}">➕<br>Bring a friend</div>`).join('')}</div>`
-      + `<div class="pgrid-h">Friends <small>${owned.length} of ${Object.keys(CHARS).length - 1}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('')}</div>`
+      + `<div class="efilt"><button class="${fEl ? '' : 'on'}" data-fel="">All</button>${els.map(k => `<button class="${fEl === k ? 'on' : ''}" data-fel="${k}" style="--ec:${ELEM[k].col}" title="${ELEM[k].n}">${ELEM[k].em}</button>`).join('')}</div>`
+      + `<div class="pgrid-h">${fEl ? ELEM[fEl].em + ' ' + ELEM[fEl].n : 'Friends'} <small>${owned.length} of ${Object.keys(CHARS).filter(id => id !== 'dad' && keep(id)).length}${save.blank ? ` · 📄 ${save.blank} Blank` : ''}</small></div><div class="pgrid">${owned.map(card).join('') || '<p class="hand">None yet: pages bring new friends.</p>'}</div>`
       + (locked.length ? `<div class="pgrid-h">Still to meet <small>pages bring them</small></div><div class="pgrid">${locked.map(card).join('')}</div>` : '');
     box.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { partySel = b.dataset.pick; buildParty(); box.scrollTop = 0; });
     box.querySelectorAll('[data-slot-i]').forEach(b => b.onclick = () => openSwap(+b.dataset.slotI));
     box.querySelectorAll('[data-fam]').forEach(b => b.onclick = () => famInfo(b.dataset.fam));
+    box.querySelectorAll('[data-fel]').forEach(b => b.onclick = () => { fEl = b.dataset.fel; const y = box.scrollTop; buildParty(); box.scrollTop = y; });
     drawStatics(); navDots(); return;
   }
   // the friend card has one way back: the ← at the top goes to all friends
   for (const id of [partySel]) {
     const C = CHARS[id], c = chr(id), inP = id === 'dad' || save.party.includes(id), d = document.createElement('div'); d.className = 'item' + (c.own ? '' : ' locked') + (inP ? ' inparty' : '');
-    let html = `<div class="top"><canvas class="pc" data-c="${id}" width="112" height="112"></canvas><div><b>${C.name}</b>${c.own || id === 'dad' ? ' ' + powH(powerOf(id), true) : ''}<span class="d">${C.desc}</span></div>`;
-    if (!c.own) html += `<button class="btn small ghost" data-draw="1">🎟️ Card</button>`;
-    else if (id === 'dad') html += `<button class="btn small green" disabled>Always</button>`;
-    else if (inP) html += `<button class="btn small ghost" data-leave="${id}">Take out</button>`;
-    else html += `<button class="btn small" data-join="${id}">Bring in</button>`;
-    html += '</div>';
-    if (c.own) html += outfitH(id);
+    const T = id === 'dad' ? { n: '📓 Dad', col: tcol('dad') } : tierOf(id), EL = elOf(id), K = CLASS[id], own = c.own || id === 'dad', st = fstars(id), B = boosts(id);
+    const act = !c.own ? `<button class="btn small" data-draw="1">🎟️ Card</button>` : id === 'dad' ? '<span class="always">Always in</span>' : inP ? `<button class="btn small ghost" data-leave="${id}">Take out</button>` : `<button class="btn small green" data-join="${id}">Bring in</button>`;
+    let html = `<div class="fhero${own ? '' : ' locked'}" style="--tc:${T.col}">${own ? `<span class="lv">Lv.${clv(id)}</span>` : ''}${EL ? `<span class="el" style="background:${EL.col}" title="${EL.n}">${EL.em}</span>` : ''}<canvas class="pc" data-c="${id}" width="320" height="320"></canvas>`
+      + `<div class="hband"><div class="hn"><b>${C.name}</b><div class="pills"><span class="tier" style="background:${id === 'dad' ? '#3a2c20' : T.col}">${T.n}</span>${K ? `<span class="tier kls">${K.em} ${K.name}</span>` : ''}${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}</div>${own ? `<div class="st">${starsH(st)}</div>` : `<small>📄 ${pagesOf(id)}/${T.pages} pages to join</small>`}</div>${own ? powH(powerOf(id), true) : ''}</div></div>`
+      + `<div class="hfoot"><span class="d">${C.desc}</span>${act}</div>`;
+    if (own) { const lv = charLevel(c.xp || 0);
+      html += `<div class="hstats"><div><small>Level</small><b>${lv.L}</b><div class="mb"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><em>${lv.into}/${lv.need} XP</em></div><div><small>⚔️ Hit</small><b>${B.powP >= 0 ? '+' : ''}${B.powP}%</b></div><div><small>⚡ Quick</small><b>${B.qP >= 0 ? '+' : ''}${B.qP}%</b></div></div>`
+        + `<div class="skring">${C.abil.map((a, i) => { const on = a === 'weapon' || lv.L >= UNLOCK_AT[i], r = a === 'weapon' ? 0 : tBase(id, a); return `<button class="${on ? '' : 'off'}" data-skj="${i}" title="${abilName(a)}"><span>${on ? abilIcon(a) : '🔒'}</span>${on && r ? `<i>${r}</i>` : ''}</button>`; }).join('')}</div>`; }
+    let moves = '', gearH = '', grow = '';
+    if (c.own) gearH += outfitH(id);
     if (id === 'dad') { const st = fstars('dad'), need = starCost('dad'), have = pagesOf('dad');
-      html += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>${st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
-      if (st < STAR_MAX && have + (save.blank || 0) >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
+      grow += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>${st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
+      if (st < STAR_MAX && have + (save.blank || 0) >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
-      const EL = ELEM[CELEM[id]];
-      html += `<div class="tierrow"><span class="tier" style="background:${T.col}">${T.n}</span>${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
-      if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) html += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) html += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
-    const K = CLASS[id]; if (K) html += `<div class="cls">${K.em} ${K.name}</div><div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b>${K.weak.length ? ` · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s>` : ''}</div>`;
+      grow += `<div class="tierrow">${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) grow += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
+    if (K) moves += `<div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b>${K.weak.length ? ` · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s>` : ''}</div>`;
     if (c.own) {
       const lv = charLevel(c.xp || 0);
-      html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
-      html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
-        if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Change it in the Outfit above.</em></span></div></div>`;
+      moves += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
+        if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Change it in Gear.</em></span></div></div>`;
         return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilIcon(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on ? (tPicked(id, a) ? `<span><em>${(giftBranch(a) ? TAURA : TFX)[(TPICK[a] || [])[tPicked(id, a) - 1]]?.n || ''}${tHasFin(id, a) ? ' · ' + tFin(id, a).n : ''}</em></span>` : '') : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div></div>`; }).join('') + '</div>' + (has('tree') ? `<button class="btn small tbtn" data-tree="${id}">🌳 Skill Tree${tLeft(id) > 0 ? ` · <b>${tLeft(id)}</b> to spend` : ''}</button>` : '');
-      if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
-      if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
-      const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
+      if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); moves += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
+      if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; moves += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
+      const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); moves += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
       // what all of it adds up to
-      const g = gear(id), V = cweapOf(id), parts = [];
-      const powP = c.pow * 8 + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = c.quick * 6 + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
-      if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
-      const pat = (id === 'dad' ? c.pat * 20 : 0) + g.pat, ring = (id === 'dad' ? c.ring * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
-      html += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items and buy ranks below.'}</div>`;
-    } else html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilIcon(a)} ${abilName(a)}</span>`).join('')}</div>`;
+      const parts = B.parts;
+      gearH += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items here and buy ranks in Grow.'}</div>`;
+    } else moves += `<div class="abils">${C.abil.map((a, i) => `<span>${abilIcon(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
-      const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
-      for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
-      if (id === 'dad') html += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name}: change it in the Outfit above</span></div>`;
-      else if (CWEAP[id]) { const V = cweapOf(id); html += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name}: change it in the Outfit above</span></div>`; }
-      html += '</div>';
-    } else html += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !C.starter ? (nextFriend(true) === id ? 'Next in the story: every new stage you clear adds 3 pages (6 for a boss). Lucky pages, Library Cards, gifts and missions add more.' : 'Their turn in the story comes after the friends ahead of them join. Lucky pages, Library Cards, gifts and missions fill the book any time.') : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
+      const R = id === 'dad' ? DADRANKS : WRANKS; grow += '<div class="ranks">';
+      for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; grow += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
+      if (id === 'dad') grow += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name}: change it in Gear</span></div>`;
+      else if (CWEAP[id]) { const V = cweapOf(id); grow += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name}: change it in Gear</span></div>`; }
+      grow += '</div>';
+    } else grow += `<div class="ranks"><div class="rank"><span>${C.freeAfter != null && !C.starter ? (nextFriend(true) === id ? 'Next in the story: every new stage you clear adds 3 pages (6 for a boss). Lucky pages, Library Cards, gifts and missions add more.' : 'Their turn in the story comes after the friends ahead of them join. Lucky pages, Library Cards, gifts and missions fill the book any time.') : HOME[id] != null ? 'New stages you clear fill this book once the friends ahead of it have joined, and so do Library Cards, gifts and Blank pages.' : 'A Legendary friend: pages come from Library Cards, gifts, missions and Blank pages.'}</span></div></div>`;
+    const tabs = [['moves', '✨ Moves', own && has('tree') && tLeft(id) > 0], ...(own ? [['gear', '👕 Gear', false]] : []), ['grow', own ? '🌱 Grow' : '📄 Join', canGrow(id)]];
+    if (!tabs.some(t => t[0] === fTab)) fTab = 'moves';
+    html += `<div class="ftabs">${tabs.map(([k, n, dot]) => `<button class="${k === fTab ? 'on' : ''}" data-ftab="${k}">${n}${dot ? '<i class="dot"></i>' : ''}</button>`).join('')}</div>`
+      + tabs.map(([k]) => `<div class="fpane" data-pane="${k}"${k === fTab ? '' : ' hidden'}>${{ moves, gear: gearH, grow }[k]}</div>`).join('');
     d.innerHTML = html; box.appendChild(d);
   }
   box.querySelectorAll('[data-tree]').forEach(b => b.onclick = () => openTree(b.dataset.tree));
+  const showTab = k => { fTab = k; box.querySelectorAll('[data-ftab]').forEach(t => t.classList.toggle('on', t.dataset.ftab === k)); box.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== k); };
+  box.querySelectorAll('[data-ftab]').forEach(b => b.onclick = () => showTab(b.dataset.ftab));
+  box.querySelectorAll('[data-skj]').forEach(b => b.onclick = () => { showTab('moves'); const s = box.querySelectorAll('[data-pane="moves"] .skill')[+b.dataset.skj]; if (s) { s.scrollIntoView({ block: 'center', behavior: 'smooth' }); s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash'); } });
   box.querySelectorAll('[data-draw]').forEach(b => b.onclick = openDraw);
   box.querySelectorAll('[data-star]').forEach(b => b.onclick = () => { if (starUp(b.dataset.star)) { toastMsg(`${CHARS[b.dataset.star].em} ${CHARS[b.dataset.star].name} is now ★${fstars(b.dataset.star)}!`); buildParty(); } });
   box.querySelectorAll('[data-blank]').forEach(b => b.onclick = () => { const id = b.dataset.blank, n = Math.min(save.blank, Math.max(0, tierOf(id).pages - pagesOf(id))); if (!n) return; save.blank -= n; if (addPages(id, n)) toastMsg(`${CHARS[id].em} ${CHARS[id].name} joined the party!`); buildParty(); drawStatics(); });
