@@ -6,7 +6,7 @@ doing the move (the friend's own art goes along as a reference).
     python3 defender/tools/gen_icons.py web zap --force # these, even if they exist
 
 tools/icons.json is the skill list (id, name, desc, who, whoDesc), dumped from the game's ABIL and CHARS.
-Writes defender/assets/icons/<id>.png, 192 px square with transparent corners. The game shows these wherever it used
+Writes defender/assets/icons/<id>.png, 192 px square with transparent corners, and <id>.webp (what the game loads, about a quarter the size). The game shows these wherever it used
 the skill's emoji, and keeps the emoji if a file is missing.
 """
 import json, os, subprocess, sys
@@ -39,11 +39,12 @@ def make(sid):
         png = G.call(prompt, '1:1', refs=refs); tmp = out + '.tmp.png'; open(tmp, 'wb').write(png)
         subprocess.run(['convert', tmp, '-alpha', 'set', '-bordercolor', 'white', '-border', '1', '-fuzz', '8%', '-fill', 'none', '-draw', 'matte 0,0 floodfill',
                         '-shave', '1x1', '-trim', '+repage', '-resize', '192x192', '-background', 'none', '-gravity', 'center', '-extent', '192x192', out], check=True)
+        subprocess.run(['convert', out, '-quality', '85', out[:-4] + '.webp'], check=True)
         os.remove(tmp); print('ok', sid, flush=True)
     except Exception as e: print('FAILED', sid, e, flush=True)
 
 if __name__ == '__main__':
     args = [a for a in sys.argv[1:] if not a.startswith('--')]; force = '--force' in sys.argv
-    todo = [k for k in (args or SKILLS) if force or not os.path.exists(os.path.join(OUT, k + '.png'))]
+    todo = [k for k in (args or SKILLS) if force or not os.path.exists(os.path.join(OUT, k + '.webp'))]
     print(len(todo), 'icons to draw', flush=True)
     with ThreadPoolExecutor(4) as ex: list(ex.map(make, todo))

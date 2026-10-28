@@ -3078,7 +3078,7 @@ function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.ne
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
 // the painted skill icon (assets/icons/<id>.png, tools/gen_icons.py), falling back to the emoji if the picture is missing
-const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.png" alt="${abilEm(a)}" onerror="this.replaceWith(this.alt)">`;
+const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.webp" alt="${abilEm(a)}" onerror="this.replaceWith(this.alt)">`;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 // every trick a friend could learn or rank up right now
 function trickOpts() { const o = []; for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) o.push({ m, a, lvl: m.ranks[a] + 1 }); return o; }
