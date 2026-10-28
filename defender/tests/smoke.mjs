@@ -329,6 +329,13 @@ await test('the Clubhouse and the Myth Cup', async () => {
   await close(); return errs;
 });
 
+await test('the 3D battle prototype (?r3d) runs a match without errors', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.goto(URL + '&r3d'); await p.waitForTimeout(1200); await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true));
+  await p.evaluate(() => dbg.startGame(5)); await p.waitForTimeout(2500); await play(p, 4000);
+  expect(await p.evaluate(() => !!dbg.G), 'a match is running'); await close(); return errs.filter(e => !/WebGL|404/.test(e));
+});
+
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);
