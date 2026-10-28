@@ -204,7 +204,9 @@
   .skills { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
   .skill { display: flex; align-items: center; gap: 8px; border: 2px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 8px; }
   .skill.locked { opacity: .55; background: #f1e9d6; }
-  .skill .em { font-size: 24px; width: 30px; text-align: center; }
+  .skill .em { font-size: 24px; width: 34px; text-align: center; }
+  .aic { width: 1.3em; height: 1.3em; vertical-align: middle; object-fit: contain; border-radius: 18%; } .tcard .ic .aic { width: 50px; height: 50px; } .snote .e .aic { width: 52px; height: 52px; }
+  #party .slot .ab .aic { width: 100%; height: 100%; display: block; border-radius: 5px; } .skill .em .aic { width: 34px; height: 34px; }
   .skill .txt { flex: 1; min-width: 0; }
   .skill .txt b { display: block; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; }
   .skill .txt span { display: block; font: 600 15px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -362,11 +364,12 @@
   .book::before { content: ''; position: absolute; inset: 8px -10px -12px; background: #c0533f; border: 4px solid #3a2c20; border-radius: 16px; z-index: -1; }
   @keyframes flipOpen { from { transform: rotateY(-170deg); } }
   .notes { display: flex; justify-content: center; gap: 10px; margin: -112px auto 0; min-height: 132px; position: relative; flex-wrap: wrap; }
-  .snote { width: 100px; min-height: 112px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
+  .snote { width: 118px; min-height: 150px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
   .snote:nth-child(1) { --nc: #ffe58a; --rot: -5deg; animation-delay: .7s; } .snote:nth-child(2) { --nc: #ffc2d6; --rot: 3deg; animation-delay: 1s; } .snote:nth-child(3) { --nc: #bfe6f5; --rot: -2deg; animation-delay: 1.3s; }
   @keyframes noteUp { from { transform: translateY(70px) rotate(0) scale(.4); opacity: 0; } }
-  .snote .e { font-size: 32px; line-height: 1; position: relative; } .snote .e small { position: absolute; right: -14px; bottom: -4px; font-size: 15px; }
-  .snote b { font: 700 14px/1.05 "Fredoka", Arial, sans-serif; } .snote i { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
+  .snote .e { font-size: 32px; line-height: 1; position: relative; }
+  .snote b { font: 700 15px/1.05 "Fredoka", Arial, sans-serif; text-align: center; } .snote .who { display: flex; align-items: center; gap: 3px; font: 700 13px/1 "Nunito", system-ui, sans-serif; } .snote .who .fim { width: 18px; height: 18px; }
+  .snote .d { font: 600 13px/1.2 "Nunito", system-ui, sans-serif; text-align: center; color: #4a3826; } .snote em { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #8a4fb5; } .snote i { font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; color: #b0442f; }
   #notem .btn { margin-top: 26px; min-width: 200px; animation: pop .3s 1.4s backwards; }
   .fim { width: 1.2em; height: 1.2em; border-radius: 50%; object-fit: cover; vertical-align: -.25em; background: #f3d2b0; }
   .tcard .ic small .fim, .snote .e small .fim, #party .slot .face .fim { width: 100%; height: 100%; vertical-align: top; display: block; }
@@ -585,7 +588,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 72</div>
+    <div class="build">build 74</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -737,10 +740,10 @@
     <div class="rays"></div>
     <div class="nb">
       <h2 class="display">Dad's Notebook!</h2>
-      <p class="sub hand" id="noteSub">It fell out of the fight. Notes for the team:</p>
+      <p class="sub hand" id="noteSub">Free upgrades for this match</p>
       <div class="book"><div class="pg l"></div><div class="pg r"></div></div>
       <div class="notes" id="noteList"></div>
-      <button class="btn" id="noteGo">📖 Read it!</button>
+      <button class="btn" id="noteGo">Learn it! ▶</button>
     </div>
   </div>
   <div class="modal" id="levelup" hidden>
@@ -3074,6 +3077,8 @@ function collectAll() { for (const o of G.orbs) o.pull = true; }
 function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(4 + G.lvl * 2.6); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
+// the painted skill icon (assets/icons/<id>.png, tools/gen_icons.py), falling back to the emoji if the picture is missing
+const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.webp" alt="${abilEm(a)}" onerror="this.replaceWith(this.alt)">`;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 // every trick a friend could learn or rank up right now
 function trickOpts() { const o = []; for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) o.push({ m, a, lvl: m.ranks[a] + 1 }); return o; }
@@ -3105,7 +3110,7 @@ function rememberAll(n) {
   $('#levelup .sub').textContent = 'From last time:';
   const box = $('#cards'); box.classList.remove('tall');
   const rows = []; for (const o of got) { const r = rows.find(x => x.m === o.m && x.a === o.a); if (r) { r.lvl = o.lvl; r.n++; } else rows.push({ m: o.m, a: o.a, lvl: o.lvl, n: 1 }); } // one row per trick, at the rank it ended on
-  box.innerHTML = `<div class="remlist">${rows.map(o => `<div class="rem"><span class="ic">${abilEm(o.a)}</span><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}${o.n > 1 ? ` (+${o.n})` : ''} · ${CHARS[o.m.id].name}</i></div>`).join('')}</div>`;
+  box.innerHTML = `<div class="remlist">${rows.map(o => `<div class="rem"><span class="ic">${abilIcon(o.a)}</span><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl}${o.n > 1 ? ` (+${o.n})` : ''} · ${CHARS[o.m.id].name}</i></div>`).join('')}</div>`;
   $('#nope').textContent = "Let's go ▶"; $('#nope').disabled = false; $('#nope').classList.remove('ghost'); $('#nope').onclick = () => { $('#nope').classList.add('ghost'); $('#levelup').hidden = true; G.paused = false; };
   G.paused = true; $('#levelup').hidden = false;
 }
@@ -3120,7 +3125,7 @@ function offerCards(free = 0) {
   for (const o of chosen) {
     const b = document.createElement('button'), el = elemOf(o.m.id), C = comboOf(o), ev = willEvolve(o);
     b.className = 'tcard'; b.style.setProperty('--ec', el ? ELEM[el].col : '#3a2c20');
-    b.innerHTML = `${ev ? '<i class="tag evo">✨ Evolves</i>' : C ? `<i class="tag" title="${C.n} with ${C.who}">${C.em} ${C.n}!</i>` : ''}<div class="ic">${abilEm(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i class="who ${o.lvl === 1 ? 'new' : ''}">${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl} · ${CHARS[o.m.id].name}</i><div class="pp">${Array.from({ length: MAX_RANK }, (_, k) => `<i class="${k < o.lvl - 1 ? 'on' : k === o.lvl - 1 ? 'nw' : ''}"></i>`).join('')}</div><span>${abilDesc(o.a)}</span>`;
+    b.innerHTML = `${ev ? '<i class="tag evo">✨ Evolves</i>' : C ? `<i class="tag" title="${C.n} with ${C.who}">${C.em} ${C.n}!</i>` : ''}<div class="ic">${abilIcon(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i class="who ${o.lvl === 1 ? 'new' : ''}">${o.lvl === 1 ? 'NEW' : 'Rank ' + o.lvl} · ${CHARS[o.m.id].name}</i><div class="pp">${Array.from({ length: MAX_RANK }, (_, k) => `<i class="${k < o.lvl - 1 ? 'on' : k === o.lvl - 1 ? 'nw' : ''}"></i>`).join('')}</div><span>${abilDesc(o.a)}</span>`;
     o.score = (ev ? 4 : 0) + (C ? 3 : 0) + (o.lvl === 1 ? 1 : 0) + o.lvl * .2 + Math.random() * .1;
     b.onclick = () => pick1(o);
     box.appendChild(b);
@@ -3139,11 +3144,13 @@ let noteT = 0;
 function openNotebook() { sfx('book'); buzz('MEDIUM');
   const opts = trickOpts(), r = Math.random(), n = Math.min(opts.length, r < .6 ? 1 : r < .9 ? 2 : 3), got = [];
   while (got.length < n) got.push(opts.splice(Math.floor(Math.random() * opts.length), 1)[0]);
-  $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><div class="e">${abilEm(o.a)}<small>${faceH(o.m.id)}</small></div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : 'Rank ' + o.lvl}${willEvolve(o) ? ' ✨' : ''}</i></div>`).join('')
-    : '<div class="snote"><div class="e">🍪</div><b>Snack break</b><i>+30 Patience</i></div>';
-  $('#noteSub').textContent = got.length > 1 ? `${got.length} notes for the team!` : 'A note for the team!';
+  // each note says whose trick it is, what it does and how far it goes up, so "Learn" plainly means "these get better now"
+  $('#noteList').innerHTML = got.length ? got.map(o => `<div class="snote"><small class="who">${faceH(o.m.id)} ${o.m.id === 'dad' ? 'Dad' : CHARS[o.m.id].name}</small><div class="e">${abilIcon(o.a)}</div><b>${abilName(o.a)}</b><i>${o.lvl === 1 ? 'NEW!' : `Rank ${o.lvl - 1} → ${o.lvl}`}</i><span class="d">${abilDesc(o.a)}</span>${willEvolve(o) ? '<em>✨ Evolves!</em>' : ''}</div>`).join('')
+    : '<div class="snote"><small class="who">Dad</small><div class="e">🍪</div><b>Snack break</b><i>+30 Patience</i><span class="d">No tricks left to learn, so Dad has a snack.</span></div>';
+  $('#noteSub').textContent = got.length ? 'Free upgrades for this match' : 'Nothing left to learn this match';
+  $('#noteGo').textContent = got.length > 1 ? 'Learn them! ▶' : got.length ? 'Learn it! ▶' : 'Yum! ▶';
   const done = () => { clearTimeout(noteT); if ($('#notem').hidden) return; $('#notem').hidden = true; if (got.length) got.forEach(learn); else G.hp = Math.min(G.maxhp, G.hp + 30); G.paused = false; };
-  $('#noteGo').onclick = done; G.paused = true; $('#notem').hidden = false; say(`Dad's notebook! ${got.map(o => abilName(o.a)).join(', ')}`);
+  $('#noteGo').onclick = done; G.paused = true; $('#notem').hidden = false; say(got.length ? `Dad's notebook! Free upgrades: ${got.map(o => abilName(o.a)).join(', ')}` : 'Snack break!');
   clearTimeout(noteT); if (save.opt.autopick) noteT = setTimeout(done, 5000);
 }
 
@@ -3175,7 +3182,7 @@ function refreshHud(force) {
     for (let i = 0; i <= MAX_COMPANIONS; i++) {
       const m = G.party[i], d = document.createElement('div');
       d.className = 'slot' + (m ? '' : ' empty');
-      if (m) { const el = elemOf(m.id); if (el) d.style.setProperty('--ec', ELEM[el].col); d.innerHTML = `<div class="face">${faceH(m.id)}</div><div class="ap">${CHARS[m.id].abil.map(a => `<div class="ab ${m.ranks[a] ? (m.ranks[a] >= 5 ? 'r5' : m.ranks[a] >= 3 ? 'r3' : '') : 'off'}" data-a="${a}" title="${abilName(a)}">${m.ranks[a] ? abilEm(a) + `<s>${m.ranks[a]}</s>` : G.room || unlocked(m.id, a) ? '·' : '🔒'}<i></i></div>`).join('')}</div>`; }
+      if (m) { const el = elemOf(m.id); if (el) d.style.setProperty('--ec', ELEM[el].col); d.innerHTML = `<div class="face">${faceH(m.id)}</div><div class="ap">${CHARS[m.id].abil.map(a => `<div class="ab ${m.ranks[a] ? (m.ranks[a] >= 5 ? 'r5' : m.ranks[a] >= 3 ? 'r3' : '') : 'off'}" data-a="${a}" title="${abilName(a)}">${m.ranks[a] ? abilIcon(a) + `<s>${m.ranks[a]}</s>` : G.room || unlocked(m.id, a) ? '·' : '🔒'}<i></i></div>`).join('')}</div>`; }
       g.appendChild(d);
     }
     hudAbs = $$('#party .ab');
@@ -4709,7 +4716,7 @@ function buildParty() {
       html += `<div class="xpbar"><span>Level ${lv.L}</span><div class="bar"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><span>${lv.into} / ${lv.need} XP</span></div>`;
       html += '<div class="skills">' + C.abil.map((a, i) => { const on = lv.L >= UNLOCK_AT[i], r = sk(id, a), S = SKILL[a], cost = skCost(r), ev = i === 0 && EVO[a === 'weapon' ? save.weapon : a];
         if (a === 'weapon') return `<div class="skill"><div class="em">${abilEm(a)}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)} <em>Change it in the Outfit above.</em></span></div></div>`;
-        return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilEm(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on ? (tPicked(id, a) ? `<span><em>${(giftBranch(a) ? TAURA : TFX)[(TPICK[a] || [])[tPicked(id, a) - 1]]?.n || ''}${tHasFin(id, a) ? ' · ' + tFin(id, a).n : ''}</em></span>` : '') : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div></div>`; }).join('') + '</div>' + (has('tree') ? `<button class="btn small tbtn" data-tree="${id}">🌳 Skill Tree${tLeft(id) > 0 ? ` · <b>${tLeft(id)}</b> to spend` : ''}</button>` : '');
+        return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilIcon(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on ? (tPicked(id, a) ? `<span><em>${(giftBranch(a) ? TAURA : TFX)[(TPICK[a] || [])[tPicked(id, a) - 1]]?.n || ''}${tHasFin(id, a) ? ' · ' + tFin(id, a).n : ''}</em></span>` : '') : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div></div>`; }).join('') + '</div>' + (has('tree') ? `<button class="btn small tbtn" data-tree="${id}">🌳 Skill Tree${tLeft(id) > 0 ? ` · <b>${tLeft(id)}</b> to spend` : ''}</button>` : '');
       if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); html += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
       if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; html += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
       const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); html += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
@@ -4719,7 +4726,7 @@ function buildParty() {
       if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
       const pat = (id === 'dad' ? c.pat * 20 : 0) + g.pat, ring = (id === 'dad' ? c.ring * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
       html += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items and buy ranks below.'}</div>`;
-    } else html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilEm(a)} ${abilName(a)}</span>`).join('')}</div>`;
+    } else html += `<div class="abils">${C.abil.map((a, i) => `<span>${abilIcon(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
       const R = id === 'dad' ? DADRANKS : WRANKS; html += '<div class="ranks">';
       for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; html += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
@@ -5096,7 +5103,7 @@ function buildTree() {
   let h = (save.books || 0) ? `<div class="tbook"><span>📘 You have ${save.books} Skill Book${save.books > 1 ? 's' : ''}. Each one is a point for any friend.</span><button class="btn small" data-tbook>Use one</button></div>` : '';
   for (const a of C.abil) {
     const open = tOpen(id, a), nodes = tNodes(a), base = tBase(id, a), need = tPickAt(a), P = TPICK[a] || (giftBranch(a) ? ['pow', 'guard'] : ['sharp', 'mop']), pk = tPicked(id, a), F = tFin(id, a), fin = tHasFin(id, a);
-    h += `<div class="tbr ${open ? '' : 'locked'}"><h3>${abilEm(a)} ${abilName(a)}<small>${open ? (isPassive(a) ? 'always on' : 'a skill') : `opens at level ${UNLOCK_AT[C.abil.indexOf(a)]}`}</small></h3>`;
+    h += `<div class="tbr ${open ? '' : 'locked'}"><h3>${abilIcon(a)} ${abilName(a)}<small>${open ? (isPassive(a) ? 'always on' : 'a skill') : `opens at level ${UNLOCK_AT[C.abil.indexOf(a)]}`}</small></h3>`;
     h += '<div class="tlab">Upgrades</div><div class="ttier">' + nodes.map(k => { const r = tRank(id, a, k), N = k === 'sig' ? { em: '⭐', n: SKILL[a][0], d: SKILL[a][1] } : TNODE[k], cost = tCost(r), can = open && r < TREE_MAX && left > 0 && save.coins >= cost;
       return `<div class="tn ${r ? 'on' : ''}"><span class="te">${N.em}</span><b>${N.n}</b><p>${N.d}</p>${pips(r, TREE_MAX)}${r >= TREE_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" data-tn="${a}:${k}" ${can ? '' : 'disabled'}>+1 · 🪙${cost}</button>`}</div>`; }).join('') + '</div>';
     const pOpen = open && base >= need;
