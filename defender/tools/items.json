@@ -1,0 +1,1145 @@
+[
+ {
+  "id": "i_thinking_cap",
+  "kind": "armor",
+  "name": "Thinking Cap",
+  "em": "\ud83e\udde2",
+  "desc": "Worn backwards when the question is hard."
+ },
+ {
+  "id": "i_sweater_vest",
+  "kind": "armor",
+  "name": "Sweater Vest",
+  "em": "\ud83e\uddba",
+  "desc": "Knitted by someone who loves you a lot."
+ },
+ {
+  "id": "i_big_glasses",
+  "kind": "armor",
+  "name": "Big Glasses",
+  "em": "\ud83d\udc53",
+  "desc": "Everything looks a bit more interesting through them."
+ },
+ {
+  "id": "i_dad_watch",
+  "kind": "armor",
+  "name": "Dad Watch",
+  "em": "\u231a",
+  "desc": "Still set to the wrong time zone from the holiday."
+ },
+ {
+  "id": "i_rain_boots",
+  "kind": "armor",
+  "name": "Rain Boots",
+  "em": "\ud83e\udd7e",
+  "desc": "Puddles are not a problem. Puddles are the point."
+ },
+ {
+  "id": "i_long_scarf",
+  "kind": "armor",
+  "name": "Long Scarf",
+  "em": "\ud83e\udde3",
+  "desc": "Goes round three times and still drags."
+ },
+ {
+  "id": "i_mittens",
+  "kind": "armor",
+  "name": "Mittens",
+  "em": "\ud83e\udde4",
+  "desc": "On a string, so they cannot run away."
+ },
+ {
+  "id": "i_lucky_socks",
+  "kind": "armor",
+  "name": "Lucky Socks",
+  "em": "\ud83e\udde6",
+  "desc": "Odd on purpose."
+ },
+ {
+  "id": "i_bike_helmet",
+  "kind": "armor",
+  "name": "Bike Helmet",
+  "em": "\u26d1\ufe0f",
+  "desc": "Scuffed in all the right places."
+ },
+ {
+  "id": "i_sun_hat",
+  "kind": "armor",
+  "name": "Sun Hat",
+  "em": "\ud83d\udc52",
+  "desc": "Wide enough to shade a whole picnic."
+ },
+ {
+  "id": "i_backpack",
+  "kind": "armor",
+  "name": "Backpack",
+  "em": "\ud83c\udf92",
+  "desc": "Has a snack in it. Always has a snack in it."
+ },
+ {
+  "id": "i_raincoat",
+  "kind": "armor",
+  "name": "Raincoat",
+  "em": "\ud83e\udde5",
+  "desc": "Bright yellow, so the ducks can find you."
+ },
+ {
+  "id": "i_reading_lamp",
+  "kind": "armor",
+  "name": "Reading Lamp",
+  "em": "\ud83e\ude94",
+  "desc": "Lights up the one page that matters."
+ },
+ {
+  "id": "i_garden_gloves",
+  "kind": "armor",
+  "name": "Garden Gloves",
+  "em": "\ud83e\udde4",
+  "desc": "Muddy. Proud of it."
+ },
+ {
+  "id": "i_field_guide",
+  "kind": "book",
+  "name": "Field Guide",
+  "em": "\ud83d\udcd7",
+  "desc": "Every bird, every bug, every page corner folded."
+ },
+ {
+  "id": "i_joke_book",
+  "kind": "book",
+  "name": "Joke Book",
+  "em": "\ud83d\udcd9",
+  "desc": "Dad has read it. You can tell."
+ },
+ {
+  "id": "i_atlas",
+  "kind": "book",
+  "name": "Atlas",
+  "em": "\ud83d\udcd8",
+  "desc": "The whole world, and a coffee ring on the Pacific."
+ },
+ {
+  "id": "i_dictionary",
+  "kind": "book",
+  "name": "Dictionary",
+  "em": "\ud83d\udcd5",
+  "desc": "The quickest way to win an argument."
+ },
+ {
+  "id": "i_comic",
+  "kind": "book",
+  "name": "Comic",
+  "em": "\ud83d\udcd4",
+  "desc": "Read in the car, read in the bath, read again."
+ },
+ {
+  "id": "i_encyclopedia",
+  "kind": "book",
+  "name": "Encyclopedia",
+  "em": "\ud83d\udcda",
+  "desc": "Volume 7, M to N. The best one."
+ },
+ {
+  "id": "i_cookbook",
+  "kind": "book",
+  "name": "Cookbook",
+  "em": "\ud83e\udd58",
+  "desc": "The pancake page is stuck to the next page."
+ },
+ {
+  "id": "i_star_chart",
+  "kind": "book",
+  "name": "Star Chart",
+  "em": "\ud83d\uddfa\ufe0f",
+  "desc": "Hold it up at night and the sky makes sense."
+ },
+ {
+  "id": "i_riddle_book",
+  "kind": "book",
+  "name": "Riddle Book",
+  "em": "\ud83e\udde9",
+  "desc": "The answers are in the back. Do not look."
+ },
+ {
+  "id": "i_diary",
+  "kind": "book",
+  "name": "Diary",
+  "em": "\ud83d\udcd3",
+  "desc": "Somebody's. Not yours."
+ },
+ {
+  "id": "i_almanac",
+  "kind": "book",
+  "name": "Almanac",
+  "em": "\ud83d\udcf0",
+  "desc": "Tells you when the tide is in and the moon is out."
+ },
+ {
+  "id": "i_sticker_album",
+  "kind": "book",
+  "name": "Sticker Album",
+  "em": "\ud83c\udff7\ufe0f",
+  "desc": "Three shinies short of complete."
+ },
+ {
+  "id": "i_backyard_map",
+  "kind": "book",
+  "name": "Backyard Map",
+  "em": "\ud83d\uddfa\ufe0f",
+  "desc": "X marks where the dog buried the ball."
+ },
+ {
+  "id": "i_library_card",
+  "kind": "book",
+  "name": "Library Card",
+  "em": "\ud83e\udeaa",
+  "desc": "Dad's. Laminated. Never late."
+ },
+ {
+  "id": "i_great_grandpa_s_lens",
+  "kind": "weapon",
+  "name": "Great-Grandpa's Lens",
+  "em": "\ud83e\uddd0",
+  "desc": "Older than Dad. Sees more than everyone.",
+  "legend": true
+ },
+ {
+  "id": "i_the_lighthouse_lens",
+  "kind": "weapon",
+  "name": "The Lighthouse Lens",
+  "em": "\ud83d\uddfc",
+  "desc": "From a real lighthouse. Reaches the far side of the yard.",
+  "legend": true
+ },
+ {
+  "id": "i_the_sun_catcher",
+  "kind": "weapon",
+  "name": "The Sun Catcher",
+  "em": "\ud83c\udf1e",
+  "desc": "Do not point it at your homework.",
+  "legend": true
+ },
+ {
+  "id": "i_the_thinking_cap",
+  "kind": "armor",
+  "name": "The Thinking Cap",
+  "em": "\ud83c\udfa9",
+  "desc": "The one Dad wears when he says \"hmm\".",
+  "legend": true
+ },
+ {
+  "id": "i_cosy_sunday_sweater",
+  "kind": "armor",
+  "name": "Cosy Sunday Sweater",
+  "em": "\ud83e\uddf6",
+  "desc": "Nothing bad has ever happened in this sweater.",
+  "legend": true
+ },
+ {
+  "id": "i_boots_of_puddle_jumping",
+  "kind": "armor",
+  "name": "Boots of Puddle Jumping",
+  "em": "\ud83d\udc62",
+  "desc": "Every puddle. Every time.",
+  "legend": true
+ },
+ {
+  "id": "i_the_book_of_why",
+  "kind": "book",
+  "name": "The Book of Why",
+  "em": "\ud83d\udcd6",
+  "desc": "Every question so far. The answers are coming.",
+  "legend": true
+ },
+ {
+  "id": "i_grandma_s_recipe_box",
+  "kind": "book",
+  "name": "Grandma's Recipe Box",
+  "em": "\ud83d\uddc2\ufe0f",
+  "desc": "Half recipes, half notes about who to feed them to.",
+  "legend": true
+ },
+ {
+  "id": "i_the_very_long_bedtime_story",
+  "kind": "book",
+  "name": "The Very Long Bedtime Story",
+  "em": "\ud83d\udcdc",
+  "desc": "Nobody has heard the end of it.",
+  "legend": true
+ },
+ {
+  "id": "w_dad_glass",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Classic Lens",
+  "em": "\ud83d\udd0d",
+  "desc": "A beam of truth at the nearest myth."
+ },
+ {
+  "id": "w_dad_yoyo",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Halo Lens",
+  "em": "\ud83d\udcab",
+  "desc": "A ring of light flies out, bonks everything and comes back."
+ },
+ {
+  "id": "w_dad_bat",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Glare Lens",
+  "em": "\u2728",
+  "desc": "A wide flash up close that knocks myths back."
+ },
+ {
+  "id": "w_dad_plane",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Long Lens",
+  "em": "\ud83d\udd2d",
+  "desc": "A dart of light that zips through a whole line."
+ },
+ {
+  "id": "w_dad_frisbee",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Ricochet Lens",
+  "em": "\ud83d\udd06",
+  "desc": "A spot of light that bounces from myth to myth."
+ },
+ {
+  "id": "w_dad_bubble",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Bubble Lens",
+  "em": "\ud83e\udee7",
+  "desc": "Floaty bubbles that slow myths down."
+ },
+ {
+  "id": "w_dad_balloon",
+  "kind": "weapon",
+  "owner": "dad",
+  "name": "Burning Glass",
+  "em": "\u2600\ufe0f",
+  "desc": "A hot sunspot lobbed at a crowd. Splash!"
+ },
+ {
+  "id": "w_webster_sticky",
+  "kind": "weapon",
+  "owner": "webster",
+  "line": "Fangs",
+  "name": "Sticky Fang",
+  "em": "\ud83d\udd78\ufe0f",
+  "desc": "The web that slows."
+ },
+ {
+  "id": "w_webster_needle",
+  "kind": "weapon",
+  "owner": "webster",
+  "line": "Fangs",
+  "name": "Needle Fang",
+  "em": "\ud83d\udccc",
+  "desc": "Sharper, but it doesn't stick."
+ },
+ {
+  "id": "w_webster_tickle",
+  "kind": "weapon",
+  "owner": "webster",
+  "line": "Fangs",
+  "name": "Tickle Fang",
+  "em": "\ud83e\udeb6",
+  "desc": "Myths stop to giggle."
+ },
+ {
+  "id": "w_webster_hook",
+  "kind": "weapon",
+  "owner": "webster",
+  "line": "Fangs",
+  "name": "Hook Fang",
+  "em": "\ud83e\ude9d",
+  "desc": "Reels the myth back toward Webster."
+ },
+ {
+  "id": "w_sparky_jar",
+  "kind": "weapon",
+  "owner": "sparky",
+  "line": "Lanterns",
+  "name": "Jar Lantern",
+  "em": "\ud83e\uded9",
+  "desc": "The spark that jumps."
+ },
+ {
+  "id": "w_sparky_beacon",
+  "kind": "weapon",
+  "owner": "sparky",
+  "line": "Lanterns",
+  "name": "Beacon",
+  "em": "\ud83c\udfee",
+  "desc": "Jumps further, hits softer."
+ },
+ {
+  "id": "w_sparky_strobe",
+  "kind": "weapon",
+  "owner": "sparky",
+  "line": "Lanterns",
+  "name": "Strobe",
+  "em": "\ud83d\udd26",
+  "desc": "Quick flashes that make myths blink."
+ },
+ {
+  "id": "w_hopper_bouncy",
+  "kind": "weapon",
+  "owner": "hopper",
+  "line": "Lily pads",
+  "name": "Bouncy Pad",
+  "em": "\ud83e\udeb7",
+  "desc": "A good long lick."
+ },
+ {
+  "id": "w_hopper_wide",
+  "kind": "weapon",
+  "owner": "hopper",
+  "line": "Lily pads",
+  "name": "Wide Pad",
+  "em": "\ud83c\udf43",
+  "desc": "A fatter tongue. Hits more, hits softer."
+ },
+ {
+  "id": "w_hopper_heavy",
+  "kind": "weapon",
+  "owner": "hopper",
+  "line": "Lily pads",
+  "name": "Heavy Pad",
+  "em": "\ud83e\udea8",
+  "desc": "Slower, and it hurts."
+ },
+ {
+  "id": "w_puddles_down",
+  "kind": "weapon",
+  "owner": "puddles",
+  "line": "Feathers",
+  "name": "Down Feather",
+  "em": "\ud83e\udeb6",
+  "desc": "A quack that shoves."
+ },
+ {
+  "id": "w_puddles_quill",
+  "kind": "weapon",
+  "owner": "puddles",
+  "line": "Feathers",
+  "name": "Quill",
+  "em": "\ud83d\udd8b\ufe0f",
+  "desc": "Sharp and loud, but it doesn't push."
+ },
+ {
+  "id": "w_puddles_flight",
+  "kind": "weapon",
+  "owner": "puddles",
+  "line": "Feathers",
+  "name": "Flight Feather",
+  "em": "\ud83d\udd4a\ufe0f",
+  "desc": "Lighter, faster, and it really shoves."
+ },
+ {
+  "id": "w_dusty_reading",
+  "kind": "weapon",
+  "owner": "dusty",
+  "line": "Spectacles",
+  "name": "Reading Glasses",
+  "em": "\ud83d\udc53",
+  "desc": "The bookmark that goes through two."
+ },
+ {
+  "id": "w_dusty_bifocal",
+  "kind": "weapon",
+  "owner": "dusty",
+  "line": "Spectacles",
+  "name": "Bifocals",
+  "em": "\ud83e\udd7d",
+  "desc": "Quicker reading, lighter throws."
+ },
+ {
+  "id": "w_dusty_monocle",
+  "kind": "weapon",
+  "owner": "dusty",
+  "line": "Spectacles",
+  "name": "Monocle",
+  "em": "\ud83e\uddd0",
+  "desc": "Slow and very, very precise."
+ },
+ {
+  "id": "w_pip_spiral",
+  "kind": "weapon",
+  "owner": "pip",
+  "line": "Shells",
+  "name": "Spiral Shell",
+  "em": "\ud83d\udc1a",
+  "desc": "A good solid shove."
+ },
+ {
+  "id": "w_pip_conch",
+  "kind": "weapon",
+  "owner": "pip",
+  "line": "Shells",
+  "name": "Conch",
+  "em": "\ud83d\udc0c",
+  "desc": "Heavier. Much bigger splash."
+ },
+ {
+  "id": "w_pip_cowrie",
+  "kind": "weapon",
+  "owner": "pip",
+  "line": "Shells",
+  "name": "Cowrie",
+  "em": "\ud83e\uddaa",
+  "desc": "Light and slippery. Myths skid in it."
+ },
+ {
+  "id": "w_scuttle_stub",
+  "kind": "weapon",
+  "owner": "scuttle",
+  "line": "Horns",
+  "name": "Stub Horn",
+  "em": "\ud83e\udeb2",
+  "desc": "Rolls a ball through a line."
+ },
+ {
+  "id": "w_scuttle_rhino",
+  "kind": "weapon",
+  "owner": "scuttle",
+  "line": "Horns",
+  "name": "Rhino Horn",
+  "em": "\ud83e\udd8f",
+  "desc": "Slower, and the ball hits like a truck."
+ },
+ {
+  "id": "w_scuttle_antler",
+  "kind": "weapon",
+  "owner": "scuttle",
+  "line": "Horns",
+  "name": "Antler",
+  "em": "\ud83e\udd8c",
+  "desc": "Lighter, and the ball is wider."
+ },
+ {
+  "id": "w_nilla_soft",
+  "kind": "weapon",
+  "owner": "nilla",
+  "line": "Talons",
+  "name": "Soft Talons",
+  "em": "\ud83e\udeb6",
+  "desc": "A hoot with a chill in it."
+ },
+ {
+  "id": "w_nilla_hook",
+  "kind": "weapon",
+  "owner": "nilla",
+  "line": "Talons",
+  "name": "Hook Talons",
+  "em": "\ud83e\ude9d",
+  "desc": "Swoops hit harder, hoots slower."
+ },
+ {
+  "id": "w_nilla_fluff",
+  "kind": "weapon",
+  "owner": "nilla",
+  "line": "Talons",
+  "name": "Fluff Talons",
+  "em": "\u2601\ufe0f",
+  "desc": "Softer, quicker, and the chill really lingers."
+ },
+ {
+  "id": "w_luna_candle",
+  "kind": "weapon",
+  "owner": "luna",
+  "line": "Lamps",
+  "name": "Candle",
+  "em": "\ud83d\udd6f\ufe0f",
+  "desc": "Sleepy dust, a puff at a time."
+ },
+ {
+  "id": "w_luna_lantern",
+  "kind": "weapon",
+  "owner": "luna",
+  "line": "Lamps",
+  "name": "Paper Lantern",
+  "em": "\ud83c\udfee",
+  "desc": "Softer puffs, but much bigger."
+ },
+ {
+  "id": "w_luna_moonlamp",
+  "kind": "weapon",
+  "owner": "luna",
+  "line": "Lamps",
+  "name": "Moon Lamp",
+  "em": "\ud83c\udf15",
+  "desc": "Slow and heavy. Myths doze off where they stand."
+ },
+ {
+  "id": "w_shelly_pond",
+  "kind": "weapon",
+  "owner": "shelly",
+  "line": "Shells",
+  "name": "Pond Shell",
+  "em": "\ud83d\udc22",
+  "desc": "Smooth and sturdy."
+ },
+ {
+  "id": "w_shelly_spiky",
+  "kind": "weapon",
+  "owner": "shelly",
+  "line": "Shells",
+  "name": "Spiky Shell",
+  "em": "\ud83e\udd94",
+  "desc": "Slower spins that send myths flying."
+ },
+ {
+  "id": "w_shelly_smooth",
+  "kind": "weapon",
+  "owner": "shelly",
+  "line": "Shells",
+  "name": "River Shell",
+  "em": "\ud83e\udea8",
+  "desc": "Lighter and quicker. Myths slip on it."
+ },
+ {
+  "id": "w_goldie_fan",
+  "kind": "weapon",
+  "owner": "goldie",
+  "line": "Fins",
+  "name": "Fan Fin",
+  "em": "\ud83d\udc20",
+  "desc": "A good all-round splash."
+ },
+ {
+  "id": "w_goldie_comet",
+  "kind": "weapon",
+  "owner": "goldie",
+  "line": "Fins",
+  "name": "Comet Fin",
+  "em": "\u2604\ufe0f",
+  "desc": "Faster bubbles that slow more."
+ },
+ {
+  "id": "w_goldie_veil",
+  "kind": "weapon",
+  "owner": "goldie",
+  "line": "Fins",
+  "name": "Veil Fin",
+  "em": "\ud83c\udf80",
+  "desc": "Fewer, sharper bubbles."
+ },
+ {
+  "id": "w_prickles_soft",
+  "kind": "weapon",
+  "owner": "prickles",
+  "line": "Quills",
+  "name": "Soft Quills",
+  "em": "\ud83e\udd94",
+  "desc": "A friendly prickle."
+ },
+ {
+  "id": "w_prickles_sharp",
+  "kind": "weapon",
+  "owner": "prickles",
+  "line": "Quills",
+  "name": "Sharp Quills",
+  "em": "\ud83d\udccd",
+  "desc": "They really sting."
+ },
+ {
+  "id": "w_prickles_staticq",
+  "kind": "weapon",
+  "owner": "prickles",
+  "line": "Quills",
+  "name": "Static Quills",
+  "em": "\u26a1",
+  "desc": "A little zap with every quill."
+ },
+ {
+  "id": "w_jelly_short",
+  "kind": "weapon",
+  "owner": "jelly",
+  "line": "Tentacles",
+  "name": "Short Tentacles",
+  "em": "\ud83e\udebc",
+  "desc": "Quick little stings."
+ },
+ {
+  "id": "w_jelly_long",
+  "kind": "weapon",
+  "owner": "jelly",
+  "line": "Tentacles",
+  "name": "Long Tentacles",
+  "em": "\u3030\ufe0f",
+  "desc": "Lighter stings that slow."
+ },
+ {
+  "id": "w_jelly_glowing",
+  "kind": "weapon",
+  "owner": "jelly",
+  "line": "Tentacles",
+  "name": "Glowing Tentacles",
+  "em": "\ud83d\udca1",
+  "desc": "Slower stings that stop myths cold."
+ },
+ {
+  "id": "w_echo_chirp",
+  "kind": "weapon",
+  "owner": "echo",
+  "line": "Squeaks",
+  "name": "Chirp",
+  "em": "\ud83e\udd87",
+  "desc": "A clear little squeak."
+ },
+ {
+  "id": "w_echo_screech",
+  "kind": "weapon",
+  "owner": "echo",
+  "line": "Squeaks",
+  "name": "Screech",
+  "em": "\ud83d\udce2",
+  "desc": "Loud enough to push myths back."
+ },
+ {
+  "id": "w_echo_whisper",
+  "kind": "weapon",
+  "owner": "echo",
+  "line": "Squeaks",
+  "name": "Whisper",
+  "em": "\ud83e\udd2b",
+  "desc": "Quiet, quick and very precise."
+ },
+ {
+  "id": "w_inky_curly",
+  "kind": "weapon",
+  "owner": "inky",
+  "line": "Arms",
+  "name": "Curly Arms",
+  "em": "\ud83d\udc19",
+  "desc": "Eight good grips."
+ },
+ {
+  "id": "w_inky_suction",
+  "kind": "weapon",
+  "owner": "inky",
+  "line": "Arms",
+  "name": "Suction Arms",
+  "em": "\ud83e\udee7",
+  "desc": "Grips that slow myths down."
+ },
+ {
+  "id": "w_inky_inkyarm",
+  "kind": "weapon",
+  "owner": "inky",
+  "line": "Arms",
+  "name": "Inky Arms",
+  "em": "\ud83d\udda4",
+  "desc": "Quicker grabs that leave myths dazed."
+ },
+ {
+  "id": "w_chroma_sticky",
+  "kind": "weapon",
+  "owner": "chroma",
+  "line": "Tongues",
+  "name": "Sticky Tongue",
+  "em": "\ud83e\udd8e",
+  "desc": "A long, accurate flick."
+ },
+ {
+  "id": "w_chroma_zappy",
+  "kind": "weapon",
+  "owner": "chroma",
+  "line": "Tongues",
+  "name": "Zappy Tongue",
+  "em": "\u26a1",
+  "desc": "Heavier flicks that stop myths."
+ },
+ {
+  "id": "w_chroma_rainbow",
+  "kind": "weapon",
+  "owner": "chroma",
+  "line": "Tongues",
+  "name": "Rainbow Tongue",
+  "em": "\ud83c\udf08",
+  "desc": "Quick flicks in every colour."
+ },
+ {
+  "id": "w_bumble_honey",
+  "kind": "weapon",
+  "owner": "bumble",
+  "line": "Stingers",
+  "name": "Honey Stinger",
+  "em": "\ud83c\udf6f",
+  "desc": "A sweet little sting."
+ },
+ {
+  "id": "w_bumble_sharp",
+  "kind": "weapon",
+  "owner": "bumble",
+  "line": "Stingers",
+  "name": "Sharp Stinger",
+  "em": "\ud83d\udccc",
+  "desc": "Slower, but it really stings."
+ },
+ {
+  "id": "w_bumble_sticky",
+  "kind": "weapon",
+  "owner": "bumble",
+  "line": "Stingers",
+  "name": "Pollen Stinger",
+  "em": "\ud83c\udf3c",
+  "desc": "Quick darts covered in pollen."
+ },
+ {
+  "id": "w_wiggles_dirt",
+  "kind": "weapon",
+  "owner": "wiggles",
+  "line": "Burrows",
+  "name": "Garden Dirt",
+  "em": "\ud83d\udfeb",
+  "desc": "Soft and easy to dig."
+ },
+ {
+  "id": "w_wiggles_clay",
+  "kind": "weapon",
+  "owner": "wiggles",
+  "line": "Burrows",
+  "name": "Clay Burrow",
+  "em": "\ud83e\uddf1",
+  "desc": "Hard ground: myths fall right over."
+ },
+ {
+  "id": "w_wiggles_sand",
+  "kind": "weapon",
+  "owner": "wiggles",
+  "line": "Burrows",
+  "name": "Sandy Burrow",
+  "em": "\u23f3",
+  "desc": "Quick digging that leaves myths slipping."
+ },
+ {
+  "id": "w_coco_oak",
+  "kind": "weapon",
+  "owner": "coco",
+  "line": "Acorns",
+  "name": "Oak Acorn",
+  "em": "\ud83c\udf30",
+  "desc": "A good solid throw."
+ },
+ {
+  "id": "w_coco_cone",
+  "kind": "weapon",
+  "owner": "coco",
+  "line": "Acorns",
+  "name": "Pine Cone",
+  "em": "\ud83c\udf32",
+  "desc": "Heavy and spiky."
+ },
+ {
+  "id": "w_coco_hazel",
+  "kind": "weapon",
+  "owner": "coco",
+  "line": "Acorns",
+  "name": "Hazelnut",
+  "em": "\ud83e\udd5c",
+  "desc": "Small, fast and right on target."
+ },
+ {
+  "id": "w_dot_red",
+  "kind": "weapon",
+  "owner": "dot",
+  "line": "Spots",
+  "name": "Red Spots",
+  "em": "\ud83d\udd34",
+  "desc": "The classic."
+ },
+ {
+  "id": "w_dot_gold",
+  "kind": "weapon",
+  "owner": "dot",
+  "line": "Spots",
+  "name": "Gold Spots",
+  "em": "\ud83d\udfe1",
+  "desc": "Rare and very lucky."
+ },
+ {
+  "id": "w_dot_black",
+  "kind": "weapon",
+  "owner": "dot",
+  "line": "Spots",
+  "name": "Black Spots",
+  "em": "\u26ab",
+  "desc": "Quick little spots that slow."
+ },
+ {
+  "id": "w_rosie_pink",
+  "kind": "weapon",
+  "owner": "rosie",
+  "line": "Plumes",
+  "name": "Pink Plume",
+  "em": "\ud83e\ude77",
+  "desc": "Pretty and sharp."
+ },
+ {
+  "id": "w_rosie_hot",
+  "kind": "weapon",
+  "owner": "rosie",
+  "line": "Plumes",
+  "name": "Hot Pink Plume",
+  "em": "\ud83d\udd25",
+  "desc": "Pecks that push myths back."
+ },
+ {
+  "id": "w_rosie_soft",
+  "kind": "weapon",
+  "owner": "rosie",
+  "line": "Plumes",
+  "name": "Soft Plume",
+  "em": "\ud83e\udeb6",
+  "desc": "Quick pecks that slow."
+ },
+ {
+  "id": "w_gizmo_grabby",
+  "kind": "weapon",
+  "owner": "gizmo",
+  "line": "Paws",
+  "name": "Grabby Paws",
+  "em": "\ud83e\udd9d",
+  "desc": "Good at finding things."
+ },
+ {
+  "id": "w_gizmo_mitts",
+  "kind": "weapon",
+  "owner": "gizmo",
+  "line": "Paws",
+  "name": "Bin Mitts",
+  "em": "\ud83e\udde4",
+  "desc": "Heavy paws that stun."
+ },
+ {
+  "id": "w_gizmo_sticky",
+  "kind": "weapon",
+  "owner": "gizmo",
+  "line": "Paws",
+  "name": "Sticky Paws",
+  "em": "\ud83c\udf6f",
+  "desc": "Quick, sticky, slowing."
+ },
+ {
+  "id": "w_bramble_brush",
+  "kind": "weapon",
+  "owner": "bramble",
+  "line": "Tails",
+  "name": "Brush Tail",
+  "em": "\ud83e\udd8a",
+  "desc": "Fluffy and fast."
+ },
+ {
+  "id": "w_bramble_flame",
+  "kind": "weapon",
+  "owner": "bramble",
+  "line": "Tails",
+  "name": "Flame Tail",
+  "em": "\ud83d\udd25",
+  "desc": "Fox fire: harder bites."
+ },
+ {
+  "id": "w_bramble_swift",
+  "kind": "weapon",
+  "owner": "bramble",
+  "line": "Tails",
+  "name": "Swift Tail",
+  "em": "\ud83d\udca8",
+  "desc": "Even quicker, and myths slow down."
+ },
+ {
+  "id": "w_pinch_red",
+  "kind": "weapon",
+  "owner": "pinch",
+  "line": "Claws",
+  "name": "Red Claws",
+  "em": "\ud83e\udd9e",
+  "desc": "Snap snap."
+ },
+ {
+  "id": "w_pinch_crusher",
+  "kind": "weapon",
+  "owner": "pinch",
+  "line": "Claws",
+  "name": "Crusher Claw",
+  "em": "\ud83e\udea8",
+  "desc": "A slow, heavy pinch."
+ },
+ {
+  "id": "w_pinch_nipper",
+  "kind": "weapon",
+  "owner": "pinch",
+  "line": "Claws",
+  "name": "Nipper Claw",
+  "em": "\u2702\ufe0f",
+  "desc": "Quick little nips."
+ },
+ {
+  "id": "w_sol_blue",
+  "kind": "weapon",
+  "owner": "sol",
+  "line": "Fans",
+  "name": "Blue Fan",
+  "em": "\ud83e\udd9a",
+  "desc": "Showy and sharp."
+ },
+ {
+  "id": "w_sol_golden",
+  "kind": "weapon",
+  "owner": "sol",
+  "line": "Fans",
+  "name": "Golden Fan",
+  "em": "\ud83d\udc51",
+  "desc": "The best feathers, the hardest hits."
+ },
+ {
+  "id": "w_sol_emerald",
+  "kind": "weapon",
+  "owner": "sol",
+  "line": "Fans",
+  "name": "Emerald Fan",
+  "em": "\ud83d\udc9a",
+  "desc": "Quick flutters that dazzle."
+ },
+ {
+  "id": "w_frost_snow",
+  "kind": "weapon",
+  "owner": "frost",
+  "line": "Paws",
+  "name": "Snow Paws",
+  "em": "\u2744\ufe0f",
+  "desc": "Big and soft."
+ },
+ {
+  "id": "w_frost_ice",
+  "kind": "weapon",
+  "owner": "frost",
+  "line": "Paws",
+  "name": "Ice Claws",
+  "em": "\ud83e\uddca",
+  "desc": "Slow, heavy, sends them flying."
+ },
+ {
+  "id": "w_frost_fluffy",
+  "kind": "weapon",
+  "owner": "frost",
+  "line": "Paws",
+  "name": "Fluffy Paws",
+  "em": "\u2601\ufe0f",
+  "desc": "Quicker swipes that chill."
+ },
+ {
+  "id": "w_bluey_misty",
+  "kind": "weapon",
+  "owner": "bluey",
+  "line": "Spouts",
+  "name": "Misty Spout",
+  "em": "\ud83d\udca8",
+  "desc": "A gentle shower."
+ },
+ {
+  "id": "w_bluey_geyser",
+  "kind": "weapon",
+  "owner": "bluey",
+  "line": "Spouts",
+  "name": "Geyser",
+  "em": "\u26f2",
+  "desc": "A huge blast that sends myths back."
+ },
+ {
+  "id": "w_bluey_bubbly",
+  "kind": "weapon",
+  "owner": "bluey",
+  "line": "Spouts",
+  "name": "Bubbly Spout",
+  "em": "\ud83e\udee7",
+  "desc": "Quick and slippery."
+ },
+ {
+  "id": "w_uni_pearl",
+  "kind": "weapon",
+  "owner": "uni",
+  "line": "Horns",
+  "name": "Pearl Horn",
+  "em": "\ud83e\udd84",
+  "desc": "Softly sparkling."
+ },
+ {
+  "id": "w_uni_golden",
+  "kind": "weapon",
+  "owner": "uni",
+  "line": "Horns",
+  "name": "Golden Horn",
+  "em": "\ud83c\udf1f",
+  "desc": "The brightest beam."
+ },
+ {
+  "id": "w_uni_crystal",
+  "kind": "weapon",
+  "owner": "uni",
+  "line": "Horns",
+  "name": "Crystal Horn",
+  "em": "\ud83d\udc8e",
+  "desc": "Quick beams that dazzle."
+ },
+ {
+  "id": "s_lunchbox",
+  "kind": "shop",
+  "name": "Lunchbox",
+  "desc": "A colourful kids' lunchbox with a latch, a surprise item inside."
+ },
+ {
+  "id": "s_backpack",
+  "kind": "shop",
+  "name": "Backpack",
+  "desc": "A bulging kids' school backpack, stuffed full of goodies."
+ },
+ {
+  "id": "s_library_card",
+  "kind": "shop",
+  "name": "Library Card",
+  "desc": "A laminated library card with a little book stamp on it."
+ },
+ {
+  "id": "s_pocket_money",
+  "kind": "shop",
+  "name": "Pocket Money",
+  "desc": "A small pile of shiny gold coins spilling from a little cloth purse."
+ },
+ {
+  "id": "s_bookmark",
+  "kind": "shop",
+  "name": "Bookmark",
+  "desc": "A ribbon bookmark with a tassel tucked into a closed book."
+ },
+ {
+  "id": "s_watch_a_short_video",
+  "kind": "shop",
+  "name": "Watch a short video",
+  "desc": "A small retro TV with a play button shape on the screen."
+ },
+ {
+  "id": "s_wardrobe",
+  "kind": "shop",
+  "name": "Dad's Wardrobe",
+  "desc": "A friendly wooden wardrobe with its doors open, a mustard sweater and hats inside."
+ },
+ {
+  "id": "s_book_pass",
+  "kind": "shop",
+  "name": "The Big Book Pass",
+  "desc": "A big golden hardback storybook with a ribbon, glowing gently."
+ },
+ {
+  "id": "s_closet",
+  "kind": "shop",
+  "name": "Dad's Closet",
+  "desc": "A coat rack with cosy sweaters, scarves and a hat."
+ }
+]
