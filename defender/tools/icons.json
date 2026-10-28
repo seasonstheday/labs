@@ -1,0 +1,690 @@
+[
+ {
+  "id": "story",
+  "name": "Bedtime Story",
+  "desc": "Myths near Dad get sleepy and slow.",
+  "em": "📖",
+  "who": "Dad",
+  "whoDesc": "a cheerful dad with a magnifying glass"
+ },
+ {
+  "id": "joke",
+  "name": "Dad Joke",
+  "desc": "Every myth in the ring groans and stops.",
+  "em": "🥁",
+  "who": "Dad",
+  "whoDesc": "a cheerful dad with a magnifying glass"
+ },
+ {
+  "id": "web",
+  "name": "Web Shot",
+  "desc": "A sticky web that slows a myth.",
+  "em": "🕸️",
+  "who": "Webster",
+  "whoDesc": "The spider from the tub. Shoots sticky webs and never, ever bites."
+ },
+ {
+  "id": "trap",
+  "name": "Silk Trap",
+  "desc": "Sticky webs on the lawn.",
+  "em": "🪤",
+  "who": "Webster",
+  "whoDesc": "The spider from the tub. Shoots sticky webs and never, ever bites."
+ },
+ {
+  "id": "eyes",
+  "name": "Eight Eyes",
+  "desc": "Weak spots: team crits +6% a rank.",
+  "em": "👀",
+  "who": "Webster",
+  "whoDesc": "The spider from the tub. Shoots sticky webs and never, ever bites."
+ },
+ {
+  "id": "zap",
+  "name": "Zap",
+  "desc": "A spark that jumps myth to myth.",
+  "em": "⚡",
+  "who": "Sparky",
+  "whoDesc": "A firefly who took the electricity episode very seriously."
+ },
+ {
+  "id": "glow",
+  "name": "Glow",
+  "desc": "Lit-up myths near Sparky take more damage.",
+  "em": "🔆",
+  "who": "Sparky",
+  "whoDesc": "A firefly who took the electricity episode very seriously."
+ },
+ {
+  "id": "surge",
+  "name": "Surge",
+  "desc": "Every few zaps, a big one.",
+  "em": "💥",
+  "who": "Sparky",
+  "whoDesc": "A firefly who took the electricity episode very seriously."
+ },
+ {
+  "id": "tongue",
+  "name": "Tongue Lash",
+  "desc": "A long lick through a line.",
+  "em": "👅",
+  "who": "Hopper",
+  "whoDesc": "A toad. Does not give warts. Does give tongue-lashings."
+ },
+ {
+  "id": "hop",
+  "name": "Big Hop",
+  "desc": "Hopper leaps onto a crowd. Splat.",
+  "em": "🐸",
+  "who": "Hopper",
+  "whoDesc": "A toad. Does not give warts. Does give tongue-lashings."
+ },
+ {
+  "id": "song",
+  "name": "Toad Song",
+  "desc": "A croaky lullaby. Patience comes back.",
+  "em": "🎵",
+  "who": "Hopper",
+  "whoDesc": "A toad. Does not give warts. Does give tongue-lashings."
+ },
+ {
+  "id": "quack",
+  "name": "Quack",
+  "desc": "A sound wave shoves myths back.",
+  "em": "📣",
+  "who": "Puddles",
+  "whoDesc": "A duck whose quack definitely echoes."
+ },
+ {
+  "id": "echo",
+  "name": "Echo",
+  "desc": "The quack echoes. Sometimes twice.",
+  "em": "🔊",
+  "who": "Puddles",
+  "whoDesc": "A duck whose quack definitely echoes."
+ },
+ {
+  "id": "pond",
+  "name": "Duck Pond",
+  "desc": "Finds coins: +10% a rank.",
+  "em": "🪙",
+  "who": "Puddles",
+  "whoDesc": "A duck whose quack definitely echoes."
+ },
+ {
+  "id": "toss",
+  "name": "Bookmark Toss",
+  "desc": "A bookmark through two myths. Marks them.",
+  "em": "🔖",
+  "who": "Dusty",
+  "whoDesc": "A bookworm from the library stacks. Has read everything, twice."
+ },
+ {
+  "id": "footnote",
+  "name": "Footnote",
+  "desc": "Marked myths take 5% more a rank.",
+  "em": "📝",
+  "who": "Dusty",
+  "whoDesc": "A bookworm from the library stacks. Has read everything, twice."
+ },
+ {
+  "id": "speedread",
+  "name": "Speed Read",
+  "desc": "Team acts 3% sooner a rank.",
+  "em": "⏩",
+  "who": "Dusty",
+  "whoDesc": "A bookworm from the library stacks. Has read everything, twice."
+ },
+ {
+  "id": "shell",
+  "name": "Shell Toss",
+  "desc": "A lobbed shell: splash and shove.",
+  "em": "🐚",
+  "who": "Pip",
+  "whoDesc": "A hermit crab who keeps changing shells. Very hard to knock over."
+ },
+ {
+  "id": "shellwall",
+  "name": "Shell Wall",
+  "desc": "Shells on the lawn block myths.",
+  "em": "🧱",
+  "who": "Pip",
+  "whoDesc": "A hermit crab who keeps changing shells. Very hard to knock over."
+ },
+ {
+  "id": "thickshell",
+  "name": "Thick Shell",
+  "desc": "Dad loses 6% less Patience a rank.",
+  "em": "🛡️",
+  "who": "Pip",
+  "whoDesc": "A hermit crab who keeps changing shells. Very hard to knock over."
+ },
+ {
+  "id": "roll",
+  "name": "Sand Ball",
+  "desc": "A rolling ball flattens a line.",
+  "em": "🟤",
+  "who": "Scuttle",
+  "whoDesc": "A desert beetle. Feels footsteps from across the lawn."
+ },
+ {
+  "id": "dig",
+  "name": "Dig",
+  "desc": "Pops up under a crowd. Surprise!",
+  "em": "⛏️",
+  "who": "Scuttle",
+  "whoDesc": "A desert beetle. Feels footsteps from across the lawn."
+ },
+ {
+  "id": "antennae",
+  "name": "Antennae",
+  "desc": "Feels them coming: ring +8 a rank.",
+  "em": "📡",
+  "who": "Scuttle",
+  "whoDesc": "A desert beetle. Feels footsteps from across the lawn."
+ },
+ {
+  "id": "hoot",
+  "name": "Hoot",
+  "desc": "A chilly hoot that slows a line.",
+  "em": "🎶",
+  "who": "Nilla",
+  "whoDesc": "A snowy owl. Says little, misses nothing."
+ },
+ {
+  "id": "swoop",
+  "name": "Swoop",
+  "desc": "Dives on the biggest myth.",
+  "em": "🪽",
+  "who": "Nilla",
+  "whoDesc": "A snowy owl. Says little, misses nothing."
+ },
+ {
+  "id": "nighteyes",
+  "name": "Night Eyes",
+  "desc": "Spots rumours. Team crits +4% a rank.",
+  "em": "👁️",
+  "who": "Nilla",
+  "whoDesc": "A snowy owl. Says little, misses nothing."
+ },
+ {
+  "id": "dust",
+  "name": "Dust Puff",
+  "desc": "Sleepy dust on the first myth hit.",
+  "em": "✨",
+  "who": "Luna",
+  "whoDesc": "A luna moth who followed the porch light home."
+ },
+ {
+  "id": "lamp",
+  "name": "Lamp Dance",
+  "desc": "Every myth is drawn to the light.",
+  "em": "🏮",
+  "who": "Luna",
+  "whoDesc": "A luna moth who followed the porch light home."
+ },
+ {
+  "id": "spin",
+  "name": "Shell Spin",
+  "desc": "Spins and bowls over nearby myths.",
+  "em": "🌀",
+  "who": "Shelly",
+  "whoDesc": "A pond turtle. Slow, steady, and has never once left her shell behind."
+ },
+ {
+  "id": "snap",
+  "name": "Snap",
+  "desc": "A mighty bite. The myth stops.",
+  "em": "🐢",
+  "who": "Shelly",
+  "whoDesc": "A pond turtle. Slow, steady, and has never once left her shell behind."
+ },
+ {
+  "id": "steady",
+  "name": "Slow and Steady",
+  "desc": "Nearby myths 6% slower a rank.",
+  "em": "🐌",
+  "who": "Shelly",
+  "whoDesc": "A pond turtle. Slow, steady, and has never once left her shell behind."
+ },
+ {
+  "id": "bubbles",
+  "name": "Bubble Blow",
+  "desc": "Floaty bubbles that slow myths.",
+  "em": "🫧",
+  "who": "Goldie",
+  "whoDesc": "A goldfish whose memory lasts for months, thank you very much."
+ },
+ {
+  "id": "splash",
+  "name": "Big Splash",
+  "desc": "A big splash leaves a slippery puddle.",
+  "em": "💦",
+  "who": "Goldie",
+  "whoDesc": "A goldfish whose memory lasts for months, thank you very much."
+ },
+ {
+  "id": "memory",
+  "name": "Long Memory",
+  "desc": "Known myths take 5% more a rank.",
+  "em": "🧠",
+  "who": "Goldie",
+  "whoDesc": "A goldfish whose memory lasts for months, thank you very much."
+ },
+ {
+  "id": "quills",
+  "name": "Quill Burst",
+  "desc": "Quills fly at every myth around.",
+  "em": "📍",
+  "who": "Prickles",
+  "whoDesc": "A hedgehog. Has never carried an apple on its spines, though it did try once."
+ },
+ {
+  "id": "rollup",
+  "name": "Roll Up",
+  "desc": "Curls up and bowls into a crowd.",
+  "em": "🦔",
+  "who": "Prickles",
+  "whoDesc": "A hedgehog. Has never carried an apple on its spines, though it did try once."
+ },
+ {
+  "id": "static",
+  "name": "Static",
+  "desc": "Team sparks hit 4% harder a rank.",
+  "em": "⚡",
+  "who": "Prickles",
+  "whoDesc": "A hedgehog. Has never carried an apple on its spines, though it did try once."
+ },
+ {
+  "id": "sting",
+  "name": "Sting",
+  "desc": "A sting that freezes one myth.",
+  "em": "🪼",
+  "who": "Jelly",
+  "whoDesc": "A jellyfish with no brain and no worries. Glows when it is happy."
+ },
+ {
+  "id": "drift",
+  "name": "Drift",
+  "desc": "Floats over a crowd, stinging below.",
+  "em": "🌊",
+  "who": "Jelly",
+  "whoDesc": "A jellyfish with no brain and no worries. Glows when it is happy."
+ },
+ {
+  "id": "shine",
+  "name": "Glow Sting",
+  "desc": "Stung myths take 4% more a rank.",
+  "em": "💡",
+  "who": "Jelly",
+  "whoDesc": "A jellyfish with no brain and no worries. Glows when it is happy."
+ },
+ {
+  "id": "sonar",
+  "name": "Sonar",
+  "desc": "A squeak hits every myth in the ring.",
+  "em": "🦇",
+  "who": "Echo",
+  "whoDesc": "A bat. Not blind at all, and can hear you thinking."
+ },
+ {
+  "id": "dive",
+  "name": "Night Dive",
+  "desc": "Dives through a line of myths.",
+  "em": "🌌",
+  "who": "Echo",
+  "whoDesc": "A bat. Not blind at all, and can hear you thinking."
+ },
+ {
+  "id": "echoes",
+  "name": "Echoes",
+  "desc": "15% a rank: the squeak hits twice.",
+  "em": "🔁",
+  "who": "Echo",
+  "whoDesc": "A bat. Not blind at all, and can hear you thinking."
+ },
+ {
+  "id": "arms",
+  "name": "Eight Arms",
+  "desc": "Grabs up to eight myths at once.",
+  "em": "🐙",
+  "who": "Inky",
+  "whoDesc": "An octopus with three hearts and nine brains. Opens jars for fun."
+ },
+ {
+  "id": "ink",
+  "name": "Ink Cloud",
+  "desc": "Ink stops a crowd. They take more damage.",
+  "em": "🖤",
+  "who": "Inky",
+  "whoDesc": "An octopus with three hearts and nine brains. Opens jars for fun."
+ },
+ {
+  "id": "clever",
+  "name": "Clever Arms",
+  "desc": "Grabs find coins: 5% a rank.",
+  "em": "🪙",
+  "who": "Inky",
+  "whoDesc": "An octopus with three hearts and nine brains. Opens jars for fun."
+ },
+ {
+  "id": "flick",
+  "name": "Rainbow Flick",
+  "desc": "A tongue flick that sets off reactions.",
+  "em": "🌈",
+  "who": "Chroma",
+  "whoDesc": "A chameleon. Changes colour to show how it feels, not to hide."
+ },
+ {
+  "id": "colours",
+  "name": "Colour Swap",
+  "desc": "Gives every myth in the ring a colour.",
+  "em": "🎨",
+  "who": "Chroma",
+  "whoDesc": "A chameleon. Changes colour to show how it feels, not to hide."
+ },
+ {
+  "id": "camo",
+  "name": "Camouflage",
+  "desc": "Reactions +8% a rank. Gossips miss Chroma.",
+  "em": "🦎",
+  "who": "Chroma",
+  "whoDesc": "A chameleon. Changes colour to show how it feels, not to hide."
+ },
+ {
+  "id": "moonlight",
+  "name": "Moonlight",
+  "desc": "Bedtime Story reaches 15% further a rank.",
+  "em": "🌙",
+  "who": "Luna",
+  "whoDesc": "A luna moth who followed the porch light home."
+ },
+ {
+  "id": "buzzshot",
+  "name": "Stinger Dart",
+  "desc": "A buzzing dart at the nearest myth.",
+  "em": "🐝",
+  "who": "Bumble",
+  "whoDesc": "A bumblebee. Somebody once said science says bees can't fly. Bumble flies just fine."
+ },
+ {
+  "id": "pollen",
+  "name": "Pollen Puff",
+  "desc": "A pollen cloud slows a crowd.",
+  "em": "🌼",
+  "who": "Bumble",
+  "whoDesc": "A bumblebee. Somebody once said science says bees can't fly. Bumble flies just fine."
+ },
+ {
+  "id": "hive",
+  "name": "Hive Mind",
+  "desc": "Team works 3% faster a rank.",
+  "em": "🍯",
+  "who": "Bumble",
+  "whoDesc": "A bumblebee. Somebody once said science says bees can't fly. Bumble flies just fine."
+ },
+ {
+  "id": "wriggle",
+  "name": "Wriggle Up",
+  "desc": "Pops up under the nearest crowd.",
+  "em": "🪱",
+  "who": "Wiggles",
+  "whoDesc": "An earthworm. Cut in half? No thank you. That only makes one very sad worm."
+ },
+ {
+  "id": "tunnel",
+  "name": "Tunnel Trip",
+  "desc": "Trips up the biggest myth.",
+  "em": "🕳️",
+  "who": "Wiggles",
+  "whoDesc": "An earthworm. Cut in half? No thank you. That only makes one very sad worm."
+ },
+ {
+  "id": "compost",
+  "name": "Compost",
+  "desc": "Patience trickles back. More each rank.",
+  "em": "🌱",
+  "who": "Wiggles",
+  "whoDesc": "An earthworm. Cut in half? No thank you. That only makes one very sad worm."
+ },
+ {
+  "id": "acorn",
+  "name": "Acorn Toss",
+  "desc": "An acorn at the nearest myth.",
+  "em": "🌰",
+  "who": "Coco",
+  "whoDesc": "A red squirrel who finds nearly every nut she buries, and plants an oak with the rest."
+ },
+ {
+  "id": "stash",
+  "name": "Nut Stash",
+  "desc": "A fan of nuts at the crowd.",
+  "em": "🥜",
+  "who": "Coco",
+  "whoDesc": "A red squirrel who finds nearly every nut she buries, and plants an oak with the rest."
+ },
+ {
+  "id": "hoard",
+  "name": "Squirrel Away",
+  "desc": "Coins +4% a rank.",
+  "em": "🪙",
+  "who": "Coco",
+  "whoDesc": "A red squirrel who finds nearly every nut she buries, and plants an oak with the rest."
+ },
+ {
+  "id": "spots",
+  "name": "Spot Shot",
+  "desc": "Little spots fired in a spread.",
+  "em": "🔴",
+  "who": "Dot",
+  "whoDesc": "A ladybird. Her spots don't tell her age; she's had seven since the day she hatched."
+ },
+ {
+  "id": "lucky",
+  "name": "Lucky Break",
+  "desc": "A lucky hit on the biggest myth.",
+  "em": "🍀",
+  "who": "Dot",
+  "whoDesc": "A ladybird. Her spots don't tell her age; she's had seven since the day she hatched."
+ },
+ {
+  "id": "luckspot",
+  "name": "Lucky Spots",
+  "desc": "Team crits +2% a rank.",
+  "em": "🐞",
+  "who": "Dot",
+  "whoDesc": "A ladybird. Her spots don't tell her age; she's had seven since the day she hatched."
+ },
+ {
+  "id": "peck",
+  "name": "Peck",
+  "desc": "A peck that jumps to a second myth.",
+  "em": "🦩",
+  "who": "Rosie",
+  "whoDesc": "A flamingo. Born grey and fluffy, pink from all the shrimp."
+ },
+ {
+  "id": "stomp",
+  "name": "Flamingo Stomp",
+  "desc": "A stomp that sends myths flying.",
+  "em": "🦶",
+  "who": "Rosie",
+  "whoDesc": "A flamingo. Born grey and fluffy, pink from all the shrimp."
+ },
+ {
+  "id": "pink",
+  "name": "Pink Power",
+  "desc": "Team hits 3% harder a rank.",
+  "em": "🦐",
+  "who": "Rosie",
+  "whoDesc": "A flamingo. Born grey and fluffy, pink from all the shrimp."
+ },
+ {
+  "id": "swipe",
+  "name": "Swipe",
+  "desc": "Quick paws hit three myths.",
+  "em": "🦝",
+  "who": "Gizmo",
+  "whoDesc": "A raccoon. Not washing his food, just feeling it very carefully with wet paws."
+ },
+ {
+  "id": "lid",
+  "name": "Bin Lid",
+  "desc": "A bin lid on a crowd. Stars!",
+  "em": "🗑️",
+  "who": "Gizmo",
+  "whoDesc": "A raccoon. Not washing his food, just feeling it very carefully with wet paws."
+ },
+ {
+  "id": "nightpaws",
+  "name": "Night Paws",
+  "desc": "Team crits +2% a rank.",
+  "em": "🌙",
+  "who": "Gizmo",
+  "whoDesc": "A raccoon. Not washing his food, just feeling it very carefully with wet paws."
+ },
+ {
+  "id": "nip",
+  "name": "Quick Nip",
+  "desc": "A quick nip at the nearest myth.",
+  "em": "🦊",
+  "who": "Bramble",
+  "whoDesc": "A red fox. Part of the dog family, with cat-like eyes and very sneaky paws."
+ },
+ {
+  "id": "pounce",
+  "name": "Pounce",
+  "desc": "Leaps on the biggest myth.",
+  "em": "🐾",
+  "who": "Bramble",
+  "whoDesc": "A red fox. Part of the dog family, with cat-like eyes and very sneaky paws."
+ },
+ {
+  "id": "sly",
+  "name": "Sly",
+  "desc": "Team works 3% faster a rank.",
+  "em": "🍂",
+  "who": "Bramble",
+  "whoDesc": "A red fox. Part of the dog family, with cat-like eyes and very sneaky paws."
+ },
+ {
+  "id": "claw",
+  "name": "Claw Snap",
+  "desc": "A claw snap through two myths.",
+  "em": "🦞",
+  "who": "Pinch",
+  "whoDesc": "A lobster. Lobsters can't scream; that whistle in the pot is just air."
+ },
+ {
+  "id": "slam",
+  "name": "Shell Slam",
+  "desc": "Slams down and stuns nearby myths.",
+  "em": "💥",
+  "who": "Pinch",
+  "whoDesc": "A lobster. Lobsters can't scream; that whistle in the pot is just air."
+ },
+ {
+  "id": "hardshell",
+  "name": "Hard Shell",
+  "desc": "Dad loses 3% less Patience a rank.",
+  "em": "🛡️",
+  "who": "Pinch",
+  "whoDesc": "A lobster. Lobsters can't scream; that whistle in the pot is just air."
+ },
+ {
+  "id": "fan",
+  "name": "Feather Fan",
+  "desc": "Feathers in a wide fan.",
+  "em": "🪶",
+  "who": "Sol",
+  "whoDesc": "A peacock who can fly, thank you, right up into the trees at night."
+ },
+ {
+  "id": "display",
+  "name": "Grand Display",
+  "desc": "Every myth in the ring stops to stare.",
+  "em": "🦚",
+  "who": "Sol",
+  "whoDesc": "A peacock who can fly, thank you, right up into the trees at night."
+ },
+ {
+  "id": "pride",
+  "name": "Pride",
+  "desc": "Team hits 4% harder a rank.",
+  "em": "👑",
+  "who": "Sol",
+  "whoDesc": "A peacock who can fly, thank you, right up into the trees at night."
+ },
+ {
+  "id": "maul",
+  "name": "Big Paw",
+  "desc": "A heavy swipe at everything close.",
+  "em": "🐾",
+  "who": "Frost",
+  "whoDesc": "A polar bear cub. Black skin, see-through fur, and not white at all underneath."
+ },
+ {
+  "id": "floe",
+  "name": "Ice Floe",
+  "desc": "An ice slab: myths slip and slow.",
+  "em": "🧊",
+  "who": "Frost",
+  "whoDesc": "A polar bear cub. Black skin, see-through fur, and not white at all underneath."
+ },
+ {
+  "id": "thickfur",
+  "name": "Thick Fur",
+  "desc": "Dad loses 4% less Patience a rank.",
+  "em": "❄️",
+  "who": "Frost",
+  "whoDesc": "A polar bear cub. Black skin, see-through fur, and not white at all underneath."
+ },
+ {
+  "id": "spout",
+  "name": "Spout",
+  "desc": "A huge spout washes a crowd back.",
+  "em": "🐋",
+  "who": "Bluey",
+  "whoDesc": "A blue whale calf. That spout is her breath, not water from inside."
+ },
+ {
+  "id": "whalesong",
+  "name": "Whale Song",
+  "desc": "Every myth slows. Patience comes back.",
+  "em": "🎶",
+  "who": "Bluey",
+  "whoDesc": "A blue whale calf. That spout is her breath, not water from inside."
+ },
+ {
+  "id": "deep",
+  "name": "Deep Blue",
+  "desc": "Team hits 5% harder a rank.",
+  "em": "🌊",
+  "who": "Bluey",
+  "whoDesc": "A blue whale calf. That spout is her breath, not water from inside."
+ },
+ {
+  "id": "horn",
+  "name": "Horn Beam",
+  "desc": "A horn beam through four myths.",
+  "em": "🦄",
+  "who": "Uni",
+  "whoDesc": "The only myth in the Big Book of Wrong who decided to help. Nobody knows how she got out."
+ },
+ {
+  "id": "wish",
+  "name": "Make a Wish",
+  "desc": "Wishes shower every myth in the ring.",
+  "em": "🌠",
+  "who": "Uni",
+  "whoDesc": "The only myth in the Big Book of Wrong who decided to help. Nobody knows how she got out."
+ },
+ {
+  "id": "magic",
+  "name": "Real Magic",
+  "desc": "Team works 4% faster a rank.",
+  "em": "💫",
+  "who": "Uni",
+  "whoDesc": "The only myth in the Big Book of Wrong who decided to help. Nobody knows how she got out."
+ }
+]
