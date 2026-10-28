@@ -4,6 +4,7 @@
     MESHY_API_KEY=... python3 defender/tools/meshy_test.py                 # Dad (assets/mascot_wave.png)
     MESHY_API_KEY=... python3 defender/tools/meshy_test.py pet_hopper      # any PNG in assets/, by name
     ... --no-rig                                                           # skip rigging (saves 5 credits)
+    ... --model=meshy-5                                                    # an older, cheaper model
 
 Output goes to defender/tools/meshy_out/<name>/: model.glb, thumbnail.png, and when rigged
 rigged.glb plus walking.glb / running.glb. Credits (Meshy docs, Oct 2026): image-to-3D about
@@ -41,7 +42,7 @@ def main():
     if not os.path.exists(src): sys.exit(f'no such image: {src}')
     with open(src, 'rb') as f: data_uri = 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
     print('image-to-3d', name, '...')
-    body = {'image_url': data_uri, 'ai_model': 'latest', 'should_texture': True, 'enable_pbr': False, 'pose_mode': 't-pose' if rig else 'a-pose',
+    body = {'image_url': data_uri, 'ai_model': next((a.split('=')[1] for a in sys.argv if a.startswith('--model=')), 'latest'), 'should_texture': True, 'enable_pbr': False, 'pose_mode': 't-pose' if rig else 'a-pose',
             'topology': 'quad', 'should_remesh': True, 'target_polycount': 12000, 'texture_resolution': '2k'}
     tid = call('POST', '/openapi/v1/image-to-3d', body)['result']; print('  task', tid)
     t = wait(f'/openapi/v1/image-to-3d/{tid}', 'model')
