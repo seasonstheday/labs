@@ -272,7 +272,7 @@ await test('Myth Check asks about a myth that is due', async () => {
 
 await test('Daily Myth and the Endless Stacks', async () => {
   const { p, errs, close } = await open(PROGRESSED());
-  await p.click('#hubChall'); await p.waitForTimeout(200);
+  await p.click('#hubChall'); await p.waitForSelector('#dailyBtn', { state: 'visible', timeout: 5000 }).catch(() => {}); // wait for the card, not a fixed time
   expect(await p.isVisible('#dailyBtn') && await p.isVisible('#endlessBtn'), 'both modes in Challenges');
   await p.click('#dailyBtn'); await p.waitForTimeout(400); expect(await p.evaluate(() => !!dbg.G.twist), 'a twist'); await play(p, 3000);
   await endMatch(p); await p.click('#overHome'); await p.waitForTimeout(400);
@@ -298,7 +298,8 @@ await test("the grown-ups' page, behind the gate", async () => {
 
 await test('Trophies and the Wardrobe', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), coins: 5000 });
-  await p.evaluate(() => { dbg.persist(); }); await p.waitForTimeout(600);
+  await p.evaluate(() => { dbg.persist(); }); // trophies are checked a moment after a save: wait for it rather than a fixed time
+  await p.waitForFunction(() => (dbg.save.ach || []).includes('ch1'), null, { timeout: 5000 }).catch(() => {});
   expect(await p.evaluate(() => (dbg.save.ach || []).includes('ch1')), 'clearing chapter 1 earns its trophy');
   await p.evaluate(() => { document.querySelector('#challm').hidden = false; }); await p.click('#challTrophy'); await p.waitForTimeout(300);
   expect(await p.evaluate(() => document.querySelectorAll('#pickList .trophy').length > 15 && document.querySelectorAll('#pickList .trophy.got').length >= 1), 'the trophy list');
