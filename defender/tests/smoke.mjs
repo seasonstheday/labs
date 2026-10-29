@@ -10,7 +10,7 @@ import { join, extname, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.css': 'text/css' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.css': 'text/css', '.webp': 'image/webp' };
 const srv = createServer((q, r) => {
   let p = join(ROOT, decodeURIComponent(q.url.split('?')[0])); if (existsSync(p) && statSync(p).isDirectory()) p = join(p, 'index.html');
   if (!existsSync(p)) { r.statusCode = 404; return r.end(); }
@@ -201,7 +201,7 @@ await test('Myth Master opens after Hard, stage by stage, and pays a crown', asy
 await test('the home screen shows the furthest world reached', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), unlocked: 22, cleared: [...Array(22).keys()] });
   const bg2 = await p.evaluate(() => [document.querySelector('#title').style.backgroundImage, dbg.STAGES[22].w]);
-  expect(/home_bg_5\.png/.test(bg2[0]), `desert backdrop on stage 23 (got ${bg2[0]}, world ${bg2[1]})`); await close(); return errs;
+  expect(/home_bg_5\.(png|webp)/.test(bg2[0]), `desert backdrop on stage 23 (got ${bg2[0]}, world ${bg2[1]})`); await close(); return errs;
 });
 
 await test('the finale: the Flat Earth shield, then Sir Ever-So-Sure, the ending and the credits', async () => {

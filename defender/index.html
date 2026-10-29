@@ -12,7 +12,8 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <meta name="description" content="Dad and his backyard friends stand their ground while grumpy Myths march in. Every wrong idea that pops turns into a real fact. No dodging. Only wondering.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;700;800&family=Patrick+Hand&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;700;800&family=Patrick+Hand&display=swap" media="print" onload="this.media='all'">
 <style>
   :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #6b5236; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -85,7 +86,7 @@
   /* ───────── screens ───────── */
   .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
   #title.nightbg .tag { color: #f1e4c8; text-shadow: 0 1px 2px rgba(0,0,0,.5); } /* the night sky backdrop is dark */
-  #title { background: url(assets/home_bg.png) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
+  #title { background: url(assets/home_bg.webp) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
   #title .sun, #title .cloud, #title .fence { display: none; }
   #title::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 200px; background: linear-gradient(rgba(127,174,90,0), #7fae5a 55%); pointer-events: none; }
   #title .menu, #title .corner-r, #title .wallet, #title .build { z-index: 2; }
@@ -120,6 +121,12 @@
   .pslots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   /* friend cards: the tier's colour behind the friend (Common green, Rare blue, Epic purple, Legendary gold), level top-left, element top-right */
+  .ico { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -.2em; background: center / contain no-repeat; font-style: normal; flex: none; }
+  img.ico.hd { width: 1.3em; height: 1.3em; vertical-align: -.3em; } img.ico.hd, img.fim.hd { border-radius: 50%; background: #fff8e8; box-shadow: 0 0 0 1.5px #3a2c20; object-fit: cover; }
+  .tippop { position: absolute; z-index: 9999; max-width: 270px; background: #3a2c20; color: #fff8e8; font: 600 15px/1.3 "Nunito", system-ui, sans-serif; padding: 9px 12px; border-radius: 12px; box-shadow: 0 4px 0 rgba(0,0,0,.25); pointer-events: none; animation: tipin .15s ease-out; }
+  .tippop::after { content: ''; position: absolute; left: var(--ax, 50%); bottom: -7px; margin-left: -7px; border: 7px solid transparent; border-bottom: 0; border-top-color: #3a2c20; } .tippop.below::after { bottom: auto; top: -7px; border-top: 0; border-bottom: 7px solid #3a2c20; }
+  @keyframes tipin { from { opacity: 0; transform: translateY(4px); } }
+  img, .ico { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
   .fcard { position: relative; --tc: #6f8a5a; background: var(--tc); background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.5), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--tc) 55%, #fff), var(--tc) 75%); border: 3px solid #3a2c20; border-radius: 14px; padding: 0; text-align: center; cursor: pointer; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #fff; box-shadow: 0 3px 0 #3a2c20; }
   .fcard canvas { width: 84px; height: 84px; display: block; margin: 12px auto 0; } .pslots .fcard canvas { width: 66px; height: 66px; margin-top: 16px; }
   .fcard .lv, .fhero .lv { position: absolute; top: 4px; left: 6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: -1px -1px 0 #3a2c20, 1px -1px 0 #3a2c20, -1px 1px 0 #3a2c20, 1px 1px 0 #3a2c20, 0 2px 0 #3a2c20; z-index: 1; }
@@ -138,9 +145,9 @@
   .efilt button { flex: none; min-width: 40px; height: 36px; border-radius: 999px; border: 2px solid #3a2c20; background: var(--card); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; padding: 0 10px; cursor: pointer; }
   .efilt button.on { background: var(--ec, #3a2c20); color: #fff; box-shadow: inset 0 0 0 2px #fff; }
   /* a friend's own page: big art on the tier colour, then stats, skills and tabs */
-  .fhero { position: relative; margin: -10px -12px 0; height: 250px; border-radius: 11px 11px 0 0; overflow: hidden; --tc: #6f8a5a; background: var(--tc); background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.55), rgba(255,255,255,0) 50%), repeating-conic-gradient(from 0deg at 50% 42%, rgba(255,255,255,.07) 0 10deg, rgba(255,255,255,0) 10deg 20deg), linear-gradient(180deg, color-mix(in srgb, var(--tc) 50%, #fff), var(--tc) 80%); }
+  .fhero { position: relative; margin: -10px -12px 0; height: 290px; border-radius: 11px 11px 0 0; overflow: hidden; --tc: #6f8a5a; background: var(--tc); background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.55), rgba(255,255,255,0) 50%), repeating-conic-gradient(from 0deg at 50% 42%, rgba(255,255,255,.07) 0 10deg, rgba(255,255,255,0) 10deg 20deg), linear-gradient(180deg, color-mix(in srgb, var(--tc) 50%, #fff), var(--tc) 80%); }
   .fhero.locked { background: linear-gradient(180deg, #7a6d62, #4a3f36); } .fhero.locked canvas { filter: grayscale(1) brightness(.8); opacity: .8; }
-  .item .fhero canvas.pc { position: absolute; left: 50%; top: 4px; width: 180px; height: 180px; transform: translateX(-50%); }
+  .item .fhero canvas.pc { position: absolute; left: 50%; top: 8px; width: 176px; height: 176px; transform: translateX(-50%); }
   .fhero .lv { top: 10px; left: 12px; font-size: 18px; } .fhero .el { top: 8px; right: 10px; width: 32px; height: 32px; font-size: 17px; }
   .fhero .hband { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding: 26px 12px 9px; background: linear-gradient(180deg, rgba(40,30,22,0), rgba(40,30,22,.85) 45%); color: #fff; }
   .fhero .hn b { display: block; font: 700 26px/1 "Fredoka", Arial, sans-serif; text-shadow: 0 2px 0 #3a2c20; } .fhero .hn small { font: 600 15px/1.2 "Nunito", system-ui, sans-serif; color: #f3e6d0; }
@@ -301,6 +308,9 @@
   .pips i.on { background: var(--gold); }
   .rank .btn { min-width: 86px; }
   .rank .btn.maxed { background: var(--green); color: #fff; }
+  .rbar { position: relative; flex: 1; height: 22px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(58,44,32,.1); overflow: hidden; }
+  .rbar > div { height: 100%; background: linear-gradient(#f5c95a, #ecb23c); } .rbar i { position: absolute; top: 0; bottom: 0; right: 0; margin-left: 0; background: repeating-linear-gradient(45deg, rgba(58,44,32,.22) 0 4px, transparent 4px 8px); } .rbar b { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .rank.off { opacity: .7; } .rank .rlk { flex: 1; font: 600 15px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); } p.hand.tr { margin: 2px 0 6px; font-size: 15px; }
 
   /* ───────── HUD ───────── */
   #hud { position: absolute; inset: 0; pointer-events: none; }
@@ -622,7 +632,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 76</div>
+    <div class="build">build 78</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -802,7 +812,7 @@
   <div class="modal" id="creditsm" hidden>
     <div class="panel credits">
       <div class="cwin"><div class="roll">
-        <img src="assets/sses_kind.png" alt="" class="cimg">
+        <img src="assets/sses_kind.webp" alt="" class="cimg">
         <h2 class="display">The Big Book of Why</h2>
         <p>Every page popped. Every myth turned back into a fact.</p>
         <h3>Starring</h3><p>Dad, and his magnifying glass<br>The Kid, who kept asking why<br>Webster, Hopper, Sparky and every backyard friend</p>
@@ -1010,7 +1020,7 @@
     <div class="panel">
       <h2 class="display">How to play</h2>
       <div class="howcards">
-        <div class="hc"><i><img class="fim" src="assets/dad_face.png" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
+        <div class="hc"><i><img class="fim" src="assets/dad_face.webp" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
         <div class="hc"><i>👆</i><b>Tap a myth</b> and everyone goes after it.</div>
         <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
         <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
@@ -1038,7 +1048,7 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 /* ───────── scale the 440x760 frame to the window ───────── */
 // myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
 const tuneIn = () => Math.min(1, Math.max(0, G.stage - 4) / 5);
-const TUNE = { hp: 1.8, hs: .04, dmg: 1.1, ds: .01 }; // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
+const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01 }; // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
@@ -1058,12 +1068,12 @@ const in3d = e => !!R3D && e.kind !== 'brick' && R3D.has(key3d(e));
 
 /* ───────── art ───────── */
 const IMG = {};
-for (const n of ['wave', 'pointing', 'amazed', 'talking', 'webster']) { const i = new Image(); i.src = n === 'webster' ? 'assets/webster.png' : `assets/mascot_${n}.png`; i.onload = drawStatics; IMG[n] = i; }
+for (const n of ['wave', 'pointing', 'amazed', 'talking', 'webster']) { const i = new Image(); i.onerror = () => { i.failed = true; }; i.src = n === 'webster' ? 'assets/webster.webp' : `assets/mascot_${n}.webp`; i.onload = drawStatics; IMG[n] = i; }
 // optional art overrides, see ART.md: pet_<id>.png (friend facing right, feet at the bottom), kid.png, arena_<chapter>.png, map_<chapter>.png
 const ART = {};
-function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); if (!$('#map').hidden) drawMap(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.png`; } return ART[key] || null; }
+function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); if (!$('#map').hidden) drawMap(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.webp`; } return ART[key] || null; }
 // ask for every drop-in up front, so the first arena, map and quiz already have them (missing files just fall back)
-['kid', ...'webster sparky hopper puddles dusty pip scuttle nilla luna'.split(' ').map(p => 'pet_' + p), ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(n => ['arena_' + n, 'map_' + n])].forEach(k => art(k));
+['kid', ...'webster sparky hopper puddles dusty pip scuttle nilla luna'.split(' ').map(p => 'pet_' + p), ...['arena_1', 'map_1']].forEach(k => art(k));
 const ready = i => i && i.complete && i.naturalWidth;
 // where Dad's hand is on each sprite, as fractions of its width / height
 const HAND = { wave: [.12, .34], pointing: [.08, .33] };
@@ -1352,8 +1362,8 @@ const VARIANT = [
   { name: 'Well-read', em: '📖', tint: '#b08a5a', desc: 'Library myths are thicker, and worth an extra XP each.', hp: 1.15, xp: 1 },
   { name: 'Salty',     em: '🧂', tint: '#3f7fb5', desc: 'Ocean myths are quick and hard to shove.', spd: 1.1, knock: .65 },
   { name: 'Sunbaked',  em: '🌵', tint: '#d9a04a', desc: 'Desert myths dash the last stretch into the ring.', hurry: true },
-  { name: 'Frosty',    em: '❄️', tint: '#9fd3ea', desc: 'Arctic myths are slow but thick, and chill the friend that pops them.', hp: 1.15, spd: .9, chill: true },
-  { name: 'Wild',      em: '🌿', tint: '#4e9a4e', desc: 'Jungle myths come in fast and in bigger bunches.', spd: 1.12, more: 1.15 },
+  { name: 'Frosty',    em: '❄️', tint: '#9fd3ea', desc: 'Arctic myths are slow but thick, and chill the friend that pops them.', hp: 1.05, spd: .9, chill: true },
+  { name: 'Wild',      em: '🌿', tint: '#4e9a4e', desc: 'Jungle myths come in fast and in bigger bunches.', spd: 1.12, more: 1.05 },
   { name: 'Starry',    em: '✨', tint: '#5b4e9e', desc: 'Night Sky myths fade from sight outside the ring. Everything you learned, at once.', fade: true },
 ];
 const mixCol = (a, b, t) => { const A = parseInt(a.slice(1), 16), B = parseInt(b.slice(1), 16), m = (x, y) => Math.round(x + (y - x) * t); return `rgb(${m(A >> 16, B >> 16)},${m((A >> 8) & 255, (B >> 8) & 255)},${m(A & 255, B & 255)})`; };
@@ -1406,13 +1416,13 @@ WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
 
 /* ───────── dad's weapons (one at a time, chosen in the garage) ───────── */
 const WEAPONS = {
-  glass: { em: '🔍', name: 'Classic Lens', desc: 'A beam of truth at the nearest myth.', cd: [.8, .7, .62, .55, .48],   dmg: [18, 23, 28, 34, 42], n: [1, 1, 2, 2, 3] },
-  yoyo: { em: '💫', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [18, 22, 27, 33, 40], n: [1, 1, 2, 2, 3] },
-  bat: { em: '✨', name: 'Glare Lens', desc: 'A wide flash up close that knocks myths back.', cd: [1.3, 1.2, 1.05, .9, .75], dmg: [26, 32, 38, 46, 56], n: [80, 88, 96, 106, 120] },
-  plane: { em: '🔭', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [12, 15, 18, 22, 27],  n: [1, 2, 2, 3, 4] },
-  frisbee: { em: '🔆', name: 'Ricochet Lens', desc: 'A spot of light that bounces from myth to myth.', cd: [1.8, 1.6, 1.45, 1.3, 1.1], dmg: [20, 24, 29, 35, 43], n: [3, 4, 5, 6, 8] },
-  bubble: { em: '🫧', name: 'Bubble Lens', desc: 'Floaty bubbles that slow myths down.', cd: [.7, .62, .55, .48, .42],  dmg: [9, 11, 14, 17, 21],   n: [1, 1, 2, 2, 3] },
-  balloon: { em: '☀️', name: 'Burning Glass', desc: 'A hot sunspot lobbed at a crowd. Splash!', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [22, 27, 33, 41, 50], n: [60, 66, 72, 80, 92] },
+  glass: { em: '🔍', name: 'Classic Lens', desc: 'A beam of truth at the nearest myth.', cd: [.8, .7, .62, .55, .48],   dmg: [27, 34, 42, 51, 63], n: [2, 2, 3, 3, 4] },
+  yoyo: { em: '💫', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [14, 17, 20, 25, 30], n: [1, 1, 2, 2, 3] },
+  bat: { em: '✨', name: 'Glare Lens', desc: 'A wide flash up close that knocks myths back.', cd: [1.3, 1.2, 1.05, .9, .75], dmg: [20, 24, 29, 35, 42], n: [80, 88, 96, 106, 120] },
+  plane: { em: '🔭', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [9, 11, 14, 17, 20],  n: [1, 2, 2, 3, 4] },
+  frisbee: { em: '🔆', name: 'Ricochet Lens', desc: 'A spot of light that bounces from myth to myth.', cd: [1.8, 1.6, 1.45, 1.3, 1.1], dmg: [13, 16, 19, 23, 28], n: [3, 4, 5, 6, 8] },
+  bubble: { em: '🫧', name: 'Bubble Lens', desc: 'Floaty bubbles that slow myths down.', cd: [.7, .62, .55, .48, .42],  dmg: [25, 31, 39, 48, 59],   n: [1, 2, 2, 3, 4] },
+  balloon: { em: '☀️', name: 'Burning Glass', desc: 'A hot sunspot lobbed at a crowd. Splash!', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [14, 18, 21, 27, 33], n: [60, 66, 72, 80, 92] },
 };
 
 // how each weapon reads on the stat strip
@@ -1528,10 +1538,11 @@ const markSvg = (mk, cls = '') => { const [c, sym] = MARK_LOOK[mk.col] || ['#ccc
   return `<span class="bmk ${cls}"><svg viewBox="0 0 24 40" aria-hidden="true"><path d="M3 1.5h18v36l-9-7.5-9 7.5z" fill="${c}" stroke="#3a2c20" stroke-width="2.2" stroke-linejoin="round"/><path d="M6 3.5v28" stroke="rgba(255,255,255,.45)" stroke-width="2.2" stroke-linecap="round"/></svg><i>${sym}</i></span>`; };
 // painted item pictures (assets/items/<key>.webp, tools/gen_items.py), the emoji standing in when one is missing
 const slugOf = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-const itemImg = (key, em) => `<img class="iic" src="assets/items/${key}.webp" alt="${em}" onerror="this.replaceWith(this.alt)">`;
+const attrQ = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const itemImg = (key, em, tip) => `<img class="iic" src="assets/items/${key}.webp" alt="${em}"${tip ? ` data-tip="${attrQ(tip)}"` : ''} onerror="this.replaceWith(this.alt)">`;
 const varImg = (owner, k, em) => itemImg(`w_${owner}_${baseOf(k)}`, em); // a weapon from a line, by its variant key
 const itemKey = it => { const lg = LEGENDS.find(l => l.name === it.name || l.name === it.base); return lg ? 'i_' + slugOf(lg.name) : it.type === 'weapon' ? `w_${it.owner}_${baseOf(it.variant)}` : 'i_' + slugOf(it.base || it.name); };
-const icon = it => it.type === 'mark' ? markSvg(it) : itemImg(itemKey(it), it.em);
+const icon = it => it.type === 'mark' ? markSvg(it) : itemImg(itemKey(it), it.em, `${RAR[it.rar] ? RAR[it.rar].n + ' ' : ''}${itemName(it)}: ${itemDesc(it)}`);
 function makeMark(rar = 0, col = null) { const c = col || pick(Object.keys(MARKS)), M = MARKS[c]; return { uid: Date.now().toString(36) + (uidN++).toString(36), type: 'mark', rar, col: c, name: `${RADJ[rar]}${M[1]} Bookmark`, em: M[0], stat: M[2], val: Math.round(M[3] * RAR[rar].mul) }; }
 
 /* ───────── the party ───────── */
@@ -2017,11 +2028,17 @@ const SYNERGY = [
 ];
 // a live pair-up's stat: for one of the pair (id), or the party-wide ones (no id)
 function synStat(st, id) { let v = 0; for (const sy of SYNERGY) if (sy.eff && sy.eff[st] && (id ? !sy.party && sy.ids.includes(id) : sy.party) && synOn(sy)) v += sy.eff[st]; return v; }
-const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 } };
-const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 } };
+// training: coin upgrades on a friend's Grow tab. Each star opens five more ranks (up to 25 at five stars); the first five ranks
+// count in full and the rest half, so a starred-up friend keeps growing without running away with the game. Levels open new rows.
+const RANK_TIP = { pow: 'Power: harder hits. +8% for each of the first 5 ranks, +4% after that.', quick: 'Quick: moves come back sooner. +6% for each of the first 5 ranks, +3% after that.',
+  crit: 'Crit: a better chance of a big hit. +1% for each of the first 5 ranks, +0.5% after that.', luck: 'Lucky: more coins from every match while this friend is in the backyard. +2% a rank, +1% after five.',
+  ring: 'Ring: a bigger circle around Dad. +22 for each of the first 5 ranks, +11 after that.', pat: 'Patience: more Patience before the myths win. +20 for each of the first 5 ranks, +10 after that.' };
+const WRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, crit: { name: 'Crit', base: 120, step: 55, at: 10 }, luck: { name: 'Lucky', base: 150, step: 65, at: 20 } };
+const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Quick', base: 40, step: 35 }, ring: { name: 'Ring', base: 60, step: 50 }, pat: { name: 'Patience', base: 50, step: 40 }, crit: { name: 'Crit', base: 120, step: 55, at: 10 }, luck: { name: 'Lucky', base: 150, step: 65, at: 20 } };
+const rankCap = id => 5 * Math.max(1, fstars(id)), rEff = n => Math.min(n || 0, 5) + Math.max(0, (n || 0) - 5) * .5;
 const BASE_RADIUS = 170, RING_W = 186; // RING_W: the widest the ring gets, so it stays on screen (440 wide)
 const DAD_H = 102; // Dad's height in the arena
-// Dad's drawn battle poses (assets/bdad_*.png, facing right): where the lens is and where his feet are, as fractions of the picture,
+// Dad's drawn battle poses (assets/bdad_*.webp, facing right): where the lens is and where his feet are, as fractions of the picture,
 // the lens radius in picture heights, and a size match so his head stays the same size between poses
 const DAD_DRAW = DAD_H * .9; // the drawn poses fill their picture, so they're drawn a little smaller than the old 3D Dad
 const DPOSE = { idle: { lens: [.862, .332], r: .073, feet: .43, k: 1 }, aim: { lens: [.907, .274], r: .075, feet: .37, k: .9 }, ouch: { lens: [.664, .441], r: .03, feet: .6, k: .94 } };
@@ -2182,7 +2199,166 @@ save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false,
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
-const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : CHARS[id].em;
+const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.webp" alt="Dad">' : `<img class="fim hd" src="assets/heads/${id}.webp" alt="${CHARS[id].name}">`;
+/* ───────── drawn icons in place of emoji ───────── */
+// every emoji the screens print is swapped, as it appears, for a small drawn icon in the game's style (thick brown outline,
+// flat colour) or a friend's head shot, so the look is the same on every phone. Emoji without a drawing yet stay as they are.
+const SVG_I = (() => { const o = 'stroke="#3a2c20" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"', W = 'fill="#fff" opacity=".7"';
+  const star = (cx, cy, R, r, f) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r : R; p += `${(cx + q * Math.cos(a)).toFixed(1)},${(cy + q * Math.sin(a)).toFixed(1)} `; } return `<polygon points="${p}" fill="${f}" ${o}/>`; };
+  const book = (c, s) => `<path d="M6 7h17a3 3 0 0 1 3 3v15H9a3 3 0 0 1-3-3z" fill="${c}" ${o}/><path d="M9 25a3 3 0 0 1 0-6h17" fill="#fff8e8" ${o}/>${s || ''}`;
+  return {
+    coin: `<circle cx="16" cy="16" r="12" fill="#f2c14e" ${o}/><circle cx="16" cy="16" r="7.5" fill="none" stroke="#c9952a" stroke-width="2"/><path d="M10 11a8 8 0 0 1 5-3.5" stroke="#fff" stroke-width="2" fill="none" opacity=".8" stroke-linecap="round"/>`,
+    gem: `<path d="M6 12l5-6h10l5 6-10 15z" fill="#5fc8e8" ${o}/><path d="M6 12h20M11 6l5 21M21 6l-5 21" fill="none" stroke="#3a2c20" stroke-width="1.4"/><path d="M12 8l-3 4" stroke="#fff" stroke-width="2" opacity=".8" stroke-linecap="round"/>`,
+    page: `<path d="M8 4h11l6 6v18H8z" fill="#fffaf0" ${o}/><path d="M19 4v6h6" fill="#eadfc8" ${o}/><path d="M11 15h10M11 19h10M11 23h7" stroke="#b9a582" stroke-width="2" stroke-linecap="round"/>`,
+    ticket: `<path d="M4 10h24v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z" fill="#f08a5d" ${o}/><path d="M20 10v12" stroke="#3a2c20" stroke-width="1.6" stroke-dasharray="2 2"/>${star(12, 16, 4, 1.8, '#ffe28a')}`,
+    cupticket: `<path d="M4 10h24v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z" fill="#5c8cbe" ${o}/><path d="M20 10v12" stroke="#3a2c20" stroke-width="1.6" stroke-dasharray="2 2"/><circle cx="12" cy="16" r="3.5" fill="#f2c14e" ${o.replace('2.4', '1.4')}/>`,
+    badge: `<path d="M10 3l6 9 6-9" fill="#cb382e" ${o}/>${star(16, 20, 9, 4.5, '#f2c14e')}`,
+    star: star(16, 17, 13, 6, '#ffd24a'),
+    lock: `<path d="M10.5 14v-3.5a5.5 5.5 0 0 1 11 0V14" fill="none" ${o.replace('2.4', '3')}/><rect x="7" y="14" width="18" height="14" rx="3" fill="#e0b040" ${o}/><circle cx="16" cy="20.5" r="2" fill="#3a2c20"/>`,
+    power: `<path d="M5 27v-7c0-3 2-5 5-5h3c0-4 1-7 4-9l3-2c2-1 4 1 3 3l-2 3c3 1 6 4 6 8 0 5-5 9-12 9z" fill="#f2b27a" ${o}/><path d="M17 15c2-2 5-2 7 0" fill="none" stroke="#3a2c20" stroke-width="1.8" stroke-linecap="round"/><path d="M8 18h4" stroke="#fff" stroke-width="2" opacity=".7" stroke-linecap="round"/>`,
+    sparkle: `<path d="M13 4l2.5 7.5L23 14l-7.5 2.5L13 24l-2.5-7.5L3 14l7.5-2.5z" fill="#ffd24a" ${o}/><path d="M24 19l1.2 3 3 1.2-3 1.2L24 28l-1.2-3.6-3-1.2 3-1.2z" fill="#ffd24a" ${o.replace('2.4', '1.6')}/>`,
+    gift: `<rect x="5" y="13" width="22" height="15" rx="2" fill="#e5533d" ${o}/><rect x="4" y="9" width="24" height="6" rx="2" fill="#f0705a" ${o}/><path d="M16 9v19" stroke="#f2c14e" stroke-width="4"/><path d="M16 9c-2-5-8-5-7-1s7 1 7 1c2-5 8-5 7-1s-7 1-7 1" fill="#f2c14e" ${o}/>`,
+    check: `<circle cx="16" cy="16" r="12" fill="#4f8a5b" ${o}/><path d="M10 16.5l4 4 8-9" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    trophy: `<path d="M9 5h14v6a7 7 0 0 1-14 0z" fill="#f2c14e" ${o}/><path d="M9 7H5a4 4 0 0 0 4 6M23 7h4a4 4 0 0 1-4 6" fill="none" ${o}/><path d="M14 18h4v5h-4z" fill="#c9952a" ${o}/><rect x="9" y="23" width="14" height="5" rx="1.5" fill="#8a5a2b" ${o}/>`,
+    medal: `<path d="M9 3l5 10M23 3l-5 10" stroke="#3f7fb5" stroke-width="5"/><circle cx="16" cy="20" r="8" fill="#f2c14e" ${o}/>${star(16, 20, 4.5, 2, '#fff3c4')}`,
+    crown: `<path d="M5 24l-1-14 7 6 5-9 5 9 7-6-1 14z" fill="#f2c14e" ${o}/><circle cx="16" cy="19" r="2" fill="#cb382e"/>`,
+    hammer: `<path d="M17 15l-9 11" stroke="#3a2c20" stroke-width="6" stroke-linecap="round"/><path d="M17 15l-9 11" stroke="#b07a45" stroke-width="2.6" stroke-linecap="round"/><path d="M12 6l6-2 8 8-3 5z" fill="#9aa5ad" ${o}/>`,
+    bag: `<path d="M9 12a7 7 0 0 1 14 0v14a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2z" fill="#d9573b" ${o}/><path d="M12 8a4 4 0 0 1 8 0" fill="none" ${o}/><rect x="12" y="18" width="8" height="6" rx="1.5" fill="#f2c14e" ${o}/>`,
+    shirt: `<path d="M11 5l-7 5 3 5 3-2v14h12V13l3 2 3-5-7-5c-1 2-3 3-5 3s-4-1-5-3z" fill="#5c8cbe" ${o}/>`,
+    sprout: `<path d="M16 28V15" stroke="#3a2c20" stroke-width="5" stroke-linecap="round"/><path d="M16 28V15" stroke="#6aa84f" stroke-width="2"/><path d="M16 16c-1-6-6-9-11-8 0 5 4 9 11 8zM16 14c1-6 6-9 11-8 0 5-4 9-11 8z" fill="#8cc63f" ${o}/>`,
+    swords: `<path d="M6 6l14 14M26 6L12 20" stroke="#3a2c20" stroke-width="5.5" stroke-linecap="round"/><path d="M6 6l14 14M26 6L12 20" stroke="#d6dde2" stroke-width="2.4" stroke-linecap="round"/><path d="M18 22l4-4 3 3-4 4zM14 22l-4-4-3 3 4 4z" fill="#b07a45" ${o.replace('2.4', '1.8')}/>`,
+    lens: `<circle cx="13" cy="13" r="8" fill="#cfe9f5" ${o.replace('2.4', '3')}/><path d="M19 19l8 8" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M9 11a5 5 0 0 1 4-4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+    drop: `<path d="M16 4c5 7 9 11 9 16a9 9 0 0 1-18 0c0-5 4-9 9-16z" fill="#4fa3e0" ${o}/><path d="M11 19a5 5 0 0 0 3 5" stroke="#fff" stroke-width="2" fill="none" opacity=".8" stroke-linecap="round"/>`,
+    bolt: `<path d="M18 3L7 18h8l-2 11 12-16h-8z" fill="#f5c518" ${o}/>`,
+    wind: `<path d="M4 12h15a4 4 0 1 0-4-4M4 18h20a4 4 0 1 1-4 4M4 24h9" fill="none" stroke="#3a2c20" stroke-width="5" stroke-linecap="round"/><path d="M4 12h15a4 4 0 1 0-4-4M4 18h20a4 4 0 1 1-4 4M4 24h9" fill="none" stroke="#7fd1c0" stroke-width="2.2" stroke-linecap="round"/>`,
+    rock: `<path d="M5 24l3-10 7-6 9 3 4 9-3 6H8z" fill="#a08a72" ${o}/><path d="M11 13l4 2 5-4" fill="none" stroke="#3a2c20" stroke-width="1.4"/>`,
+    moon: `<path d="M21 4a12 12 0 1 0 7 17A10 10 0 0 1 21 4z" fill="#f6dd8a" ${o}/><circle cx="12" cy="18" r="1.6" fill="#e2c26a"/><circle cx="16" cy="24" r="1.2" fill="#e2c26a"/>`,
+    rainbow: `<path d="M3 24a13 13 0 0 1 26 0" fill="none" stroke="#e5533d" stroke-width="4"/><path d="M7 24a9 9 0 0 1 18 0" fill="none" stroke="#f2c14e" stroke-width="4"/><path d="M11 24a5 5 0 0 1 10 0" fill="none" stroke="#4fa3e0" stroke-width="4"/><path d="M1 24a15 15 0 0 1 30 0M13 24a3 3 0 0 1 6 0" fill="none" stroke="#3a2c20" stroke-width="1.6"/>`,
+    book: book('#5c8cbe'), bookR: book('#cb382e'), bookG: book('#4f8a5b'), notebook: book('#e0a84a', '<path d="M12 11h9M12 15h9" stroke="#fff" stroke-width="2" stroke-linecap="round"/>'),
+    books: `<rect x="5" y="6" width="6" height="21" rx="1" fill="#cb382e" ${o}/><rect x="11" y="9" width="6" height="18" rx="1" fill="#5c8cbe" ${o}/><path d="M18 9.5l5.5-1.5 4 18-5.5 1.5z" fill="#4f8a5b" ${o}/>`,
+    fire: `<path d="M16 3c2 6 9 9 9 16a9 9 0 0 1-18 0c0-4 2-6 4-8 0 3 1 5 3 5-1-5 0-9 2-13z" fill="#f08a2d" ${o}/><path d="M16 27a4 4 0 0 1-4-4c0-2 2-4 4-6 2 2 4 4 4 6a4 4 0 0 1-4 4z" fill="#ffd24a"/>`,
+    snow: `<path d="M16 3v26M5 9.5l22 13M27 9.5l-22 13" stroke="#3a2c20" stroke-width="5" stroke-linecap="round"/><path d="M16 3v26M5 9.5l22 13M27 9.5l-22 13" stroke="#bfe6fb" stroke-width="2.2" stroke-linecap="round"/>`,
+    tree: `<path d="M16 29v-8" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><circle cx="16" cy="13" r="10" fill="#6aa84f" ${o}/><circle cx="12" cy="10" r="2.5" fill="#8cc63f"/>`,
+    house: `<path d="M4 15L16 5l12 10" fill="none" ${o.replace('2.4', '3')}/><path d="M7 14v14h18V14L16 7z" fill="#f2c14e" ${o}/><rect x="13" y="19" width="6" height="9" fill="#8a5a2b" ${o}/>`,
+    paw: `<ellipse cx="16" cy="21" rx="6.5" ry="5.5" fill="#8a5a2b" ${o}/><circle cx="7.5" cy="13" r="3" fill="#8a5a2b" ${o}/><circle cx="13" cy="8" r="3" fill="#8a5a2b" ${o}/><circle cx="19" cy="8" r="3" fill="#8a5a2b" ${o}/><circle cx="24.5" cy="13" r="3" fill="#8a5a2b" ${o}/>`,
+    bulb: `<path d="M11 20a8 8 0 1 1 10 0v3H11z" fill="#ffd24a" ${o}/><rect x="11.5" y="23" width="9" height="5" rx="1.5" fill="#9aa5ad" ${o}/>`,
+    shield: `<path d="M16 3l11 4v8c0 7-5 12-11 14C10 27 5 22 5 15V7z" fill="#5c8cbe" ${o}/><path d="M16 7v18" stroke="#fff" stroke-width="2" opacity=".6"/>`,
+    calendar: `<rect x="4" y="7" width="24" height="21" rx="3" fill="#fffaf0" ${o}/><path d="M4 13h24" stroke="#3a2c20" stroke-width="2.4"/><rect x="4" y="7" width="24" height="6" rx="3" fill="#cb382e" ${o}/><path d="M10 4v6M22 4v6" ${o}/><path d="M9 18h3M15 18h3M21 18h2M9 23h3M15 23h3" stroke="#b9a582" stroke-width="2.2" stroke-linecap="round"/>`,
+    map: `<path d="M4 8l7-3 10 3 7-3v20l-7 3-10-3-7 3z" fill="#f3e3b5" ${o}/><path d="M11 5v20M21 8v20" stroke="#3a2c20" stroke-width="1.6"/><path d="M14 17l3 3m0-3l-3 3" stroke="#cb382e" stroke-width="2" stroke-linecap="round"/>`,
+    clip: `<rect x="6" y="5" width="20" height="24" rx="3" fill="#c98a4b" ${o}/><rect x="9" y="9" width="14" height="17" fill="#fffaf0" ${o.replace('2.4', '1.6')}/><rect x="12" y="3" width="8" height="5" rx="1.5" fill="#9aa5ad" ${o}/><path d="M11 14h10M11 18h10M11 22h6" stroke="#b9a582" stroke-width="2" stroke-linecap="round"/>`,
+    question: `<circle cx="16" cy="16" r="12" fill="#8a7fd6" ${o}/><path d="M12 12.5a4 4 0 1 1 5.5 3.7c-1 .5-1.5 1.3-1.5 2.3" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="#fff"/>`,
+    clock: `<circle cx="16" cy="16" r="12" fill="#fffaf0" ${o}/><path d="M16 9v7l5 3" fill="none" ${o}/>`,
+    heart: `<path d="M16 27C6 20 3 15 3 11a6 6 0 0 1 13-3 6 6 0 0 1 13 3c0 4-3 9-13 16z" fill="#e5533d" ${o}/>`,
+    shop: `<rect x="5" y="13" width="22" height="15" fill="#fffaf0" ${o}/><path d="M4 13l3-8h18l3 8z" fill="#e5533d" ${o}/><path d="M10 5l-1 8M16 5v8M22 5l1 8" stroke="#fff" stroke-width="2.4"/><rect x="13" y="19" width="6" height="9" fill="#5c8cbe" ${o}/>`,
+    bookmark: `<path d="M10 4h12v24l-6-5-6 5z" fill="#cb382e" ${o}/>`,
+    cookie: `<circle cx="16" cy="16" r="12" fill="#d9a35b" ${o}/><circle cx="11" cy="12" r="2" fill="#5a3a22"/><circle cx="19" cy="11" r="1.6" fill="#5a3a22"/><circle cx="20" cy="19" r="2.2" fill="#5a3a22"/><circle cx="12" cy="20" r="1.6" fill="#5a3a22"/>`,
+    wheel: `<circle cx="16" cy="16" r="12" fill="#f2c14e" ${o}/><path d="M16 4v24M4 16h24M7.5 7.5l17 17M24.5 7.5l-17 17" stroke="#e5533d" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="#fff" ${o.replace('2.4', '1.8')}/>`,
+    tent: `<path d="M3 27L16 5l13 22z" fill="#6aa84f" ${o}/><path d="M16 5l-4 22h8z" fill="#3f6b33" ${o.replace('2.4', '1.8')}/>`,
+    music: `<path d="M12 23V8l14-3v15" fill="none" ${o.replace('2.4', '3')}/><ellipse cx="9" cy="23" rx="4" ry="3.2" fill="#8a7fd6" ${o}/><ellipse cx="23" cy="20" rx="4" ry="3.2" fill="#8a7fd6" ${o}/>`,
+    up: `<path d="M16 4l10 11h-6v12h-8V15H6z" fill="#4f8a5b" ${o}/>`,
+    play: `<path d="M9 5l18 11L9 27z" fill="#f2c14e" ${o}/>`,
+    gear: `<path d="M16 3l2.5 3.5 4-1 .5 4 3.8 1.6-1.8 3.6 1.8 3.6-3.8 1.6-.5 4-4-1L16 29l-2.5-3.5-4 1-.5-4-3.8-1.6 1.8-3.6-1.8-3.6L9 11.1l.5-4 4 1z" fill="#9aa5ad" ${o}/><circle cx="16" cy="16" r="4" fill="#fffaf0" ${o}/>`,
+    warn: `<path d="M16 4l13 23H3z" fill="#f2c14e" ${o}/><path d="M16 12v7" stroke="#3a2c20" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="23" r="1.7" fill="#3a2c20"/>`,
+    web: `<circle cx="16" cy="16" r="12" fill="#fffaf0" ${o}/><path d="M16 4v24M4 16h24M7.5 7.5l17 17M24.5 7.5l-17 17" stroke="#3a2c20" stroke-width="1.3"/><circle cx="16" cy="16" r="4" fill="none" stroke="#3a2c20" stroke-width="1.3"/><circle cx="16" cy="16" r="8" fill="none" stroke="#3a2c20" stroke-width="1.3"/>`,
+    flower: `<g fill="#f59ac0" ${o.replace('2.4', '1.8')}><circle cx="16" cy="9" r="5"/><circle cx="23" cy="14" r="5"/><circle cx="20" cy="22" r="5"/><circle cx="12" cy="22" r="5"/><circle cx="9" cy="14" r="5"/></g><circle cx="16" cy="16" r="4" fill="#f2c14e" ${o.replace('2.4', '1.8')}/>`,
+    feather: `<path d="M26 4C14 6 7 14 6 26c8-2 18-9 20-22z" fill="#9fd3e8" ${o}/><path d="M6 26L20 11" stroke="#3a2c20" stroke-width="1.8" stroke-linecap="round"/>`,
+    dot: `<circle cx="16" cy="16" r="9" fill="#cb382e" ${o}/>`,
+    planet: `<circle cx="16" cy="16" r="9" fill="#e9a35b" ${o}/><ellipse cx="16" cy="16" rx="15" ry="5" fill="none" stroke="#3a2c20" stroke-width="4" transform="rotate(-20 16 16)"/><ellipse cx="16" cy="16" rx="15" ry="5" fill="none" stroke="#f6dd8a" stroke-width="1.6" transform="rotate(-20 16 16)"/>`,
+    apple: `<path d="M16 10c-3-3-11-2-11 6 0 7 5 12 8 12 1.5 0 2-1 3-1s1.5 1 3 1c3 0 8-5 8-12 0-8-8-9-11-6z" fill="#e5533d" ${o}/><path d="M16 10c0-3 1-5 3-6" fill="none" ${o}/><path d="M17 6c2-2 5-2 6 0-2 2-5 2-6 0z" fill="#6aa84f" ${o.replace('2.4', '1.6')}/>`,
+    columns: `<path d="M4 11L16 4l12 7z" fill="#e8dcc0" ${o}/><rect x="4" y="25" width="24" height="4" fill="#e8dcc0" ${o}/><path d="M8 12v12M13 12v12M19 12v12M24 12v12" stroke="#3a2c20" stroke-width="4.5"/><path d="M8 12v12M13 12v12M19 12v12M24 12v12" stroke="#fffaf0" stroke-width="2"/>`,
+    globe: `<circle cx="16" cy="16" r="12" fill="#4fa3e0" ${o}/><path d="M9 9c3 1 3 4 6 4s1 5-2 6-3 5-1 7M20 6c-1 3 2 4 4 3s3 3 1 5-1 6 1 7" fill="#6aa84f" stroke="#3a2c20" stroke-width="1.4"/>`,
+    flask: `<path d="M13 4h6M14 4v8L6 25a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3l-8-13V4" fill="#fffaf0" ${o}/><path d="M9.5 21h13l2.5 4a1 1 0 0 1-1 1.5H8a1 1 0 0 1-1-1.5z" fill="#8cd17f"/><circle cx="15" cy="17" r="1.4" fill="#8cd17f"/>`,
+    brain: `<path d="M16 6c-2-2-6-2-7 1-3 0-5 3-4 6-2 2-1 6 2 7 0 3 3 5 6 4 1 2 2 2 3 2s2 0 3-2c3 1 6-1 6-4 3-1 4-5 2-7 1-3-1-6-4-6-1-3-5-3-7-1z" fill="#f5a3b5" ${o}/><path d="M16 6v20M11 11c2 1 2 3 0 4M21 11c-2 1-2 3 0 4M10 20c2-1 4 0 4 2M22 20c-2-1-4 0-4 2" fill="none" stroke="#3a2c20" stroke-width="1.5" stroke-linecap="round"/>`,
+    fish: `<path d="M4 16c5-7 13-8 19-3l5-4v14l-5-4C17 24 9 23 4 16z" fill="#f29a3e" ${o}/><circle cx="10" cy="15" r="1.6" fill="#3a2c20"/>`,
+    speaker: `<path d="M5 12h5l7-6v20l-7-6H5z" fill="#9aa5ad" ${o}/><path d="M21 11a6 6 0 0 1 0 10M24 7a11 11 0 0 1 0 18" fill="none" ${o}/>`,
+    cactus: `<path d="M13 28V8a3 3 0 0 1 6 0v20M13 18H9a3 3 0 0 1-3-3v-3a2 2 0 0 1 4 0v2h3M19 15h3v-3a2 2 0 0 1 4 0v4a3 3 0 0 1-3 3h-4" fill="#6aa84f" ${o}/><path d="M4 28h24" ${o}/>`,
+    wave: `<path d="M3 21c4-10 12-14 18-10-4 0-6 3-5 6 1 2 5 2 7-1 2 3 4 4 6 4v7H3z" fill="#4fa3e0" ${o}/><path d="M20 15c-1 1-1 3 1 3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+    palm: `<path d="M16 29c0-7 1-13 0-18" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/><path d="M16 11C12 5 6 6 3 9c5-1 9 0 13 2zM16 11c4-6 10-5 13-2-5-1-9 0-13 2zM16 11c-2-5 0-8 3-9-1 3-2 6-3 9z" fill="#6aa84f" ${o}/>`,
+    party: `<path d="M5 27l5-15 10 10z" fill="#f2c14e" ${o}/><path d="M17 9l2-5M22 13l5-2M21 7l3-2" stroke="#e5533d" stroke-width="2.4" stroke-linecap="round"/><circle cx="26" cy="20" r="1.8" fill="#5c8cbe"/><circle cx="13" cy="5" r="1.6" fill="#8a7fd6"/>`,
+    boom: `<path d="M16 3l3 7 8-3-4 8 6 4-8 1 1 8-6-5-6 5 1-8-8-1 6-4-4-8 8 3z" fill="#f08a2d" ${o}/><circle cx="16" cy="16" r="4" fill="#ffd24a"/>`,
+    flag: `<path d="M7 29V4" stroke="#3a2c20" stroke-width="3" stroke-linecap="round"/><path d="M8 5h18l-4 5 4 5H8z" fill="#e5533d" ${o}/>`,
+    school: `<path d="M3 13L16 6l13 7z" fill="#cb382e" ${o}/><rect x="5" y="13" width="22" height="15" fill="#f3e3b5" ${o}/><rect x="13" y="20" width="6" height="8" fill="#8a5a2b" ${o.replace('2.4', '1.8')}/><path d="M8 17h3M21 17h3" stroke="#5c8cbe" stroke-width="3"/>`,
+    person: `<circle cx="16" cy="11" r="6" fill="#f2c9a0" ${o}/><path d="M5 29c0-7 5-11 11-11s11 4 11 11z" fill="#8a7fd6" ${o}/>`,
+    wheat: `<path d="M16 29V6" stroke="#3a2c20" stroke-width="3" stroke-linecap="round"/><g fill="#e8b84a" ${o.replace('2.4', '1.6')}><ellipse cx="12.5" cy="10" rx="3" ry="2" transform="rotate(35 12.5 10)"/><ellipse cx="19.5" cy="10" rx="3" ry="2" transform="rotate(-35 19.5 10)"/><ellipse cx="12.5" cy="15" rx="3" ry="2" transform="rotate(35 12.5 15)"/><ellipse cx="19.5" cy="15" rx="3" ry="2" transform="rotate(-35 19.5 15)"/><ellipse cx="12.5" cy="20" rx="3" ry="2" transform="rotate(35 12.5 20)"/><ellipse cx="19.5" cy="20" rx="3" ry="2" transform="rotate(-35 19.5 20)"/></g>`,
+    sun: `<circle cx="16" cy="16" r="7" fill="#ffd24a" ${o}/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke="#3a2c20" stroke-width="2.6" stroke-linecap="round"/>`,
+    cloud: `<circle cx="20" cy="11" r="6" fill="#ffd24a" ${o}/><path d="M8 26a5 5 0 0 1 0-10 7 7 0 0 1 13-1 5 5 0 0 1 3 11z" fill="#fff" ${o}/>`,
+    bronze: `<path d="M9 3l5 10M23 3l-5 10" stroke="#3f7fb5" stroke-width="5"/><circle cx="16" cy="20" r="8" fill="#c98a4b" ${o}/>`,
+    silver: `<path d="M9 3l5 10M23 3l-5 10" stroke="#3f7fb5" stroke-width="5"/><circle cx="16" cy="20" r="8" fill="#c9d1d6" ${o}/>`,
+    tornado: `<path d="M3 6h26M6 12h20M10 18h12M13 24h6" stroke="#3a2c20" stroke-width="5.5" stroke-linecap="round"/><path d="M3 6h26M6 12h20M10 18h12M13 24h6" stroke="#b9c6cf" stroke-width="2.6" stroke-linecap="round"/>`,
+    link: `<rect x="3" y="11" width="15" height="10" rx="5" fill="none" stroke="#3a2c20" stroke-width="5"/><rect x="14" y="11" width="15" height="10" rx="5" fill="none" stroke="#3a2c20" stroke-width="5"/><rect x="3" y="11" width="15" height="10" rx="5" fill="none" stroke="#f2c14e" stroke-width="2"/><rect x="14" y="11" width="15" height="10" rx="5" fill="none" stroke="#f2c14e" stroke-width="2"/>`,
+    plus: `<path d="M16 5v22M5 16h22" stroke="#3a2c20" stroke-width="7" stroke-linecap="round"/><path d="M16 5v22M5 16h22" stroke="#9aa5ad" stroke-width="3.4" stroke-linecap="round"/>`,
+    snail: `<circle cx="18" cy="15" r="8" fill="#e9a35b" ${o}/><path d="M18 15m-4 0a4 4 0 1 0 4-4" fill="none" stroke="#3a2c20" stroke-width="1.8"/><path d="M3 25c2 0 3-2 4-4l2 2h18v3H5c-1 0-2 0-2-1z" fill="#c9d77a" ${o}/><path d="M7 21V15M5 16l2-2" stroke="#3a2c20" stroke-width="2" stroke-linecap="round"/>`,
+    cross: `<circle cx="16" cy="16" r="12" fill="#cb382e" ${o}/><path d="M11 11l10 10M21 11L11 21" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>`,
+  }; })();
+// which emoji each drawing stands for
+const EMO_ICON = { '🪙': 'coin', '💎': 'gem', '📄': 'page', '📃': 'page', '🎟️': 'ticket', '🎟': 'ticket', '🎫': 'cupticket', '🎖️': 'badge', '🎖': 'badge', '⭐': 'star', '🌟': 'star', '🔒': 'lock', '💪': 'power', '✨': 'sparkle', '💫': 'sparkle',
+  '🎁': 'gift', '✔': 'check', '✔️': 'check', '✓': 'check', '✅': 'check', '🏆': 'trophy', '🥇': 'medal', '🏅': 'medal', '👑': 'crown', '🔨': 'hammer', '🎒': 'bag', '👕': 'shirt', '🌱': 'sprout', '⚔️': 'swords', '⚔': 'swords', '🔍': 'lens', '🔎': 'lens',
+  '💧': 'drop', '⚡': 'bolt', '🌬️': 'wind', '🌬': 'wind', '🪨': 'rock', '🌙': 'moon', '🌈': 'rainbow', '📘': 'book', '📕': 'bookR', '📗': 'bookG', '📖': 'book', '📔': 'notebook', '📓': 'notebook', '📒': 'notebook', '📚': 'books',
+  '🔥': 'fire', '❄️': 'snow', '❄': 'snow', '🌳': 'tree', '🏡': 'house', '🏠': 'house', '🐾': 'paw', '💡': 'bulb', '🛡️': 'shield', '🛡': 'shield', '📅': 'calendar', '🗓️': 'calendar', '🗺️': 'map', '🗺': 'map', '📋': 'clip', '📝': 'clip',
+  '❓': 'question', '⏰': 'clock', '⏱️': 'clock', '⌛': 'clock', '⏳': 'clock', '❤️': 'heart', '💖': 'heart', '🏪': 'shop', '🔖': 'bookmark', '🍪': 'cookie', '🎡': 'wheel', '🏕️': 'tent', '🎵': 'music', '🎶': 'music', '⬆️': 'up', '❌': 'cross', '✗': 'cross',
+  '▶': 'play', '▶️': 'play', '⚙️': 'gear', '⚙': 'gear', '⚠': 'warn', '⚠️': 'warn', '🛍️': 'shop', '🛍': 'shop', '🕸️': 'web', '🕸': 'web', '🪷': 'flower', '🌸': 'flower', '🌼': 'flower', '🌻': 'flower', '🌺': 'flower', '💦': 'drop', '🪶': 'feather',
+  '🔴': 'dot', '🪐': 'planet', '🫀': 'heart', '🌦️': 'cloud', '⛅': 'cloud', '🍎': 'apple', '🏛️': 'columns', '🌍': 'globe', '🌎': 'globe', '🌏': 'globe', '⚗️': 'flask', '🧪': 'flask', '🎉': 'party', '🥳': 'party', '🧠': 'brain', '🐟': 'fish',
+  '🔊': 'speaker', '🔈': 'speaker', '🏜️': 'cactus', '🌵': 'cactus', '🌊': 'wave', '🌴': 'palm', '💥': 'boom', '🏁': 'flag', '🚩': 'flag', '🏫': 'school', '👧': 'person', '👩': 'person', '👵': 'person', '👴': 'person', '👦': 'person', '🦳': 'person',
+  '🌾': 'wheat', '☀️': 'sun', '☀': 'sun', '🥉': 'bronze', '🥈': 'silver', '🌪️': 'tornado', '🤝': 'link', '➕': 'plus', '🐌': 'snail' };
+// faces: Dad and Sir Ever-So-Sure have their own; every friend's emoji becomes their head shot
+const EMO_IMG = { '🙅': 'assets/dad_face.webp', '🙅‍♂️': 'assets/dad_face.webp', '🧑': 'assets/dad_face.webp', '👨': 'assets/dad_face.webp', '🧔': 'assets/dad_face.webp', '🧐': 'assets/sses_face.webp', '🧒': 'assets/kid_face.webp' };
+const EMO_RE = (() => { for (const id in CHARS) if (id !== 'dad' && CHARS[id].em && !EMO_ICON[CHARS[id].em]) EMO_IMG[CHARS[id].em] = `assets/heads/${id}.webp`;
+  const keys = [...Object.keys(EMO_ICON), ...Object.keys(EMO_IMG)].sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  return new RegExp(keys.join('|'), 'u'); })();
+const EMO_RE_G = new RegExp(EMO_RE.source, 'gu');
+(function () { const st = document.createElement('style'); st.textContent = Object.entries(SVG_I).map(([k, v]) => `.ico-${k}{background-image:url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${v}</svg>`)}")}`).join('\n'); document.head.appendChild(st); })();
+const icoH = k => `<i class="ico ico-${k}" aria-hidden="true"></i>`;
+function emoNode(t) { const s = t.data; if (!EMO_RE.test(s)) return; const f = document.createDocumentFragment(); let last = 0;
+  s.replace(EMO_RE_G, (m, at) => { if (at > last) f.appendChild(document.createTextNode(s.slice(last, at))); let el;
+    if (EMO_ICON[m]) { el = document.createElement('i'); el.className = 'ico ico-' + EMO_ICON[m]; } else { el = document.createElement('img'); el.className = 'ico hd'; el.src = EMO_IMG[m]; el.alt = ''; }
+    el.setAttribute('aria-hidden', 'true'); el.dataset.e = m; f.appendChild(el); last = at + m.length; return m; });
+  if (last < s.length) f.appendChild(document.createTextNode(s.slice(last))); t.replaceWith(f); }
+function emoWalk(n) { if (n.nodeType === 3) return emoNode(n); if (n.nodeType !== 1 || /^(SCRIPT|STYLE|TEXTAREA|INPUT|CANVAS|svg)$/.test(n.nodeName)) return;
+  const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT), list = []; while (w.nextNode()) if (EMO_RE.test(w.currentNode.data)) list.push(w.currentNode); list.forEach(emoNode); }
+new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') emoNode(m.target); else m.addedNodes.forEach(emoWalk); } })
+  .observe(document.body, { childList: true, subtree: true });
+document.addEventListener('DOMContentLoaded', () => emoWalk(document.body)); emoWalk(document.body);
+// press and hold anything (or tap a picture that isn't a button) to see what it is: currencies, stars, friends, items, skills
+const GLOSS = { '🪙': 'Coins: you get them in every match. Spend them in the Shop and on Power and Quick upgrades.',
+  '💎': 'Gems: rarer than coins. They come from chests, missions and the Prize Wheel. Spend them on Shop specials.',
+  '📄': 'Pages fill a friend\'s book. A full book brings that friend to the backyard. After that, pages earn stars, and each star makes the friend stronger. Blank pages fit any friend\'s book.',
+  '📃': 'Pages fill a friend\'s book. A full book brings that friend to the backyard. After that, pages earn stars.',
+  '🎟️': 'Library Card: pick a page pack and fill a friend\'s book faster.', '🎫': 'Cup Ticket: one Myth Cup match. A free one comes every day, up to three waiting.',
+  '🎖️': 'Club Badges: your Clubhouse earns them. Spend them in the Club Shop. They also level up your club.', '🏅': 'Cup Points: won in Myth Cup matches. Spend them in the Cup Shop.',
+  '⭐': 'Stars: each one makes a friend stronger. Fill their book with pages to earn the next.', '🌟': 'Stars: each one makes a friend stronger. Fill their book with pages to earn the next.',
+  '💪': 'Power: how strong a friend is, with level, stars, upgrades and gear all added up. Team Power is Dad plus the three in the backyard.',
+  '📘': 'Skill Books: spend them in a friend\'s Skill Tree to make a move stronger.', '🔒': 'Locked: keep playing and it opens.', '🎁': 'A prize: tap to open it.',
+  '🧐': 'Sir Ever-So-Sure: he\'s certain about everything, and wrong about most of it.' };
+function tipFor(el) { for (let n = el; n && n.id !== 'frame' && n !== document.body; n = n.parentElement) {
+    if (n.dataset && n.dataset.tip) return n.dataset.tip;
+    if (n.dataset && n.dataset.e) { const e = n.dataset.e; if (GLOSS[e]) return GLOSS[e]; const id = Object.keys(CHARS).find(k => k !== 'dad' && CHARS[k].em === e); if (id) return `${CHARS[id].name}: ${CHARS[id].desc}`;
+      const el2 = Object.values(ELEM).find(x => x.em === e); if (el2) return `${el2.n}: an element. Friends of two different elements can team up for a reaction (see a friend's Moves).`; }
+    if (n.classList && n.classList.contains('hd') && n.alt) { const id = Object.keys(CHARS).find(k => CHARS[k].name === n.alt); if (id) return `${CHARS[id].name}: ${CHARS[id].desc}`; }
+    if (n.getAttribute && n.getAttribute('title')) return n.getAttribute('title');
+    if (n.nodeName === 'BUTTON') break; } return null; }
+const clickable = el => { for (let n = el; n && n.id !== 'frame' && n !== document.body; n = n.parentElement) if (n.onclick || /^(BUTTON|A|LABEL|SELECT|INPUT)$/.test(n.nodeName)) return true; return false; };
+let tipT = null, tipEl = null, tipShown = 0;
+function showTip(target, txt) { const f = $('#frame'); hideTip(); const d = document.createElement('div'); d.className = 'tippop'; d.textContent = txt; f.appendChild(d);
+  const fr = f.getBoundingClientRect(), r = target.getBoundingClientRect(), k = fr.width / f.offsetWidth || 1, w = d.offsetWidth, h = d.offsetHeight;
+  let x = (r.left + r.width / 2 - fr.left) / k - w / 2, y = (r.top - fr.top) / k - h - 10; x = Math.max(8, Math.min(f.offsetWidth - w - 8, x)); if (y < 8) { y = (r.bottom - fr.top) / k + 10; d.classList.add('below'); }
+  d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.setProperty('--ax', ((r.left + r.width / 2 - fr.left) / k - x) + 'px'); tipEl = d; tipShown = Date.now(); buzz('LIGHT'); }
+function hideTip() { if (tipEl) { tipEl.remove(); tipEl = null; } }
+document.addEventListener('pointerdown', e => { if (tipEl && Date.now() - tipShown > 150) hideTip(); clearTimeout(tipT); const t = e.target; if (!t.closest || !t.closest('#frame')) return; const txt = tipFor(t); if (!txt) return;
+  const sx = e.clientX, sy = e.clientY, mv = ev => { if (Math.hypot(ev.clientX - sx, ev.clientY - sy) > 10) { clearTimeout(tipT); off(); } }, off = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); }, up = () => { clearTimeout(tipT); off(); if (!clickable(t) && !tipEl) showTip(t, txt); };
+  addEventListener('pointermove', mv); addEventListener('pointerup', up);
+  tipT = setTimeout(() => { off(); showTip(t, txt); const eat = ev => { ev.stopPropagation(); ev.preventDefault(); }; addEventListener('click', eat, { capture: true, once: true }); setTimeout(() => removeEventListener('click', eat, { capture: true }), 600); }, 450); }, { capture: true });
+document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('#frame') && tipFor(e.target)) e.preventDefault(); });
+// the same drawings on the canvas: any fillText/strokeText with an emoji in it draws the icon in its place
+(function () { const P = CanvasRenderingContext2D.prototype, F = P.fillText, S = P.strokeText, SPLIT = new RegExp('(' + EMO_RE.source + ')', 'u'), cache = {};
+  const img = m => cache[m] || (cache[m] = Object.assign(new Image(), { src: EMO_ICON[m] ? `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${SVG_I[EMO_ICON[m]]}</svg>`)}` : EMO_IMG[m] }));
+  function draw(ctx, t, x, y, stroke) { const parts = t.split(SPLIT).filter(Boolean), px = +((/([\d.]+)px/.exec(ctx.font) || [])[1] || 16), sz = px * 1.15;
+    const ws = parts.map(p => EMO_ICON[p] || EMO_IMG[p] ? sz : ctx.measureText(p).width), tot = ws.reduce((a, b) => a + b, 0), al = ctx.textAlign, bl = ctx.textBaseline;
+    let cx = al === 'center' ? x - tot / 2 : al === 'right' || al === 'end' ? x - tot : x; const top = bl === 'middle' ? y - sz / 2 : bl === 'top' || bl === 'hanging' ? y : y - sz * .85;
+    ctx.textAlign = 'left'; parts.forEach((p, i) => { if (EMO_ICON[p] || EMO_IMG[p]) { if (!stroke) { const im = img(p); if (im.complete && im.naturalWidth) ctx.drawImage(im, cx, top, sz, sz); } } else (stroke ? S : F).call(ctx, p, cx, y); cx += ws[i]; }); ctx.textAlign = al; }
+  const memo = new Map(), has = t => { let v = memo.get(t); if (v === undefined) { v = EMO_RE.test(t); if (memo.size > 2000) memo.clear(); memo.set(t, v); } return v; };
+  P.fillText = function (t, x, y, mw) { t = String(t); return has(t) ? draw(this, t, x, y, false) : F.call(this, t, x, y, mw); };
+  P.strokeText = function (t, x, y, mw) { t = String(t); return has(t) ? draw(this, t, x, y, true) : S.call(this, t, x, y, mw); };
+  for (const m of Object.keys(EMO_ICON).concat(Object.keys(EMO_IMG))) img(m); })();
 var lastTP = null, tpT = 0;
 function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
 const persist = () => { save.savedAt = Date.now(); clearTimeout(persist.ach); persist.ach = setTimeout(checkAch, 400); try { trackFound(); localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} powWatch(); backupSoon(); };
@@ -2269,15 +2445,15 @@ function syncWeapons() {
 }
 const cweapOf = id => { const L = CWEAP[id]; if (!L) return null; const k = save.cweap[id]; return L.v[k] || L.v[Object.keys(L.v)[0]]; };
 // the party-wide stats, summed over everyone who's coming
-function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } for (const k in g) g[k] += diaryStat(k); if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
+function partyGear() { const g = { pat: 0, ring: 0, coin: 0, crit: 0 }; for (const id of ['dad', ...save.party]) { const x = gear(id); for (const k in g) g[k] += x[k]; } for (const k in g) g[k] += diaryStat(k); for (const id of ['dad', ...save.party]) g.coin += rEff((save.chars[id] || {}).luck) * 2; if (mastered(0)) g.pat += 10; if (mastered(5)) g.pat += 20; if (mastered(3)) g.coin += 8; if (mastered(4)) g.ring += 12; if (mastered(6)) g.crit += 4; return g; }
 // Power: everything that makes a character hit harder, faster or more often, as one number (a new Common friend is about 100)
 function powerOf(id) {
   const c = chr(id); if (!c.own && id !== 'dad') return 0; const g = gear(id), V = cweapOf(id);
-  const W = wv(id), hit = charMul(id) * (1 + (c.pow || 0) * .08) * (1 + g.pow / 100) * (W ? W.pow : 1);
-  const pace = starQuick(id) * (1 + (c.quick || 0) * .06) * (1 + g.quick / 100) * (W ? W.rate : 1);
+  const W = wv(id), hit = charMul(id) * (1 + rEff(c.pow) * .08) * (1 + g.pow / 100) * (W ? W.pow : 1);
+  const pace = starQuick(id) * (1 + rEff(c.quick) * .06) * (1 + g.quick / 100) * (W ? W.rate : 1);
   const skills = 1 + CHARS[id].abil.reduce((n, a) => n + .02 * tBase(id, a) + (tPicked(id, a) ? .05 : 0) + (tHasFin(id, a) ? .08 : 0), 0), lvl = 1 + .03 * (clv(id) - 1);
-  const help = 1 + (g.pat + g.ring + (id === 'dad' ? (c.pat || 0) * 20 + (c.ring || 0) * 22 : 0)) / 400 + g.coin / 800;
-  return Math.round(100 * hit * pace * (1 + g.crit / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
+  const help = 1 + (g.pat + g.ring + (id === 'dad' ? rEff(c.pat) * 20 + rEff(c.ring) * 22 : 0)) / 400 + (g.coin + rEff(c.luck) * 2) / 800;
+  return Math.round(100 * hit * pace * (1 + (g.crit + rEff(c.crit)) / 100) * skills * lvl * help * (id === 'dad' ? 1.5 : 1));
 }
 const teamPower = () => Math.round(['dad', ...save.party].reduce((a, id) => a + powerOf(id), 0) * famLive().reduce((m, f) => m * (f.full ? 1.1 : 1.04), 1) * (1 + .03 * SYNERGY.filter(sy => synOn(sy)).length));
 const powH = (n, big) => `<span class="pow${big ? ' big' : ''}">💪 ${n.toLocaleString()}</span>`;
@@ -2331,7 +2507,7 @@ function famMoves(dt) {
 }
 // a friend's pair-up is live once they have the level for it and both halves are coming
 const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
-const radiusFor = () => BASE_RADIUS + chr('dad').ring * 22 + partyGear().ring + famStat('ring');
+const radiusFor = () => BASE_RADIUS + rEff(chr('dad').ring) * 22 + partyGear().ring + famStat('ring');
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!save.wv2) { // one weapon each (build 32)
   save.wv2 = true; const d = chr('dad'); let coins = 0, held = save.weapon;
@@ -2486,7 +2662,7 @@ function buildToggles(el) {
 /* ───────── run state ───────── */
 let G = null, last = 0, mode = 'title';
 function newRun(stage) {
-  const maxhp = 100 + chr('dad').pat * 20 + partyGear().pat + famStat('pat') + (fstars('dad') - 1) * 10;
+  const maxhp = 100 + rEff(chr('dad').pat) * 20 + partyGear().pat + famStat('pat') + (fstars('dad') - 1) * 10;
   const party = [{ id: 'dad', x: CX, y: CY }, ...save.party.map((id, i) => ({ id, x: CX + SPOTS[i][0], y: CY + SPOTS[i][1] }))];
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
@@ -2542,7 +2718,7 @@ function spawn(id, at = null, q = {}) {
   if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp; if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = K.hp * ((G.stage ? .5 : .38) + G.stage * .18 + G.stage * G.stage * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.stage - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
     if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
@@ -2652,8 +2828,8 @@ function nearest(from, exclude = null, n = 1) {
   return n === 1 ? list[0] : list.slice(0, n);
 }
 // permanent damage / speed multipliers for a party member
-const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id) + diaryStat('pow')) / 100) * charMul(m.id) * (1 + chr(m.id).pow * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
-const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id) + diaryStat('quick')) / 100) * starQuick(m.id) * (1 + chr(m.id).quick * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
+const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id) + diaryStat('pow')) / 100) * charMul(m.id) * (1 + rEff(chr(m.id).pow) * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id) + diaryStat('quick')) / 100) * starQuick(m.id) * (1 + rEff(chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
@@ -2673,7 +2849,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
-  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (T ? treeCrit(T) : 0) + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
+  const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who && save.chars[who] ? rEff(save.chars[who].crit) * .01 : 0) + (T ? treeCrit(T) : 0) + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
@@ -2691,7 +2867,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
 }
 function kill(e) {
   { const mm = G.party.find(x => x.id === e.lastBy && x.id !== 'dad'); if (mm && !mm.jump && !(mm.cheer > 0)) mm.cheer = .4; }
-  G.busted++; save.busted++; missionAdd('pop'); if (EVENT_IDS.has(e.id)) { evTok(1); text(e.x, e.y - 30, '+' + EVENTS[activeEvent()].tok[0], '#fff', 16, .9); } if (e.elite) missionAdd('elite');
+  G.busted++; save.busted++; missionAdd('pop'); if (EVENT_IDS.has(e.id) && activeEvent()) { evTok(1); text(e.x, e.y - 30, '+' + EVENTS[activeEvent()].tok[0], '#fff', 16, .9); } if (e.elite) missionAdd('elite');
   if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
   if (e.host) { e.host.muted = 0; e.host = null; }
@@ -2741,12 +2917,12 @@ function handPos(m) {
 const EMIT = { bluey: [.88, .65], bramble: [.84, .38], bumble: [.78, .58], chroma: [.91, .63], coco: [.84, .69], dot: [.88, .56], dusty: [.82, .53], echo: [.63, .41], frost: [.77, .35],
   gizmo: [.71, .6], goldie: [.72, .5], hopper: [.93, .42], inky: [.6, .58], jelly: [.59, .41], luna: [.6, .4], nilla: [.72, .29], pinch: [.9, .25], pip: [.9, .37], prickles: [.73, .48],
   puddles: [.73, .27], rosie: [.75, .17], scuttle: [.9, .6], shelly: [.93, .53], sol: [.67, .42], sparky: [.85, .46], uni: [.9, .06], webster: [.67, .7], wiggles: [.82, .36] };
-// the attack drawings (assets/pet_<id>_atk.png): their own mouth points, and a size match where a wide pose (spread wings) came out smaller
+// the attack drawings (assets/pet_<id>_atk.webp): their own mouth points, and a size match where a wide pose (spread wings) came out smaller
 const EMIT_ATK = { bluey: [.62, .1], bramble: [.78, .3], bumble: [.97, .72], chroma: [.84, .62], coco: [.28, .38], dot: [.6, .6], dusty: [.83, .6], echo: [.49, .56], frost: [.86, .19],
   gizmo: [.93, .59], goldie: [.68, .56], hopper: [.7, .5], inky: [.9, .6], jelly: [.5, .55], luna: [.5, .45], nilla: [.49, .6], pinch: [.88, .2], pip: [.87, .37], prickles: [.85, .5],
   puddles: [.68, .43], rosie: [.75, .15], scuttle: [.72, .55], shelly: [.88, .54], sol: [.57, .38], sparky: [.75, .4], uni: [.83, .05], webster: [.55, .6], wiggles: [.73, .5] };
 const ATK_K = { bramble: 1.22, bumble: 1.17, dusty: 1.18, goldie: 1.17, luna: 1.07, nilla: 1.5, prickles: 1.09, puddles: 1.17, scuttle: 1.06, shelly: 1.07 };
-for (const id in EMIT_ATK) art('pet_' + id + '_atk');
+// attack poses load for the team when a match starts (startGame)
 // a friend shows its attack drawing through the middle of a move, and while its tongue (or anything else it holds out) is still out
 function atkPose(m) { const a = m.anim, p = a ? a.t / a.dur : 0; return EMIT_ATK[m.id] && ready(art('pet_' + m.id + '_atk')) && ((a && p > .2 && p < .82) || m.holdAtk > G.t); }
 function mouth(m) { if (atkPose(m)) { const E = EMIT_ATK[m.id], h = (PET_H[m.id] || 48) * (ATK_K[m.id] || 1), o = m.drawn || { x: m.x, y: m.y + 4 - (m.z || 0) }; return { x: o.x + m.face * (E[0] - .5) * h, y: o.y - h + E[1] * h }; }
@@ -2911,7 +3087,7 @@ function fireWeapon(m, tgt) {
     case 'frisbee':
       windup(m, 'frisbee', tgt, () => { const hp = handPos(m); G.shots.push({ k: 'frisbee', x: hp.x, y: hp.y, tgt: tgt.hp > 0 ? tgt : null, dmg, left: D.n[L], hitset: new Set(), spin: 0, t: 0 }); }); break;
     case 'bubble':
-      windup(m, 'bubble', tgt, () => { const hp = handPos(m); for (let i = 0; i < D.n[L]; i++) { const a = tgt ? Math.atan2(tgt.y - hp.y, tgt.x - hp.x) + rnd(-.6, .6) : rnd(0, 7); G.shots.push({ k: 'bubble', x: hp.x, y: hp.y, vx: Math.cos(a) * rnd(50, 80), vy: Math.sin(a) * rnd(50, 80), dmg, t: 0, life: 5, r: rnd(9, 14) }); } }); break;
+      windup(m, 'bubble', tgt, () => { const hp = handPos(m); for (let i = 0; i < D.n[L]; i++) { const a = tgt ? Math.atan2(tgt.y - hp.y, tgt.x - hp.x) + rnd(-.35, .35) : rnd(0, 7); G.shots.push({ k: 'bubble', x: hp.x, y: hp.y, vx: Math.cos(a) * rnd(110, 150), vy: Math.sin(a) * rnd(110, 150), dmg, t: 0, life: 5, r: rnd(9, 14) }); } }); break;
     case 'balloon':
       windup(m, 'balloon', tgt, () => { const ts = nearest(m, null, 3); if (!ts.length) return; const t = pick(ts), hp = handPos(m); const lead = Math.atan2(m.y - t.y, m.x - t.x), tx = t.x + Math.cos(lead) * t.spd * .55, ty = t.y + Math.sin(lead) * t.spd * .55; G.shots.push({ k: 'balloon', x: hp.x, y: hp.y, sx: hp.x, sy: hp.y, tx, ty, t: 0, life: .65, dmg, R: D.n[L], col: '#f39a3c', sun: true }); }); break;
   }
@@ -3116,8 +3292,8 @@ function collectAll() { for (const o of G.orbs) o.pull = true; }
 function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(4 + G.lvl * 2.6); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
-// the painted skill icon (assets/icons/<id>.png, tools/gen_icons.py), falling back to the emoji if the picture is missing
-const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.webp" alt="${abilEm(a)}" onerror="this.replaceWith(this.alt)">`;
+// the painted skill icon (assets/icons/<id>.webp, tools/gen_icons.py), falling back to the emoji if the picture is missing
+const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.webp" alt="${abilEm(a)}" data-tip="${attrQ(abilName(a) + ': ' + abilDesc(a))}" onerror="this.replaceWith(this.alt)">`;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 // every trick a friend could learn or rank up right now
 function trickOpts() { const o = []; for (const m of G.party) for (const a of CHARS[m.id].abil) if (m.ranks[a] < MAX_RANK && (G.room || unlocked(m.id, a))) o.push({ m, a, lvl: m.ranks[a] + 1 }); return o; }
@@ -3234,6 +3410,7 @@ function refreshHud(force) {
 function makeArena(w) {
   const W0 = WORLDS[w], c = document.createElement('canvas'); c.width = W + 40; c.height = H + 40; const x = c.getContext('2d'); x.translate(20, 20);
   const png = art('arena_' + (w + 1)); if (ready(png)) { x.drawImage(png, -20, -20, W + 40, H + 40); return { c, w }; }
+  const tmp = ART['arena_' + (w + 1)] !== false; // the painting is still on its way: draw the plain scene now and swap when it lands
   const seed = (i, k = 1) => ((i * 9301 + w * 49297 + k * 233) % 233280) / 233280, E = x;
   x.lineJoin = 'round'; x.lineCap = 'round';
   // ground: the chapter's edge colour outside, its lawn inside the big oval, softer at the centre
@@ -3301,7 +3478,7 @@ function makeArena(w) {
   edge();
   // the spot where Dad stands
   x.fillStyle = 'rgba(58,44,32,.12)'; x.beginPath(); x.ellipse(CX, CY + 24, 48, 16, 0, 0, 7); x.fill();
-  return { c, w };
+  return { c, w, tmp };
 }
 
 /* ───────── 3D sprite sheets: rendered from Meshy models by tools/render_sheet.mjs, optional like every other drop-in.
@@ -3314,7 +3491,7 @@ function sheet(id) {
   fetch(`assets/3d/${id}.json`).then(r => r.ok ? r.json() : null).then(meta => {
     if (!meta) { SHEETS[id] = false; return; }
     const S = { meta, img: {}, ok: false, bones: {} }; let left = Object.keys(meta.anims).length;
-    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { if (!(meta.bones || []).length) measureAnchors(S); S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.png`; S.img[a] = i; }
+    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { if (!(meta.bones || []).length && !meta.measured) measureAnchors(S); S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.webp`; S.img[a] = i; }
     // which bones to pin things to, by name pattern; a `map` in the JSON overrides
     const names = meta.bones || [], find = re => names.filter(n => re.test(n)).pop() || null;
     const hands = names.filter(n => /hand|wrist/i.test(n)), side = (list, re) => list.filter(n => re.test(n)).pop() || null;
@@ -3369,7 +3546,7 @@ const TINTED = new Map(); const TINTC = {}; const tintCanvas = n => { if (!TINTC
 let PROPS;
 function props3() {
   if (PROPS !== undefined) return PROPS && PROPS.ok ? PROPS : null; PROPS = null;
-  fetch('assets/3d/props.json').then(r => r.ok ? r.json() : null).then(meta => { if (!meta) { PROPS = false; return; } const img = new Image(); img.onload = () => { PROPS = { meta, img, ok: true }; try { drawStatics(); } catch (e) {} }; img.onerror = () => { PROPS = false; }; img.src = 'assets/3d/props.png'; }).catch(() => { PROPS = false; });
+  fetch('assets/3d/props.json').then(r => r.ok ? r.json() : null).then(meta => { if (!meta) { PROPS = false; return; } const img = new Image(); img.onload = () => { PROPS = { meta, img, ok: true }; try { drawStatics(); } catch (e) {} }; img.onerror = () => { PROPS = false; }; img.src = 'assets/3d/props.webp'; }).catch(() => { PROPS = false; });
   return null;
 }
 // prop `key` with its grip at (x, y), facing like body row `row`, k = screen px per body unit, turned by rot in the screen plane
@@ -3465,7 +3642,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face * s, s);
   const sq = opts.squash || 0, st = opts.stretch || 0, br = save.opt.calm ? 0 : Math.sin(t * 2.6 + (opts.bob || 0) * 1.7) * .025; c.scale(1 + sq * .18 - st * .1 - br * .5, 1 - sq * .22 + st * .14 + br);
   c.strokeStyle = '#3a2c20'; c.lineWidth = 2.5; c.lineJoin = 'round'; c.lineCap = 'round';
-  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = want3d(id) ? sheet(id) : ready(png) ? null : sheet(id);
+  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = want3d(id) ? sheet(id) : ready(png) || ART['pet_' + id] !== false ? null : sheet(id);
   c.save();
   const M3 = c === ctx && !!R3D && R3D.has('pet_' + id); // the live 3D model, in a match
   if (S3 || M3) { // the 3D friend: one frame per direction, the squash and lean already applied above
@@ -3807,7 +3984,7 @@ function draw() {
   ctx.save();
   if (G.shake > 0 && save.opt.shake && !save.opt.calm) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
   if (G.flip > 0 && !save.opt.calm) { const f = Math.min(1, (3 - G.flip) / .5), g = Math.min(1, G.flip / .5), e = f * g, k = 1 - Math.pow(1 - e, 3); ctx.translate(CX, CY); ctx.rotate(Math.PI * k); ctx.translate(-CX, -CY); }
-  if (!G.bg || G.bg.w !== G.S.w) G.bg = makeArena(G.S.w);
+  if (!G.bg || G.bg.w !== G.S.w || (G.bg.tmp && ready(art('arena_' + (G.S.w + 1))))) G.bg = makeArena(G.S.w);
   if (R3D) { R3D.begin(); R3D.setGround(G.bg.c); ctx.clearRect(-60, -60, W + 120, H + 120); } else ctx.drawImage(G.bg.c, -20, -20);
   if (G.S.w === 7) for (let i = 0; i < 12; i++) { const a = G.t * .4 + i * 2.1, fx = CX + Math.cos(a) * (120 + i * 12), fy = CY + Math.sin(a * 1.3) * (160 + i * 9); ctx.fillStyle = `rgba(255,240,150,${.3 + Math.sin(G.t * 3 + i) * .3})`; ctx.beginPath(); ctx.arc(fx, fy, 2.5, 0, 7); ctx.fill(); }
   // attention ring
@@ -3977,7 +4154,7 @@ function headOf(img) {
   HEADS.set(img.src, out); return out;
 }
 // a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
-// hats are drawings (assets/hat_<id>.png, brim at the bottom): [width, how far the brim sits below the top of the head], both
+// hats are drawings (assets/hat_<id>.webp, brim at the bottom): [width, how far the brim sits below the top of the head], both
 // in head widths, so the brim comes down over the hair; the emoji stands in until the drawing loads
 const HATFIT = { pilgrim: [1.25, .55], santa: [1.3, .55], leafcrown: [1.3, .62], antlers: [1.3, .85], laurel: [1.3, .62], clubcap: [1.3, .5], cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
 const HATEM = { pilgrim: '🎩', santa: '🎅', leafcrown: '🍁', antlers: '🦌', laurel: '🌿', clubcap: '🧢', cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
@@ -3990,7 +4167,7 @@ function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t !== 'none'
 function openWardrobe() { const L = look();
   pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.`; $('#pickUnequip').hidden = true;
   $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
-    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${swatchCss(it)}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.png" alt="">` : `<span class="wem">${it.em}</span>`);
+    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${swatchCss(it)}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.webp" alt="">` : `<span class="wem">${it.em}</span>`);
     return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && (it.only || save.coins < it.c) ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : it.only ? ({ club: '🏡 Club Shop', cup: '🥇 Cup Shop' }[it.only] || '🎉 Event shop') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
   $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
     const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
@@ -4015,15 +4192,18 @@ function drawTitleParty() {
     x.restore(); } } // the event's leaves or snow drift down behind the team
   const items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
   for (const it of items) {
-    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true)) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
+    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true) && IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
     const [sx, sy, h, face] = SPOT[it.i], ph = it.i * 2.1, hop = Math.max(0, Math.sin(t * 3 + ph * 1.7)) ** 6 * 10; // a little hop now and then
     shadow(sx, sy - 1, 34);
     if (want3d(it.id) || !stand(art('pet_' + it.id), sx, sy - hop, h, face, ph)) drawCompanionAt(x, it.id, sx, sy, 1.85, face, t, { aim: face > 0 ? Math.PI / 2 - .45 : Math.PI / 2 + .45, bob: ph });
   }
 }
 // the home scene breathes while it's on screen, at the display's frame rate; still in Calm mode
-requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if (mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
-function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
+let homeOdd = false;
+requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if ((homeOdd = !homeOdd) && mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
+let staticsQ = 0;
+function drawStatics() { if (!staticsQ) staticsQ = requestAnimationFrame(() => { staticsQ = 0; drawStaticsNow(); }); }
+function drawStaticsNow() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -4147,7 +4327,7 @@ const fxN = n => lowFx ? Math.ceil(n * .4) : n;
 function loop(ts) {
   requestAnimationFrame(loop);
   const raw = (ts - last) || 0; let dt = Math.min(.05, raw / 1000); last = ts;
-  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 90 && !lowFx) { lowFx = true; slowFrames = 0; fit(); }
+  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames += Math.min(raw, 100); else slowFrames = Math.max(0, slowFrames - raw); if (slowFrames > 1500 && !lowFx) { lowFx = true; slowFrames = 0; fit(); }
   if (DEBUG) { fpsT += raw; if (fpsT > 500) { fpsT = 0; $('#fps').style.display = 'block'; $('#fps').textContent = `${Math.round(1000 / frameMs)} fps · ${G ? G.enemies.length + ' myths · ' + G.fx.length + ' fx' : ''}${lowFx ? ' · low fx' : ''}${R3D ? ` · 3D ${R3D.stats.shown} models ${R3D.stats.calls} calls` : ''}`; } }
   if (R3D) R3D.show(mode === 'game' && !!G);
   if (mode !== 'game' || !G) return;
@@ -4239,7 +4419,7 @@ const HOME_EDGE = [['#d7bc9a', '#738a43'], ['#cac18d', '#6c8741'], ['#c2a478', '
 function homeBg() {
   const w = STAGES[Math.min(save.unlocked, STAGES.length - 1)].w, el = $('#title'); if (el.dataset.w === String(w)) return; el.dataset.w = w;
   const [top, ground] = HOME_EDGE[w] || HOME_EDGE[0];
-  el.style.backgroundImage = `url(assets/home_bg${w ? '_' + (w + 1) : ''}.png), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
+  el.style.backgroundImage = `url(assets/home_bg${w ? '_' + (w + 1) : ''}.webp), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
   el.classList.toggle('nightbg', w === 7);
 }
 function updateHub() { homeBg(); const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
@@ -4256,7 +4436,7 @@ $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
 $('#challTrophy').onclick = () => { $('#challm').hidden = true; showTrophies(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
-function startGame(stage, how = {}) { music(STAGES[stage].w);
+function startGame(stage, how = {}) { music(STAGES[stage].w); for (const id of save.party) if (EMIT_ATK[id]) art('pet_' + id + '_atk'); art('arena_' + (STAGES[stage].w + 1));
   newRun(stage); G.monthCat = monthEv().cat;
   if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
   { const ev = activeEvent(); if (ev && !how.cup) G.S = { ...G.S, pool: [...G.S.pool, ...Object.keys(EVENTS[ev].myths)] }; }
@@ -4288,8 +4468,14 @@ const CLUB_JOBS = [{ k: 'pop', em: '💥', t: 'Pop 80 myths', n: 80 }, { k: 'cle
 const CLUB_GOAL = 7000, CLUB_STEPS = [[.25, { badges: 20, coins: 300 }], [.5, { badges: 30, gems: 20 }], [.75, { badges: 40, coins: 800 }], [1, { badges: 60, gems: 50, tix: 1 }]];
 const JOB_PAY = 10, CLUB_MAX = 10;
 function clubState() { const C = save.club || (save.club = { name: null, em: '🔍', xp: 0 });
-  if (C.week !== weekKey()) { if (C.week && C.name) { C.lastWeek = C.week; C.lastPops = C.pops; } C.week = weekKey(); C.pops = 0; C.got = []; C.raid = 0; C.raidGot = []; }
-  if (C.day !== today()) { C.day = today(); C.jobs = seedPick(CLUB_JOBS, 3, 'club' + C.day).map(x => ({ ...x, have: 0 })); C.jobsGot = []; }
+  if (C.week !== weekKey()) { if (C.week && C.name) { // a week that ends unopened loses nothing: the last league place and this week's earned chests are paid on the way out
+      const res = clubSettle(C); if (res) { C.lastRes = res; save.badges = (save.badges || 0) + res.pay; C.xp += res.pay; }
+      const T = C.pops + mateSum(C.week, s => 40 + rnd01(s) * 110, true), R = Math.min(RAID_HP, (C.raid || 0) + mateSum(C.week, s => 80 + rnd01('r' + s) * 170, true)), got = [];
+      CLUB_STEPS.forEach(([f, p], i) => { if (T >= CLUB_GOAL * f && !(C.got || []).includes(i)) got.push(payBadges(p)); });
+      RAID_STEPS.forEach(([f, p], i) => { if (R >= RAID_HP * f && !(C.raidGot || []).includes(i)) got.push(payBadges(p)); });
+      if (got.length) C.carry = got.join(' · ');
+      C.lastWeek = C.week; C.lastPops = C.pops; } C.week = weekKey(); C.pops = 0; C.got = []; C.raid = 0; C.raidGot = []; }
+  if (C.day !== today()) { if (C.name) (C.jobs || []).forEach((j, i) => { if (j.have >= j.n && !(C.jobsGot || []).includes(i)) payBadges({ badges: JOB_PAY }); }); C.day = today(); C.jobs = seedPick(CLUB_JOBS, 3, 'club' + C.day).map(x => ({ ...x, have: 0 })); C.jobsGot = []; }
   return C; }
 // each level needs a little more than the last: level 2 at 150 badges earned, level 5 at 1,500, level 10 at 6,750 (about three months of steady play)
 const clubXpFor = L => 75 * L * (L - 1);
@@ -4330,9 +4516,9 @@ const CUP_ROUNDS = ['Round of 16', 'Quarter-final', 'Semi-final', 'Final'], CUP_
 const CUP_TIERS = ['🥉 Bronze League', '🥈 Silver League', '🥇 Gold League', '🏆 Myth League'], CUP_MUL = [1, 1.5, 2, 3]; // win a Cup to move up; a higher league pays more and its rivals are a bit sharper
 const cupTier = () => save.cupTier || 0;
 function cupState() { const C = save.cup || (save.cup = {});
-  if (C.week !== weekKey()) Object.assign(C, { week: weekKey(), round: 0, out: false, champ: false, log: [], opp: seedPick(RIVALS, 4, 'cup' + weekKey()) });
+  if (C.week !== weekKey() && !(typeof G !== 'undefined' && G && G.cup && !G.cleared)) Object.assign(C, { week: weekKey(), round: 0, out: false, champ: false, log: [], opp: seedPick(RIVALS, 4, 'cup' + weekKey()) });
   if (!C.log.length) { const ok = save.cleared.filter(i => !STAGES[i].finale), fit = ok.filter(i => recPower(i) <= teamPower()), top = Math.max(0, ...(fit.length ? fit : ok)); /* the hardest stage this team is ready for */ C.stage = Math.max(0, top - Math.floor(rnd01('cs' + weekKey()) * 4)); while (C.stage > 0 && STAGES[C.stage].finale) C.stage--; } // the week's stage settles with its first match
-  if (save.cupDay !== today()) { save.cupDay = today(); save.cupt = Math.min(CUP_TICKETS_MAX, (save.cupt || 0) + 1); } // a free ticket a day, up to three waiting
+  if (save.cupDay !== today()) { save.cupDay = today(); save.cupt = Math.max(save.cupt || 0, Math.min(CUP_TICKETS_MAX, (save.cupt || 0) + 1)); } // a free ticket a day, up to three waiting (bought ones on top are kept)
   return C; }
 // the rival's score: a share of the best possible score that grows each round, so a clean clear wins the early rounds and the Final needs a near-perfect one
 const cupFrac = (round, rival) => [.5, .6, .7, .8][round] + cupTier() * .03 + (rnd01(rival.n + weekKey() + round) - .5) * .08;
@@ -4363,7 +4549,7 @@ let socTab = 'club';
 function closeSoc() { $('#socm').hidden = true; updateHub(); }
 function openSoc(tab, html) { socTab = tab; const P = $('#socBody'); $('#socm').hidden = false;
   if (html) { $('#socTitle').textContent = '🥇 Myth Cup'; $('#socSub').textContent = ''; P.innerHTML = html; return; }
-  if (tab === 'event') buildEvent(); else if (['club', 'clubshop', 'raid', 'league'].includes(tab)) buildClub(); else buildCup(); }
+  if (tab === 'event') { if (!activeEvent()) return closeSoc(); buildEvent(); } else if (['club', 'clubshop', 'raid', 'league'].includes(tab)) buildClub(); else buildCup(); }
 const socTabs = which => `<div class="soctabs">${which.map(([k, t]) => `<button data-st="${k}" class="${socTab === k ? 'on' : ''}">${t}</button>`).join('')}</div>`;
 function wireSoc() { $$('#socBody [data-st]').forEach(b => b.onclick = () => openSoc(b.dataset.st)); }
 function buildClub() { const C = clubState(), P = $('#socBody');
@@ -4374,6 +4560,7 @@ function buildClub() { const C = clubState(), P = $('#socBody');
   const T = clubTotal(), lv = clubLv(), xpIn = C.xp - clubXpFor(lv), xpNeed = clubXpFor(lv + 1) - clubXpFor(lv);
   $('#socTitle').textContent = `${C.em} ${C.name}`; $('#socSub').textContent = `Level ${lv} · +${(lv - 1) * 2}% coins · 🎖️ ${save.badges || 0} badges`;
   const res = clubSettle(C); if (res) { C.lastRes = res; save.badges = (save.badges || 0) + res.pay; C.xp += res.pay; persist(); }
+  if (C.carry) { toastMsg('Chests your club earned last week: ' + C.carry); delete C.carry; persist(); }
   let h = socTabs([['club', '🏡 Club'], ['raid', '⚔️ Raid'], ['league', '🏅 League'], ['clubshop', '🛍️ Shop']]);
   if (C.lastRes && C.lastRes.week !== -1 && socTab === 'club') { const r = C.lastRes; h += `<div class="cupres win"><small>Last week your club came <b>${['1st', '2nd', '3rd', '4th'][r.place]}</b> in the league: +🎖️ ${r.pay}${r.up ? `. Up to the ${LEAGUES[C.tier]}!` : ''}</small></div>`; C.lastRes.week = -1; }
   if (socTab === 'clubshop') { P.innerHTML = h + shop2H('club'); wireSoc(); wireShop2('club'); return; }
@@ -4412,7 +4599,7 @@ const spend2 = (k, c) => { if (k === 'ev') evState(activeEvent()).tok -= c; else
 const swatchCss = wi => wi.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : wi.stripes ? `repeating-linear-gradient(0deg,hsl(${wi.stripes[0]},70%,48%) 0 6px,hsl(${wi.stripes[1]},65%,42%) 6px 12px)` : wi.c || wi.only ? `hsl(${wi.h},${Math.round((wi.s ?? 1) * 70)}%,${Math.round((wi.v ?? 1) * 52)}%)` : '#d59e3d';
 function shop2H(k) { const S = shop2Of(k), have = bal2(k);
   return `<div class="ward">${S.items.map((it, i) => { const W = it.ward && it.ward.split(':'), wi = W && WARD[W[0]].items.find(x => x.id === W[1]), own = W && wardOwns(W[0], W[1]);
-    const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:${swatchCss(wi)}"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.png" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
+    const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:${swatchCss(wi)}"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.webp" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
     const lock = it.tier && cupTier() < it.tier; return `<button class="wt ${own ? 'on' : 'buy'}" data-s2="${i}" ${own || lock || have < it.c ? 'disabled' : ''}>${pic}<b>${W ? wi.n : it.n}</b><small>${own ? 'Yours: in the Wardrobe' : lock ? `🔒 ${CUP_TIERS[it.tier]}` : `${S.em} ${it.c}`}</small></button>`; }).join('')}</div>`; }
 function wireShop2(k) { const S = shop2Of(k); $$('#socBody [data-s2]').forEach(b => b.onclick = () => { const it = S.items[+b.dataset.s2]; if (bal2(k) < it.c || !sure(b, `Buy · ${S.em} ${it.c}?`)) return;
   spend2(k, it.c); if (it.ward) { (save.wardrobe = save.wardrobe || []).push(it.ward); const [c, id] = it.ward.split(':'); if (WARD[c].many) look().yard.push(id); else look()[c] = id; toastMsg('👕 Wearing it now. Change it in the Wardrobe.'); } else { it.run(); toastMsg(`${it.em} ${it.n}!`); }
@@ -4421,7 +4608,7 @@ function wireShop2(k) { const S = shop2Of(k); $$('#socBody [data-s2]').forEach(b
 // the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
 // is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
 let comicDone = null, frames = [], fi = 0, li = 0;
-const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png', v: 'assets/sses_face.png' };
+const FACE = { d: 'assets/dad_face.webp', k: 'assets/kid_face.webp', v: 'assets/sses_face.webp' };
 const WHO = { d: 'DAD', k: 'THE KID', v: 'SIR EVER-SO-SURE' };
 // Sir Ever-So-Sure, the Big Book of Wrong's own Title Page, is behind it all. In every chapter he pins up a note on the way in,
 // scribbles the rough-draft boss stronger at stage 3, and runs off with a page at the end, which is where the next chapter starts.
@@ -4683,7 +4870,7 @@ $('#studyGo').onclick = () => {
 $('#studyDone').onclick = () => { save.study = new Date().toISOString().slice(0, 10); setWallet({ coins: save.coins + 40 }); $('#studym').hidden = true; buildBook(); try { speechSynthesis.cancel(); } catch (e) {}
 }
 function pips(n, max = MAX_RANK) { let s = '<div class="pips">'; for (let i = 0; i < max; i++) s += `<i class="${i < n ? 'on' : ''}"></i>`; return s + '</div>'; }
-function buyBtn(cost, can, maxed) { return maxed ? `<button class="btn small maxed" disabled>Maxed</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
+function buyBtn(cost, can, maxed, why) { return maxed ? `<button class="btn small maxed" disabled>${why || 'Maxed'}</button>` : `<button class="btn small" ${can ? '' : 'disabled'}>🪙 ${cost}</button>`; }
 let shopTab = 'dad';
 function buildShop() {
   const owners = weaponOwners(); if (!owners.includes(shopTab)) shopTab = 'dad';
@@ -4722,10 +4909,10 @@ const elOf = id => ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
 const starsH = st => `${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i>`;
 // what a friend's ranks, gear and weapon add: the friend page's stat row and the Gear tab's summary
 function boosts(id) {
-  const c = chr(id), g = gear(id), V = cweapOf(id), parts = [];
-  const powP = (c.pow || 0) * 8 + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = (c.quick || 0) * 6 + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
+  const c = chr(id), g = gear(id), V = wv(id), parts = [];
+  const powP = Math.round(rEff(c.pow) * 8) + g.pow + (V ? Math.round((V.pow - 1) * 100) : 0), qP = Math.round(rEff(c.quick) * 6) + g.quick + (V ? Math.round((V.rate - 1) * 100) : 0);
   if (powP) parts.push(`<b>POWER</b>${powP > 0 ? '+' : ''}${powP}%`); if (qP) parts.push(`<b>QUICK</b>${qP > 0 ? '+' : ''}${qP}%`);
-  const pat = (id === 'dad' ? (c.pat || 0) * 20 : 0) + g.pat, ring = (id === 'dad' ? (c.ring || 0) * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); if (g.coin) parts.push(`<b>COINS</b>+${g.coin}%`); if (g.crit) parts.push(`<b>CRIT</b>+${g.crit}%`);
+  const pat = (id === 'dad' ? rEff(c.pat) * 20 : 0) + g.pat, ring = (id === 'dad' ? rEff(c.ring) * 22 : 0) + g.ring; if (pat) parts.push(`<b>PATIENCE</b>+${pat}`); if (ring) parts.push(`<b>RING</b>+${ring}`); const coin = g.coin + rEff(c.luck) * 2, crit = g.crit + rEff(c.crit); if (coin) parts.push(`<b>COINS</b>+${coin}%`); if (crit) parts.push(`<b>CRIT</b>+${crit}%`);
   return { powP, qP, parts };
 }
 let fEl = '', fTab = 'moves';
@@ -4781,7 +4968,10 @@ function buildParty() {
     } else moves += `<div class="abils">${C.abil.map((a, i) => `<span>${abilIcon(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
       const R = id === 'dad' ? DADRANKS : WRANKS; grow += '<div class="ranks">';
-      for (const r in R) { const lv = c[r], cost = R[r].base + lv * R[r].step; grow += `<div class="rank"><span class="nm">${R[r].name}</span>${pips(lv)}<span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= MAX_RANK)}</span></div>`; }
+      const cap = rankCap(id), lvl = clv(id); grow += `<p class="hand tr">Training: each star opens 5 more ranks (${cap} of 25 open)${cap < 25 ? '. Star up for more.' : '.'}</p>`;
+      for (const r in R) { const lv = c[r] || 0, cost = R[r].base + lv * R[r].step;
+        if (R[r].at && lvl < R[r].at) { grow += `<div class="rank off" data-tip="${attrQ(RANK_TIP[r])}"><span class="nm">${R[r].name}</span><span class="rlk">🔒 Opens at level ${R[r].at}</span></div>`; continue; }
+        grow += `<div class="rank" data-tip="${attrQ(RANK_TIP[r])}"><span class="nm">${R[r].name}</span><div class="rbar"><div style="width:${lv / 25 * 100}%"></div><i style="left:${cap / 25 * 100}%"></i><b>${lv}/${cap}</b></div><span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= cap, cap < 25 ? '⭐ Star up' : 'Maxed')}</span></div>`; }
       if (id === 'dad') grow += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name}: change it in Gear</span></div>`;
       else if (CWEAP[id]) { const V = cweapOf(id); grow += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name}: change it in Gear</span></div>`; }
       grow += '</div>';
@@ -4803,7 +4993,7 @@ function buildParty() {
   box.querySelectorAll('[data-album]').forEach(b => b.onclick = () => { albumOpen[b.dataset.album] = !albumOpen[b.dataset.album]; buildParty(); });
   box.querySelectorAll('[data-join]').forEach(b => b.onclick = () => { if (save.party.length >= MAX_COMPANIONS) { openSwap(null, b.dataset.join); return; } save.party.push(b.dataset.join); persist(); buildParty(); drawStatics(); });
   box.querySelectorAll('[data-leave]').forEach(b => b.onclick = () => { save.party = save.party.filter(x => x !== b.dataset.leave); persist(); buildParty(); });
-  box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + c[r] * R.step; if (c[r] >= MAX_RANK || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r]++; persist(); buildParty(); });
+  box.querySelectorAll('[data-crank] button').forEach(b => b.onclick = () => { const [id, r] = b.parentElement.dataset.crank.split(':'), c = chr(id), R = (id === 'dad' ? DADRANKS : WRANKS)[r], cost = R.base + (c[r] || 0) * R.step; if ((c[r] || 0) >= rankCap(id) || (R.at && clv(id) < R.at) || save.coins < cost) return; setWallet({ coins: save.coins - cost }); c[r] = (c[r] || 0) + 1; persist(); buildParty(); });
   drawStatics();
 }
 
@@ -4915,7 +5105,7 @@ function buildItems() {
   $('#bagIntro').textContent = has('forge') ? 'Tap anything to use it. 🔴 dot: ready to forge.' : `Tap anything to use it. 🔒 Forging opens at ${forgeAt()}.`;
   const box = $('#itemList'), all = save.items, list = all.filter(i => bagFilter === 'all' || i.type === bagFilter).sort((a, b) => (a.type === 'mark') - (b.type === 'mark') || b.rar - a.rar || a.type.localeCompare(b.type) || (b.lv || 0) - (a.lv || 0) || b.val - a.val);
   const tile = it => { const w = wornBy(it.uid), ready = has('forge') && it.type !== 'mark' && it.rar < 3 && twinsOf(it).length >= 2;
-    return `<button class="itile r${it.rar}" data-it="${it.uid}"><span class="ie">${icon(it)}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot" title="3 ready to forge"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small>${it.type === 'mark' ? `<small class="mstat">${itemDesc(it)}</small>` : ''}</button>`; };
+    return `<button class="itile r${it.rar}" data-it="${it.uid}" data-tip="${attrQ(`${RAR[it.rar] ? RAR[it.rar].n + ' ' : ''}${itemName(it)}: ${itemDesc(it)}`)}"><span class="ie">${icon(it)}</span>${it.lv ? `<b class="lv">+${it.lv}</b>` : ''}${it.type === 'weapon' && it.owner ? `<span class="own">${faceH(it.owner)}</span>` : ''}${w ? '<i class="worn">✔</i>' : ''}${ready ? '<i class="dot" title="3 ready to forge"></i>' : ''}<span class="rpips">${'◆'.repeat(it.rar + 1)}</span><small>${(it.base || it.name).replace(/^(Shiny |Ancient |Legendary )/, '')}</small>${it.type === 'mark' ? `<small class="mstat">${itemDesc(it)}</small>` : ''}</button>`; };
   const nf = has('forge') ? forgeable().length : 0;
   box.innerHTML = (nf ? `<div class="forgebar"><button class="btn green" id="autoForge">🔨 Auto-forge · ${nf} ready</button></div>` : '') + `<div class="chips">${BAG_F.map(([k, n]) => { const c = k === 'all' ? all.length : all.filter(i => i.type === k).length; return `<button class="${bagFilter === k ? 'on' : ''}" data-f="${k}">${n} <small>${c}</small></button>`; }).join('')}</div>`
     + (list.length ? `<div class="igrid">${list.map(tile).join('')}</div>` : `<p class="intro">${all.length ? 'Nothing of that kind yet.' : 'The bag is empty. Items drop at the end of every match, and the Store sells lunchboxes full of them.'}</p>`);
@@ -5075,7 +5265,7 @@ $('#bookRoom').onclick = () => openRoom();
 function nextStage() { return Math.min(save.unlocked, STAGES.length - 1); }
 // suggested Power for a stage: what a team that clears it with random picks has (from the simulator), a little more for
 // chapter bosses, and a third more on Hard
-function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(450, 150 + i * 110) + Math.max(0, i - 3) * 70; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; if (d === 'master') v *= 1.8; return Math.round(v / 10) * 10; }
+function recPower(i, d = save.diff) { let v = i === 0 ? 150 : Math.min(2000, 150 + i * 205) + Math.max(0, i - 9) * 180; if (STAGES[i].idx === 4) v *= 1.08; if (d === 'hard') v *= 1.3; if (d === 'master') v *= 1.8; return Math.round(v / 10) * 10; }
 function powCheck(i) { const mine = teamPower(), rec = recPower(i), cls = mine >= rec ? 'ok' : mine >= rec * .8 ? 'close' : 'low';
   return `<span class="pchk ${cls}">${cls === 'ok' ? '✔' : cls === 'close' ? '≈' : '⚠'} 💪 Team ${mine.toLocaleString()} <i>· needs ${rec.toLocaleString()}</i></span>`; }
 function updateQuickPlay() { updateModes(); updateMonth(); const b = $('#quickPlay'); if (!b) return; const i = nextStage(), st = STAGES[i]; b.innerHTML = `▶ Play<small>${st.W.em} ${st.name} · free</small>${has('power') ? `<span class="pwrap">${powCheck(i)}</span>` : ''}`; }
@@ -5218,7 +5408,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
@@ -5228,7 +5418,9 @@ setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily()
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start
 applyOpts();
-if ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+if ('serviceWorker' in navigator && location.protocol !== 'file:') { navigator.serviceWorker.register('sw.js').catch(() => {}); // straight away: the worker caches the core on install
+  const warm = () => setTimeout(() => navigator.serviceWorker.ready.then(r => r.active && r.active.postMessage('warm')).catch(() => {}), 3000); // then the rest, once the page has settled
+  if (document.readyState === 'complete') warm(); else addEventListener('load', warm); }
 })();
 </script>
 </body>
