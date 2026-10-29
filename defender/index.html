@@ -12,7 +12,8 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <meta name="description" content="Dad and his backyard friends stand their ground while grumpy Myths march in. Every wrong idea that pops turns into a real fact. No dodging. Only wondering.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;700;800&family=Patrick+Hand&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;700;800&family=Patrick+Hand&display=swap" media="print" onload="this.media='all'">
 <style>
   :root { --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #6b5236; --card: #fbf3df; --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f; --purple: #b48be6; --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22); }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -85,7 +86,7 @@
   /* ───────── screens ───────── */
   .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
   #title.nightbg .tag { color: #f1e4c8; text-shadow: 0 1px 2px rgba(0,0,0,.5); } /* the night sky backdrop is dark */
-  #title { background: url(assets/home_bg.png) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
+  #title { background: url(assets/home_bg.webp) center -116px / 100% auto no-repeat, linear-gradient(#f3d9b4 0 40%, #8fbf6a 40%); background-color: #7fae5a; align-items: center; text-align: center; }
   #title .sun, #title .cloud, #title .fence { display: none; }
   #title::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 200px; background: linear-gradient(rgba(127,174,90,0), #7fae5a 55%); pointer-events: none; }
   #title .menu, #title .corner-r, #title .wallet, #title .build { z-index: 2; }
@@ -811,7 +812,7 @@
   <div class="modal" id="creditsm" hidden>
     <div class="panel credits">
       <div class="cwin"><div class="roll">
-        <img src="assets/sses_kind.png" alt="" class="cimg">
+        <img src="assets/sses_kind.webp" alt="" class="cimg">
         <h2 class="display">The Big Book of Why</h2>
         <p>Every page popped. Every myth turned back into a fact.</p>
         <h3>Starring</h3><p>Dad, and his magnifying glass<br>The Kid, who kept asking why<br>Webster, Hopper, Sparky and every backyard friend</p>
@@ -1019,7 +1020,7 @@
     <div class="panel">
       <h2 class="display">How to play</h2>
       <div class="howcards">
-        <div class="hc"><i><img class="fim" src="assets/dad_face.png" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
+        <div class="hc"><i><img class="fim" src="assets/dad_face.webp" alt="Dad">🕷️</i><b>Nobody moves.</b> Myths walk in. Your team pops them on its own.</div>
         <div class="hc"><i>👆</i><b>Tap a myth</b> and everyone goes after it.</div>
         <div class="hc"><i>⭐</i><b>Pick a card</b> when you level up. Each one makes a trick stronger.</div>
         <div class="hc"><i>💗</i>Myths that reach Dad cost <b>Patience</b>. Run out and Dad needs a nap.</div>
@@ -1067,12 +1068,12 @@ const in3d = e => !!R3D && e.kind !== 'brick' && R3D.has(key3d(e));
 
 /* ───────── art ───────── */
 const IMG = {};
-for (const n of ['wave', 'pointing', 'amazed', 'talking', 'webster']) { const i = new Image(); i.src = n === 'webster' ? 'assets/webster.png' : `assets/mascot_${n}.png`; i.onload = drawStatics; IMG[n] = i; }
+for (const n of ['wave', 'pointing', 'amazed', 'talking', 'webster']) { const i = new Image(); i.onerror = () => { i.failed = true; }; i.src = n === 'webster' ? 'assets/webster.webp' : `assets/mascot_${n}.webp`; i.onload = drawStatics; IMG[n] = i; }
 // optional art overrides, see ART.md: pet_<id>.png (friend facing right, feet at the bottom), kid.png, arena_<chapter>.png, map_<chapter>.png
 const ART = {};
-function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); if (!$('#map').hidden) drawMap(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.png`; } return ART[key] || null; }
+function art(key) { if (ART[key] === undefined) { const i = new Image(); ART[key] = null; i.onload = () => { ART[key] = i; try { drawStatics(); if (!$('#map').hidden) drawMap(); } catch (e) {} }; i.onerror = () => { ART[key] = false; }; i.src = `assets/${key}.webp`; } return ART[key] || null; }
 // ask for every drop-in up front, so the first arena, map and quiz already have them (missing files just fall back)
-['kid', ...'webster sparky hopper puddles dusty pip scuttle nilla luna'.split(' ').map(p => 'pet_' + p), ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(n => ['arena_' + n, 'map_' + n])].forEach(k => art(k));
+['kid', ...'webster sparky hopper puddles dusty pip scuttle nilla luna'.split(' ').map(p => 'pet_' + p), ...['arena_1', 'map_1']].forEach(k => art(k));
 const ready = i => i && i.complete && i.naturalWidth;
 // where Dad's hand is on each sprite, as fractions of its width / height
 const HAND = { wave: [.12, .34], pointing: [.08, .33] };
@@ -2037,7 +2038,7 @@ const DADRANKS = { pow: { name: 'Power', base: 40, step: 35 }, quick: { name: 'Q
 const rankCap = id => 5 * Math.max(1, fstars(id)), rEff = n => Math.min(n || 0, 5) + Math.max(0, (n || 0) - 5) * .5;
 const BASE_RADIUS = 170, RING_W = 186; // RING_W: the widest the ring gets, so it stays on screen (440 wide)
 const DAD_H = 102; // Dad's height in the arena
-// Dad's drawn battle poses (assets/bdad_*.png, facing right): where the lens is and where his feet are, as fractions of the picture,
+// Dad's drawn battle poses (assets/bdad_*.webp, facing right): where the lens is and where his feet are, as fractions of the picture,
 // the lens radius in picture heights, and a size match so his head stays the same size between poses
 const DAD_DRAW = DAD_H * .9; // the drawn poses fill their picture, so they're drawn a little smaller than the old 3D Dad
 const DPOSE = { idle: { lens: [.862, .332], r: .073, feet: .43, k: 1 }, aim: { lens: [.907, .274], r: .075, feet: .37, k: .9 }, ouch: { lens: [.664, .441], r: .03, feet: .6, k: .94 } };
@@ -2198,7 +2199,7 @@ save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false,
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
-const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.png" alt="Dad">' : `<img class="fim hd" src="assets/heads/${id}.webp" alt="${CHARS[id].name}">`;
+const faceH = id => id === 'dad' ? '<img class="fim" src="assets/dad_face.webp" alt="Dad">' : `<img class="fim hd" src="assets/heads/${id}.webp" alt="${CHARS[id].name}">`;
 /* ───────── drawn icons in place of emoji ───────── */
 // every emoji the screens print is swapped, as it appears, for a small drawn icon in the game's style (thick brown outline,
 // flat colour) or a friend's head shot, so the look is the same on every phone. Emoji without a drawing yet stay as they are.
@@ -2300,7 +2301,7 @@ const EMO_ICON = { '🪙': 'coin', '💎': 'gem', '📄': 'page', '📃': 'page'
   '🔊': 'speaker', '🔈': 'speaker', '🏜️': 'cactus', '🌵': 'cactus', '🌊': 'wave', '🌴': 'palm', '💥': 'boom', '🏁': 'flag', '🚩': 'flag', '🏫': 'school', '👧': 'person', '👩': 'person', '👵': 'person', '👴': 'person', '👦': 'person', '🦳': 'person',
   '🌾': 'wheat', '☀️': 'sun', '☀': 'sun', '🥉': 'bronze', '🥈': 'silver', '🌪️': 'tornado', '🤝': 'link', '➕': 'plus', '🐌': 'snail' };
 // faces: Dad and Sir Ever-So-Sure have their own; every friend's emoji becomes their head shot
-const EMO_IMG = { '🙅': 'assets/dad_face.png', '🙅‍♂️': 'assets/dad_face.png', '🧑': 'assets/dad_face.png', '👨': 'assets/dad_face.png', '🧔': 'assets/dad_face.png', '🧐': 'assets/sses_face.png', '🧒': 'assets/kid_face.png' };
+const EMO_IMG = { '🙅': 'assets/dad_face.webp', '🙅‍♂️': 'assets/dad_face.webp', '🧑': 'assets/dad_face.webp', '👨': 'assets/dad_face.webp', '🧔': 'assets/dad_face.webp', '🧐': 'assets/sses_face.webp', '🧒': 'assets/kid_face.webp' };
 const EMO_RE = (() => { for (const id in CHARS) if (id !== 'dad' && CHARS[id].em && !EMO_ICON[CHARS[id].em]) EMO_IMG[CHARS[id].em] = `assets/heads/${id}.webp`;
   const keys = [...Object.keys(EMO_ICON), ...Object.keys(EMO_IMG)].sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   return new RegExp(keys.join('|'), 'u'); })();
@@ -2315,7 +2316,7 @@ function emoNode(t) { const s = t.data; if (!EMO_RE.test(s)) return; const f = d
 function emoWalk(n) { if (n.nodeType === 3) return emoNode(n); if (n.nodeType !== 1 || /^(SCRIPT|STYLE|TEXTAREA|INPUT|CANVAS|svg)$/.test(n.nodeName)) return;
   const w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT), list = []; while (w.nextNode()) if (EMO_RE.test(w.currentNode.data)) list.push(w.currentNode); list.forEach(emoNode); }
 new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') emoNode(m.target); else m.addedNodes.forEach(emoWalk); } })
-  .observe(document.body, { childList: true, subtree: true, characterData: true });
+  .observe(document.body, { childList: true, subtree: true });
 document.addEventListener('DOMContentLoaded', () => emoWalk(document.body)); emoWalk(document.body);
 // press and hold anything (or tap a picture that isn't a button) to see what it is: currencies, stars, friends, items, skills
 const GLOSS = { '🪙': 'Coins: you get them in every match. Spend them in the Shop and on Power and Quick upgrades.',
@@ -2354,8 +2355,9 @@ document.addEventListener('contextmenu', e => { if (e.target.closest && e.target
     const ws = parts.map(p => EMO_ICON[p] || EMO_IMG[p] ? sz : ctx.measureText(p).width), tot = ws.reduce((a, b) => a + b, 0), al = ctx.textAlign, bl = ctx.textBaseline;
     let cx = al === 'center' ? x - tot / 2 : al === 'right' || al === 'end' ? x - tot : x; const top = bl === 'middle' ? y - sz / 2 : bl === 'top' || bl === 'hanging' ? y : y - sz * .85;
     ctx.textAlign = 'left'; parts.forEach((p, i) => { if (EMO_ICON[p] || EMO_IMG[p]) { if (!stroke) { const im = img(p); if (im.complete && im.naturalWidth) ctx.drawImage(im, cx, top, sz, sz); } } else (stroke ? S : F).call(ctx, p, cx, y); cx += ws[i]; }); ctx.textAlign = al; }
-  P.fillText = function (t, x, y, mw) { t = String(t); return EMO_RE.test(t) ? draw(this, t, x, y, false) : F.call(this, t, x, y, mw); };
-  P.strokeText = function (t, x, y, mw) { t = String(t); return EMO_RE.test(t) ? draw(this, t, x, y, true) : S.call(this, t, x, y, mw); };
+  const memo = new Map(), has = t => { let v = memo.get(t); if (v === undefined) { v = EMO_RE.test(t); if (memo.size > 2000) memo.clear(); memo.set(t, v); } return v; };
+  P.fillText = function (t, x, y, mw) { t = String(t); return has(t) ? draw(this, t, x, y, false) : F.call(this, t, x, y, mw); };
+  P.strokeText = function (t, x, y, mw) { t = String(t); return has(t) ? draw(this, t, x, y, true) : S.call(this, t, x, y, mw); };
   for (const m of Object.keys(EMO_ICON).concat(Object.keys(EMO_IMG))) img(m); })();
 var lastTP = null, tpT = 0;
 function trackFound() { const f = save.wfound || (save.wfound = {}); for (const it of save.items || []) if (it.type === 'weapon' && it.owner) { const a = f[it.owner] || (f[it.owner] = []); if (!a.includes(it.variant)) a.push(it.variant); } }
@@ -2915,12 +2917,12 @@ function handPos(m) {
 const EMIT = { bluey: [.88, .65], bramble: [.84, .38], bumble: [.78, .58], chroma: [.91, .63], coco: [.84, .69], dot: [.88, .56], dusty: [.82, .53], echo: [.63, .41], frost: [.77, .35],
   gizmo: [.71, .6], goldie: [.72, .5], hopper: [.93, .42], inky: [.6, .58], jelly: [.59, .41], luna: [.6, .4], nilla: [.72, .29], pinch: [.9, .25], pip: [.9, .37], prickles: [.73, .48],
   puddles: [.73, .27], rosie: [.75, .17], scuttle: [.9, .6], shelly: [.93, .53], sol: [.67, .42], sparky: [.85, .46], uni: [.9, .06], webster: [.67, .7], wiggles: [.82, .36] };
-// the attack drawings (assets/pet_<id>_atk.png): their own mouth points, and a size match where a wide pose (spread wings) came out smaller
+// the attack drawings (assets/pet_<id>_atk.webp): their own mouth points, and a size match where a wide pose (spread wings) came out smaller
 const EMIT_ATK = { bluey: [.62, .1], bramble: [.78, .3], bumble: [.97, .72], chroma: [.84, .62], coco: [.28, .38], dot: [.6, .6], dusty: [.83, .6], echo: [.49, .56], frost: [.86, .19],
   gizmo: [.93, .59], goldie: [.68, .56], hopper: [.7, .5], inky: [.9, .6], jelly: [.5, .55], luna: [.5, .45], nilla: [.49, .6], pinch: [.88, .2], pip: [.87, .37], prickles: [.85, .5],
   puddles: [.68, .43], rosie: [.75, .15], scuttle: [.72, .55], shelly: [.88, .54], sol: [.57, .38], sparky: [.75, .4], uni: [.83, .05], webster: [.55, .6], wiggles: [.73, .5] };
 const ATK_K = { bramble: 1.22, bumble: 1.17, dusty: 1.18, goldie: 1.17, luna: 1.07, nilla: 1.5, prickles: 1.09, puddles: 1.17, scuttle: 1.06, shelly: 1.07 };
-for (const id in EMIT_ATK) art('pet_' + id + '_atk');
+// attack poses load for the team when a match starts (startGame)
 // a friend shows its attack drawing through the middle of a move, and while its tongue (or anything else it holds out) is still out
 function atkPose(m) { const a = m.anim, p = a ? a.t / a.dur : 0; return EMIT_ATK[m.id] && ready(art('pet_' + m.id + '_atk')) && ((a && p > .2 && p < .82) || m.holdAtk > G.t); }
 function mouth(m) { if (atkPose(m)) { const E = EMIT_ATK[m.id], h = (PET_H[m.id] || 48) * (ATK_K[m.id] || 1), o = m.drawn || { x: m.x, y: m.y + 4 - (m.z || 0) }; return { x: o.x + m.face * (E[0] - .5) * h, y: o.y - h + E[1] * h }; }
@@ -3290,7 +3292,7 @@ function collectAll() { for (const o of G.orbs) o.pull = true; }
 function levelUp() { sfx('level'); buzz('MEDIUM'); G.xp -= G.next; G.lvl++; G.next = Math.round(4 + G.lvl * 2.6); text(G.dad.x, G.dad.y - 90, 'LEVEL UP!', '#ecb23c', 28, 1.2); offerCards(); }
 const abilName = a => a === 'weapon' ? WEAPONS[save.weapon].name : ABIL[a].name;
 const abilEm = a => a === 'weapon' ? WEAPONS[save.weapon].em : ABIL[a].em;
-// the painted skill icon (assets/icons/<id>.png, tools/gen_icons.py), falling back to the emoji if the picture is missing
+// the painted skill icon (assets/icons/<id>.webp, tools/gen_icons.py), falling back to the emoji if the picture is missing
 const abilIcon = a => a === 'weapon' ? abilEm(a) : `<img class="aic" src="assets/icons/${a}.webp" alt="${abilEm(a)}" data-tip="${attrQ(abilName(a) + ': ' + abilDesc(a))}" onerror="this.replaceWith(this.alt)">`;
 const abilDesc = a => a === 'weapon' ? WEAPONS[save.weapon].desc : ABIL[a].desc;
 // every trick a friend could learn or rank up right now
@@ -3408,6 +3410,7 @@ function refreshHud(force) {
 function makeArena(w) {
   const W0 = WORLDS[w], c = document.createElement('canvas'); c.width = W + 40; c.height = H + 40; const x = c.getContext('2d'); x.translate(20, 20);
   const png = art('arena_' + (w + 1)); if (ready(png)) { x.drawImage(png, -20, -20, W + 40, H + 40); return { c, w }; }
+  const tmp = ART['arena_' + (w + 1)] !== false; // the painting is still on its way: draw the plain scene now and swap when it lands
   const seed = (i, k = 1) => ((i * 9301 + w * 49297 + k * 233) % 233280) / 233280, E = x;
   x.lineJoin = 'round'; x.lineCap = 'round';
   // ground: the chapter's edge colour outside, its lawn inside the big oval, softer at the centre
@@ -3475,7 +3478,7 @@ function makeArena(w) {
   edge();
   // the spot where Dad stands
   x.fillStyle = 'rgba(58,44,32,.12)'; x.beginPath(); x.ellipse(CX, CY + 24, 48, 16, 0, 0, 7); x.fill();
-  return { c, w };
+  return { c, w, tmp };
 }
 
 /* ───────── 3D sprite sheets: rendered from Meshy models by tools/render_sheet.mjs, optional like every other drop-in.
@@ -3488,7 +3491,7 @@ function sheet(id) {
   fetch(`assets/3d/${id}.json`).then(r => r.ok ? r.json() : null).then(meta => {
     if (!meta) { SHEETS[id] = false; return; }
     const S = { meta, img: {}, ok: false, bones: {} }; let left = Object.keys(meta.anims).length;
-    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { if (!(meta.bones || []).length) measureAnchors(S); S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.png`; S.img[a] = i; }
+    for (const a in meta.anims) { const i = new Image(); i.onload = () => { if (--left === 0) { if (!(meta.bones || []).length && !meta.measured) measureAnchors(S); S.ok = true; try { drawStatics(); } catch (e) {} } }; i.onerror = () => { SHEETS[id] = false; }; i.src = `assets/3d/${id}_${a}.webp`; S.img[a] = i; }
     // which bones to pin things to, by name pattern; a `map` in the JSON overrides
     const names = meta.bones || [], find = re => names.filter(n => re.test(n)).pop() || null;
     const hands = names.filter(n => /hand|wrist/i.test(n)), side = (list, re) => list.filter(n => re.test(n)).pop() || null;
@@ -3543,7 +3546,7 @@ const TINTED = new Map(); const TINTC = {}; const tintCanvas = n => { if (!TINTC
 let PROPS;
 function props3() {
   if (PROPS !== undefined) return PROPS && PROPS.ok ? PROPS : null; PROPS = null;
-  fetch('assets/3d/props.json').then(r => r.ok ? r.json() : null).then(meta => { if (!meta) { PROPS = false; return; } const img = new Image(); img.onload = () => { PROPS = { meta, img, ok: true }; try { drawStatics(); } catch (e) {} }; img.onerror = () => { PROPS = false; }; img.src = 'assets/3d/props.png'; }).catch(() => { PROPS = false; });
+  fetch('assets/3d/props.json').then(r => r.ok ? r.json() : null).then(meta => { if (!meta) { PROPS = false; return; } const img = new Image(); img.onload = () => { PROPS = { meta, img, ok: true }; try { drawStatics(); } catch (e) {} }; img.onerror = () => { PROPS = false; }; img.src = 'assets/3d/props.webp'; }).catch(() => { PROPS = false; });
   return null;
 }
 // prop `key` with its grip at (x, y), facing like body row `row`, k = screen px per body unit, turned by rot in the screen plane
@@ -3639,7 +3642,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face * s, s);
   const sq = opts.squash || 0, st = opts.stretch || 0, br = save.opt.calm ? 0 : Math.sin(t * 2.6 + (opts.bob || 0) * 1.7) * .025; c.scale(1 + sq * .18 - st * .1 - br * .5, 1 - sq * .22 + st * .14 + br);
   c.strokeStyle = '#3a2c20'; c.lineWidth = 2.5; c.lineJoin = 'round'; c.lineCap = 'round';
-  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = want3d(id) ? sheet(id) : ready(png) ? null : sheet(id);
+  const bob = Math.sin(t * 5 + (opts.bob || 0)) * 2, png = art('pet_' + id), S3 = want3d(id) ? sheet(id) : ready(png) || ART['pet_' + id] !== false ? null : sheet(id);
   c.save();
   const M3 = c === ctx && !!R3D && R3D.has('pet_' + id); // the live 3D model, in a match
   if (S3 || M3) { // the 3D friend: one frame per direction, the squash and lean already applied above
@@ -3981,7 +3984,7 @@ function draw() {
   ctx.save();
   if (G.shake > 0 && save.opt.shake && !save.opt.calm) ctx.translate(rnd(-5, 5) * G.shake * 4, rnd(-5, 5) * G.shake * 4);
   if (G.flip > 0 && !save.opt.calm) { const f = Math.min(1, (3 - G.flip) / .5), g = Math.min(1, G.flip / .5), e = f * g, k = 1 - Math.pow(1 - e, 3); ctx.translate(CX, CY); ctx.rotate(Math.PI * k); ctx.translate(-CX, -CY); }
-  if (!G.bg || G.bg.w !== G.S.w) G.bg = makeArena(G.S.w);
+  if (!G.bg || G.bg.w !== G.S.w || (G.bg.tmp && ready(art('arena_' + (G.S.w + 1))))) G.bg = makeArena(G.S.w);
   if (R3D) { R3D.begin(); R3D.setGround(G.bg.c); ctx.clearRect(-60, -60, W + 120, H + 120); } else ctx.drawImage(G.bg.c, -20, -20);
   if (G.S.w === 7) for (let i = 0; i < 12; i++) { const a = G.t * .4 + i * 2.1, fx = CX + Math.cos(a) * (120 + i * 12), fy = CY + Math.sin(a * 1.3) * (160 + i * 9); ctx.fillStyle = `rgba(255,240,150,${.3 + Math.sin(G.t * 3 + i) * .3})`; ctx.beginPath(); ctx.arc(fx, fy, 2.5, 0, 7); ctx.fill(); }
   // attention ring
@@ -4151,7 +4154,7 @@ function headOf(img) {
   HEADS.set(img.src, out); return out;
 }
 // a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
-// hats are drawings (assets/hat_<id>.png, brim at the bottom): [width, how far the brim sits below the top of the head], both
+// hats are drawings (assets/hat_<id>.webp, brim at the bottom): [width, how far the brim sits below the top of the head], both
 // in head widths, so the brim comes down over the hair; the emoji stands in until the drawing loads
 const HATFIT = { pilgrim: [1.25, .55], santa: [1.3, .55], leafcrown: [1.3, .62], antlers: [1.3, .85], laurel: [1.3, .62], clubcap: [1.3, .5], cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
 const HATEM = { pilgrim: '🎩', santa: '🎅', leafcrown: '🍁', antlers: '🦌', laurel: '🌿', clubcap: '🧢', cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
@@ -4164,7 +4167,7 @@ function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t !== 'none'
 function openWardrobe() { const L = look();
   pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.`; $('#pickUnequip').hidden = true;
   $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
-    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${swatchCss(it)}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.png" alt="">` : `<span class="wem">${it.em}</span>`);
+    const sw = cat === 'sweater' ? `<span class="swatch" style="background:${swatchCss(it)}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.webp" alt="">` : `<span class="wem">${it.em}</span>`);
     return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && (it.only || save.coins < it.c) ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : it.only ? ({ club: '🏡 Club Shop', cup: '🥇 Cup Shop' }[it.only] || '🎉 Event shop') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
   $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
     const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
@@ -4189,15 +4192,18 @@ function drawTitleParty() {
     x.restore(); } } // the event's leaves or snow drift down behind the team
   const items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
   for (const it of items) {
-    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true)) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
+    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true) && IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
     const [sx, sy, h, face] = SPOT[it.i], ph = it.i * 2.1, hop = Math.max(0, Math.sin(t * 3 + ph * 1.7)) ** 6 * 10; // a little hop now and then
     shadow(sx, sy - 1, 34);
     if (want3d(it.id) || !stand(art('pet_' + it.id), sx, sy - hop, h, face, ph)) drawCompanionAt(x, it.id, sx, sy, 1.85, face, t, { aim: face > 0 ? Math.PI / 2 - .45 : Math.PI / 2 + .45, bob: ph });
   }
 }
 // the home scene breathes while it's on screen, at the display's frame rate; still in Calm mode
-requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if (mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
-function drawStatics() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
+let homeOdd = false;
+requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if ((homeOdd = !homeOdd) && mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
+let staticsQ = 0;
+function drawStatics() { if (!staticsQ) staticsQ = requestAnimationFrame(() => { staticsQ = 0; drawStaticsNow(); }); }
+function drawStaticsNow() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -4321,7 +4327,7 @@ const fxN = n => lowFx ? Math.ceil(n * .4) : n;
 function loop(ts) {
   requestAnimationFrame(loop);
   const raw = (ts - last) || 0; let dt = Math.min(.05, raw / 1000); last = ts;
-  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames++; else slowFrames = Math.max(0, slowFrames - 1); if (slowFrames > 90 && !lowFx) { lowFx = true; slowFrames = 0; fit(); }
+  frameMs += (raw - frameMs) * .05; if (raw > 28) slowFrames += Math.min(raw, 100); else slowFrames = Math.max(0, slowFrames - raw); if (slowFrames > 1500 && !lowFx) { lowFx = true; slowFrames = 0; fit(); }
   if (DEBUG) { fpsT += raw; if (fpsT > 500) { fpsT = 0; $('#fps').style.display = 'block'; $('#fps').textContent = `${Math.round(1000 / frameMs)} fps · ${G ? G.enemies.length + ' myths · ' + G.fx.length + ' fx' : ''}${lowFx ? ' · low fx' : ''}${R3D ? ` · 3D ${R3D.stats.shown} models ${R3D.stats.calls} calls` : ''}`; } }
   if (R3D) R3D.show(mode === 'game' && !!G);
   if (mode !== 'game' || !G) return;
@@ -4413,7 +4419,7 @@ const HOME_EDGE = [['#d7bc9a', '#738a43'], ['#cac18d', '#6c8741'], ['#c2a478', '
 function homeBg() {
   const w = STAGES[Math.min(save.unlocked, STAGES.length - 1)].w, el = $('#title'); if (el.dataset.w === String(w)) return; el.dataset.w = w;
   const [top, ground] = HOME_EDGE[w] || HOME_EDGE[0];
-  el.style.backgroundImage = `url(assets/home_bg${w ? '_' + (w + 1) : ''}.png), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
+  el.style.backgroundImage = `url(assets/home_bg${w ? '_' + (w + 1) : ''}.webp), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
   el.classList.toggle('nightbg', w === 7);
 }
 function updateHub() { homeBg(); const set = (id, k, dot) => { const b = $('#' + id); if (!b) return; const on = has(k); b.classList.toggle('locked', !on); b.querySelector('.dot').hidden = !on || !dot; };
@@ -4430,7 +4436,7 @@ $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
 $('#challTrophy').onclick = () => { $('#challm').hidden = true; showTrophies(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
-function startGame(stage, how = {}) { music(STAGES[stage].w);
+function startGame(stage, how = {}) { music(STAGES[stage].w); for (const id of save.party) if (EMIT_ATK[id]) art('pet_' + id + '_atk'); art('arena_' + (STAGES[stage].w + 1));
   newRun(stage); G.monthCat = monthEv().cat;
   if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
   { const ev = activeEvent(); if (ev && !how.cup) G.S = { ...G.S, pool: [...G.S.pool, ...Object.keys(EVENTS[ev].myths)] }; }
@@ -4593,7 +4599,7 @@ const spend2 = (k, c) => { if (k === 'ev') evState(activeEvent()).tok -= c; else
 const swatchCss = wi => wi.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : wi.stripes ? `repeating-linear-gradient(0deg,hsl(${wi.stripes[0]},70%,48%) 0 6px,hsl(${wi.stripes[1]},65%,42%) 6px 12px)` : wi.c || wi.only ? `hsl(${wi.h},${Math.round((wi.s ?? 1) * 70)}%,${Math.round((wi.v ?? 1) * 52)}%)` : '#d59e3d';
 function shop2H(k) { const S = shop2Of(k), have = bal2(k);
   return `<div class="ward">${S.items.map((it, i) => { const W = it.ward && it.ward.split(':'), wi = W && WARD[W[0]].items.find(x => x.id === W[1]), own = W && wardOwns(W[0], W[1]);
-    const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:${swatchCss(wi)}"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.png" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
+    const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:${swatchCss(wi)}"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.webp" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
     const lock = it.tier && cupTier() < it.tier; return `<button class="wt ${own ? 'on' : 'buy'}" data-s2="${i}" ${own || lock || have < it.c ? 'disabled' : ''}>${pic}<b>${W ? wi.n : it.n}</b><small>${own ? 'Yours: in the Wardrobe' : lock ? `🔒 ${CUP_TIERS[it.tier]}` : `${S.em} ${it.c}`}</small></button>`; }).join('')}</div>`; }
 function wireShop2(k) { const S = shop2Of(k); $$('#socBody [data-s2]').forEach(b => b.onclick = () => { const it = S.items[+b.dataset.s2]; if (bal2(k) < it.c || !sure(b, `Buy · ${S.em} ${it.c}?`)) return;
   spend2(k, it.c); if (it.ward) { (save.wardrobe = save.wardrobe || []).push(it.ward); const [c, id] = it.ward.split(':'); if (WARD[c].many) look().yard.push(id); else look()[c] = id; toastMsg('👕 Wearing it now. Change it in the Wardrobe.'); } else { it.run(); toastMsg(`${it.em} ${it.n}!`); }
@@ -4602,7 +4608,7 @@ function wireShop2(k) { const S = shop2Of(k); $$('#socBody [data-s2]').forEach(b
 // the story as storyboard frames: a big painted scene, then the lines underneath one tap at a time. Chapter 1's opening
 // is the prologue: the Big Book of Wrong in the library window, bursting open, and the pages marching into the backyard.
 let comicDone = null, frames = [], fi = 0, li = 0;
-const FACE = { d: 'assets/dad_face.png', k: 'assets/kid_face.png', v: 'assets/sses_face.png' };
+const FACE = { d: 'assets/dad_face.webp', k: 'assets/kid_face.webp', v: 'assets/sses_face.webp' };
 const WHO = { d: 'DAD', k: 'THE KID', v: 'SIR EVER-SO-SURE' };
 // Sir Ever-So-Sure, the Big Book of Wrong's own Title Page, is behind it all. In every chapter he pins up a note on the way in,
 // scribbles the rough-draft boss stronger at stage 3, and runs off with a page at the end, which is where the next chapter starts.
@@ -5402,7 +5408,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
@@ -5412,7 +5418,9 @@ setWallet(); buildStagePick(); showScreen('#title'); drawStatics(); checkDaily()
 requestAnimationFrame(ts => { last = ts; loop(ts); });
 checkBackups(); // another copy with more progress (a spare, this phone's storage, iCloud) is offered once at start
 applyOpts();
-if ('serviceWorker' in navigator && location.protocol !== 'file:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+if ('serviceWorker' in navigator && location.protocol !== 'file:') { navigator.serviceWorker.register('sw.js').catch(() => {}); // straight away: the worker caches the core on install
+  const warm = () => setTimeout(() => navigator.serviceWorker.ready.then(r => r.active && r.active.postMessage('warm')).catch(() => {}), 3000); // then the rest, once the page has settled
+  if (document.readyState === 'complete') warm(); else addEventListener('load', warm); }
 })();
 </script>
 </body>
