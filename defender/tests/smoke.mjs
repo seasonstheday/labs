@@ -73,7 +73,7 @@ await test('every menu screen opens', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   for (const t of ['shop', 'friends', 'bag', 'diary', 'play']) { await p.click(`#tabbar [data-tab="${t}"]`); await p.waitForTimeout(350); }
   await p.click('#tabbar [data-tab="friends"]'); await p.waitForTimeout(300); await p.click('[data-pick="webster"]'); await p.waitForTimeout(300);
-  expect(await p.isVisible('.otiles'), "a friend's outfit row"); await p.click('[data-album="webster"]'); await p.waitForTimeout(200);
+  await p.click('[data-ftab="gear"]'); expect(await p.isVisible('.otiles'), "a friend's outfit row"); await p.click('[data-album="webster"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => document.querySelectorAll('.vt').length) >= 30, 'the weapon album');
   await p.click('#tabbar [data-tab="play"]'); await p.waitForTimeout(200); await p.click('#play'); await p.waitForTimeout(600);
   expect(await p.isVisible('#map'), 'the World Map');
