@@ -13,7 +13,7 @@
 // Profiles (the knobs are in PROFILES below):
 //   typical  one "day" (4 patrols = 16 h, wheel + daily gift) every 3 stages, 75% of quizzes right. Besides ranks and
 //            Skill Trees it uses the Bag and the Store: forges three of a kind, polishes what the team wears, spends
-//            Library Cards on Blank pages, gems on Backpacks, and coins above a 2000 reserve on Library Cards (600 each).
+//            Library Cards on Blank pages, gems on Backpacks, and coins above a 2000 reserve on Library Cards (600 each, read from the game's OFFERS).
 //   weak     one day every 4 stages, 60% quizzes, never opens the Bag or the Store (coins, gems and cards pile up):
 //            lands roughly 20% under typical team power
 //   strong   one day every stage, 90% quizzes, store spending down to a 1000 reserve: the patient kid, a stage a day
@@ -30,7 +30,7 @@ const NST = +(A.stages || 40), N = +(A.n || 3), OUT = A.out || '.', TUNE = JSON.
 // --patch=edits.json: [[old, new], ...] exact replacements applied to index.html as it is served (try a tuning without editing the file)
 const PATCH = A.patch ? JSON.parse(readFileSync(A.patch, 'utf8')) : [];
 // the Bag and Store helpers dbg doesn't export; exposing them changes nothing in play
-PATCH.unshift(["if (location.search.includes('debug')) window.dbg = {", "if (location.search.includes('debug')) window.__x = { mergeInto, twinsOf, polishItem, POLISH, POLISH_MAX, itemOf, syncWeapons }; if (location.search.includes('debug')) window.dbg = {"]);
+PATCH.unshift(["if (location.search.includes('debug')) window.dbg = {", "if (location.search.includes('debug')) window.__x = { mergeInto, twinsOf, polishItem, POLISH, POLISH_MAX, itemOf, syncWeapons, OFFERS }; if (location.search.includes('debug')) window.dbg = {"]);
 const PROFILES = {
   typical: { dayEvery: 3, quizP: .75, store: true, reserve: 2000 },
   weak:    { dayEvery: 4, quizP: .60, store: false },
@@ -56,7 +56,9 @@ async function career(name) {
   await p.goto('http://localhost:8765/defender/?debug'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(800);
   // set up the in-page helpers once
   await p.evaluate(([P, TUNE]) => {
-    const D = dbg, { mergeInto, twinsOf, polishItem, POLISH, POLISH_MAX, itemOf, syncWeapons } = window.__x; Object.assign(D.TUNE, TUNE); const S = () => D.save; Object.assign(S().opt, { calm: true, voice: false, labels: false, sfx: false, music: false });
+    const D = dbg, { mergeInto, twinsOf, polishItem, POLISH, POLISH_MAX, itemOf, syncWeapons, OFFERS } = window.__x;
+    const CARD = OFFERS.find(o => o.name === 'Library Card' && o.cost[0] === 'coins').cost[1], PACK = OFFERS.find(o => o.name === 'Backpack').cost[1]; // Store prices, as the game has them
+    Object.assign(D.TUNE, TUNE); const S = () => D.save; Object.assign(S().opt, { calm: true, voice: false, labels: false, sfx: false, music: false });
     const H = window.__bal = {};
     // the card "Pick tricks for me" would take: evolve 4, reaction 3, new 1, +0.2 a rank
     const score = b => (b.querySelector('.tag.evo') ? 4 : b.querySelector('.tag') ? 3 : 0) + (b.querySelector('.who.new') ? 1 : 0) + +((((b.querySelector('.who') || {}).textContent || '').match(/Rank (\d)/) || [0, 1])[1]) * .2;
@@ -76,7 +78,7 @@ async function career(name) {
     H.spend = () => { const s = S(); const D2 = D;
       // stars: the party first (Blank pages too), then anyone whose own pages are enough
       if (P.store) { while ((s.tix || 0) > 0) { s.tix--; s.blank = (s.blank || 0) + 3; }
-        while (s.gems >= 60) { s.gems -= 60; s.items.push(itemOf(2), itemOf(1), itemOf(1)); } }
+        while (s.gems >= PACK) { s.gems -= PACK; s.items.push(itemOf(2), itemOf(1), itemOf(1)); } }
       for (const id of s.party) while (D.chr(id).own && D.starUp(id)) {}
       { const bl = s.blank; s.blank = 0; for (const id of Object.keys(D.CHARS)) { while (D.chr(id).own && D.starUp(id)) {} } s.blank += bl; }
       for (let w = 0; w < 8; w++) for (const C of D.CHESTS) if (C.ok(w) && !D.chestGot(w, C.k)) D.claimChest(w, C.k);
@@ -99,7 +101,7 @@ async function career(name) {
           if (!it) break; const use = twinsOf(it).sort((x, y) => (x.lv || 0) - (y.lv || 0) || x.val - y.val).slice(0, 2); let refund = 0; for (const o of use) refund += o.spent || 0; s.items = s.items.filter(o => !use.includes(o)); mergeInto(it); s.coins += refund; }
         wear();
         for (let guard = 0; guard < 200; guard++) { const W = worn(); const list = s.items.filter(i => W.has(i.uid) && (i.lv || 0) < POLISH_MAX).sort((a, b) => POLISH[a.rar][a.lv || 0] - POLISH[b.rar][b.lv || 0]); if (!list[0] || s.coins - POLISH[list[0].rar][list[0].lv || 0] < P.reserve) break; polishItem(list[0]); }
-        while (s.coins - 600 >= P.reserve) { s.coins -= 600; s.blank = (s.blank || 0) + 3; }
+        while (s.coins - CARD >= P.reserve) { s.coins -= CARD; s.blank = (s.blank || 0) + 3; }
         for (const id of s.party) while (D.chr(id).own && D.starUp(id)) {} }
       if (!P.noSync) syncWeapons(); if (P.dadWeapon) { s.weapon = P.dadWeapon; s.dadTheme = null; } D.persist(); };
     H.day = () => { const s = S(); for (const h of [6, 6, 2, 2]) { const g = D.patrolPay(h); s.coins += g.coins; s.gems += g.gems; s.blank = (s.blank || 0) + g.blank; for (const id of ['dad', ...s.party]) D.chr(id).xp += g.xp; } s.coins += 190; s.gems += 8; };
