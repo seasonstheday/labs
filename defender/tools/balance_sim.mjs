@@ -1,4 +1,5 @@
-// node defender/tools/balance_sim.mjs [--stages=40] [--n=3] [--profiles=typical,weak,strong] [--out=dir] [--tune='{"hp":1.8}']
+// node defender/tools/balance_sim.mjs [--stages=40] [--n=3] [--profiles=typical,weak,strong] [--out=dir] [--tune='{"hp":1.8}'] [--patch=edits.json] [--snaps]
+// Profiles run in parallel browser contexts; 40 stages x n=3 x 4 profiles takes about 8 minutes.
 // (serve the repo on :8765 first). Difficulty curve, stage by stage, for players of different habits.
 //
 // Each profile is a "career": a fresh save plays the story in order with the game's own code, fast-forwarded through
@@ -15,8 +16,10 @@
 //            Skill Trees it uses the Bag and the Store: forges three of a kind, polishes what the team wears, spends
 //            Library Cards on Blank pages, gems on Backpacks, and coins above a 2000 reserve on Library Cards (600 each, read from the game's OFFERS).
 //   weak     one day every 4 stages, 60% quizzes, never opens the Bag or the Store (coins, gems and cards pile up):
-//            lands roughly 20% under typical team power
+//            in practice ~20% under typical up to stage 8, then about half of typical (the Store is most of the gap)
 //   strong   one day every stage, 90% quizzes, store spending down to a 1000 reserve: the patient kid, a stage a day
+//   legacy / legacySync, typicalGlass / typicalBubble / weakGlass / strongGlass: diagnostics (see PROFILES). Dad's lens TYPE
+//            is a drop lottery that decides more than Power does, so the *Glass profiles pin the starting Classic Lens.
 // The level-up AI takes the card the game's own "Pick tricks for me" would (evolves > reactions > new > higher rank).
 // The sim never taps to focus a myth, so it is a slightly lazy player.
 //
