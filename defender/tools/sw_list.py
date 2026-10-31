@@ -22,7 +22,7 @@ CORE = ['./', './index.html', './manifest.json', './assets/icon-192.png'] + [rel
     'assets/pet_webster.webp', 'assets/pet_sparky.webp', 'assets/pet_hopper.webp', 'assets/arena_1.webp', 'assets/map_1.webp', 'assets/heads/*.webp',
     'assets/3d/kid.json', 'assets/3d/kid_idle.webp', 'assets/3d/props.json', 'assets/3d/props.webp'] for p in sorted(glob.glob(os.path.join(D, pat)))]
 seen = set(CORE)
-LATER = [rel(p) for pat in ['assets/*.webp', 'assets/*.jpg', 'assets/3d/*.json', 'assets/3d/*.webp', 'assets/icons/*.webp', 'assets/items/*.webp', 'assets/voice/index.json']
+LATER = [rel(p) for pat in ['assets/*.webp', 'assets/*.jpg', 'assets/3d/*.json', 'assets/3d/*.webp', 'assets/icons/*.webp', 'assets/items/*.webp', 'assets/ui/*.webp', 'assets/ui/index.json', 'assets/voice/index.json']
          for p in sorted(glob.glob(os.path.join(D, pat))) if rel(p) not in seen]
 fmt = lambda xs: '[\n' + ''.join(f"  '{x}',\n" for x in xs) + ']'
 sw = open(os.path.join(D, 'sw.js')).read()
