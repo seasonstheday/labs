@@ -32,6 +32,42 @@ function lensProp() { const g = new THREE.Group(), toon = c => new THREE.MeshToo
   const ring = new THREE.Mesh(new THREE.TorusGeometry(.055, .012, 8, 24), toon(0xc9952a)), glass = new THREE.Mesh(new THREE.CircleGeometry(.055, 24), new THREE.MeshBasicMaterial({ color: 0xcfe9f5, transparent: true, opacity: .55, side: THREE.DoubleSide }));
   const handle = new THREE.Mesh(new THREE.CylinderGeometry(.012, .014, .09, 8), toon(0x8a5a2b)); handle.position.y = -.1; ring.add(glass); g.add(ring, handle); ring.position.y = -.01;
   g.userData.prop = true; return g; }
+// Dad's sweater colour, like the 2D game's dressed(): mustard-yellow texels in the sweater band of the body take the chosen hue
+// (or a rainbow, or two-hue stripes); everything else, and the lens, stays as painted. u: hue, sat, value, mode (0 off, 1 hue,
+// 2 rainbow, 3 stripes), stripe hues, and the body's height range in model space.
+function sweaterMaterial(base, bb) {
+  const m = base; m.userData.u = { uSw: { value: new THREE.Vector4(0, 1, 1, 0) }, uSt: { value: new THREE.Vector2(0, 0) }, uBB: { value: new THREE.Vector2(bb.min.y, bb.max.y) } };
+  m.onBeforeCompile = function (sh) { Object.assign(sh.uniforms, this.userData.u);
+    sh.vertexShader = 'varying float vY;\n' + sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n vY = position.y;');
+    sh.fragmentShader = 'uniform vec4 uSw; uniform vec2 uSt, uBB; varying float vY;\nvec3 hsv(float h, float s, float v) { vec3 k = mod(vec3(5., 3., 1.) + h / 60., 6.); return v - v * s * clamp(min(k, 4. - k), 0., 1.); }\n'
+      + sh.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+      if (uSw.w > .5) { vec3 c = pow(diffuseColor.rgb, vec3(1. / 2.2)); float mx = max(c.r, max(c.g, c.b)), mn = min(c.r, min(c.g, c.b)), dd = mx - mn, yy = (vY - uBB.x) / (uBB.y - uBB.x);
+        if (mx > .5 && dd / mx > .45 && mx == c.r && yy > .22 && yy < .76) { float h = 60. * (c.g - c.b) / dd;
+          if (h > 35. && h < 56.) { float hue = uSw.w > 2.5 ? (mod(floor(yy / .045), 2.) < 1. ? uSt.x : uSt.y) : uSw.w > 1.5 ? (yy - .2) / .6 * 300. : uSw.x;
+            diffuseColor.rgb = pow(hsv(hue, min(1., dd / mx * uSw.y), min(1., mx * uSw.z)), vec3(2.2)); } } }`); };
+  m.customProgramCacheKey = () => 'sweater'; return m; }
+// hats on a rigged head: [width, how far the brim sits below the top of the head], both in head widths, as the 2D HATFIT
+const HEAD_W = .26; // a head's width in model units (the character is 1 tall)
+function wearHat(o, M, id, fit) {
+  const U = o.userData; if (U.hatId === id) return; if (U.hat) { U.hat.parent.remove(U.hat); U.hat = null; } U.hatId = id; if (!id || !M.head) return;
+  const H = MODELS['hat_' + id]; if (!H || !H.ok) { U.hatId = null; return; } // not loaded yet: try again next frame
+  let bone = null; o.traverse(n => { if (n.isBone && n.name === M.head.name) bone = n; }); if (!bone) return;
+  const hat = H.tpl.clone(true); hat.traverse(n => { if (n.userData.shadow) n.visible = false; }); hat.userData.prop = true; hat.traverse(n => { n.userData.prop = true; });
+  const [fw, sink] = fit || [1.2, .5]; hat.quaternion.copy(M.head.q); hat.userData.fit = { sc: fw * HEAD_W / H.wide, sink: sink * .55 }; // a 3D head is rounder than the drawing's outline, so brims ride a little higher
+  bone.add(hat); U.hat = hat; }
+// the 3D hats there are (tools/meshy_out -> assets/models/hat_<id>.glb); others stay off in 3D until they have a model
+const HATS3D = new Set(['top', 'wizard', 'cap', 'sun', 'grad', 'crown', 'santa', 'pilgrim', 'clubcap']);
+// a hat on a friend (no skeleton): on top of the model, sized to its width, riding along with its squash and lean
+function wearHatTop(o, id, fit) {
+  const U = o.userData; if (U.hatId === id) return; if (U.hat) { U.hat.parent.remove(U.hat); U.hat = null; } U.hatId = id; if (!id) return;
+  const H = MODELS['hat_' + id], M = MODELS[o.userData.key]; if (!H || !H.ok) { U.hatId = null; return; }
+  const hat = H.tpl.clone(true); hat.traverse(n => { n.userData.prop = true; if (n.userData.shadow) n.visible = false; });
+  const [fw, sink] = fit || [1.2, .5], w = .42 * Math.min(1.2, M.dx) * fw * .8; // friends wear the team hat a little smaller, as in 2D
+  hat.scale.setScalar(w / H.wide); hat.position.set(M.top.x, M.top.y - sink * .55 * w, M.top.z); o.children[0].add(hat); U.hat = hat; }
+// the clips scale the bones, so the hat is sized every frame from the head bone's live scale: sc model units wide, sink below the top
+const _v = new THREE.Vector3();
+function fitHat(o, M, unit) { const h = o.userData.hat; if (!h) return; o.updateMatrixWorld(true); const ws = h.parent.getWorldScale(_v).y || 1, F = h.userData.fit;
+  h.scale.setScalar(F.sc * unit / ws); h.position.copy(M.head.top).addScaledVector(M.head.up, -F.sink * HEAD_W * unit / ws); }
 const PAINT = {}; // e.g. { pet_x: 'assets/models/pet_x_paint/' } for a model that has no texture of its own
 async function paintTex(url) { const im = new Image(); im.src = url; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
   const d = x.getImageData(0, 0, c.width, c.height).data; let x0 = c.width, x1 = 0, y0 = c.height, y1 = 0;
@@ -69,10 +105,14 @@ function load(key) {
       if (m.map) m.map.colorSpace = THREE.SRGBColorSpace;
       o.geometry.computeBoundingBox();
       o.material = P ? paintMaterial(new THREE.MeshToonMaterial({ gradientMap: ramp }), o.geometry.boundingBox, P) : new THREE.MeshToonMaterial({ map: m.map || null, color: 0xffffff, gradientMap: ramp });
+      if (key === 'dad') sweaterMaterial(o.material, o.geometry.boundingBox);
       o.userData.toon = true;
       // inverted hull outline, pushed out along the normals in the shader so it stays the same width at any size
       let hull; if (o.isSkinnedMesh) { hull = new THREE.SkinnedMesh(o.geometry, outlineSkin); hull.bind(o.skeleton, o.bindMatrix); } else hull = new THREE.Mesh(o.geometry, outlineMat);
       hull.userData.hull = true; hull.renderOrder = -1; o.add(hull); }
+    let head = null; if (skinned) { let top = null; root.traverse(o => { if (o.isBone && /^Head$/i.test(o.name)) head = o; if (o.isBone && /^head_end$/i.test(o.name)) top = o; });
+      if (head && top) { tpl.updateMatrixWorld(true); const hq = head.getWorldQuaternion(new THREE.Quaternion()).invert(), k = 1 / (head.getWorldScale(new THREE.Vector3()).y || 1);
+        head = { name: head.name, top: head.worldToLocal(top.getWorldPosition(new THREE.Vector3())), up: new THREE.Vector3(0, 1, 0).applyQuaternion(hq), q: hq, k }; } else head = null; }
     if (key === 'dad') { let hand = null; root.traverse(o => { if (o.isBone && /^RightHand$/i.test(o.name)) hand = o; });
       if (hand) { tpl.updateMatrixWorld(true); const l = lensProp(), s = 1 / (hand.getWorldScale(new THREE.Vector3()).y || 1); l.scale.setScalar(s); l.position.set(0, .07 * s, 0); hand.add(l); } } // sizes in model units, where Dad is 1 tall
     // a soft round shadow on the ground
@@ -81,7 +121,10 @@ function load(key) {
     sh.rotation.x = -Math.PI / 2; sh.position.y = .002; sh.userData.shadow = true; tpl.add(sh);
     // how tall one unit of model looks on screen: its height foreshortened plus its depth seen from above, so a squat toad
     // and a thin page both come out as tall on screen as the 2D game asks for
-    MODELS[key] = { tpl, ok: true, k: 1 / (COS + (dx + dz) / 2 * SIN * .5), skinned, clips };
+    // the highest point of the model, where a hat goes on a friend (the head, for a four-legged one), in model units
+    tpl.updateMatrixWorld(true); const top = new THREE.Vector3(0, -1e9, 0), v = new THREE.Vector3(), inv = new THREE.Matrix4().copy(inner.matrixWorld).invert();
+    for (const o of meshes) { const pa = o.geometry.attributes.position, mw = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld); for (let i = 0; i < pa.count; i += 3) { v.fromBufferAttribute(pa, i).applyMatrix4(mw); if (v.y > top.y) top.copy(v); } }
+    MODELS[key] = { tpl, ok: true, k: 1 / (COS + (dx + dz) / 2 * SIN * .5), skinned, clips, head, dx, wide: Math.max(dx, dz), top };
   })().catch(e => { console.warn('r3d: no model', key, e && e.message); MODELS[key] = false; });
   return null;
 }
@@ -95,13 +138,16 @@ function instance(key, i) {
   if (!list[i]) { const M = MODELS[key], o = M.skinned ? SkeletonUtils.clone(M.tpl) : M.tpl.clone(true);
     if (M.skinned && Object.keys(M.clips).length) { const mx = new THREE.AnimationMixer(o); o.userData.mixer = mx; o.userData.acts = {}; for (const c in M.clips) { const a = mx.clipAction(M.clips[c]); if (ONCE.has(c)) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; } o.userData.acts[c] = a; } o.userData.cur = null; o.userData.t = performance.now(); }
     o.traverse(n => { if (!n.isMesh) return;
-      if (n.userData.toon || n.userData.shadow) { const old = n.material, mt = old.clone(); mt.onBeforeCompile = old.onBeforeCompile; if (old.customProgramCacheKey) mt.customProgramCacheKey = old.customProgramCacheKey; n.material = mt; } }); // its own tint and fade
+      if (n.userData.toon || n.userData.shadow) { const old = n.material, mt = old.clone(); mt.onBeforeCompile = old.onBeforeCompile; if (old.userData.u) mt.userData.u = { uSw: { value: old.userData.u.uSw.value.clone() }, uSt: { value: old.userData.u.uSt.value.clone() }, uBB: { value: old.userData.u.uBB.value.clone() } }; if (old.customProgramCacheKey) mt.customProgramCacheKey = old.customProgramCacheKey; n.material = mt; } }); // its own tint and fade
     scene.add(o); list[i] = o; }
   return list[i];
 }
 
 export const R3D = {
   stats,
+  // for tools/tests: world-space boxes of the first instance of a model and of its hat
+  probe(key) { const o = (POOL[key] || [])[0]; if (!o) return null; o.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(o), h = o.userData.hat ? new THREE.Box3().setFromObject(o.userData.hat) : null, sz = x => x && x.getSize(new THREE.Vector3()).toArray().map(v => +v.toFixed(1));
+    return { body: sz(b), bodyTop: +b.max.y.toFixed(1), hat: sz(h), hatMin: h && +h.min.y.toFixed(1), hatParentScale: o.userData.hat && +o.userData.hat.parent.getWorldScale(new THREE.Vector3()).y.toExponential(2), hatScale: o.userData.hat && o.userData.hat.scale.x }; },
   init(frame, under) {
     canvas = document.createElement('canvas'); canvas.id = 'c3'; canvas.style.cssText = 'position:absolute; inset:0; width:440px; height:760px; display:block; pointer-events:none;';
     under.parentNode.insertBefore(canvas, under);
@@ -141,13 +187,17 @@ export const R3D = {
       const sq = f.squash || 0, hh = f.h * MODELS[f.key].k;
       inner.scale.set(hh * (1 + sq * .15) * (f.scx || 1), hh * (1 - sq * .25), hh * (1 + sq * .15));
       inner.rotation.set(f.pitch || 0, 0, -(f.lean || 0) * Math.cos(phi)); // lean toward the side it faces
-      const U = o.userData; if (U.mixer) { const now = performance.now(), dt = Math.min(.1, (now - U.t) / 1000); U.t = now;
+      const U = o.userData, hid = f.hat && HATS3D.has(f.hat) ? f.hat : null; U.key = f.key;
+      if (hid || U.hatId) { if (hid) load('hat_' + hid); if (MODELS[f.key].head) wearHat(o, MODELS[f.key], hid, f.hatFit); else if (!MODELS[f.key].skinned) wearHatTop(o, hid, f.hatFit); }
+      if (U.mixer) { const now = performance.now(), dt = Math.min(.1, (now - U.t) / 1000); U.t = now;
         const want = U.acts[f.anim] ? f.anim : U.acts[ANIMS[f.key][0]] ? ANIMS[f.key][0] : Object.keys(U.acts)[0]; if (want !== U.cur || (f.restart && ONCE.has(want))) { const next = U.acts[want]; next.reset().play(); if (U.cur && U.acts[U.cur] !== next) U.acts[U.cur].crossFadeTo(next, .18, false); U.cur = want; }
         U.mixer.update(dt * (f.animSpeed || 1)); }
+      if (U.hat && U.hat.userData.fit) fitHat(o, MODELS[f.key], inner.scale.y);
       o.traverse(n => { if (!n.isMesh) return; if (n.userData.shadow) { n.material.opacity = .2 * f.alpha; return; }
         if (n.userData.hull) { n.visible = f.alpha > .5; return; }
         if (n.parent && n.parent.userData.prop || n.userData.prop) return;
         const mt = n.material; if (!mt.emissive) return; mt.transparent = f.alpha < .99; mt.opacity = f.alpha;
+        if (mt.userData.u) { const w = f.sweater, u = mt.userData.u; if (!w) u.uSw.value.w = 0; else { u.uSw.value.set(w.h || 0, w.s ?? 1, w.v ?? 1, w.rainbow ? 2 : w.stripes ? 3 : 1); if (w.stripes) u.uSt.value.set(w.stripes[0], w.stripes[1]); } }
         if (f.tint) mt.color.set(f.flash ? '#ffffff' : f.tint); else mt.color.set(0xffffff);
         mt.emissive.set(f.flash ? 0xffffff : 0x000000); mt.emissiveIntensity = f.flash ? .6 : 0; });
     }
