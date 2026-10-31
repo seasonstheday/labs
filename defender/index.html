@@ -632,7 +632,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 81</div>
+    <div class="build">build 82</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2308,6 +2308,10 @@ const EMO_RE = (() => { for (const id in CHARS) if (id !== 'dad' && CHARS[id].em
 const EMO_RE_G = new RegExp(EMO_RE.source, 'gu');
 (function () { const st = document.createElement('style'); st.textContent = Object.entries(SVG_I).map(([k, v]) => `.ico-${k}{background-image:url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${v}</svg>`)}")}`).join('\n'); document.head.appendChild(st); })();
 const icoH = k => `<i class="ico ico-${k}" aria-hidden="true"></i>`;
+// painted versions (tools/gen_ui_icons.py -> assets/ui/<name>.webp) take over from the drawings as soon as the list arrives
+const UI_PAINTED = new Set(); let emoCanvasReset = () => {};
+fetch('assets/ui/index.json').then(r => r.ok ? r.json() : []).then(list => { if (!list.length) return; list.forEach(k => UI_PAINTED.add(k));
+  const st = document.createElement('style'); st.textContent = list.filter(k => SVG_I[k]).map(k => `.ico-${k}{background-image:url(assets/ui/${k}.webp)}`).join('\n'); document.head.appendChild(st); emoCanvasReset(); }).catch(() => {});
 function emoNode(t) { const s = t.data; if (!EMO_RE.test(s)) return; const f = document.createDocumentFragment(); let last = 0;
   s.replace(EMO_RE_G, (m, at) => { if (at > last) f.appendChild(document.createTextNode(s.slice(last, at))); let el;
     if (EMO_ICON[m]) { el = document.createElement('i'); el.className = 'ico ico-' + EMO_ICON[m]; } else { el = document.createElement('img'); el.className = 'ico hd'; el.src = EMO_IMG[m]; el.alt = ''; }
@@ -2350,7 +2354,8 @@ document.addEventListener('pointerdown', e => { if (tipEl && Date.now() - tipSho
 document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('#frame') && tipFor(e.target)) e.preventDefault(); });
 // the same drawings on the canvas: any fillText/strokeText with an emoji in it draws the icon in its place
 (function () { const P = CanvasRenderingContext2D.prototype, F = P.fillText, S = P.strokeText, SPLIT = new RegExp('(' + EMO_RE.source + ')', 'u'), cache = {};
-  const img = m => cache[m] || (cache[m] = Object.assign(new Image(), { src: EMO_ICON[m] ? `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${SVG_I[EMO_ICON[m]]}</svg>`)}` : EMO_IMG[m] }));
+  emoCanvasReset = () => { for (const m in cache) if (EMO_ICON[m] && UI_PAINTED.has(EMO_ICON[m])) delete cache[m]; };
+  const img = m => cache[m] || (cache[m] = Object.assign(new Image(), { src: EMO_ICON[m] && UI_PAINTED.has(EMO_ICON[m]) ? `assets/ui/${EMO_ICON[m]}.webp` : EMO_ICON[m] ? `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${SVG_I[EMO_ICON[m]]}</svg>`)}` : EMO_IMG[m] }));
   function draw(ctx, t, x, y, stroke) { const parts = t.split(SPLIT).filter(Boolean), px = +((/([\d.]+)px/.exec(ctx.font) || [])[1] || 16), sz = px * 1.15;
     const ws = parts.map(p => EMO_ICON[p] || EMO_IMG[p] ? sz : ctx.measureText(p).width), tot = ws.reduce((a, b) => a + b, 0), al = ctx.textAlign, bl = ctx.textBaseline;
     let cx = al === 'center' ? x - tot / 2 : al === 'right' || al === 'end' ? x - tot : x; const top = bl === 'middle' ? y - sz / 2 : bl === 'top' || bl === 'hanging' ? y : y - sz * .85;
@@ -3610,10 +3615,10 @@ function petProps(id, held) {
 /* ───────── draw: characters ───────── */
 // Dad standing with his feet at (x, y), `h` tall
 function drawDadAt(c, x, y, h, face, pose, opts = {}) {
-  // the live 3D Dad in a match (?r3d): idle, a throw while a move winds up, ouch when hit, a cheer once the stage is won
+  // the live 3D Dad in a match (?r3d): idle, a spell-cast point while a move winds up, ouch when hit, a cheer once the stage is won
   if (c === ctx && R3D && typeof G !== 'undefined' && G && R3D.has('dad')) {
-    const anim = G.flash > 0 ? 'ouch' : G.cleared ? 'cheer' : pose === 'pointing' ? 'throw' : 'idle';
-    R3D.put('dad', c, x, y, h * .95, { phi: Math.PI / 2 - face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && (opts.p || 0) < .06, lean: opts.lean, alpha: opts.alpha ?? 1 }); return; }
+    const anim = G.flash > 0 ? 'ouch' : G.cleared ? 'cheer' : pose === 'pointing' ? 'cast' : 'idle';
+    R3D.put('dad', c, x, y, h * .95, { phi: Math.PI / 2 - face * .45, anim, animSpeed: anim === 'cast' ? 1.5 : 1, restart: anim === 'cast' && (opts.p || 0) < .06, lean: opts.lean, alpha: opts.alpha ?? 1 }); return; }
   const img = IMG[pose]; if (!img || !img.complete || !img.naturalWidth) return;
   const w = h * img.naturalWidth / img.naturalHeight;
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face, 1);
@@ -3779,11 +3784,11 @@ function drawMember(m) {
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
     const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
-    if (R3D && R3D.has('dad')) { // the live 3D Dad (?r3d): idle, a throw on a cast, ouch when bumped, a cheer once the stage is won
-      const anim = pose === 'ouch' ? 'ouch' : G.cleared ? 'cheer' : a ? 'throw' : 'idle', fx = m.x + step * .6, fy = m.y + 30 - hop * .5, h = DAD_DRAW;
+    if (R3D && R3D.has('dad')) { // the live 3D Dad (?r3d): idle, a spell-cast point on a cast, ouch when bumped, a cheer once the stage is won
+      const anim = pose === 'ouch' ? 'ouch' : G.cleared ? 'cheer' : a ? 'cast' : 'idle', fx = m.x + step * .6, fy = m.y + 30 - hop * .5, h = DAD_DRAW;
       const sw = wardItem('sweater');
       const hat = dadHat();
-      R3D.put('dad', ctx, fx, fy, h, { hat: hat && HATFIT[hat] ? hat : null, hatFit: HATFIT[hat], sweater: sw.c ? sw : null, phi: Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && p < .06, lean: lean * .6, alpha });
+      R3D.put('dad', ctx, fx, fy, h, { hat: hat && HATFIT[hat] ? hat : null, hatFit: HATFIT[hat], sweater: sw.c ? sw : null, phi: Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'cast' ? 1.5 : 1, restart: anim === 'cast' && p < .06, lean: lean * .6, alpha });
       m.lensAt = { x: fx + m.face * h * .2, y: fy - h * .62 }; return; }
     if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
       const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;

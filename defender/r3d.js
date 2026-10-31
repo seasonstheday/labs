@@ -25,8 +25,8 @@ const stats = { calls: 0, tris: 0, shown: 0 };
 // are projected onto it (see tools/render_sheet.mjs --paint)
 // rigged characters: their clips come as small bone-only files, assets/models/<key>_<clip>.glb (tools/clip_only.mjs).
 // The first is the one they loop when the game asks for nothing in particular; the ones in ONCE play through and hold.
-const ANIMS = { dad: ['idle', 'throw', 'cheer', 'ouch', 'wave', 'walking'], kid: ['idle', 'wave', 'cheer', 'walking'] };
-const ONCE = new Set(['throw', 'cheer', 'ouch', 'wave']);
+const ANIMS = { dad: ['idle', 'cast', 'cheer', 'ouch', 'wave', 'walking'], kid: ['idle', 'wave', 'cheer', 'walking'] };
+const ONCE = new Set(['cast', 'cheer', 'ouch', 'wave']);
 // a magnifying glass for Dad's right hand (the turnaround drew him empty-handed so the model would rig cleanly)
 function lensProp() { const g = new THREE.Group(), toon = c => new THREE.MeshToonMaterial({ color: c, gradientMap: ramp });
   const ring = new THREE.Mesh(new THREE.TorusGeometry(.055, .012, 8, 24), toon(0xc9952a)), glass = new THREE.Mesh(new THREE.CircleGeometry(.055, 24), new THREE.MeshBasicMaterial({ color: 0xcfe9f5, transparent: true, opacity: .55, side: THREE.DoubleSide }));
