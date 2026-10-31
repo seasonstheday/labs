@@ -632,7 +632,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 80</div>
+    <div class="build">build 81</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -3652,7 +3652,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   if (S3 || M3) { // the 3D friend: one frame per direction, the squash and lean already applied above
     c.scale(face, 1); // undo the flip: the sheet has real left and right sides
     const phi = opts.aim != null ? opts.aim : (face > 0 ? .35 : Math.PI - .35);
-    if (M3) { R3D.put('pet_' + id, c, 0, bob * .3, (PET_H[id] || 48) * 1.1, { phi, pitch: opts.held != null ? Math.sin(Math.min(1, opts.held) * Math.PI) * .35 : 0 }); c.restore(); c.restore(); return; }
+    if (M3) { const th = look().team; R3D.put('pet_' + id, c, 0, bob * .3, (PET_H[id] || 48) * 1.1, { hat: th !== 'none' ? th : null, hatFit: HATFIT[th], phi, pitch: opts.held != null ? Math.sin(Math.min(1, opts.held) * Math.PI) * .35 : 0 }); c.restore(); c.restore(); return; }
     const A = S3.meta.anims, atkA = opts.held != null && A.attack; // a sheet with its own attack plays it through the wind-up and strike
     drawSheet(c, S3, atkA ? 'attack' : 'idle', phi, atkA ? opts.held * A.attack.dur * .999 : t, 0, bob * .3, (PET_H[id] || 48) * 1.1, { props: opts.gear ? petProps(id, opts.held) : null });
     c.restore(); c.restore(); return;
@@ -3781,7 +3781,9 @@ function drawMember(m) {
     const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
     if (R3D && R3D.has('dad')) { // the live 3D Dad (?r3d): idle, a throw on a cast, ouch when bumped, a cheer once the stage is won
       const anim = pose === 'ouch' ? 'ouch' : G.cleared ? 'cheer' : a ? 'throw' : 'idle', fx = m.x + step * .6, fy = m.y + 30 - hop * .5, h = DAD_DRAW;
-      R3D.put('dad', ctx, fx, fy, h, { phi: Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && p < .06, lean: lean * .6, alpha });
+      const sw = wardItem('sweater');
+      const hat = dadHat();
+      R3D.put('dad', ctx, fx, fy, h, { hat: hat && HATFIT[hat] ? hat : null, hatFit: HATFIT[hat], sweater: sw.c ? sw : null, phi: Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && p < .06, lean: lean * .6, alpha });
       m.lensAt = { x: fx + m.face * h * .2, y: fy - h * .62 }; return; }
     if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
       const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
@@ -5416,7 +5418,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
