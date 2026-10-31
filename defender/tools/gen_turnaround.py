@@ -22,8 +22,15 @@ CAST = {  # name: (reference art in assets/, description, pose)
     'pet_hopper': ('pet_hopper.png', 'the squat green toad in the reference picture, drawn exactly like it (pale belly, bumpy spotted back, cheeky grin)', 'Sitting, all four feet on the ground.'),
 }
 
+# any other friend: their own art and the one-line description from tools/icons.json
+def cast(name):
+    if name in CAST: return CAST[name]
+    import json; who = name[4:].capitalize(); d = {x['who']: x.get('whoDesc', '') for x in json.load(open(os.path.join(HERE, 'icons.json')))}
+    return (name + '.png', f'the little animal friend in the reference picture, {who}, drawn exactly like it (same shape, colours, markings and face). {d.get(who, "")}',
+            'In a calm neutral pose: standing on all its feet if it walks, hovering level if it flies, resting upright if it swims; limbs and wings spread a little so none overlap the body.')
+
 def sheet(name):
-    ref_src, desc, pose = CAST[name]; os.makedirs(OUT, exist_ok=True)
+    ref_src, desc, pose = cast(name); os.makedirs(OUT, exist_ok=True)
     ref = os.path.join('/tmp', 'ref_turn_' + name + '.png')
     subprocess.run(['convert', os.path.join(ASSETS, ref_src), '-background', 'white', '-alpha', 'remove', '-alpha', 'off', ref], check=True)
     prompt = (G.STYLE + f' A character turnaround sheet of {desc}: three full-body views side by side in one row, evenly spaced, the same size and height: '
