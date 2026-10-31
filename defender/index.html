@@ -632,7 +632,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 79</div>
+    <div class="build">build 80</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -3610,6 +3610,10 @@ function petProps(id, held) {
 /* ───────── draw: characters ───────── */
 // Dad standing with his feet at (x, y), `h` tall
 function drawDadAt(c, x, y, h, face, pose, opts = {}) {
+  // the live 3D Dad in a match (?r3d): idle, a throw while a move winds up, ouch when hit, a cheer once the stage is won
+  if (c === ctx && R3D && typeof G !== 'undefined' && G && R3D.has('dad')) {
+    const anim = G.flash > 0 ? 'ouch' : G.cleared ? 'cheer' : pose === 'pointing' ? 'throw' : 'idle';
+    R3D.put('dad', c, x, y, h * .95, { phi: Math.PI / 2 - face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && (opts.p || 0) < .06, lean: opts.lean, alpha: opts.alpha ?? 1 }); return; }
   const img = IMG[pose]; if (!img || !img.complete || !img.naturalWidth) return;
   const w = h * img.naturalWidth / img.naturalHeight;
   c.save(); c.translate(x, y); if (opts.lean) c.rotate(opts.lean); c.scale(face, 1);
@@ -3775,6 +3779,10 @@ function drawMember(m) {
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
     const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
+    if (R3D && R3D.has('dad')) { // the live 3D Dad (?r3d): idle, a throw on a cast, ouch when bumped, a cheer once the stage is won
+      const anim = pose === 'ouch' ? 'ouch' : G.cleared ? 'cheer' : a ? 'throw' : 'idle', fx = m.x + step * .6, fy = m.y + 30 - hop * .5, h = DAD_DRAW;
+      R3D.put('dad', ctx, fx, fy, h, { phi: Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'throw' ? 1.7 : 1, restart: anim === 'throw' && p < .06, lean: lean * .6, alpha });
+      m.lensAt = { x: fx + m.face * h * .2, y: fy - h * .62 }; return; }
     if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
       const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
       const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up

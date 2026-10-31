@@ -4,4 +4,7 @@ The Meshy models behind the 3D sprite sheets and the coming live-3D renderer: th
 
 - **Compression:** `npx @gltf-transform/cli optimize <in> <out> --compress meshopt --texture-compress webp --texture-size 1024 --simplify false`. This took them from 67 MB to 5 MB.
 - **Loading:** set `MeshoptDecoder` on three.js's `GLTFLoader` (`three/addons/libs/meshopt_decoder.module.js`).
-- **Phase 1 (textured, from the turnaround drawings via `tools/meshy_multi.py`):** `pet_webster`, `pet_sparky`, `pet_hopper` (static), and `dad`, `kid` (rigged; the walk and run clips are in `tools/meshy_out/<name>/`, not yet used by the game). `pet_hopper_paint/` is the old way of colouring the untextured first Hopper test and is no longer used.
+- **Phase 1 (textured, from the turnaround drawings via `tools/meshy_multi.py`):** all 28 friends (`pet_<id>`, static) and `dad`, `kid` (rigged).
+- **Clips:** rigged characters' animations are bone-only files `<name>_<clip>.glb` (25–120 KB), cut from Meshy's animation GLBs by `tools/clip_only.mjs`. Dad: idle, throw, cheer, ouch, wave, walking, running. Kid: idle, wave, cheer, walking, running. `r3d.js` lists which it uses in `ANIMS`.
+- **Packing:** `tools/pack_models.sh` compresses every finished model in `tools/meshy_out/` into this folder.
+- `pet_hopper_paint/` is the old way of colouring the untextured first Hopper test and is no longer used.

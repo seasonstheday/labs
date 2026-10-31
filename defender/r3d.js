@@ -8,6 +8,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const W = 440, H = 760, CX = 220, CY = 420, TILT = 32 * Math.PI / 180, SIN = Math.sin(TILT), COS = Math.cos(TILT);
 let renderer, scene, cam, ground, groundSrc = null, canvas;
@@ -22,6 +23,15 @@ const stats = { calls: 0, tris: 0, shown: 0 };
 
 // a paint shader for models that came without a texture: the drawings of the character from the front, side and back
 // are projected onto it (see tools/render_sheet.mjs --paint)
+// rigged characters: their clips come as small bone-only files, assets/models/<key>_<clip>.glb (tools/clip_only.mjs).
+// The first is the one they loop when the game asks for nothing in particular; the ones in ONCE play through and hold.
+const ANIMS = { dad: ['idle', 'throw', 'cheer', 'ouch', 'wave', 'walking'], kid: ['idle', 'wave', 'cheer', 'walking'] };
+const ONCE = new Set(['throw', 'cheer', 'ouch', 'wave']);
+// a magnifying glass for Dad's right hand (the turnaround drew him empty-handed so the model would rig cleanly)
+function lensProp() { const g = new THREE.Group(), toon = c => new THREE.MeshToonMaterial({ color: c, gradientMap: ramp });
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.055, .012, 8, 24), toon(0xc9952a)), glass = new THREE.Mesh(new THREE.CircleGeometry(.055, 24), new THREE.MeshBasicMaterial({ color: 0xcfe9f5, transparent: true, opacity: .55, side: THREE.DoubleSide }));
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(.012, .014, .09, 8), toon(0x8a5a2b)); handle.position.y = -.1; ring.add(glass); g.add(ring, handle); ring.position.y = -.01;
+  g.userData.prop = true; return g; }
 const PAINT = {}; // e.g. { pet_x: 'assets/models/pet_x_paint/' } for a model that has no texture of its own
 async function paintTex(url) { const im = new Image(); im.src = url; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
   const d = x.getImageData(0, 0, c.width, c.height).data; let x0 = c.width, x1 = 0, y0 = c.height, y1 = 0;
@@ -47,6 +57,8 @@ function load(key) {
   MODELS[key] = null;
   (async () => {
     const g = await loader.loadAsync(`assets/models/${key}.glb`), root = g.scene;
+    let skinned = false; root.traverse(o => { if (o.isSkinnedMesh) skinned = true; });
+    const clips = {}; if (skinned && ANIMS[key]) await Promise.all(ANIMS[key].map(async c => { try { const a = await loader.loadAsync(`assets/models/${key}_${c}.glb`); if (a.animations[0]) { a.animations[0].name = c; clips[c] = a.animations[0]; } } catch (e) {} }));
     const P = PAINT[key] ? { front: await paintTex(PAINT[key] + 'front.png'), side: await paintTex(PAINT[key] + 'side.png'), back: await paintTex(PAINT[key] + 'back.png') } : null;
     // stand it on the floor, centred, one unit tall; its front faces +z
     const box = new THREE.Box3().setFromObject(root), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
@@ -59,22 +71,29 @@ function load(key) {
       o.material = P ? paintMaterial(new THREE.MeshToonMaterial({ gradientMap: ramp }), o.geometry.boundingBox, P) : new THREE.MeshToonMaterial({ map: m.map || null, color: 0xffffff, gradientMap: ramp });
       o.userData.toon = true;
       // inverted hull outline, pushed out along the normals in the shader so it stays the same width at any size
-      const hull = new THREE.Mesh(o.geometry, outlineMat); hull.userData.hull = true; hull.renderOrder = -1; o.add(hull); }
+      let hull; if (o.isSkinnedMesh) { hull = new THREE.SkinnedMesh(o.geometry, outlineSkin); hull.bind(o.skeleton, o.bindMatrix); } else hull = new THREE.Mesh(o.geometry, outlineMat);
+      hull.userData.hull = true; hull.renderOrder = -1; o.add(hull); }
+    if (key === 'dad') { let hand = null; root.traverse(o => { if (o.isBone && /^RightHand$/i.test(o.name)) hand = o; });
+      if (hand) { tpl.updateMatrixWorld(true); const l = lensProp(), s = 1 / (hand.getWorldScale(new THREE.Vector3()).y || 1); l.scale.setScalar(s); l.position.set(0, .07 * s, 0); hand.add(l); } } // sizes in model units, where Dad is 1 tall
     // a soft round shadow on the ground
     const sh = new THREE.Mesh(new THREE.CircleGeometry(.42, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .2, depthWrite: false }));
     const dx = size.x / size.y, dz = size.z / size.y; sh.scale.setScalar(Math.max(.8, (dx + dz) / 2) * 1.1);
     sh.rotation.x = -Math.PI / 2; sh.position.y = .002; sh.userData.shadow = true; tpl.add(sh);
     // how tall one unit of model looks on screen: its height foreshortened plus its depth seen from above, so a squat toad
     // and a thin page both come out as tall on screen as the 2D game asks for
-    MODELS[key] = { tpl, ok: true, k: 1 / (COS + (dx + dz) / 2 * SIN * .5) };
+    MODELS[key] = { tpl, ok: true, k: 1 / (COS + (dx + dz) / 2 * SIN * .5), skinned, clips };
   })().catch(e => { console.warn('r3d: no model', key, e && e.message); MODELS[key] = false; });
   return null;
 }
+// on a rigged model the push must use the rest-pose normal, before the skeleton bends it, or the outline tears at the joints
+const outlineSkin = outlineMat.clone(); outlineSkin.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(normal) * .018;'); };
+outlineSkin.customProgramCacheKey = () => 'outline-skin';
 outlineMat.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(objectNormal) * .018;'); };
 
 function instance(key, i) {
   const list = POOL[key] || (POOL[key] = []);
-  if (!list[i]) { const M = MODELS[key], o = M.tpl.clone(true);
+  if (!list[i]) { const M = MODELS[key], o = M.skinned ? SkeletonUtils.clone(M.tpl) : M.tpl.clone(true);
+    if (M.skinned && Object.keys(M.clips).length) { const mx = new THREE.AnimationMixer(o); o.userData.mixer = mx; o.userData.acts = {}; for (const c in M.clips) { const a = mx.clipAction(M.clips[c]); if (ONCE.has(c)) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; } o.userData.acts[c] = a; } o.userData.cur = null; o.userData.t = performance.now(); }
     o.traverse(n => { if (!n.isMesh) return;
       if (n.userData.toon || n.userData.shadow) { const old = n.material, mt = old.clone(); mt.onBeforeCompile = old.onBeforeCompile; if (old.customProgramCacheKey) mt.customProgramCacheKey = old.customProgramCacheKey; n.material = mt; } }); // its own tint and fade
     scene.add(o); list[i] = o; }
@@ -122,9 +141,13 @@ export const R3D = {
       const sq = f.squash || 0, hh = f.h * MODELS[f.key].k;
       inner.scale.set(hh * (1 + sq * .15) * (f.scx || 1), hh * (1 - sq * .25), hh * (1 + sq * .15));
       inner.rotation.set(f.pitch || 0, 0, -(f.lean || 0) * Math.cos(phi)); // lean toward the side it faces
+      const U = o.userData; if (U.mixer) { const now = performance.now(), dt = Math.min(.1, (now - U.t) / 1000); U.t = now;
+        const want = U.acts[f.anim] ? f.anim : U.acts[ANIMS[f.key][0]] ? ANIMS[f.key][0] : Object.keys(U.acts)[0]; if (want !== U.cur || (f.restart && ONCE.has(want))) { const next = U.acts[want]; next.reset().play(); if (U.cur && U.acts[U.cur] !== next) U.acts[U.cur].crossFadeTo(next, .18, false); U.cur = want; }
+        U.mixer.update(dt * (f.animSpeed || 1)); }
       o.traverse(n => { if (!n.isMesh) return; if (n.userData.shadow) { n.material.opacity = .2 * f.alpha; return; }
         if (n.userData.hull) { n.visible = f.alpha > .5; return; }
-        const mt = n.material; mt.transparent = f.alpha < .99; mt.opacity = f.alpha;
+        if (n.parent && n.parent.userData.prop || n.userData.prop) return;
+        const mt = n.material; if (!mt.emissive) return; mt.transparent = f.alpha < .99; mt.opacity = f.alpha;
         if (f.tint) mt.color.set(f.flash ? '#ffffff' : f.tint); else mt.color.set(0xffffff);
         mt.emissive.set(f.flash ? 0xffffff : 0x000000); mt.emissiveIntensity = f.flash ? .6 : 0; });
     }

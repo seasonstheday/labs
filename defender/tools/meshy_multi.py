@@ -4,6 +4,7 @@
     python3 defender/tools/meshy_multi.py dad kid pet_webster pet_sparky pet_hopper
     ... --no-rig          # skip rigging even for Dad and the Kid
     ... --poly 12000      # target triangles (default 12000 for people, 8000 for friends)
+    ... --parallel 5      # how many run at once (Meshy refuses more with HTTP 429)
 
 Reads assets/models/turnarounds/<name>_{front,side,back}.png (made by gen_turnaround.py) and writes
 meshy_out/<name>/model.glb, thumbnail.png and model_task.json; for Dad and the Kid also rigged.glb and the basic
@@ -48,8 +49,10 @@ def one(name):
 
 if __name__ == '__main__':
     names = [a for a in sys.argv[1:] if not a.startswith('--') and not a.isdigit()]
+    gate = threading.Semaphore(int(opt('parallel', 5)))  # Meshy turns away more than a handful of tasks at once (HTTP 429)
     def safe(n):
-        try: one(n)
-        except BaseException as e: print(n, 'FAILED', e, flush=True)
+        with gate:
+            try: one(n)
+            except BaseException as e: print(n, 'FAILED', e, flush=True)
     ts = [threading.Thread(target=safe, args=(n,)) for n in names]
     [t.start() for t in ts]; [t.join() for t in ts]
