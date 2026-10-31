@@ -4,4 +4,4 @@ The Meshy models behind the 3D sprite sheets and the coming live-3D renderer: th
 
 - **Compression:** `npx @gltf-transform/cli optimize <in> <out> --compress meshopt --texture-compress webp --texture-size 1024 --simplify false`. This took them from 67 MB to 5 MB.
 - **Loading:** set `MeshoptDecoder` on three.js's `GLTFLoader` (`three/addons/libs/meshopt_decoder.module.js`).
-- **Hopper:** `pet_hopper` is untextured. The sheets colour it at render time with `render_sheet.mjs --paint assets/models/pet_hopper_paint` (the front, side and back drawings, kept here). It gets a textured model in Phase 1 (see `reports/Going 3D.md`).
+- **Phase 1 (textured, from the turnaround drawings via `tools/meshy_multi.py`):** `pet_webster`, `pet_sparky`, `pet_hopper` (static), and `dad`, `kid` (rigged; the walk and run clips are in `tools/meshy_out/<name>/`, not yet used by the game). `pet_hopper_paint/` is the old way of colouring the untextured first Hopper test and is no longer used.

@@ -22,7 +22,7 @@ const stats = { calls: 0, tris: 0, shown: 0 };
 
 // a paint shader for models that came without a texture: the drawings of the character from the front, side and back
 // are projected onto it (see tools/render_sheet.mjs --paint)
-const PAINT = { pet_hopper: 'assets/models/pet_hopper_paint/' };
+const PAINT = {}; // e.g. { pet_x: 'assets/models/pet_x_paint/' } for a model that has no texture of its own
 async function paintTex(url) { const im = new Image(); im.src = url; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
   const d = x.getImageData(0, 0, c.width, c.height).data; let x0 = c.width, x1 = 0, y0 = c.height, y1 = 0;
   for (let y = 0; y < c.height; y++) for (let xx = 0; xx < c.width; xx++) if (d[(y * c.width + xx) * 4 + 3] > 40) { x0 = Math.min(x0, xx); x1 = Math.max(x1, xx); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
