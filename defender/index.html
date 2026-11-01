@@ -176,6 +176,13 @@
   #mapWrap { position: relative; flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
   #mapInner { position: relative; width: 440px; }
   #mapc { position: absolute; left: 0; top: 0; width: 440px; }
+  #mapfx { position: absolute; left: 0; top: 0; width: 440px; pointer-events: none; }
+  .pin.next { animation: pinhop 1.1s ease-in-out infinite; } @keyframes pinhop { 0%, 100% { transform: scale(1.15) translateY(0); } 45% { transform: scale(1.2, 1.1) translateY(-7px); } }
+  #frame.calm .pin.next { animation: none; }
+  /* the stage card stays short so the map has room: the description opens with a tap on the title */
+  .mapcard h3 { cursor: pointer; } .mapcard h3::after { content: ' ▾'; font-size: 16px; color: var(--muted); } .mapcard.more h3::after { content: ' ▴'; }
+  .mapcard:not(.more) .d, .mapcard:not(.more) .ptip { display: none; }
+  .mprow { display: flex; gap: 8px; } .mprow #mapPlay { flex: 1; } .mprow #mapChests { position: relative; flex: none; width: 58px; font-size: 24px; padding: 0; }
   .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 10px; pointer-events: none; }
   .wlab small { display: block; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
   .wlab.locked { opacity: .6; }
@@ -632,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 83</div>
+    <div class="build">build 84</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -661,14 +668,13 @@
   <!-- ───────── world map ───────── -->
   <section id="map" class="screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">World Map</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
-    <div id="mapWrap"><div id="mapInner"><canvas id="mapc" width="880" height="3400"></canvas><div id="pins"></div></div></div>
+    <div id="mapWrap"><div id="mapInner"><canvas id="mapc" width="880" height="3400"></canvas><canvas id="mapfx" width="880" height="1200"></canvas><div id="pins"></div></div></div>
     <div class="mapcard">
-      <h3 id="mapName">The Backyard</h3>
+      <h3 id="mapName" title="More about this stage">The Backyard</h3>
       <div class="d" id="mapDesc"></div>
       <div id="mapPow"></div>
       <div class="diffs" id="diffs"></div>
-      <button class="btn" id="mapPlay" style="width:100%">Play ▶</button>
-      <button class="btn ghost small" id="mapChests" style="width:100%;margin-top:6px;position:relative">🎁 Chapter Rewards</button>
+      <div class="mprow"><button class="btn" id="mapPlay">Play ▶</button><button class="btn ghost small" id="mapChests" title="Chapter Rewards">🎁</button></div>
     </div>
   </section>
 
@@ -4852,7 +4858,7 @@ function buildMap(scroll = true) {
   WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}<small>${chName(w)}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
   STAGES.forEach((st, i) => {
     const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard'), starsOf(i, 'master')), b = document.createElement('button'), [px, py] = pinXY(i);
-    b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
+    b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (i === save.unlocked && !save.cleared.includes(i) ? ' next' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
     b.style.left = px + 'px'; b.style.top = py + 'px';
     b.innerHTML = `${locked ? '🔒' : st.idx + 1}${stars ? `<div class="st">${'★'.repeat(stars)}</div>` : ''}${starsOf(i, 'master') ? '<i class="crown">🔥</i>' : ''}`;
     if (!locked) b.onclick = () => { pickStage = i; buildMap(false); };
@@ -4864,7 +4870,92 @@ function buildMap(scroll = true) {
   $('#diffs').querySelectorAll('[data-d]').forEach(b => b.onclick = () => { save.diff = b.dataset.d; persist(); buildMap(false); });
   $('#mapPlay').textContent = `Play ${st.name} on ${DIFF[save.diff].name} ▶`;
   if (scroll) { const wrap = $('#mapWrap'); requestAnimationFrame(() => { wrap.scrollTop = Math.max(0, pinXY(pickStage)[1] - wrap.clientHeight / 2); }); }
+  mapFxStart();
 }
+/* ───────── the living map: a light layer of motion over the painted bands ───────── */
+// Only the strip on screen is drawn, at 30 fps, and only while the map is open; Calm mode keeps just the Kid and the torch
+// still. The Kid stands at the next stage with a torch and hops along the path when a new stage opens; every chapter has a
+// couple of quiet loops (butterflies, ripples, snow...) and a surprise when you tap its picture.
+const MFX = { parts: [], t: 0, last: 0, hop: null, giggle: 0, run: false };
+function mapFxStart() {
+  const w = $('#mapWrap'), c = $('#mapfx'); if (!c) return;
+  const seen = save.mapSeen ?? save.unlocked; // a new stage since last time: the Kid hops there
+  if (save.unlocked > seen && !save.opt.calm) MFX.hop = { from: Math.min(seen, STAGES.length - 1), to: save.unlocked, t: 0 };
+  save.mapSeen = save.unlocked;
+  if (MFX.run) return; MFX.run = true; MFX.last = performance.now();
+  requestAnimationFrame(function loop(now) {
+    if ($('#map').hidden || document.hidden) { MFX.run = false; return; }
+    requestAnimationFrame(loop); if (now - MFX.last < 32) return; const dt = Math.min(.1, (now - MFX.last) / 1000); MFX.last = now; MFX.t += dt;
+    const W = w.clientWidth, H = w.clientHeight, top = w.scrollTop;
+    if (c.width !== 880 || c.height !== Math.round(H * 2)) { c.width = 880; c.height = Math.round(H * 2); c.style.height = H + 'px'; }
+    c.style.top = top + 'px'; const x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, -top * 2); x.clearRect(0, top, 440, H);
+    const calm = save.opt.calm;
+    WORLDS.forEach((Wd, wi) => { const bt = MAP_H - (wi + 1) * BAND; if (bt > top + H || bt + BAND < top || calm) return;
+      x.save(); x.beginPath(); x.rect(0, bt, 440, BAND); x.clip(); x.translate(0, bt); AMB[wi % AMB.length](x, MFX.t, wi * 5 <= save.unlocked); x.restore(); });
+    for (const p of MFX.parts) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 0) * dt; }
+    MFX.parts = MFX.parts.filter(p => p.t < p.life);
+    for (const p of MFX.parts) { x.globalAlpha = Math.max(0, 1 - p.t / p.life); p.draw ? p.draw(x, p) : (x.fillStyle = p.col, x.beginPath(), x.arc(p.x, p.y, p.r, 0, 7), x.fill()); } x.globalAlpha = 1;
+    mapKid(x, dt);
+  });
+}
+// where the Kid stands: beside the next stage's pin; while hopping, along the dotted path from the old pin
+function kidAt() { const H = MFX.hop; if (!H) { const [px, py] = pinXY(Math.min(save.unlocked, STAGES.length - 1)); return [px - 34, py + 14, 0]; }
+  const n = H.to - H.from, f = Math.min(1, H.t / (.7 * n)), seg = Math.min(n - 1, Math.floor(f * n)), q = f * n - seg, [ax, ay] = pinXY(H.from + seg), [bx, by] = pinXY(H.from + seg + 1);
+  return [ax + (bx - ax) * q - 34, ay + (by - ay) * q + 14, Math.sin(q * Math.PI) * 26]; }
+function mapKid(x, dt) {
+  if (MFX.hop) { MFX.hop.t += dt; if (MFX.hop.t >= .7 * (MFX.hop.to - MFX.hop.from) + .2) { MFX.hop = null; for (let i = 0; i < 14; i++) burst(...kidAt(), '#ffd24a'); } }
+  const [kx, ky, up] = kidAt(), t = MFX.t, calm = save.opt.calm;
+  // the torch: a little post with a flame that flickers, and a warm glow on the grass
+  const tx = kx - 24, ty = ky - 2, fl = calm ? 1 : 1 + Math.sin(t * 17) * .08 + Math.sin(t * 29) * .06;
+  const g = x.createRadialGradient(tx, ty - 34, 2, tx, ty - 34, 34); g.addColorStop(0, 'rgba(255,200,90,.45)'); g.addColorStop(1, 'rgba(255,200,90,0)'); x.fillStyle = g; x.beginPath(); x.arc(tx, ty - 34, 34, 0, 7); x.fill();
+  x.fillStyle = '#7a5230'; x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.beginPath(); x.roundRect(tx - 3, ty - 30, 6, 30, 2); x.fill(); x.stroke();
+  x.fillStyle = '#5a3a20'; x.beginPath(); x.roundRect(tx - 6, ty - 34, 12, 6, 2); x.fill(); x.stroke();
+  for (const [col, s] of [['#e5533d', 1], ['#f5a23a', .72], ['#ffe27a', .42]]) { x.fillStyle = col; x.beginPath(); const h = 20 * s * fl, w2 = 7 * s; x.moveTo(tx - w2, ty - 34); x.quadraticCurveTo(tx - w2 * 1.2, ty - 34 - h * .5, tx + Math.sin(t * 9) * 2 * s, ty - 34 - h); x.quadraticCurveTo(tx + w2 * 1.2, ty - 34 - h * .5, tx + w2, ty - 34); x.closePath(); x.fill(); }
+  if (!calm && Math.random() < .25) MFX.parts.push({ x: tx + (Math.random() - .5) * 6, y: ty - 50, vx: (Math.random() - .5) * 10, vy: -26, r: 1.4, col: '#ffd27a', life: .9, t: 0 });
+  // the Kid, breathing, a hop when tapped or travelling
+  const im = art('kid'); const bob = calm ? 0 : Math.sin(t * 3) * 1.5, jump = up + (MFX.giggle > 0 ? Math.sin((1 - MFX.giggle) * Math.PI) * 14 : 0); MFX.giggle = Math.max(0, MFX.giggle - dt * 1.6);
+  x.fillStyle = 'rgba(0,0,0,.18)'; x.beginPath(); x.ellipse(kx, ky, 15, 5, 0, 0, 7); x.fill();
+  if (ready(im)) { const h = 62, w = h * im.naturalWidth / im.naturalHeight; x.drawImage(im, kx - w / 2, ky - h - jump + bob, w, h - bob); }
+  else drawKid(x, kx, ky - jump, 58);
+}
+const burst = (x0, y0, up, col, n = 1) => { for (let i = 0; i < n; i++) { const a = Math.random() * 7, s = 40 + Math.random() * 70; MFX.parts.push({ x: x0, y: y0 - 30 - up, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 30, g: 90, r: 2.5, col, life: .9, t: 0 }); } };
+// each chapter's quiet loops, in band coordinates (440 x 200); open = the chapter is unlocked (locked ones stay quieter)
+const r1 = (i, s) => { const v = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return v - Math.floor(v); };
+const AMB = [
+  (x, t) => { for (let i = 0; i < 4; i++) { const bx = 40 + r1(i, 1) * 360 + Math.sin(t * .4 + i * 2) * 40, by = 60 + r1(i, 2) * 90 + Math.sin(t * 1.3 + i) * 14, f = Math.abs(Math.sin(t * 12 + i)); // backyard: butterflies
+      x.fillStyle = ['#f59ac0', '#ffd24a', '#8fc7e8', '#c9a6f2'][i]; x.strokeStyle = '#3a2c20'; x.lineWidth = 1; for (const d of [-1, 1]) { x.beginPath(); x.ellipse(bx + d * 4 * f, by, 4.5 * f + .5, 5.5, d * .4, 0, 7); x.fill(); x.stroke(); } x.fillStyle = '#3a2c20'; x.fillRect(bx - .7, by - 4, 1.4, 8); } },
+  (x, t) => { for (let i = 0; i < 4; i++) { const p = (t * .35 + r1(i, 3)) % 1, rx = 60 + r1(i, 4 + Math.floor(t * .35 + r1(i, 3))) * 320, ry = 118 + r1(i, 5) * 40; // pond: ripples and a dragonfly
+      x.strokeStyle = `rgba(255,255,255,${.7 * (1 - p)})`; x.lineWidth = 1.5; x.beginPath(); x.ellipse(rx, ry, 4 + p * 20, 2 + p * 7, 0, 0, 7); x.stroke(); }
+    const dx = 220 + Math.sin(t * .7) * 150, dy = 70 + Math.sin(t * 2.3) * 22 + (Math.sin(t * 5) > .9 ? 6 : 0); x.strokeStyle = '#3a2c20'; x.lineWidth = 1; x.fillStyle = 'rgba(200,235,255,.8)';
+    for (const d of [-1, 1]) { x.beginPath(); x.ellipse(dx + d * 5, dy - 2, 6, 2 + Math.abs(Math.sin(t * 30)) * 1.5, d * .3, 0, 7); x.fill(); x.stroke(); } x.fillStyle = '#3f7fb5'; x.fillRect(dx - 8, dy - 1, 16, 2.5); },
+  (x, t) => { for (let i = 0; i < 18; i++) { const mx = 230 + r1(i, 6) * 120 + Math.sin(t * .3 + i) * 10, my = (40 + r1(i, 7) * 120 - t * (3 + r1(i, 8) * 5)) % 160; // library: dust in the window light
+      x.fillStyle = `rgba(255,240,200,${.35 + .4 * Math.abs(Math.sin(t + i))})`; x.beginPath(); x.arc(mx, my < 30 ? my + 160 : my, 1.3, 0, 7); x.fill(); } },
+  (x, t) => { for (let i = 0; i < 12; i++) { const gx = r1(i, 9) * 440, gy = 50 + r1(i, 10) * 60, a = Math.max(0, Math.sin(t * 2 + i * 1.7)); // ocean: glints, a whale spout, a gull
+      x.fillStyle = `rgba(255,255,255,${a * .8})`; x.beginPath(); x.ellipse(gx, gy, 5 * a, 1.2, 0, 0, 7); x.fill(); }
+    const sp = (t % 5) / 5; if (sp < .4) { for (let i = 0; i < 6; i++) { x.fillStyle = 'rgba(220,240,255,.8)'; x.beginPath(); x.arc(270 + (i - 2.5) * sp * 18, 36 - Math.sin(sp / .4 * Math.PI) * 26 + i % 2 * 3, 2.4, 0, 7); x.fill(); } }
+    const gx = ((t * 30) % 560) - 60, gy = 26 + Math.sin(t * 1.5) * 6, wf = Math.sin(t * 8) * 4; x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.beginPath(); x.moveTo(gx - 8, gy - wf); x.quadraticCurveTo(gx - 4, gy - 4, gx, gy); x.quadraticCurveTo(gx + 4, gy - 4, gx + 8, gy - wf); x.stroke(); },
+  (x, t) => { x.strokeStyle = 'rgba(255,255,255,.18)'; x.lineWidth = 2; for (let i = 0; i < 4; i++) { const y = 70 + i * 22; x.beginPath(); for (let k = 0; k <= 440; k += 20) x.lineTo(k, y + Math.sin(k * .05 + t * 3 + i) * 2); x.stroke(); } // desert: heat haze, tumbleweed
+    const p = (t * .12) % 1, tx = -40 + p * 520, ty = 172 - Math.abs(Math.sin(t * 4)) * 8; x.save(); x.translate(tx, ty); x.rotate(t * 5); x.strokeStyle = '#a07850'; x.lineWidth = 1.5; for (let i = 0; i < 6; i++) { x.beginPath(); x.arc(0, 0, 9, i, i + 2.4); x.stroke(); } x.restore(); },
+  (x, t) => { const g = x.createLinearGradient(0, 0, 440, 0); g.addColorStop(0, 'rgba(120,255,200,0)'); g.addColorStop(.5, `rgba(120,255,200,${.18 + .1 * Math.sin(t)})`); g.addColorStop(1, 'rgba(160,140,255,0)'); x.fillStyle = g; // arctic: aurora, snow
+    x.beginPath(); x.moveTo(0, 20); for (let k = 0; k <= 440; k += 20) x.lineTo(k, 18 + Math.sin(k * .03 + t * .8) * 10); for (let k = 440; k >= 0; k -= 20) x.lineTo(k, 44 + Math.sin(k * .025 + t * .6) * 12); x.fill();
+    x.fillStyle = 'rgba(255,255,255,.9)'; for (let i = 0; i < 40; i++) { const sx = (r1(i, 11) * 440 + Math.sin(t * .8 + i) * 12 + 440) % 440, sy = (r1(i, 12) * 200 + t * (14 + r1(i, 13) * 16)) % 200; x.beginPath(); x.arc(sx, sy, 1 + r1(i, 14) * 1.4, 0, 7); x.fill(); } },
+  (x, t) => { for (let i = 0; i < 7; i++) { const ly = (r1(i, 15) * 200 + t * (16 + r1(i, 16) * 12)) % 200, lx = r1(i, 17) * 440 + Math.sin(t * 1.4 + i) * 18; // jungle: falling leaves, fireflies
+      x.save(); x.translate(lx, ly); x.rotate(Math.sin(t * 2 + i)); x.fillStyle = i % 2 ? '#6aa84f' : '#8cc63f'; x.beginPath(); x.ellipse(0, 0, 5, 2.5, 0, 0, 7); x.fill(); x.restore(); }
+    for (let i = 0; i < 8; i++) { const a = Math.max(0, Math.sin(t * 2.4 + i * 2)); x.fillStyle = `rgba(255,240,120,${a})`; x.beginPath(); x.arc(40 + r1(i, 18) * 360 + Math.sin(t * .6 + i) * 10, 90 + r1(i, 19) * 80, 2, 0, 7); x.fill(); } },
+  (x, t) => { for (let i = 0; i < 24; i++) { const a = .35 + .65 * Math.abs(Math.sin(t * (1 + r1(i, 20)) + i)); x.fillStyle = `rgba(255,250,220,${a})`; const sx = r1(i, 21) * 440, sy = r1(i, 22) * 90; // night: twinkles, shooting stars
+      x.beginPath(); x.arc(sx, sy, .8 + a, 0, 7); x.fill(); }
+    const p = (t % 6) / 1.1; if (p < 1) { const sx = 360 - p * 260, sy = 14 + p * 60; const g = x.createLinearGradient(sx, sy, sx + 40, sy - 9); g.addColorStop(0, 'rgba(255,255,230,.95)'); g.addColorStop(1, 'rgba(255,255,230,0)'); x.strokeStyle = g; x.lineWidth = 2.5; x.beginPath(); x.moveTo(sx, sy); x.lineTo(sx + 40, sy - 9); x.stroke(); } },
+];
+// a tap on a chapter's picture (not on a pin): that chapter's surprise, or the Kid giggles if you tap them
+const SURPRISE = ['#f59ac0', '#ffffff', '#fff0c8', '#cfe9f5', '#e8c48a', '#ffffff', '#8cc63f', '#ffe27a'];
+function mapTap(e) {
+  if (e.target.closest('.pin, .wlab')) return; const r = $('#mapInner').getBoundingClientRect(), k = r.width / 440, mx = (e.clientX - r.left) / k, my = (e.clientY - r.top) / k;
+  const [kx, ky] = kidAt(); if (Math.abs(mx - kx) < 22 && my > ky - 66 && my < ky + 6) { MFX.giggle = 1; sfx('coin'); buzz('LIGHT'); return; }
+  const wi = WORLDS.findIndex((W, i) => my >= MAP_H - (i + 1) * BAND && my < MAP_H - i * BAND); if (wi < 0 || save.opt.calm) return;
+  sfx('pop'); buzz('LIGHT'); for (let i = 0; i < 16; i++) { const a = Math.random() * 7, s = 30 + Math.random() * 80; MFX.parts.push({ x: mx, y: my, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, g: wi % 8 === 5 ? 20 : 110, r: 2 + Math.random() * 2.5, col: SURPRISE[wi % 8], life: 1.1, t: 0 }); }
+}
+
+$('#mapInner').addEventListener('click', mapTap); $('#mapName').onclick = () => $('.mapcard').classList.toggle('more');
 function buildStagePick() {
   pickStage = Math.min(pickStage, save.unlocked);
   let total = 0; for (const k in save.stars) total += save.stars[k];
@@ -5386,7 +5477,7 @@ function claimChest(w, k) {
   persist(); sfx('book'); buzz('HEAVY');
   $('#chTiles').innerHTML = payTiles(p).map(tileH).join(''); $('#chReveal').hidden = false; buildChests(); updateChestBtn();
 }
-function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁 Chapter Rewards${anyChest() ? '<i class="dot"></i>' : ''}`; }
+function updateChestBtn() { const b = $('#mapChests'); if (b) b.innerHTML = `🎁${anyChest() ? '<i class="dot"></i>' : ''}`; }
 let treeId = null;
 const tCost = (r) => skCost(r);
 function buildTree() {
