@@ -185,7 +185,7 @@
   .mprow { display: flex; gap: 8px; } .mprow #mapPlay { flex: 1; } .mprow #mapChests { position: relative; flex: none; width: 58px; font-size: 24px; padding: 0; }
   .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 10px; pointer-events: none; }
   .wlab small { display: block; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
-  .wlab.locked { opacity: .6; }
+  .wlab.locked { opacity: .6; } .wlab .wst { font-size: 14px; color: #b07a1a; margin-left: 4px; } .wlab .wmast { display: inline-block; background: var(--gold); border: 2px solid #3a2c20; border-radius: 999px; padding: 0 6px; font-size: 14px; margin-left: 2px; }
   .pin { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
   .pin .st { font-size: 12px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; line-height: 1; margin-top: 2px; }
   .pin.done { background: var(--green); color: #fff; }
@@ -639,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 84</div>
+    <div class="build">build 85</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2862,6 +2862,9 @@ function nearest(from, exclude = null, n = 1) {
 }
 // permanent damage / speed multipliers for a party member
 const dmgMul = m => (wv(m.id) && m.id === 'dad' ? wv('dad').pow : 1) * (1 + (aura('pow') + (G && G.famPow || 0) + synStat('pow', m.id) + diaryStat('pow')) / 100) * charMul(m.id) * (1 + rEff(chr(m.id).pow) * .08) * (1 + gear(m.id).pow / 100) * (cweapOf(m.id) ? cweapOf(m.id).pow : 1);
+// Dad Joke stuns the whole ring, so late on it comes round more slowly and the groan is a little shorter: from tier 20 to 40
+// (the last chapters of Book 1, and Book 2) it eases up to +60% recharge and -0.3 s stun; the first chapters are untouched
+const jokeLate = () => Math.min(1, Math.max(0, ((G && G.lv) || 0) - 20) / 20);
 const cdMul = m => 1 / ((1 + ((G.famQuick || 0) + aura('quick') + synStat('quick', m.id) + diaryStat('quick')) / 100) * starQuick(m.id) * (1 + rEff(chr(m.id).quick) * .06) * (1 + gear(m.id).quick / 100) * (wv(m.id) ? wv(m.id).rate : 1) * (1 + rankOf('dusty', 'speedread') * .03 + sk('dusty', 'speedread') * .01));
 function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
@@ -2974,7 +2977,7 @@ function useAbility(m, a) {
     case 'weapon': return fireWeapon(m, tgt);
     case 'joke': {
       if (!tgt) return false;
-      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, (e.slow > 0 && rankOf('webster', 'web') && synOn(SYNERGY[2]) ? 2.0 : 1.2) + sk('dad', 'joke') * .2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
+      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, (e.slow > 0 && rankOf('webster', 'web') && synOn(SYNERGY[2]) ? 2.0 : 1.2) - .3 * jokeLate() + sk('dad', 'joke') * .2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
       return true; }
     case 'web': {
       if (!tgt) return false;
@@ -3286,7 +3289,7 @@ function update(dt) {
       if (!m.ranks[a] || ABIL[a].passive) continue;
       m.cds[a] -= dt;
       if (m.cds[a] <= 0 && !m.anim && !(a === 'weapon' && CHARS[m.id].abil.some(b => b !== a && m.ranks[b] && !ABIL[b].passive && m.cds[b] <= .42))) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a], src = { id: m.id, a, cast: G.casts = (G.casts || 0) + 1 };
-        if (withSrc(src, () => useAbility(m, a))) { if (m.id !== 'dad') missionAdd('abil'); if (m.jump && !m.jump.src) m.jump.src = src; m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m) * (1 - .05 * tRank(m.id, a, 'cd'));
+        if (withSrc(src, () => useAbility(m, a))) { if (m.id !== 'dad') missionAdd('abil'); if (m.jump && !m.jump.src) m.jump.src = src; m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m) * (a === 'joke' ? 1 + .6 * jokeLate() : 1) * (1 - .05 * tRank(m.id, a, 'cd'));
           if (tHasFin(m.id, a) && tFinKey(m.id, a) === 'twice' && (m.uses = m.uses || {}, m.uses[a] = (m.uses[a] || 0) + 1) % 3 === 0) G.pending.push({ at: G.t + .5, src: { id: m.id, a, cast: ++G.casts }, fn: () => { if (!m.anim && !m.jump) { useAbility(m, a); text(m.x, m.y - 60, 'encore!', '#ffd76a', 14, .8); } } }); }
         else m.cds[a] = .15; }
     }
@@ -4830,7 +4833,7 @@ function drawMap() {
   x.stroke(); x.setLineDash([]);
   { const done = save.cleared.includes(LAST1), at = done ? LAST1 : Math.min(LAST1, Math.floor(save.unlocked / 5) * 5 + 4), img = art(done ? 'sses_kind' : 'sses_flee'); // Sir Ever-So-Sure waits at Book 1's last page
     if (!done) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
-    if (ready(img)) { const [px, py] = pinXY(at); x.drawImage(img, px + 18, py - 66, 58, 58); } }
+    MFX.sses = { at, img: done ? 'sses_kind' : 'sses_flee' }; } // drawn on the motion layer, where he bobs and taunts
   x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Nunito", system-ui, sans-serif'; x.textAlign = 'center'; x.fillText(BOOK2_ON && save.cleared.includes(LAST1) ? (save.cleared.includes(STAGES.length - 1) ? 'the Little Book of How' : 'the last page of the Little Book of Everybody Says') : save.cleared.includes(LAST1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
 }
 // one chapter's strip of the map, 440 x BAND, origin at its top-left: sky and ground, then the things that live there
@@ -4855,7 +4858,7 @@ function buildMap(scroll = true) {
   drawMap(); pickStage = Math.min(pickStage, save.unlocked);
   const box = $('#pins'); box.innerHTML = '';
   let total = 0; for (const k in save.stars) total += save.stars[k]; $('#starTotal').textContent = total;
-  WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}<small>${chName(w)}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
+  WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}${w * 5 <= save.unlocked ? ` <span class="wst">★ ${[0, 1, 2, 3, 4].reduce((n, i) => n + Math.max(starsOf(w * 5 + i, 'easy'), starsOf(w * 5 + i, 'normal'), starsOf(w * 5 + i, 'hard'), starsOf(w * 5 + i, 'master')), 0)}/15</span>` : ''}${mastered(w) ? ` <span class="wmast" title="Every myth here busted: ${TRAITS[w][1]}">${TRAITS[w][0]}</span>` : ''}<small>${chName(w)}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
   STAGES.forEach((st, i) => {
     const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard'), starsOf(i, 'master')), b = document.createElement('button'), [px, py] = pinXY(i);
     b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (i === save.unlocked && !save.cleared.includes(i) ? ' next' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
@@ -4876,11 +4879,14 @@ function buildMap(scroll = true) {
 // Only the strip on screen is drawn, at 30 fps, and only while the map is open; Calm mode keeps just the Kid and the torch
 // still. The Kid stands at the next stage with a torch and hops along the path when a new stage opens; every chapter has a
 // couple of quiet loops (butterflies, ripples, snow...) and a surprise when you tap its picture.
-const MFX = { parts: [], t: 0, last: 0, hop: null, giggle: 0, run: false };
+const MFX = { parts: [], t: 0, last: 0, hop: null, giggle: 0, run: false, reveal: null, sses: null, taunt: null, chests: [] };
+const mapCalm = () => save.opt.calm || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 function mapFxStart() {
   const w = $('#mapWrap'), c = $('#mapfx'); if (!c) return;
   const seen = save.mapSeen ?? save.unlocked; // a new stage since last time: the Kid hops there
-  if (save.unlocked > seen && !save.opt.calm) MFX.hop = { from: Math.min(seen, STAGES.length - 1), to: save.unlocked, t: 0 };
+  if (save.unlocked > seen && !mapCalm()) MFX.hop = { from: Math.min(seen, STAGES.length - 1), to: save.unlocked, t: 0 };
+  // a whole new chapter since last time: it gets a reveal once the Kid arrives (sparkles, confetti, its friend waving)
+  const ch = Math.floor(Math.min(save.unlocked, STAGES.length - 1) / 5); if (ch > Math.floor(seen / 5)) MFX.reveal = { w: ch, t: MFX.hop ? -.7 * (save.unlocked - seen) : 0, said: false };
   save.mapSeen = save.unlocked;
   if (MFX.run) return; MFX.run = true; MFX.last = performance.now();
   requestAnimationFrame(function loop(now) {
@@ -4889,22 +4895,58 @@ function mapFxStart() {
     const W = w.clientWidth, H = w.clientHeight, top = w.scrollTop;
     if (c.width !== 880 || c.height !== Math.round(H * 2)) { c.width = 880; c.height = Math.round(H * 2); c.style.height = H + 'px'; }
     c.style.top = top + 'px'; const x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, -top * 2); x.clearRect(0, top, 440, H);
-    const calm = save.opt.calm;
-    WORLDS.forEach((Wd, wi) => { const bt = MAP_H - (wi + 1) * BAND; if (bt > top + H || bt + BAND < top || calm) return;
+    const calm = mapCalm(); MFX.chests = [];
+    WORLDS.forEach((Wd, wi) => { const bt = MAP_H - (wi + 1) * BAND; if (bt > top + H || bt + BAND < top) return;
+      if (wi * 5 > save.unlocked) mapFog(x, bt, wi, calm); else if (chestReady(wi)) mapChest(x, wi, bt, calm);
+      if (calm) return;
       x.save(); x.beginPath(); x.rect(0, bt, 440, BAND); x.clip(); x.translate(0, bt); AMB[wi % AMB.length](x, MFX.t, wi * 5 <= save.unlocked); x.restore(); });
     for (const p of MFX.parts) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 0) * dt; }
     MFX.parts = MFX.parts.filter(p => p.t < p.life);
     for (const p of MFX.parts) { x.globalAlpha = Math.max(0, 1 - p.t / p.life); p.draw ? p.draw(x, p) : (x.fillStyle = p.col, x.beginPath(), x.arc(p.x, p.y, p.r, 0, 7), x.fill()); } x.globalAlpha = 1;
-    mapKid(x, dt);
+    mapSses(x, dt); mapKid(x, dt); mapReveal(x, dt);
   });
 }
+// a chapter still to come: drifting fog, and its friend as a little shadow wondering when you'll arrive
+function mapFog(x, bt, wi, calm) {
+  x.save(); x.beginPath(); x.rect(0, bt, 440, BAND); x.clip(); x.fillStyle = 'rgba(70,60,80,.2)'; x.fillRect(0, bt, 440, BAND);
+  for (let i = 0; i < 7; i++) { const cx = ((r1(i, wi) * 520 + (calm ? 0 : MFX.t * (6 + i))) % 560) - 60, cy = bt + 30 + r1(i, wi + 9) * 140, R = 34 + r1(i, wi + 3) * 26;
+    for (const [dx, dy, k] of [[0, 0, 1], [R * .7, 6, .75], [-R * .7, 8, .7]]) { const r = R * k * 1.4, g = x.createRadialGradient(cx + dx, cy + dy, 0, cx + dx, cy + dy, r); g.addColorStop(0, 'rgba(255,255,255,.28)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.beginPath(); x.arc(cx + dx, cy + dy, r, 0, 7); x.fill(); } }
+  if (wi * 5 === Math.floor(save.unlocked / 5) * 5 + 5) { const W = WORLDS[wi], im = art('pet_' + W.comp); // the very next chapter: a silhouette and a "?"
+    if (ready(im)) { const h = 60, w = h * im.naturalWidth / im.naturalHeight, bob = calm ? 0 : Math.sin(MFX.t * 2) * 3; x.filter = 'brightness(0) opacity(.45)'; x.drawImage(im, 330 - w / 2, bt + 128 - h + bob, w, h); x.filter = 'none';
+      x.fillStyle = '#fff'; x.strokeStyle = '#3a2c20'; x.lineWidth = 3; x.font = '700 26px "Fredoka", Arial, sans-serif'; x.textAlign = 'center'; x.strokeText('?', 330, bt + 60 + bob); x.fillText('?', 330, bt + 60 + bob); } }
+  x.restore(); }
+// a Chapter Rewards chest waiting on its chapter: it hops, and a tap opens it
+function mapChest(x, wi, bt, calm) { const cx = 404, cy = bt + 176, hop = calm ? 0 : Math.max(0, Math.sin(MFX.t * 4 + wi)) * 6;
+  x.fillStyle = 'rgba(0,0,0,.18)'; x.beginPath(); x.ellipse(cx, cy + 2, 16, 4, 0, 0, 7); x.fill();
+  x.save(); x.translate(cx, cy - hop); x.strokeStyle = '#3a2c20'; x.lineWidth = 2.5; x.fillStyle = '#b8743a'; x.beginPath(); x.roundRect(-15, -18, 30, 18, 3); x.fill(); x.stroke();
+  x.fillStyle = '#d08a46'; x.beginPath(); x.roundRect(-16, -27, 32, 11, [7, 7, 2, 2]); x.fill(); x.stroke(); x.fillStyle = '#f2c14e'; x.fillRect(-3, -21, 6, 8); x.strokeRect(-3, -21, 6, 8);
+  if (!calm && Math.sin(MFX.t * 3 + wi) > .7) { x.fillStyle = '#fff6c0'; x.beginPath(); x.arc(14, -30, 2.2, 0, 7); x.fill(); } x.restore();
+  MFX.chests.push({ wi, x: cx, y: cy - 12 }); }
+// Sir Ever-So-Sure, waiting a few pins ahead: he bobs, and every so often (or when tapped) says something very sure
+const SSES_TAUNTS = ['"You will NEVER catch me!"', '"I am SURE of it!"', '"Facts? Pfft."', '"Everyone knows I\'m right!"', '"Catch me if you CAN!"'];
+function mapSses(x, dt) { const S = MFX.sses; if (!S) return; const im = art(S.img); if (!ready(im)) return; const [px, py] = pinXY(S.at), calm = mapCalm(), t = MFX.t;
+  const bob = calm ? 0 : Math.sin(t * 2.2) * 3, lean = calm ? 0 : Math.sin(t * 1.1) * .06; x.save(); x.translate(px + 47, py - 8 + bob); x.rotate(lean); x.drawImage(im, -29, -58, 58, 58); x.restore();
+  if (S.img === 'sses_kind') return;
+  if (!MFX.taunt && !calm && (t % 9) < dt) MFX.taunt = { s: pick(SSES_TAUNTS), t: 0 };
+  if (MFX.taunt) { MFX.taunt.t += dt; const a = Math.min(1, MFX.taunt.t * 4, (2.6 - MFX.taunt.t) * 4); if (MFX.taunt.t > 2.6) MFX.taunt = null; else bubble(x, px + 47, py - 74 + bob, MFX.taunt.s, a); } }
+function bubble(x, bx, by, s, a) { x.save(); x.globalAlpha = Math.max(0, a); x.font = '700 13px "Fredoka", Arial, sans-serif'; const w = x.measureText(s).width + 16, l = Math.min(440 - w - 4, Math.max(4, bx - w / 2));
+  x.fillStyle = '#fffaf0'; x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.beginPath(); x.roundRect(l, by - 24, w, 22, 9); x.fill(); x.stroke();
+  x.beginPath(); x.moveTo(bx - 5, by - 3); x.lineTo(bx, by + 5); x.lineTo(bx + 5, by - 3); x.fill(); x.fillStyle = '#3a2c20'; x.textAlign = 'left'; x.fillText(s, l + 8, by - 8); x.restore(); }
+// a new chapter's welcome: a ring of sparkles and confetti over the band, and its friend hopping in to wave
+function mapReveal(x, dt) { const R = MFX.reveal; if (!R) return; R.t += dt; if (R.t < 0) return; if (R.t > 3.2) { MFX.reveal = null; return; }
+  const W = WORLDS[R.w], bt = MAP_H - (R.w + 1) * BAND, calm = mapCalm();
+  if (!R.said) { R.said = true; toastMsg(`${W.em} A new chapter: ${W.name}!`); sfx('shine'); const wrap = $('#mapWrap'); wrap.scrollTo({ top: Math.max(0, bt + BAND / 2 - wrap.clientHeight / 2), behavior: calm ? 'auto' : 'smooth' });
+    if (!calm) for (let i = 0; i < 60; i++) MFX.parts.push({ x: Math.random() * 440, y: bt - 10, vx: (Math.random() - .5) * 60, vy: 20 + Math.random() * 60, g: 40, r: 2.5 + Math.random() * 2, col: ['#e5533d', '#f2c14e', '#4fa3e0', '#6aa84f', '#c9a6f2'][i % 5], life: 2.6, t: 0 }); }
+  const a = Math.min(1, R.t * 3, (3.2 - R.t) * 2); x.save(); x.globalAlpha = a * .5; const g = x.createRadialGradient(220, bt + 110, 10, 220, bt + 110, 230); g.addColorStop(0, 'rgba(255,240,160,.9)'); g.addColorStop(1, 'rgba(255,240,160,0)'); x.fillStyle = g; x.fillRect(0, bt, 440, BAND); x.restore();
+  const im = art('pet_' + W.comp); if (ready(im)) { const h = 74, w = h * im.naturalWidth / im.naturalHeight, hop = calm ? 0 : Math.abs(Math.sin(R.t * 6)) * 16 * Math.max(0, 1 - R.t / 3); x.globalAlpha = a; x.drawImage(im, 330 - w / 2, bt + 150 - h - hop, w, h); x.globalAlpha = 1;
+    if (CHARS[W.comp]) bubble(x, 330, bt + 150 - h - hop - 4, `Hi! I'm ${CHARS[W.comp].name}!`, a); } }
 // where the Kid stands: beside the next stage's pin; while hopping, along the dotted path from the old pin
 function kidAt() { const H = MFX.hop; if (!H) { const [px, py] = pinXY(Math.min(save.unlocked, STAGES.length - 1)); return [px - 34, py + 14, 0]; }
   const n = H.to - H.from, f = Math.min(1, H.t / (.7 * n)), seg = Math.min(n - 1, Math.floor(f * n)), q = f * n - seg, [ax, ay] = pinXY(H.from + seg), [bx, by] = pinXY(H.from + seg + 1);
   return [ax + (bx - ax) * q - 34, ay + (by - ay) * q + 14, Math.sin(q * Math.PI) * 26]; }
 function mapKid(x, dt) {
   if (MFX.hop) { MFX.hop.t += dt; if (MFX.hop.t >= .7 * (MFX.hop.to - MFX.hop.from) + .2) { MFX.hop = null; for (let i = 0; i < 14; i++) burst(...kidAt(), '#ffd24a'); } }
-  const [kx, ky, up] = kidAt(), t = MFX.t, calm = save.opt.calm;
+  const [kx, ky, up] = kidAt(), t = MFX.t, calm = mapCalm();
   // the torch: a little post with a flame that flickers, and a warm glow on the grass
   const tx = kx - 24, ty = ky - 2, fl = calm ? 1 : 1 + Math.sin(t * 17) * .08 + Math.sin(t * 29) * .06;
   const g = x.createRadialGradient(tx, ty - 34, 2, tx, ty - 34, 34); g.addColorStop(0, 'rgba(255,200,90,.45)'); g.addColorStop(1, 'rgba(255,200,90,0)'); x.fillStyle = g; x.beginPath(); x.arc(tx, ty - 34, 34, 0, 7); x.fill();
@@ -4950,8 +4992,10 @@ const AMB = [
 const SURPRISE = ['#f59ac0', '#ffffff', '#fff0c8', '#cfe9f5', '#e8c48a', '#ffffff', '#8cc63f', '#ffe27a'];
 function mapTap(e) {
   if (e.target.closest('.pin, .wlab')) return; const r = $('#mapInner').getBoundingClientRect(), k = r.width / 440, mx = (e.clientX - r.left) / k, my = (e.clientY - r.top) / k;
+  const ch = MFX.chests.find(c => Math.hypot(mx - c.x, my - c.y) < 24); if (ch) { sfx('coin'); openChests(ch.wi); return; }
+  if (MFX.sses && MFX.sses.img === 'sses_flee') { const [px, py] = pinXY(MFX.sses.at); if (Math.abs(mx - px - 47) < 28 && my > py - 66 && my < py) { MFX.taunt = { s: pick(SSES_TAUNTS), t: 0 }; sfx('tap'); return; } }
   const [kx, ky] = kidAt(); if (Math.abs(mx - kx) < 22 && my > ky - 66 && my < ky + 6) { MFX.giggle = 1; sfx('coin'); buzz('LIGHT'); return; }
-  const wi = WORLDS.findIndex((W, i) => my >= MAP_H - (i + 1) * BAND && my < MAP_H - i * BAND); if (wi < 0 || save.opt.calm) return;
+  const wi = WORLDS.findIndex((W, i) => my >= MAP_H - (i + 1) * BAND && my < MAP_H - i * BAND); if (wi < 0 || mapCalm()) return;
   sfx('pop'); buzz('LIGHT'); for (let i = 0; i < 16; i++) { const a = Math.random() * 7, s = 30 + Math.random() * 80; MFX.parts.push({ x: mx, y: my, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, g: wi % 8 === 5 ? 20 : 110, r: 2 + Math.random() * 2.5, col: SURPRISE[wi % 8], life: 1.1, t: 0 }); }
 }
 
