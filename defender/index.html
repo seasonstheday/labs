@@ -639,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 85</div>
+    <div class="build">build 86</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1361,6 +1361,8 @@ const BOSSMOVE = {
   flat:     { every: 12, tell: '"The world is FLAT. See?"', note: 'The Flat Earth flips the whole backyard over for a moment. Dad never moves, so neither should you.', go: b => { G.flip = 3; text(CX, CY - 120, 'FLIP!', '#fff', 24, 1.2); } },
 };
 const SSES_MOVES = ['wall', 'boil', 'brain', 'triangle', 'hot', 'penguin', 'bolt'], sses = { n: -1, cur: 'wall' };
+BOSSMOVE.hearsay = Object.create(BOSSMOVE.sses, { note: { value: 'Lady Hearsay repeats every boss\'s move she has heard about. Stun her during the tell to stop it.' } }); // shares his rotation (getters live on the prototype)
+const vilOf = e => e && e.id === 'hearsay' ? 'hs' : 'sses', isVil = e => e && (e.id === 'sses' || e.id === 'hearsay');
 // each chapter's myths come with a twist of their own, so a Library book isn't a Backyard book with a new cover:
 // a colour the whole chapter shares (mixed into each myth's own) and one habit the player can read and play around
 const VARIANT = [
@@ -1417,6 +1419,9 @@ const WORLDS = [
 const BOOK2_ON = typeof BOOK2 !== 'undefined' && /[?&]book2\b/.test(location.search);
 if (BOOK2_ON) {
   Object.assign(MYTHS, BOOK2.myths); Object.assign(META, BOOK2.meta); TRAITS.push(...BOOK2.traits);
+  // Lady Hearsay, the back cover of the little book: Book 2's last page, fought like Sir Ever-So-Sure behind the Campfire Sun
+  MYTHS.hearsay = { em: '🗣️', name: 'Lady Hearsay', myth: 'If everybody says it, it must be true.', fact: 'Lots of people saying something doesn\'t make it true. Ask where it came from, and check.', kind: 'boss', col: '#8fc78a', book: 2 };
+  META.hearsay = ['science', 'Understanding Science, UC Berkeley'];
   const h = t => { let x = 7; for (const c of t) x = (x * 31 + c.charCodeAt(0)) | 0; return x; };
   const old = Object.keys(MYTHS).filter(id => !MYTHS[id].book && META[id] && MYTHS[id].kind !== 'boss' && MYTHS[id].kind !== 'mirage' && META[id][0] !== 'seasons');
   BOOK2.worlds.forEach((W, i) => { const fill = old.filter(id => W.topics.includes(META[id][0])).sort((a, b) => h(a + i) - h(b + i)).slice(0, 10);
@@ -1432,7 +1437,7 @@ const STAGES = [];
 WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
   // each stage brings in the next slice of the chapter's pages and keeps the newest eight, so every myth shows up before the boss
   const N = W.pool.length, book = W.book || 1, first = WORLDS.findIndex(V => (V.book || 1) === book), prev = w > first ? WORLDS[w - 1].pool.slice(-2) : [], pool = [...W.pool.slice(0, Math.max(4, Math.ceil(N * (i + 1) / 5))).slice(-8), ...(i >= 2 ? prev : [])];
-  STAGES.push({ w, idx: i, W, book, k: (w - first) * 5 + i, last: i === 4 && (w === WORLDS.length - 1 || bookOf(w + 1) !== book), name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid, finale: book === 1 && w === 7 && i === 4 ? 'sses' : null,
+  STAGES.push({ w, idx: i, W, book, k: (w - first) * 5 + i, last: i === 4 && (w === WORLDS.length - 1 || bookOf(w + 1) !== book), name: `${W.name} ${i + 1}`, waves: 4 + i, pool: i === 4 ? [...W.pool, ...prev] : pool, boss: i === 4 ? W.boss : i === 2 ? (W.mid || W.boss) : null, rough: i === 2 && !W.mid, finale: i === 4 && book === 1 && w === 7 ? 'sses' : i === 4 && book === 2 && (w === WORLDS.length - 1) ? 'hearsay' : null,
     desc: (i === 4 ? `The chapter boss. ${W.desc}` : i === 2 ? (W.mid ? 'A boss of its own, before the chapter boss.' : 'A rough draft of the chapter boss: smaller, and it never gets to its second act.') : i === 0 ? W.desc : 'A page stage. It ends in a rush of two elites.') + (VARIANT[w] ? ` ${VARIANT[w].em} ${VARIANT[w].name} myths: ${VARIANT[w].desc}` : ''),
     lawn: W.lawn, stone: W.stone, edge: W.edge });
 } });
@@ -2750,9 +2755,8 @@ function spawn(id, at = null, q = {}) {
   if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = G.hk * K.hp * ((G.hlv ? .5 : .38) + G.hlv * .18 + G.hlv * G.hlv * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.hlv - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
-    if (G.S.idx === 2 && G.S.book === 2 && !G.endless && !G.twist && !G.room) text(e.x, e.y - 110, BOOK2.villain[chNum(G.S.w) - 1].cameo, '#e6d6fa', 17, 2.4); // Lady Hearsay has no arena drawing yet: just her line
-    else if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = G.hk * K.hp * ((G.hlv ? .5 : .38) + G.hlv * .18 + G.hlv * G.hlv * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.hlv - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' || id === 'hearsay' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
+    if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, G.S.book === 2 ? BOOK2.villain[chNum(G.S.w) - 1].cameo : VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
 // ranged myths: a pelter stands at the ring's edge, a spellbook a little further out; both aim at Dad most of the time
@@ -2809,9 +2813,9 @@ function rangedGear(e, x, top, dir) {
   ctx.restore();
 }
 // Sir Ever-So-Sure in the arena: his drawings, by mood (smug, scribbling a borrowed move, running a slide, shouting in a rage)
-for (const k of ['idle', 'scribble', 'flee', 'shout', 'kind']) art('sses_' + k);
+for (const k of ['idle', 'scribble', 'flee', 'shout', 'kind']) { art('sses_' + k); if (BOOK2_ON) art('hs_' + k); }
 function drawSses(e) {
-  const pose = e.kind === 'mirage' ? 'idle' : e.sliding > 0 ? 'flee' : e.rage ? 'shout' : e.tellT > 0 ? 'scribble' : 'idle', img = art('sses_' + pose);
+  const pose = e.kind === 'mirage' ? 'idle' : e.sliding > 0 ? 'flee' : e.rage ? 'shout' : e.tellT > 0 ? 'scribble' : 'idle', img = art(vilOf(e) + '_' + pose);
   const r = e.r, h = r * (e.kind === 'mirage' ? 2.5 : 2.9), face = G.dad.x < e.x ? -1 : 1, bob = Math.sin(G.t * 3 + e.walk) * 3, sq = e.tellT > 0 ? Math.sin(G.t * 20) * .03 : 0;
   ctx.save(); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .8, r * .28, 0, 0, 7); ctx.fill();
   if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
@@ -2824,7 +2828,7 @@ function drawSses(e) {
 // stage 3: he pops in beside the rough draft, scribbles it, and pops out again
 function drawCameo() {
   const C = G.cameo; if (!C) return; C.t += 1 / 60; if (C.t > C.life) { G.fx.push({ k: 'puff', x: C.x, y: C.y - 40, vx: 0, vy: -30, t: 0, life: .5, col: '#e6d6fa', r: 26 }); G.cameo = null; return; }
-  const img = art('sses_scribble'); if (!ready(img)) return; const k = Math.min(1, C.t / .25) * Math.min(1, (C.life - C.t) / .25), h = 110 * (.6 + .4 * k), face = C.x < CX ? 1 : -1;
+  const img = art((G.S.book === 2 ? 'hs' : 'sses') + '_scribble'); if (!ready(img)) return; const k = Math.min(1, C.t / .25) * Math.min(1, (C.life - C.t) / .25), h = 110 * (.6 + .4 * k), face = C.x < CX ? 1 : -1;
   ctx.save(); ctx.globalAlpha = k; ctx.translate(C.x, C.y + 20); ctx.scale(face * (1 + Math.sin(C.t * 22) * .03), 1); ctx.drawImage(img, -h / 2, -h, h, h); ctx.restore();
   if (Math.random() < .3) G.fx.push({ k: 'puff', x: C.x + face * 36 + rnd(-8, 8), y: C.y - 80 + rnd(-8, 8), vx: rnd(-40, 40), vy: rnd(-40, 10), t: 0, life: .4, col: '#6b4fa8', r: rnd(2, 4) });
 }
@@ -2922,12 +2926,12 @@ function kill(e) {
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
   if (e.kind === 'boss' && e.id === G.S.boss && G.S.finale && !G.endless && !G.twist && !G.room && !G.sses) { // the Flat Earth was only his shield
-    G.bossDown = false; G.sses = 'coming'; text(CX, CY - 200, '"My SHIELD!"', '#e6d6fa', 24, 1.6);
+    G.bossDown = false; G.sses = 'coming'; const hs = G.S.finale === 'hearsay'; text(CX, CY - 200, hs ? '"But everybody said it was SAFE!"' : '"My SHIELD!"', '#e6d6fa', 24, 1.6);
     G.pending.push({ at: G.t + 1.8, fn: () => { const b = spawn(G.S.finale, { x: CX, y: CY - 320 }); b.hp = b.maxhp = b.maxhp * 1.35; b.moveT = 3; G.sses = b; G.shake = .4; sfx('boss');
-      text(CX, CY - 230, '"Fine. I\'ll do it MYSELF."', '#e6d6fa', 20, 2.4); } });
+      text(CX, CY - 230, hs ? '"Did you hear? I\'m coming DOWN there!"' : '"Fine. I\'ll do it MYSELF."', '#e6d6fa', 20, 2.4); } });
   }
   if (e.kind === 'boss' && !G.sses) music(G.S.w);
-  if (e.kind === 'boss' && e.id === 'sses') { G.sses = 'done'; text(G.dad.x, G.dad.y - 120, 'The Kid: "But… WHY are you so sure?"', '#fff', 16, 3); G.pending.push({ at: G.t + 1.6, fn: () => text(CX, CY - 160, '"I… I don\'t know."', '#e6d6fa', 20, 2.6) }); }
+  if (e.kind === 'boss' && isVil(e)) { const hs = e.id === 'hearsay'; G.sses = 'done'; text(G.dad.x, G.dad.y - 120, hs ? 'The Kid: "Where did you HEAR that?"' : 'The Kid: "But… WHY are you so sure?"', '#fff', 16, 3); G.pending.push({ at: G.t + 1.6, fn: () => text(CX, CY - 160, hs ? '"I… I never checked."' : '"I… I don\'t know."', '#e6d6fa', 20, 2.6) }); }
   if (!e.mini && !G.newFacts.includes(e.id) && !save.facts.includes(e.id)) { save.facts.push(e.id); addPages('dad', 1); missionAdd('fact'); save.factDate[e.id] = new Date().toISOString().slice(0, 10); G.newFacts.push(e.id); persist(); if (G.sses === 'coming') G.pending.push({ at: G.t + 4.5, fn: () => toast(e.M) }); else toast(e.M); } // the shield's fact card waits until he has made his entrance
   else if (!e.mini && !G.newFacts.includes(e.id)) G.newFacts.push(e.id);
   if (G.focus === e) G.focus = null;
@@ -3221,7 +3225,7 @@ function update(dt) {
         if (sp.who === G.dad) { G.hp -= patHit(ST.by.dmg * (ST.hits === 1 ? .7 : .5)); G.dropped = true; G.flash = .25; } else if (sp.who && dist(sp, sp.who) < 30) { sp.who.muted = Math.max(sp.who.muted || 0, 1.5); text(sp.who.x, sp.who.y - 50, 'ZAP', '#ffe36b', 16, 1); } }
       G.shake = Math.max(G.shake, .25); text(CX, CY - 110, ST.hits === 1 ? 'STRIKE!' : 'TWICE!', '#ffe36b', 24, 1); if (ST.hits === 2) G.strikes = null; } }
   // boss phase two at half health: a line, a crowd, and charges come sooner
-  if (G.boss && G.boss.id === 'sses' && G.boss.hp > 0 && !G.boss.rage && G.boss.hp < G.boss.maxhp * .3) { const b = G.boss; b.rage = true; b.moveT = 1; G.shake = .4; G.slowmo = .6; text(b.x, b.y - b.r - 70, '"I\'m right because I\'m RIGHT!"', '#ff9a9a', 19, 2.2);
+  if (G.boss && isVil(G.boss) && G.boss.hp > 0 && !G.boss.rage && G.boss.hp < G.boss.maxhp * .3) { const b = G.boss; b.rage = true; b.moveT = 1; G.shake = .4; G.slowmo = .6; text(b.x, b.y - b.r - 70, b.id === 'hearsay' ? '"EVERYBODY SAYS SO!"' : '"I\'m right because I\'m RIGHT!"', '#ff9a9a', 19, 2.2);
     const old = WORLDS.filter(W => (W.book || 1) === 1).slice(0, -1).flatMap(W => W.pool); for (let j = 0; j < 5; j++) G.toSpawn.unshift({ id: pick(old), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && !G.boss.rough && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.lv ? 3 : 2) + Math.min(5, Math.floor(G.lvge / 4)); j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.lv, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
@@ -3899,7 +3903,7 @@ function bossFront(id, r, col) {
   ctx.restore();
 }
 function drawEnemy(e) {
-  if (e.id === 'sses' && ready(art('sses_idle'))) return drawSses(e);
+  if (isVil(e) && ready(art(vilOf(e) + '_idle'))) return drawSses(e);
   const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   const e3 = in3d(e); if (!e3) { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill(); } // the 3D layer has its own shadow
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
@@ -4462,10 +4466,11 @@ $('#wheelGo').onclick = () => { if (!spinReady()) return; save.spinDay = today()
 $('#wheelClose').onclick = () => { $('#wheelm').hidden = true; };
 // the four buttons: locked ones wear a padlock and say when they open; a dot means something's waiting
 // the home screen shows the furthest world reached: the backyard, then the pond, the library ... up to the night sky
-const HOME_EDGE = [['#d7bc9a', '#738a43'], ['#cac18d', '#6c8741'], ['#c2a478', '#986c48'], ['#bdd3bc', '#deb36c'], ['#e8ca8f', '#d5a14d'], ['#d1ecea', '#d5e3ed'], ['#96a885', '#546b33'], ['#435370', '#4e6941']];
+const HOME_EDGE = [['#d7bc9a', '#738a43'], ['#cac18d', '#6c8741'], ['#c2a478', '#986c48'], ['#bdd3bc', '#deb36c'], ['#e8ca8f', '#d5a14d'], ['#d1ecea', '#d5e3ed'], ['#96a885', '#546b33'], ['#435370', '#4e6941'],
+  ['#d3cbac', '#a3ac9e'], ['#dbcda1', '#b3814d'], ['#d6c9a0', '#a98169'], ['#bfd0c3', '#b5aaa6'], ['#c6be8e', '#738a43'], ['#d6cd9f', '#769247'], ['#a5c8ba', '#778d46'], ['#a5a296', '#797978']]; // Book 2: the kitchen ... the space station
 function homeBg() {
   const w = STAGES[Math.min(save.unlocked, STAGES.length - 1)].w, el = $('#title'); if (el.dataset.w === String(w)) return; el.dataset.w = w;
-  const hw = w % 8, [top, ground] = HOME_EDGE[hw] || HOME_EDGE[0];
+  const hw = w % 16, [top, ground] = HOME_EDGE[hw] || HOME_EDGE[0];
   el.style.backgroundImage = `url(assets/home_bg${hw ? '_' + (hw + 1) : ''}.webp), linear-gradient(${top} 0 40%, ${ground} 40%)`; el.style.backgroundColor = ground;
   el.classList.toggle('nightbg', w === 7);
 }
@@ -4833,7 +4838,8 @@ function drawMap() {
   x.stroke(); x.setLineDash([]);
   { const done = save.cleared.includes(LAST1), at = done ? LAST1 : Math.min(LAST1, Math.floor(save.unlocked / 5) * 5 + 4), img = art(done ? 'sses_kind' : 'sses_flee'); // Sir Ever-So-Sure waits at Book 1's last page
     if (!done) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
-    MFX.sses = { at, img: done ? 'sses_kind' : 'sses_flee' }; } // drawn on the motion layer, where he bobs and taunts
+    MFX.sses = { at, img: done ? 'sses_kind' : 'sses_flee' };
+    if (BOOK2_ON && done) { const L2 = STAGES.length - 1, d2 = save.cleared.includes(L2); MFX.sses = { at: d2 ? L2 : Math.min(L2, Math.floor(save.unlocked / 5) * 5 + 4), img: d2 ? 'hs_kind' : 'hs_flee' }; } } // drawn on the motion layer, where he bobs and taunts
   x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Nunito", system-ui, sans-serif'; x.textAlign = 'center'; x.fillText(BOOK2_ON && save.cleared.includes(LAST1) ? (save.cleared.includes(STAGES.length - 1) ? 'the Little Book of How' : 'the last page of the Little Book of Everybody Says') : save.cleared.includes(LAST1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
 }
 // one chapter's strip of the map, 440 x BAND, origin at its top-left: sky and ground, then the things that live there
@@ -4923,11 +4929,12 @@ function mapChest(x, wi, bt, calm) { const cx = 404, cy = bt + 176, hop = calm ?
   if (!calm && Math.sin(MFX.t * 3 + wi) > .7) { x.fillStyle = '#fff6c0'; x.beginPath(); x.arc(14, -30, 2.2, 0, 7); x.fill(); } x.restore();
   MFX.chests.push({ wi, x: cx, y: cy - 12 }); }
 // Sir Ever-So-Sure, waiting a few pins ahead: he bobs, and every so often (or when tapped) says something very sure
+const HS_TAUNTS = ['"Everybody says so!"', '"Pass it on!"', '"My friend\'s cousin told me!"', '"It MUST be true!"', '"Did you hear?"'];
 const SSES_TAUNTS = ['"You will NEVER catch me!"', '"I am SURE of it!"', '"Facts? Pfft."', '"Everyone knows I\'m right!"', '"Catch me if you CAN!"'];
 function mapSses(x, dt) { const S = MFX.sses; if (!S) return; const im = art(S.img); if (!ready(im)) return; const [px, py] = pinXY(S.at), calm = mapCalm(), t = MFX.t;
   const bob = calm ? 0 : Math.sin(t * 2.2) * 3, lean = calm ? 0 : Math.sin(t * 1.1) * .06; x.save(); x.translate(px + 47, py - 8 + bob); x.rotate(lean); x.drawImage(im, -29, -58, 58, 58); x.restore();
-  if (S.img === 'sses_kind') return;
-  if (!MFX.taunt && !calm && (t % 9) < dt) MFX.taunt = { s: pick(SSES_TAUNTS), t: 0 };
+  if (/_kind$/.test(S.img)) return;
+  if (!MFX.taunt && !calm && (t % 9) < dt) MFX.taunt = { s: pick(S.img[0] === 'h' ? HS_TAUNTS : SSES_TAUNTS), t: 0 };
   if (MFX.taunt) { MFX.taunt.t += dt; const a = Math.min(1, MFX.taunt.t * 4, (2.6 - MFX.taunt.t) * 4); if (MFX.taunt.t > 2.6) MFX.taunt = null; else bubble(x, px + 47, py - 74 + bob, MFX.taunt.s, a); } }
 function bubble(x, bx, by, s, a) { x.save(); x.globalAlpha = Math.max(0, a); x.font = '700 13px "Fredoka", Arial, sans-serif'; const w = x.measureText(s).width + 16, l = Math.min(440 - w - 4, Math.max(4, bx - w / 2));
   x.fillStyle = '#fffaf0'; x.strokeStyle = '#3a2c20'; x.lineWidth = 2; x.beginPath(); x.roundRect(l, by - 24, w, 22, 9); x.fill(); x.stroke();
@@ -4993,7 +5000,7 @@ const SURPRISE = ['#f59ac0', '#ffffff', '#fff0c8', '#cfe9f5', '#e8c48a', '#fffff
 function mapTap(e) {
   if (e.target.closest('.pin, .wlab')) return; const r = $('#mapInner').getBoundingClientRect(), k = r.width / 440, mx = (e.clientX - r.left) / k, my = (e.clientY - r.top) / k;
   const ch = MFX.chests.find(c => Math.hypot(mx - c.x, my - c.y) < 24); if (ch) { sfx('coin'); openChests(ch.wi); return; }
-  if (MFX.sses && MFX.sses.img === 'sses_flee') { const [px, py] = pinXY(MFX.sses.at); if (Math.abs(mx - px - 47) < 28 && my > py - 66 && my < py) { MFX.taunt = { s: pick(SSES_TAUNTS), t: 0 }; sfx('tap'); return; } }
+  if (MFX.sses && /_flee$/.test(MFX.sses.img)) { const [px, py] = pinXY(MFX.sses.at); if (Math.abs(mx - px - 47) < 28 && my > py - 66 && my < py) { MFX.taunt = { s: pick(MFX.sses.img[0] === 'h' ? HS_TAUNTS : SSES_TAUNTS), t: 0 }; sfx('tap'); return; } }
   const [kx, ky] = kidAt(); if (Math.abs(mx - kx) < 22 && my > ky - 66 && my < ky + 6) { MFX.giggle = 1; sfx('coin'); buzz('LIGHT'); return; }
   const wi = WORLDS.findIndex((W, i) => my >= MAP_H - (i + 1) * BAND && my < MAP_H - i * BAND); if (wi < 0 || mapCalm()) return;
   sfx('pop'); buzz('LIGHT'); for (let i = 0; i < 16; i++) { const a = Math.random() * 7, s = 30 + Math.random() * 80; MFX.parts.push({ x: mx, y: my, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, g: wi % 8 === 5 ? 20 : 110, r: 2 + Math.random() * 2.5, col: SURPRISE[wi % 8], life: 1.1, t: 0 }); }
