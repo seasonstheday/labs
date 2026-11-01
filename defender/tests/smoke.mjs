@@ -337,6 +337,23 @@ await test('the 3D battle prototype (?r3d) runs a match without errors', async (
   expect(await p.evaluate(() => !!dbg.G), 'a match is running'); await close(); return errs.filter(e => !/WebGL|404/.test(e));
 });
 
+await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap of 40 after Book 1', async () => {
+  const sv = PROGRESSED(); Object.assign(sv, { unlocked: 40, cleared: [...Array(40).keys()], comics: [...Array(8).keys()].flatMap(i => [i + ':in', i + ':out', i + ':showdown']) });
+  sv.chars.webster.xp = 30000;
+  const { p, errs, close } = await open(sv);
+  await p.goto(URL + '&book2'); await p.waitForTimeout(1200);
+  const info = await p.evaluate(() => ({ n: dbg.STAGES.length, first: dbg.STAGES[40].name, book: dbg.STAGES[40].book, last: dbg.STAGES[79].last, b1last: dbg.STAGES[39].last }));
+  expect(info.n === 80 && info.first === 'The Kitchen 1' && info.book === 2 && info.last && info.b1last, 'two books of 40 stages, each with its last stage: ' + JSON.stringify(info));
+  await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true)); await p.evaluate(() => dbg.startGame(40)); await p.waitForTimeout(800);
+  expect(await p.isVisible('#comicm') && /Little Book/.test(await p.textContent('#comicTitle')), 'the Book 2 prologue');
+  await play(p, 5000); expect(await p.evaluate(() => !!dbg.G || !document.querySelector('#clearm').hidden || !document.querySelector('#overm').hidden), 'a Book 2 match runs');
+  expect(await p.evaluate(() => dbg.charLevel(dbg.save.chars.webster.xp).L) > 30, 'friends grow past level 30 once Book 1 is done');
+  await close(); return errs;
+});
+await test('without ?book2 the game is Book 1 only', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  expect(await p.evaluate(() => dbg.STAGES.length === 40 && dbg.charLevel(1e9).L === 30), '40 stages and a level cap of 30'); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);

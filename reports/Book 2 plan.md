@@ -133,11 +133,11 @@ How they were chosen:
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
-| `microwave` | 📻 | Middle-Out Microwave | Microwaves cook food from the inside out. | Microwaves heat the outside of food first, about two fingers deep. The heat then creeps into the middle. That's why you stir and wait. | splitter | FDA · https://hgic.clemson.edu/factsheet/microwave-food-safety/ (cites FDA/USDA) |
+| `microwave` | 📻 | Middle-Out Microwave | Microwaves cook food from the inside out. | Microwaves heat the outside of food first, only a few centimetres deep. The heat then creeps into the middle. That's why you stir and wait. | splitter | USDA · https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/cooking-microwave-ovens |
 | `saltboil` | 🧂 | Speedy Salt | Salt makes water boil faster. | Salt actually makes water boil at a slightly *higher* temperature. A pinch makes almost no difference. People add it for flavour. | normal | Live Science · https://www.livescience.com/56214-does-salt-make-water-boil-faster.html |
-| `honeycrunch` | 🍯 | Gone-Off Honey | When honey turns hard and crunchy, it has gone bad. | That's just its sugar making crystals. It's still good to eat. A grown-up can stand the jar in warm water to make it runny again. | healer | Oregon State University · https://extension.oregonstate.edu/node/79551 |
-| `purplecarrot` | 🥕 | Always-Orange Carrot | Carrots have always been orange. | Long ago, most farm carrots were purple or yellow. Orange carrots got popular in Europe about 400 to 500 years ago. | fast | Washington State University · https://askdruniverse.wsu.edu/2020/04/17/why-are-carrots-orange/ |
-| `eggequinox` **Boss** | 🥚 | The Equinox Egg | You can only stand an egg on its end on the first day of spring. | With patience, you can stand an egg up on any day of the year. The calendar has nothing to do with it. | boss | McDonald Observatory · https://stardate.org/?p=17865 |
+| `honeycrunch` | 🍯 | Gone-Off Honey | When honey turns hard and crunchy, it has gone bad. | That's just its sugar making crystals. It's still good to eat. A grown-up can stand the jar in warm water to make it runny again. | healer | Oregon State University · https://extension.oregonstate.edu/ask-extension/featured/crystalized-honey-safe-eat |
+| `purplecarrot` | 🥕 | Always-Orange Carrot | Carrots have always been orange. | Long ago, most farm carrots were purple or yellow. Orange carrots got popular in Europe about 400 years ago. | fast | Washington State University · https://askdruniverse.wsu.edu/2020/04/17/why-are-carrots-orange/ |
+| `eggequinox` **Boss** | 🥚 | The Equinox Egg | You can only stand an egg on its end on the first day of spring. | With patience, you can stand an egg up on any day of the year. The calendar has nothing to do with it. | boss | McDonald Observatory (StarDate) · https://stardate.org/podcast/2021-03-20 |
 
 ### 🚜 The Farm
 
@@ -146,38 +146,38 @@ How they were chosen:
 | `pigmud` | 🐷 | Messy Pig | Pigs roll in mud because they're dirty. | Pigs can hardly sweat, so they roll in mud to cool down. The mud works like sunscreen too. | tank | University of Missouri · https://extension.missouri.edu/news/pigs-cant-sweat-to-cool-off-give-them-help-on-hot-days |
 | `horsesleep` | 🐴 | Stand-Up Snoozer | Horses only sleep standing up. | Horses can doze standing up. For their deepest, dreamiest sleep they lie down, even if only for a little while. | dasher | Scientific American · https://www.scientificamerican.com/article/horses-stand-up-to-sleep-but-lie-down-perchance-to-dream/ |
 | `sheepface` | 🐑 | Forgetful Sheep | Sheep can't tell one face from another. | Sheep are great with faces. Scientists in Cambridge taught sheep to pick out famous people from photos. | swarm | University of Cambridge · https://www.cam.ac.uk/research/news/sheep-are-able-to-recognise-human-faces-from-photographs |
-| `rooster` | 🐓 | Dawn-Only Rooster | Roosters only crow when the sun comes up. | Roosters crow all day long. Their big morning crow comes from a body clock, so they know morning is coming even in the dark. | pelter | National Geographic · https://www.nationalgeographic.com/animals/article/130318-rooster-crow-circadian-clock-science |
-| `cowtummy` **Boss** | 🐄 | The Four-Tummy Cow | Cows have four stomachs. | A cow has one big stomach with four parts. The biggest part is like a giant mixing tub, where tiny helpers break down grass. | boss | Britannica · https://www.britannica.com/animal/cow |
+| `rooster` | 🐓 | Dawn-Only Rooster | Roosters only crow when the sun comes up. | Roosters crow at any time of day. Their big morning crow comes from a body clock, so they know morning is coming even in the dark. | pelter | National Geographic · https://www.nationalgeographic.com/animals/article/130318-rooster-crow-circadian-clock-science |
+| `cowtummy` **Boss** | 🐄 | The Four-Tummy Cow | Cows have four stomachs. | A cow has one big stomach with four parts. The biggest part is like a giant mixing tub, where tiny helpers break down grass. | boss | Britannica · https://www.britannica.com/science/multi-chambered-stomach · https://www.britannica.com/animal/cow |
 
 ### 🏛️ The Museum
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
 | `stegorex` | 🦖 | Neighbour T. rex | T. rex and Stegosaurus lived at the same time. | Stegosaurus was gone long before T. rex came along. More time separates them than separates T. rex from us! | hardcover | American Museum of Natural History · https://www.amnh.org/explore/videos/dinosaurs-and-fossils/11-questions-stegosaurus |
-| `pterosaur` | 🪽 | Flying Dino | Pterodactyls were flying dinosaurs. | Pterosaurs were flying reptiles: cousins of dinosaurs, but not dinosaurs. The only flying dinosaurs are birds. | flyer | American Museum of Natural History · https://www.amnh.org/explore/news-blogs/on-exhibit-posts/not-a-bird-not-a-dinosaur-what-is-a-pterosaur |
-| `paintstatue` | 🗿 | Plain White Statue | Ancient Greek statues were plain white. | They were painted in bright colours. Most of the paint wore off over thousands of years, but scientists still find tiny traces. | rumour | NPR, British Museum study · https://www.npr.org/2022/07/12/1109995973/we-know-greek-statues-werent-white-now-you-can-see-them-in-color |
-| `armour` | 🛡️ | Crane Knight | Knights' armour was so heavy they needed a crane to get on their horses. | Armour was heavy, but it was spread over the whole body. Knights could walk, run and climb onto their horses by themselves. | hardcover | The Met · https://www.metmuseum.org/perspectives/sunday-at-the-met-legends-and-true-stories · https://www.eurekalert.org/news-releases/675790 (Royal Armouries study) |
-| `birddino` **Boss** | 🐦 | The Last Dinosaur | All the dinosaurs died out long ago. | Birds are dinosaurs! The giant ones are gone, but their feathered relatives are outside your window right now. | boss | American Museum of Natural History · https://www.livescience.com/54086-dinosaurs-evolved-into-birds-museum-exhibit.html · https://carnegiemnh.org/amazing-just-like-a-dinosaur/ |
+| `pterosaur` | 🪽 | Flying Dino | Pterodactyls were flying dinosaurs. | Pterosaurs were flying reptiles: cousins of dinosaurs, but not dinosaurs. The only flying dinosaurs are birds. | flyer | American Museum of Natural History · https://www.amnh.org/explore/news-blogs/what-is-a-pterosaur |
+| `paintstatue` | 🗿 | Plain White Statue | Ancient Greek statues were plain white. | They were painted in bright colours. Most of the paint wore off over thousands of years, but scientists still find tiny traces. | rumour | NPR, on The Met's "Chroma" exhibition · https://www.npr.org/2022/07/12/1109995973/we-know-greek-statues-werent-white-now-you-can-see-them-in-color |
+| `armour` | 🛡️ | Crane Knight | Knights' armour was so heavy they needed a crane to get on their horses. | Armour was heavy, but it was spread over the whole body. Knights could walk, run and climb onto their horses by themselves. | hardcover | The Met · https://www.metmuseum.org/essays/arms-and-armor-common-misconceptions-and-frequently-asked-questions |
+| `birddino` **Boss** | 🐦 | The Last Dinosaur | All the dinosaurs died out long ago. | Birds are dinosaurs! The giant ones are gone, but their feathered relatives are outside your window right now. | boss | American Museum of Natural History · https://www.amnh.org/exhibitions/dinosaurs-ancient-fossils/extinction/dinosaurs-survive · https://www.nhm.ac.uk/discover/why-are-birds-the-only-surviving-dinosaurs.html |
 
 ### 🏙️ The City
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
 | `eiffel` | 🗼 | Same-Size Tower | The Eiffel Tower is always the same height. | The tower is iron, and iron grows a tiny bit when it's hot. On sunny days it stands a little taller and even leans away from the sun. | normal | Eiffel Tower (official) · https://www.toureiffel.paris/en/news/history-and-culture/why-does-eiffel-tower-change-size |
-| `bigben` | 🔔 | Big Ben Clock | Big Ben is the name of London's clock tower. | Big Ben is the nickname of the giant bell inside. The tower is called the Elizabeth Tower. | gossip | UK Parliament · https://www.parliament.uk/about/living-heritage/building/palace/big-ben/building-clock-tower/key-dates-/ |
+| `bigben` | 🔔 | Big Ben Clock | Big Ben is the name of London's clock tower. | The name Big Ben was first given to the giant bell inside. The tower's real name is the Elizabeth Tower. | gossip | UK Parliament · https://www.parliament.uk/about/living-heritage/building/palace/big-ben/facts-figures/ |
 | `liberty` | 🗽 | Always-Green Statue | The Statue of Liberty has always been green. | She started out shiny copper, like a new penny. Air and sea spray slowly turned her green, and the green coat protects the metal underneath. | caster | American Chemical Society · https://www.acs.org/pressroom/reactions/library/the-statue-of-libertys-true-colors.html |
 | `pigeon` | 🐦‍⬛ | Bird-Brain Pigeon | Pigeons are silly birds that can't learn anything. | Pigeons are clever. Scientists taught pigeons to tell paintings by two different artists apart, even paintings they had never seen. | fast | Journal of the Experimental Analysis of Behavior · https://pmc.ncbi.nlm.nih.gov/articles/PMC1334394/ |
-| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/transcripts/141858484 · https://scienceworld-aem-perf.scholastic.com/issues/2016-17/032717/sky-high-science.html |
+| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/2011/11/07/141858484/how-the-worlds-tallest-skyscrapers-work · https://scienceworld.scholastic.com/issues/2016-17/032717/sky-high-science.html |
 
 ### 🏅 Sports Day
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
 | `babybones` | 🍼 | Same-Bones Baby | Babies have the same number of bones as grown-ups. | Babies are born with about 270 bones. As they grow, some join together, so grown-ups have about 206. | splitter | Cleveland Clinic · https://my.clevelandclinic.org/health/body/25176-bones |
-| `livebone` | 🦴 | Dry-Stick Bone | Bones are dry and dead, like sticks. | Your bones are alive! They grow as you grow, and they can even fix themselves. | tank | Cleveland Clinic · https://my.clevelandclinic.org/health/body/25176-bones |
+| `livebone` | 🦴 | Dry-Stick Bone | Bones are dry and dead, like sticks. | Your bones are alive! They grow as you grow, and they can even fix themselves. | tank | NIH (NIAMS) · https://www.niams.nih.gov/health-topics/kids-and-their-bones · https://health.clevelandclinic.org/are-teeth-bones |
 | `teethbone` | 🦷 | Bony Tooth | Teeth are bones. | Teeth aren't bones. Their hard outside, called enamel, can't grow back, so brushing really matters. | hardcover | Cleveland Clinic · https://health.clevelandclinic.org/are-teeth-bones |
 | `yawn` | 🥱 | Air-Gulp Yawn | You yawn because your body needs more air. | Scientists tested it: breathing extra oxygen didn't stop people yawning. They're still working out why we yawn, and why yawns are catching! | rumour | University of Washington · https://faculty.washington.edu/chudler/yawning.html (Provine, 1987) |
-| `heartleft` **Boss** | ❤️ | The Left-Side Heart | Your heart is on the left side of your chest. | Your heart sits in the middle of your chest, behind your breastbone, with its bottom tipped a little to the left. | boss | Cleveland Clinic · https://my.clevelandclinic.org/health/body/21704-heart |
+| `heartleft` **Boss** | ❤️ | The Left-Side Heart | Your heart is on the left side of your chest. | Your heart sits near the middle of your chest, between your lungs, just behind your breastbone. It only leans a little to the left. | boss | NIH (NHLBI) · https://www.nhlbi.nih.gov/health/heart/anatomy · https://www.texasheart.org/heart-health/heart-information-center/topics/heart-anatomy/ |
 
 ### 🌦️ The Weather Station
 
@@ -186,28 +186,28 @@ How they were chosen:
 | `heatbolt` | 🌩️ | Heat Lightning | Hot summer nights make a special silent "heat lightning". | It's ordinary lightning from a storm too far away to hear the thunder. If you can hear thunder, go indoors. | dasher | National Weather Service · https://www.weather.gov/safety/lightning-heat |
 | `fog` | 🌫️ | Sky-Only Cloud | Clouds only live high up in the sky. | Fog is a cloud that sits on the ground. When you walk through fog, you're walking through a cloud! | rumour | Met Office · https://weather.metoffice.gov.uk/learn-about/weather/types-of-weather/fog |
 | `groundhog` | 🐿️ | Weather Groundhog | A groundhog can tell if spring will come early. | Weather scientists at NOAA checked. The most famous groundhog, Phil, was right only about a third of the time. | gossip | NOAA · https://www.noaa.gov/heritage/stories/grading-groundhogs |
-| `forecast` | 📡 | Always-Wrong Forecast | Weather forecasts are always wrong. | Forecasts for the next few days are right most of the time. It's forecasts more than a week ahead that are often wrong. | caster | NOAA · https://www.nesdis.noaa.gov/about/k-12-education/weather-forecasting/how-reliable-are-weather-forecasts |
-| `cloudweight` **Boss** | ☁️ | The Featherweight Cloud | Clouds weigh nothing at all. | One puffy cloud can weigh about 500 tonnes, as much as about a hundred elephants. Its water drops are so tiny that they float. | boss | USGS · https://www.usgs.gov/water-science-school/science/how-much-does-a-cloud-weigh |
+| `forecast` | 📡 | Always-Wrong Forecast | Weather forecasts are always wrong. | Forecasts for the next few days are right most of the time. Forecasts ten or more days ahead are right only about half the time. | caster | NOAA · https://www.nesdis.noaa.gov/about/k-12-education/weather-forecasting/how-reliable-are-weather-forecasts |
+| `cloudweight` **Boss** | ☁️ | The Featherweight Cloud | Clouds weigh nothing at all. | One puffy cloud can weigh about 500 tonnes! Its water drops are so tiny and spread out that they float. | boss | USGS · https://www.usgs.gov/water-science-school/science/how-much-does-a-cloud-weigh |
 
 ### ⛰️ The Mountains
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
-| `himalaya` | 📏 | Finished Mountain | Mountains never change size. | Some mountains are still growing! The Himalayas get a few millimetres taller each year as India slowly pushes into Asia. | tank | PBS NOVA · https://www.pbs.org/wgbh/nova/everest/earth/birthmountains.html |
-| `mountcold` | 🥶 | Closer-to-the-Sun Peak | Mountain tops should be warm because they're closer to the Sun. | The Sun is so far away that a mountain doesn't bring you any closer. Air up high is thinner and holds less heat, so it's colder. | pelter | Hong Kong Observatory · https://www.weather.gov.hk/en/education/weather/folklore/00079-the-higher-you-climb-the-colder-it-gets-explained.html |
+| `himalaya` | 📏 | Finished Mountain | Mountains never change size. | Some mountains are still growing! India is slowly pushing into Asia, and that push lifts the Himalayas up a tiny bit every year. | tank | USGS · https://pubs.usgs.gov/gip/dynamic/himalaya.html |
+| `mountcold` | 🥶 | Closer-to-the-Sun Peak | Mountain tops should be warm because they're closer to the Sun. | The Sun is so far away that a mountain doesn't bring you any closer. The Sun warms the ground, and the ground warms the air. High up, you're far from the warm ground, so it's colder. | pelter | Hong Kong Observatory · https://www.hko.gov.hk/en/education/weather/meteorology-basics/00079-the-higher-you-climb-the-colder-it-gets-explained.html |
 | `icevolcano` | 🌋 | Hot-Places Volcano | Volcanoes only happen in hot places. | Mount Erebus, in icy Antarctica, is an active volcano. It even has a bubbling lake of lava at the top. | caster | NASA · https://earthobservatory.nasa.gov/images/87444/mount-erebus-antarctica |
 | `mtgoat` | 🐐 | Not-a-Goat Goat | Mountain goats are goats. | Mountain goats aren't true goats. They're goat-antelopes, cousins of goats, with grippy hooves for climbing rocks. | dasher | National Park Service · https://www.nps.gov/kefj/learn/nature/mountain-goat.htm |
-| `everest` **Boss** | 🏔️ | The Tallest Everest | Mount Everest is the tallest mountain in the world. | Everest is the highest above the sea. But Mauna Kea in Hawaii is taller, from its bottom deep under the ocean to its top. | boss | Guinness World Records · https://www.guinnessworldrecords.com/world-records/tallest-mountain · https://www.earthdate.org/worlds-tallest-mountain |
+| `everest` **Boss** | 🏔️ | The Tallest Everest | Mount Everest is the tallest mountain in the world. | Everest is the highest above the sea. But Mauna Kea in Hawaii is taller, from its bottom deep under the ocean to its top. | boss | Guinness World Records · https://www.guinnessworldrecords.com/world-records/tallest-mountain · https://www.earthdate.org/episodes/worlds-tallest-mountain |
 
 ### 🛰️ The Space Station
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
-| `spacetall` | 🧑‍🚀 | Same-Height Astronaut | You stay the same height in space. | Astronauts get up to about 5 cm taller while they float, because nothing squashes their backbones. They shrink back on Earth. | normal | Smithsonian · https://www.smithsonianmag.com/smart-news/space-makes-astronauts-grow-taller-and-also-backs-180960922/ |
-| `twinkle` | ✨ | Twinkly Star | Stars twinkle all by themselves. | Stars shine steadily. The twinkle comes from Earth's wobbly, windy air. Above the air, stars don't twinkle at all. | rumour | NASA · https://apod.nasa.gov/apod/ap000725.html |
-| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://spotthestation.nasa.gov/ |
+| `spacetall` | 🧑‍🚀 | Same-Height Astronaut | You stay the same height in space. | Astronauts get a few centimetres taller while they float, because nothing squashes their backbones. They shrink back on Earth. | normal | Smithsonian · https://www.smithsonianmag.com/smart-news/space-makes-astronauts-grow-taller-and-also-backs-180960922/ · https://www.nasa.gov/wp-content/uploads/2018/05/whatisyourspaceheight.pdf |
+| `twinkle` | ✨ | Twinkly Star | Stars twinkle all by themselves. | Stars shine steadily. The twinkle comes from Earth's wobbly, windy air, which bends the starlight on its way to your eyes. | rumour | NASA · https://apod.nasa.gov/apod/ap000725.html · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question26.html |
+| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://www.nasa.gov/missions/station/spot-the-station-frequently-asked-questions/ |
 | `spaceline` | 🚀 | Far-Away Space | Space starts millions of kilometres up. | Space starts only about 100 km up. If a car could drive straight up, it would get there in about an hour. | fast | Space.com · https://www.space.com/karman-line-where-does-space-begin |
-| `sunfire` **Boss** | ☀️ | The Campfire Sun | The Sun is a giant ball of fire. | Fire needs oxygen, and the Sun has hardly any. The Sun shines because tiny bits of hydrogen squeeze together deep inside it. | boss | NASA · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question36.html |
+| `sunfire` **Boss** | ☀️ | The Campfire Sun | The Sun is a giant ball of fire. | A fire needs oxygen to burn, but the Sun doesn't burn. It shines because tiny bits of hydrogen squeeze together deep inside it. | boss | NASA · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question36.html · https://hesperia.gsfc.nasa.gov/rhessi3/public-outreach/the-solar-faq/index.html |
 
 **Final boss:** `hearsay` 🗣️ **Lady Hearsay**. Myth: "If everybody says it, it must be true." Fact: "Lots of people saying something doesn't make it true. Good thinkers ask where an idea came from, and check." Kind: boss. Source in game: Understanding Science, UC Berkeley (the same as `sses`).
 
@@ -250,8 +250,43 @@ How they were chosen:
   - `stegorex` (dinosaur time gaps) sits beside `dinopeople`.
   - `heatbolt` sits beside `bolt`.
   - `purplecarrot` sits beside `carrots`.
-- **Spare myth:** brown eggs are healthier than white (USDA: shell colour comes from the hen's breed, not nutrition). It can replace any myth above.
-- **Before shipping:** this session could not open the URLs directly (outbound fetch was blocked). Every link came from a web search result, and `britannica.com/animal/cow` was confirmed only through a search summary. Click through all 40 before release, as in the Book 1 fact-check.
+- **Spare myth:** brown eggs are healthier than white (USDA: shell colour comes from the hen's breed, and brown and white eggs are the same inside; https://www.ars.usda.gov/ARSUserFiles/oc/aglab/learnexplore/eggsafety/eggsafety_buyingeggs.pdf). It can replace any myth above.
+- **Before shipping:** see the source check below. Pages still could not be opened directly, so click through all 40 before release, as in the Book 1 fact-check.
+
+
+### Source check (1 November 2026)
+
+**How it was checked.** Opening pages was still blocked in this session (the network proxy refused every site, including nasa.gov and usgs.gov), so each myth was checked with web searches limited to the source's own site. A link counts as checked when the exact URL showed up in the search index with a matching title, and the search summaries of that page backed the fact as written. This is stronger than before, but it is not a click-through. Someone still needs to open each link before release.
+
+**Kept as written (18):** `saltboil`, `pigmud`, `horsesleep`, `sheepface`, `stegorex`, `paintstatue` (only the source label changed: the NPR story is about The Met's "Chroma" show, not a British Museum study), `eiffel`, `liberty`, `pigeon`, `babybones`, `teethbone`, `yawn`, `heatbolt`, `fog`, `groundhog`, `icevolcano`, `mtgoat`, `spaceline`.
+
+**Fact reworded, source kept (4):**
+- `purplecarrot`: "400 to 500 years ago" became "about 400 years ago". The source says the 1600s.
+- `rooster`: "crow all day long" became "crow at any time of day".
+- `forecast`: NOAA says forecasts ten or more days out are right about half the time. The fact now says that, not "more than a week".
+- `cloudweight`: the "hundred elephants" comparison isn't in the USGS page, so it was cut. The 500 tonnes (about 1.1 million pounds) is from USGS.
+
+**Source replaced or added (18), and 8 of these facts reworded:**
+- `microwave`: the Clemson link didn't open. It now links straight to USDA FSIS, which says microwaves reach 1 to 1½ inches in, and the middle heats by conduction. "About two fingers deep" became "only a few centimetres deep".
+- `honeycrunch`: `node/79551` didn't match any page. Replaced with the Oregon State Extension "Is crystalized honey safe to eat?" page (safe to eat; a warm water bath melts it).
+- `eggequinox`: `stardate.org/?p=17865` didn't match any page. Replaced with StarDate's "Equinox Myth" episode (21 March 2021).
+- `cowtummy`: added Britannica's "multi-chambered stomach" page, which names the four parts of one stomach. This backs up the cow page, which was only confirmed through a summary before.
+- `pterosaur`: the old AMNH link didn't match any page. Replaced with AMNH's "What Is a Pterosaur?" (reptiles, not dinosaurs; cousins of dinosaurs).
+- `armour`: the Met "Sunday at the Met" and EurekAlert links didn't match. Replaced with The Met's essay "Arms and Armor: Common Misconceptions and FAQs". It says the crane story began as a joke, and that knights could mount without help and could even run.
+- `birddino`: the Live Science and Carnegie links were swapped for AMNH ("Birds = Dinosaurs") and the Natural History Museum ("Why are birds the only surviving dinosaurs?").
+- `bigben`: Parliament says the name was *first* given to the bell, and is now often used for the tower too. The fact now says the name "was first given to the giant bell", not that it is only the bell's nickname. The link is now Parliament's "Facts and figures" page.
+- `skyscraper`: the NPR link pointed to a transcript, and the Scholastic link to a test server. Both were replaced with the public NPR article and the public Scholastic page.
+- `livebone`: the Cleveland Clinic bones page doesn't clearly say bones are alive. Replaced with NIH/NIAMS "Kids and Their Bones" and Cleveland Clinic's "Are teeth bones?" (bone is living tissue that grows and repairs).
+- `heartleft`: Cleveland Clinic puts the heart "behind and to the left of" the breastbone, so "sits in the middle" overclaimed. The fact now says "near the middle ... only leans a little to the left". The sources are now NIH/NHLBI ("center of your chest") and the Texas Heart Institute ("middle of your chest tilted slightly to the left").
+- `himalaya`: the PBS NOVA link didn't match any page, and sources disagree on the rate (USGS says more than 1 cm a year, others say mm). The number was cut. The source is now USGS "This Dynamic Earth: The Himalayas".
+- `mountcold`: the Hong Kong Observatory page has moved, so the link is updated. The fact now uses the page's own explanation (the ground warms the air, and high up you're far from it), instead of "thin air holds less heat".
+- `everest`: EarthDate link fixed (`/episodes/worlds-tallest-mountain`). Guinness confirmed.
+- `spacetall`: NASA says astronauts grow up to 3% taller, so "up to about 5 cm" became "a few centimetres". Added NASA's "What's your space height?" sheet.
+- `twinkle`: no source found that says stars don't twinkle from space, so that line was cut. Added NASA StarChild "Why do stars twinkle?".
+- `issspot`: `spotthestation.nasa.gov` now lives on nasa.gov. Linked to NASA's Spot the Station FAQ (bare eyes, no flashing lights).
+- `sunfire`: the Sun does have a little oxygen, so "hardly any" was dropped. The fact now says the Sun doesn't burn like a fire, it fuses hydrogen. Added NASA's RHESSI Solar FAQ, alongside StarChild.
+
+**Dropped:** none. **Spare myth (brown eggs):** checked. USDA ARS says shell colour comes from the hen's breed and the eggs are the same inside. URL added.
 
 ---
 
