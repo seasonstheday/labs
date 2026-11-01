@@ -639,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 87</div>
+    <div class="build">build 88</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1328,7 +1328,7 @@ const KIND = {
   tank:     { hp: 60, spd: 22, r: 30, dmg: 12, xp: 3, coin: .9 },
   splitter: { hp: 26, spd: 30, r: 24, dmg: 6,  xp: 1, coin: .45 },
   mini:     { hp: 7,  spd: 50, r: 13, dmg: 3,  xp: 0, coin: .15 },
-  boss:     { hp: 500, spd: 15, r: 46, dmg: 14, xp: 20, coin: 1 },
+  boss:     { hp: 600, spd: 15, r: 46, dmg: 14, xp: 20, coin: 1 },
   // the new creeps: each one asks the player to read the screen
   dasher:   { hp: 16, spd: 30, r: 19, dmg: 5,  xp: 1, coin: .45 }, // pauses, then charges the last stretch
   hardcover:{ hp: 50, spd: 24, r: 28, dmg: 10, xp: 3, coin: .8 },  // armoured front; knockback flips it open
@@ -1361,7 +1361,27 @@ const BOSSMOVE = {
   flat:     { every: 12, tell: '"The world is FLAT. See?"', note: 'The Flat Earth flips the whole backyard over for a moment. Dad never moves, so neither should you.', go: b => { G.flip = 3; text(CX, CY - 120, 'FLIP!', '#fff', 24, 1.2); } },
 };
 const SSES_MOVES = ['wall', 'boil', 'brain', 'triangle', 'hot', 'penguin', 'bolt'], sses = { n: -1, cur: 'wall' };
-BOSSMOVE.hearsay = Object.create(BOSSMOVE.sses, { note: { value: 'Lady Hearsay repeats every boss\'s move she has heard about. Stun her during the tell to stop it.' } }); // shares his rotation (getters live on the prototype)
+// Book 2's chapter bosses, one move each (reports/Book 2 plan.md, "Boss moves")
+const nearMyths = (b, R) => G.enemies.filter(e => e !== b && e.hp > 0 && e.kind !== 'boss' && e.kind !== 'brick' && dist(e, b) < R);
+Object.assign(BOSSMOVE, {
+  eggequinox:  { every: 10, tell: '"Watch me BALANCE."', note: 'The Egg stands up tall and shrugs off hits for a moment. Stun it while it wobbles.', go: b => { b.guard = 2.5; text(b.x, b.y - b.r - 50, 'BALANCED!', '#fff6c4', 20, 1.2); } },
+  cowtummy:    { every: 11, tell: '"Mmm, myths."', note: 'The Cow swallows nearby myths and spits them out tougher. Stun it to stop the swallow.',
+                 go: b => { const two = nearMyths(b, 9999).sort((p, q) => dist(p, b) - dist(q, b)).slice(0, 2); for (const e of two) { e.x = b.x + rnd(-40, 40); e.y = b.y + b.r + 20; e.hp = e.maxhp = e.maxhp * 1.6; e.r *= 1.12; e.hit = .3; } text(b.x, b.y - b.r - 50, two.length ? 'GULP… PTOO!' : 'GULP?', '#fff', 20, 1.2); } },
+  birddino:    { every: 10, tell: '"FLAP!"', note: 'The Last Dinosaur hops over traps and lands inside the ring. Stun it before it jumps.',
+                 go: b => { const a = Math.atan2(b.y - G.dad.y, b.x - G.dad.x) + rnd(-.6, .6), R = G.radius * .55; b.hop = { t: 0, dur: .8, fx: b.x, fy: b.y, tx: G.dad.x + Math.cos(a) * R, ty: G.dad.y + Math.sin(a) * R }; } },
+  skyscraper:  { every: 11, tell: '"I never wobble!"', note: 'The Skyscraper sways and knocks nearby friends dizzy. Stun it mid-boast.',
+                 go: b => { G.shake = Math.max(G.shake, .35); text(b.x, b.y - b.r - 50, 'WOBBLE!', '#fff', 22, 1.2); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 300) { m.muted = Math.max(m.muted || 0, 2); text(m.x, m.y - 50, 'Dizzy!', '#c9ccd3', 15, 1); } G.fx.push({ k: 'ring', x: b.x, y: b.y, R: 300, t: 0, life: .6, col: '#c9ccd3' }); } },
+  heartleft:   { every: 10, tell: '"Ba-DUM."', note: 'The Heart\'s beat speeds up the myths around it and rattles friends. Stun it between beats.',
+                 go: b => { for (const e of nearMyths(b, 280)) if (!e.pumped) { e.pumped = true; e.spd *= 1.35; } for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 220) m.muted = Math.max(m.muted || 0, 1.2); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: 280, t: 0, life: .6, col: '#e8707a' }); text(b.x, b.y - b.r - 50, 'Ba-DUM!', '#f3a0a8', 22, 1.2); } },
+  cloudweight: { every: 11, tell: '"Foggy!"', note: 'The Cloud fogs your ring smaller for a while. Stun it mid-sentence to stop it.', go: b => { G.fog = 3.5; text(G.dad.x, G.dad.y - 90, 'FOG', '#c9dbe6', 22, 1.2); } },
+  everest:     { every: 10, tell: '"Still GROWING!"', note: 'Everest gets bigger and tougher each time. Stun it during the tell to stop it growing.',
+                 go: b => { if ((b.grown || 0) >= 3) { text(b.x, b.y - b.r - 50, '"…that\'s as tall as I get."', '#fff', 15, 1.2); return; } b.grown = (b.grown || 0) + 1; b.r *= 1.1; const add = b.maxhp * .12; b.hp += add; b.maxhp += add; text(b.x, b.y - b.r - 50, 'TALLER!', '#fff', 22, 1.2); } },
+  sunfire:     { every: 12, tell: '"Toasty!"', note: 'The Sun warms your ring. Stun it to cool things off.', go: b => { G.heat = { t: 0, dur: 5, by: b }; text(G.dad.x, G.dad.y - 90, 'Getting toasty…', '#f0a35a', 17, 1.2); } },
+});
+// Lady Hearsay borrows Book 2's moves the way Sir Ever-So-Sure borrows Book 1's
+const HS_MOVES = ['eggequinox', 'cowtummy', 'birddino', 'skyscraper', 'heartleft', 'cloudweight', 'everest'], hsMv = { n: -1, cur: 'eggequinox' };
+BOSSMOVE.hearsay = { get every() { return G.boss && G.boss.rage ? 6 : 9; }, get tell() { const k = HS_MOVES[(hsMv.n = (hsMv.n + 1) % HS_MOVES.length)]; hsMv.cur = k; return '"' + BOSSMOVE[k].tell.replace(/^"|"$/g, '') + '" (I heard that one!)'; },
+  note: 'Lady Hearsay repeats every move she has heard about. Stun her during the tell to stop it.', go: b => BOSSMOVE[hsMv.cur].go(b) };
 const vilOf = e => e && e.id === 'hearsay' ? 'hs' : 'sses', isVil = e => e && (e.id === 'sses' || e.id === 'hearsay');
 // each chapter's myths come with a twist of their own, so a Library book isn't a Backyard book with a new cover:
 // a colour the whole chapter shares (mixed into each myth's own) and one habit the player can read and play around
@@ -2755,7 +2775,7 @@ function spawn(id, at = null, q = {}) {
   if (G.monthCat && catOf(id) === G.monthCat) e.coin = Math.min(1, e.coin * 1.6 + .1);
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
-  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = G.hk * K.hp * ((G.hlv ? .5 : .38) + G.hlv * .18 + G.hlv * G.hlv * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.hlv - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' || id === 'hearsay' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
+  if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 12; e.charging = 0; /* moves may start before its first charge */ e.minSec = isVil(e) ? 25 : G.S.idx === 4 ? 18 : 12; /* the shortest fight, however strong the team: see the health floor in update() */ e.hp = e.maxhp = G.hk * K.hp * ((G.hlv ? .5 : .38) + G.hlv * .18 + G.hlv * G.hlv * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.hlv - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .75; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.dmg *= .6; e.chargeT = 16; } /* the very first boss hits softly, but still takes a while */ $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' || id === 'hearsay' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
     if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, G.S.book === 2 ? BOOK2.villain[chNum(G.S.w) - 1].cameo : VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
@@ -2821,7 +2841,8 @@ function drawSses(e, own) {
   ctx.save(); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .8, r * .28, 0, 0, 7); ctx.fill();
   if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
   if (own && e.rough) { ctx.globalAlpha *= .85; ctx.filter = 'grayscale(.7) contrast(.9)'; }
-  ctx.translate(e.x, e.y + r * .95 + bob * .3); ctx.rotate(e.charging > 0 ? face * .3 : Math.sin(G.t * 2) * .03); ctx.scale(face * (1 + sq), 1 - sq);
+  if (e.guard > 0) { ctx.save(); ctx.strokeStyle = 'rgba(255,246,196,.9)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.ellipse(e.x, e.y - h * .4, h * .45, h * .6, 0, 0, 7); ctx.stroke(); ctx.restore(); }
+  ctx.translate(e.x, e.y + r * .95 + bob * .3 - (e.z || 0)); ctx.rotate(e.charging > 0 ? face * .3 : Math.sin(G.t * 2) * .03); ctx.scale(face * (1 + sq), 1 - sq);
   ctx.drawImage(img, -h / 2, -h, h, h); ctx.filter = 'none';
   if (e.hit > 0) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= .45; ctx.drawImage(img, -h / 2, -h, h, h); }
   ctx.restore();
@@ -2876,6 +2897,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
+  if (e.guard > 0) d *= .25;
   if (G.checked && G.checked.has(e.id)) d *= 1.5;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
@@ -2899,6 +2921,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
   e.hp -= d; e.hit = .12;
+  if (e === G.boss) { e.taken = (e.taken || 0) + d; if (e.minSec && !G.endless && (e.hit1 == null || e.age - e.hit1 < 1)) e.hp = Math.max(e.hp, e.maxhp * .5); } // a boss can't be deleted in its first second: the health floor (update) sizes it from these hits
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   sfx(crit ? 'crit' : 'hit');
   text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
@@ -3203,14 +3226,22 @@ function update(dt) {
   // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
   if (G.boss && G.boss.hp > 0) {
     const b = G.boss;
+    // health floor: a team strong enough to delete the boss in seconds (a replay, a big Skill Tree) finds it tops itself up,
+    // keeping the bar where it was, so every boss fight lasts at least minSec; teams it already challenges never see this
+    b.age = (b.age || 0) + dt;
+    if (b.taken && b.hit1 == null) b.hit1 = b.age;
+    if (b.minSec && !G.endless && b.hit1 != null && b.age - b.hit1 >= .5 && b.age < b.minSec && b.age - (b.floorAt || 0) >= .5) { b.floorAt = b.age; const want = b.taken / (b.age - b.hit1) * (b.minSec - b.age); if (want > b.hp) { b.maxhp *= want / b.hp; b.hp = want; } } // average damage since its first hit: steadier than a window, which ratchets on bursts
+    if (b.guard > 0) { b.guard -= dt; if (b.stun > 0) b.guard = 0; }
+    if (b.hop) { const H = b.hop; H.t += dt; const k = Math.min(1, H.t / H.dur); b.x = H.fx + (H.tx - H.fx) * k; b.y = H.fy + (H.ty - H.fy) * k; b.z = Math.sin(Math.PI * k) * 140;
+      if (k >= 1) { b.hop = null; b.z = 0; G.shake = Math.max(G.shake, .3); text(b.x, b.y - b.r - 40, 'THUD', '#fff', 22, .9); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 160) m.muted = Math.max(m.muted || 0, 1); } }
     if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 15, 1.3); } }
     else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
     if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.lv ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
     // its own move: a tell, then the move; a stun during the tell is a 'Nope!'
-    const MV = BOSSMOVE[b.id]; if (MV && !b.rough) {
-      if (b.moveT == null) b.moveT = (G.S.w === 0 ? 10 : 7) * (G.D.bossMv || 1);
+    const MV = BOSSMOVE[b.id]; if (MV && !b.hop) { const slow = b.rough ? 1.4 : 1; // a rough draft knows its move too, just slower
+      if (b.moveT == null) b.moveT = (G.S.w === 0 ? 10 : 7) * (G.D.bossMv || 1) * slow;
       if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 15, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
-      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1); MV.go(b); } }
+      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7 * slow; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1) * slow; MV.go(b); } }
     }
     if (b.sliding > 0) { b.sliding -= dt; b.x += b.sx * dt; b.y += b.sy * dt; b.walk += dt * 10; G.fx.push({ k: 'puff', x: b.x - b.sx * .05, y: b.y + b.r * .8, vx: rnd(-20, 20), vy: -20, t: 0, life: .4, col: '#eef6ff', r: 7 });
       if (dist(b, G.dad) < b.r + 40 && !b.slid.has('dad')) { b.slid.add('dad'); b.bonk = 1.6; G.hp -= patHit(b.dmg); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'WHOOSH', '#cb382e', 24, .9); }
