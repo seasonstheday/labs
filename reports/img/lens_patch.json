@@ -1,0 +1,46 @@
+[
+ [
+  "      if (m.cds[a] <= 0 && !m.anim) { const D = a === 'weapon'",
+  "      if (m.cds[a] <= 0 && !m.anim && !(a === 'weapon' && CHARS[m.id].abil.some(b => b !== a && m.ranks[b] && !ABIL[b].passive && m.cds[b] <= .42))) { const D = a === 'weapon'"
+ ],
+ [
+  "yoyo: { em: '\ud83d\udcab', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [14, 17, 20, 25, 30], n: [1, 1, 2, 2, 3] },",
+  "yoyo: { em: '\ud83d\udcab', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.45, 1.3, 1.15, 1.0, .82], dmg: [15, 18, 22, 27, 32], n: [1, 2, 2, 3, 4] },"
+ ],
+ [
+  "plane: { em: '\ud83d\udd2d', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [9, 11, 14, 17, 20],  n: [1, 2, 2, 3, 4] },",
+  "plane: { em: '\ud83d\udd2d', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [12, 15, 18, 22, 26],  n: [1, 2, 2, 3, 4] },"
+ ],
+ [
+  "bubble: { em: '\ud83e\udee7', name: 'Bubble Lens', desc: 'Floaty bubbles that slow myths down.', cd: [.7, .62, .55, .48, .42],  dmg: [25, 31, 39, 48, 59],   n: [1, 2, 2, 3, 4] },",
+  "bubble: { em: '\ud83e\udee7', name: 'Bubble Lens', desc: 'Floaty bubbles that slow myths down.', cd: [.7, .62, .55, .48, .42],  dmg: [28, 35, 43, 53, 65],   n: [1, 2, 2, 3, 4] },"
+ ],
+ [
+  "balloon: { em: '\u2600\ufe0f', name: 'Burning Glass', desc: 'A hot sunspot lobbed at a crowd. Splash!', cd: [2.0, 1.8, 1.6, 1.4, 1.15], dmg: [14, 18, 21, 27, 33], n: [60, 66, 72, 80, 92] },",
+  "balloon: { em: '\u2600\ufe0f', name: 'Burning Glass', desc: 'A hot sunspot lobbed at a crowd. Splash!', cd: [2.3, 2.05, 1.85, 1.6, 1.35], dmg: [14, 18, 21, 27, 33], n: [54, 60, 66, 72, 84] },"
+ ],
+ [
+  "if (s.k === 'plane') { for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 10) { s.hitset.add(e); hurt(e, s.dmg);",
+  "if (s.k === 'plane') { for (const e of G.enemies) if (e.hp > 0 && !s.hitset.has(e) && dist(e, s) < e.r + 10) { s.hitset.add(e); hurt(e, s.dmg, 30);"
+ ],
+ [
+  "hurt(e, s.dmg, s.knock || 60,",
+  "hurt(e, s.dmg, s.knock || (s.sun ? 30 : 60),"
+ ],
+ [
+  "G.traps.push({ x: s.tx, y: s.ty, r: s.R * .9, t: 0, life: 3.5, mul: .55, puddle: true",
+  "G.traps.push({ x: s.tx, y: s.ty, r: s.R * .9, t: 0, life: s.sun ? 2 : 3.5, mul: s.sun ? .7 : .55, puddle: true"
+ ],
+ [
+  "{ s.hitset.add(e); hurt(e, s.dmg, 40); }",
+  "{ s.hitset.add(e); hurt(e, s.dmg, 60); }"
+ ],
+ [
+  "if (ev || Math.abs(da) < 1.35) hurt(e, dmg, 160, m);",
+  "if (ev || Math.abs(da) < 1.35) hurt(e, dmg, 135, m);"
+ ],
+ [
+  "hurt(e, s.dmg, 0, s.m || G.dad); e.slow = 2; s.dead = true;",
+  "hurt(e, s.dmg, 0, s.m || G.dad); e.slow = s.m ? 2 : 2.5; s.dead = true;"
+ ]
+]
