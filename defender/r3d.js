@@ -56,7 +56,7 @@ function wearHat(o, M, id, fit) {
   const [fw, sink] = fit || [1.2, .5]; hat.quaternion.copy(M.head.q); hat.userData.fit = { sc: fw * HEAD_W / H.wide, sink: sink * .55 }; // a 3D head is rounder than the drawing's outline, so brims ride a little higher
   bone.add(hat); U.hat = hat; }
 // the 3D hats there are (tools/meshy_out -> assets/models/hat_<id>.glb); others stay off in 3D until they have a model
-const HATS3D = new Set(['top', 'wizard', 'cap', 'sun', 'grad', 'crown', 'santa', 'pilgrim', 'clubcap']);
+const HATS3D = new Set(['top', 'wizard', 'cap', 'sun', 'grad', 'crown', 'santa', 'pilgrim', 'clubcap', 'party']);
 // a hat on a friend (no skeleton): on top of the model, sized to its width, riding along with its squash and lean
 function wearHatTop(o, id, fit) {
   const U = o.userData; if (U.hatId === id) return; if (U.hat) { U.hat.parent.remove(U.hat); U.hat = null; } U.hatId = id; if (!id) return;

@@ -639,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 89</div>
+    <div class="build">build 90</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2747,7 +2747,9 @@ function startWave() {
   else {
     // the director composes the wave instead of rolling dice: healers walk in behind escorts, swarms arrive together,
     // and from stage 3 on one myth per wave is an elite that drops a good item
-    const n = Math.round((G.twist === 'crowd' ? 1.5 : G.twist === 'giant' ? .4 : 1) * (G.endless ? Math.min(1, 28 / (3 + w * 2)) : 1) * (3 + w * 2 + Math.min(10, Math.floor(G.lv * .25))) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
+    const n = Math.round((G.twist === 'crowd' ? 1.5 : G.twist === 'giant' ? .4 : 1) * (G.endless ? Math.min(1, 28 / (3 + w * 2)) : 1) * (3 + w * 2 + Math.min(10, Math.floor(G.lv * .25)) * Math.min(1, .4 + w * .3)) * 1.6 * 1.35 * (save.diff === 'hard' ? 1.25 : 1) * ((VARIANT[S.w] || {}).more || 1) * (S.w === 0 ? .8 : 1)), dur = (10 + w * 1.2) * .75; // the Backyard is where everyone learns, so its waves are a little smaller
+    // the stage-level extra eases in over the first waves (40%, 70%, then all): late in Book 2 it was ~9 more myths
+    // in wave 1, before the team has any level-up cards, and wave 1 was where weak teams lost most of their Patience
     let i = 0, swarmed = false; const eliteAt = G.lv >= 2 ? Math.floor(rnd(1, n - 1)) : -1;
     while (i < n) {
       const id = pick(S.pool), k = MYTHS[id].kind, at = (i / n) * dur + rnd(0, .4), ang = rnd(0, 7);
@@ -3724,7 +3726,7 @@ function drawCompanionAt(c, id, x, y, s, face, t, opts = {}) {
   if (S3 || M3) { // the 3D friend: one frame per direction, the squash and lean already applied above
     c.scale(face, 1); // undo the flip: the sheet has real left and right sides
     const phi = opts.aim != null ? opts.aim : (face > 0 ? .35 : Math.PI - .35);
-    if (M3) { const th = look().team; R3D.put('pet_' + id, c, 0, bob * .3, (PET_H[id] || 48) * 1.1, { hat: th !== 'none' ? th : null, hatFit: HATFIT[th], phi, pitch: opts.held != null ? Math.sin(Math.min(1, opts.held) * Math.PI) * .35 : 0 }); c.restore(); c.restore(); return; }
+    if (M3) { const th = look().team; R3D.put('pet_' + id, c, 0, bob * .3, (PET_H[id] || 48) * 1.1, { hat: th !== 'none' ? th : null, hatFit: HATFIT3D[th] || HATFIT[th], phi, pitch: opts.held != null ? Math.sin(Math.min(1, opts.held) * Math.PI) * .35 : 0 }); c.restore(); c.restore(); return; }
     const A = S3.meta.anims, atkA = opts.held != null && A.attack; // a sheet with its own attack plays it through the wind-up and strike
     drawSheet(c, S3, atkA ? 'attack' : 'idle', phi, atkA ? opts.held * A.attack.dur * .999 : t, 0, bob * .3, (PET_H[id] || 48) * 1.1, { props: opts.gear ? petProps(id, opts.held) : null });
     c.restore(); c.restore(); return;
@@ -4238,6 +4240,7 @@ function headOf(img) {
 // a hat on a drawing already placed at (-w/2.., -h..): pass the drawn box; em hats sit on the hair
 // hats are drawings (assets/hat_<id>.webp, brim at the bottom): [width, how far the brim sits below the top of the head], both
 // in head widths, so the brim comes down over the hair; the emoji stands in until the drawing loads
+const HATFIT3D = { party: [1.1, .3] }; // 3D models whose size differs from their 2D drawing (the party cone is drawn small)
 const HATFIT = { pilgrim: [1.25, .55], santa: [1.3, .55], leafcrown: [1.3, .62], antlers: [1.3, .85], laurel: [1.3, .62], clubcap: [1.3, .5], cap: [1.3, .5], sun: [1.9, .55], grad: [1.45, .64], top: [1.05, .56], crown: [1.05, .5], party: [.62, .14], wizard: [1.5, .42], bow: [.8, .14], flower: [1.2, .3] };
 const HATEM = { pilgrim: '🎩', santa: '🎅', leafcrown: '🍁', antlers: '🦌', laurel: '🌿', clubcap: '🧢', cap: '🧢', sun: '👒', grad: '🎓', top: '🎩', crown: '👑', party: '🥳', wizard: '🧙', bow: '🎀', flower: '🌼' };
 function hatOn(c, img, x0, y0, w, h, id, k = 1) { if (!id || !HATFIT[id] || !ready(img)) return; const [hx, hy, hw] = headOf(img), head = hw * w, [fw, sink] = HATFIT[id], cx = x0 + hx * w, by = y0 + hy * h + head * sink * Math.min(1, k + .2), art0 = art('hat_' + id);
