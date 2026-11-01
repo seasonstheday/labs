@@ -1,5 +1,5 @@
 # Recorded voices for every fixed line in the game: python3 defender/tools/gen_voice.py [--only d,k,v,n] [--limit N]
-# Needs the game served on :8765 (it asks the page for its lines: dbg.voiceLines) and the Gemini API (the proxy adds the key).
+# Needs the game served on :8765 (it asks the page for its lines, both books: dbg.voiceLines with ?book2) and the Gemini API (the proxy adds the key).
 # Writes defender/assets/voice/<key>.mp3 (mono, 40 kbps) and voice/index.json, skipping clips that already exist,
 # so it can be stopped and run again. Delete a clip to re-record it. Tier 1 allows 100 clips a day; it stops cleanly at that.
 import json, os, sys, base64, subprocess, time, urllib.request
@@ -12,9 +12,10 @@ CAST = {
   'k': ('Leda', 'Say this like an excited, curious seven-year-old kid, bright and quick'),
   'v': ('Sadaltager', 'Say this like a pompous, theatrical know-it-all villain from a children\'s cartoon with a posh accent, funny and never scary'),
   'n': ('Sulafat', 'Read this like a warm storybook narrator at bedtime'),
+  'h': ('Laomedeia', 'Say this like a breathless, gossipy chatterbox lady from a children\'s cartoon who loves repeating whatever she heard, bubbly and silly, never mean'),  # Lady Hearsay (Book 2)
 }
 def lines():
-    js = "import { chromium } from '%s/../tests/node_modules/playwright/index.mjs'; const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium' }); const p = await b.newPage(); await p.goto('http://localhost:8765/defender/?debug'); await p.waitForTimeout(800); console.log(JSON.stringify(await p.evaluate(() => dbg.voiceLines()))); await b.close();" % HERE
+    js = "import { chromium } from '%s/../tests/node_modules/playwright/index.mjs'; const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium' }); const p = await b.newPage(); await p.goto('http://localhost:8765/defender/?debug&book2'); await p.waitForTimeout(800); console.log(JSON.stringify(await p.evaluate(() => dbg.voiceLines()))); await b.close();" % HERE
     return json.loads(subprocess.run(['node', '--input-type=module', '-e', js], capture_output=True, text=True, check=True).stdout)
 DAILY_OUT = False
 def tts(text, who, out):
@@ -31,9 +32,9 @@ def tts(text, who, out):
             subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 's16le', '-ar', str(rate), '-ac', '1', '-i', 'pipe:0', '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,loudnorm=I=-16:TP=-1.5', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '40k', out], input=raw, check=True)
             return True
         except urllib.error.HTTPError as e:
-            err = f'HTTP {e.code}: {e.read()[:160]}'
+            body = e.read().decode('utf-8', 'replace'); err = f'HTTP {e.code}: {body[:160]}'
             if e.code in (401, 402, 403): break  # out of credit or no key: stop trying
-            if e.code == 429 and 'per_day' in err: DAILY_OUT = True; break  # the day's quota (100 clips on Tier 1): try again tomorrow
+            if e.code == 429 and ('per_day' in body.lower() or 'perday' in body.lower()): DAILY_OUT = True; break  # the day's quota (100 clips on Tier 1): try again tomorrow (the hint is past the first 160 characters)
         except Exception as e: err = repr(e)
         time.sleep(3 + a * 5)
     print('  failed', who, text[:50], err, flush=True); return False
