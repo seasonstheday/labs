@@ -639,7 +639,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 88</div>
+    <div class="build">build 89</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2834,16 +2834,14 @@ function rangedGear(e, x, top, dir) {
 }
 // Sir Ever-So-Sure in the arena: his drawings, by mood (smug, scribbling a borrowed move, running a slide, shouting in a rage)
 for (const k of ['idle', 'scribble', 'flee', 'shout', 'kind']) { art('sses_' + k); if (BOOK2_ON) art('hs_' + k); }
-// also draws Book 2's chapter bosses (`own`: their one painting, until they get 3D models), squashing on the tell and greyed as a rough draft
-function drawSses(e, own) {
-  const pose = e.kind === 'mirage' ? 'idle' : e.sliding > 0 ? 'flee' : e.rage ? 'shout' : e.tellT > 0 ? 'scribble' : 'idle', img = own || art(vilOf(e) + '_' + pose);
-  const r = e.r, h = r * (own ? 2.7 : e.kind === 'mirage' ? 2.5 : 2.9), face = G.dad.x < e.x ? -1 : 1, bob = Math.sin(G.t * 3 + e.walk) * 3, sq = e.tellT > 0 ? Math.sin(G.t * 20) * .03 : 0;
+function drawSses(e) {
+  const pose = e.kind === 'mirage' ? 'idle' : e.sliding > 0 ? 'flee' : e.rage ? 'shout' : e.tellT > 0 ? 'scribble' : 'idle', img = art(vilOf(e) + '_' + pose);
+  const r = e.r, h = r * (e.kind === 'mirage' ? 2.5 : 2.9), face = G.dad.x < e.x ? -1 : 1, bob = Math.sin(G.t * 3 + e.walk) * 3, sq = e.tellT > 0 ? Math.sin(G.t * 20) * .03 : 0;
   ctx.save(); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .8, r * .28, 0, 0, 7); ctx.fill();
   if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
-  if (own && e.rough) { ctx.globalAlpha *= .85; ctx.filter = 'grayscale(.7) contrast(.9)'; }
   if (e.guard > 0) { ctx.save(); ctx.strokeStyle = 'rgba(255,246,196,.9)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.ellipse(e.x, e.y - h * .4, h * .45, h * .6, 0, 0, 7); ctx.stroke(); ctx.restore(); }
   ctx.translate(e.x, e.y + r * .95 + bob * .3 - (e.z || 0)); ctx.rotate(e.charging > 0 ? face * .3 : Math.sin(G.t * 2) * .03); ctx.scale(face * (1 + sq), 1 - sq);
-  ctx.drawImage(img, -h / 2, -h, h, h); ctx.filter = 'none';
+  ctx.drawImage(img, -h / 2, -h, h, h);
   if (e.hit > 0) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha *= .45; ctx.drawImage(img, -h / 2, -h, h, h); }
   ctx.restore();
   if (e.stun > 0) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 3; i++) { const a = G.t * 5 + i * 2.1; ctx.fillText('✦', e.x + Math.cos(a) * r * .7, e.y - h * .8 + Math.sin(a) * r * .2); } ctx.textBaseline = 'alphabetic'; }
@@ -3937,14 +3935,13 @@ function bossFront(id, r, col) {
 }
 function drawEnemy(e) {
   if (isVil(e) && ready(art(vilOf(e) + '_idle'))) return drawSses(e);
-  if ((e.kind === 'boss' || e.kind === 'mirage') && e.M.book === 2 && ready(art('boss2_' + e.id))) return drawSses(e, art('boss2_' + e.id));
   const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   const e3 = in3d(e); if (!e3) { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill(); } // the 3D layer has its own shadow
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
   if (e.known) { ctx.save(); ctx.globalAlpha = .7 + Math.sin(G.t * 6) * .3; ctx.fillStyle = '#8fd38a'; ctx.beginPath(); ctx.arc(x - r * .55, y - r * .1, r * .18, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - r * .62, y - r * .1); ctx.lineTo(x - r * .56, y - r * .03); ctx.lineTo(x - r * .46, y - r * .18); ctx.stroke(); ctx.restore(); }
   if (e.marked > 0) { ctx.font = `16px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📝', x + r * .8, y - r - 8 + Math.sin(G.t * 6) * 2); ctx.textBaseline = 'alphabetic'; }
-  const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' || big && e.M.book === 2 /* painted, no 3D sheets yet: drop this once they exist */ ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind);
+  const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind);
   if (S3 || e3) { // the 3D myth: faces the way it walks, tinted its own colour, with the code's bob, crouch and lean on top
     const mv = Math.hypot(e.vx || 0, e.vy || 0), toDad = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), phi = big || e.kind === 'gossip' || mv < 6 ? toDad : Math.atan2(e.vy, e.vx), dir = Math.cos(toDad) >= 0 ? 1 : -1;
     const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : 0, crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
@@ -3953,7 +3950,7 @@ function drawEnemy(e) {
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
     const lean3 = flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05);
-    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (e.kind === 'pelter' || e.kind === 'caster') rangedGear(e, x, y + r * .95 + hover - h * .92, dir);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
@@ -4522,7 +4519,7 @@ $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
 $('#challTrophy').onclick = () => { $('#challm').hidden = true; showTrophies(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
-function startGame(stage, how = {}) { music(STAGES[stage].w % 8); if (STAGES[stage].book === 2) art('boss2_' + STAGES[stage].W.boss); for (const id of save.party) if (EMIT_ATK[id]) art('pet_' + id + '_atk'); art('arena_' + (STAGES[stage].w + 1));
+function startGame(stage, how = {}) { music(STAGES[stage].w % 8); for (const id of save.party) if (EMIT_ATK[id]) art('pet_' + id + '_atk'); art('arena_' + (STAGES[stage].w + 1));
   newRun(stage); G.monthCat = monthEv().cat;
   if (how.twist) { G.twist = how.twist.k; if (G.twist === 'solo') G.party = G.party.slice(0, 2); $('#stageName').textContent = `${how.twist.em} ${how.twist.n}: ${G.S.name}`; setTimeout(() => { if (G) hint(`📅 Daily Myth · ${how.twist.n}: ${how.twist.d}`, 4); }, 700); }
   { const ev = activeEvent(); if (ev && !how.cup) G.S = { ...G.S, pool: [...G.S.pool, ...Object.keys(EVENTS[ev].myths)] }; }
