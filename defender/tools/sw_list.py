@@ -17,7 +17,7 @@ for p in glob.glob(os.path.join(D, 'assets', '*.png')) + glob.glob(os.path.join(
     if not os.path.exists(w) or os.path.getmtime(p) > os.path.getmtime(w):
         subprocess.run(['convert', p, '-quality', '82', '-define', 'webp:alpha-quality=100', '-define', 'webp:method=6', w], check=True); print('webp', os.path.relpath(w, D))
 rel = lambda p: './' + os.path.relpath(p, D).replace(os.sep, '/')
-CORE = ['./', './index.html', './manifest.json', './assets/icon-192.png'] + [rel(p) for pat in [
+CORE = ['./', './index.html', './book2.js', './manifest.json', './assets/icon-192.png'] + [rel(p) for pat in [
     'assets/mascot_*.webp', 'assets/webster.webp', 'assets/bdad_*.webp', 'assets/home_bg.webp', 'assets/*_face.webp', 'assets/kid.webp',
     'assets/pet_webster.webp', 'assets/pet_sparky.webp', 'assets/pet_hopper.webp', 'assets/arena_1.webp', 'assets/map_1.webp', 'assets/heads/*.webp',
     'assets/3d/kid.json', 'assets/3d/kid_idle.webp', 'assets/3d/props.json', 'assets/3d/props.webp'] for p in sorted(glob.glob(os.path.join(D, pat)))]

@@ -1,4 +1,4 @@
-// node defender/tools/balance_sim.mjs [--stages=40] [--n=3] [--profiles=typical,weak,strong] [--out=dir] [--tune='{"hp":1.8}'] [--patch=edits.json] [--snaps]
+// node defender/tools/balance_sim.mjs [--stages=40] [--book2 --stages=80 for both books] [--n=3] [--profiles=typical,weak,strong] [--out=dir] [--tune='{"hp":1.8}'] [--patch=edits.json] [--snaps]
 // Profiles run in parallel browser contexts; 40 stages x n=3 x 4 profiles takes about 8 minutes.
 // (serve the repo on :8765 first). Difficulty curve, stage by stage, for players of different habits.
 //
@@ -54,9 +54,9 @@ const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromi
 async function career(name) {
   const P = PROFILES[name], ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' }), p = await ctx.newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message));
-  await ctx.route(/\/defender\/(index\.html)?\?debug$/, async route => { const r = await route.fetch(); let html = await r.text();
+  await ctx.route(/\/defender\/(index\.html)?\?debug(&book2)?$/, async route => { const r = await route.fetch(); let html = await r.text();
     for (const [a, b] of PATCH) { if (!html.includes(a)) throw new Error('patch not found: ' + a.slice(0, 80)); html = html.replace(a, b); } await route.fulfill({ response: r, body: html }); });
-  await p.goto('http://localhost:8765/defender/?debug'); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(800);
+  await p.goto('http://localhost:8765/defender/?debug' + ('book2' in A ? '&book2' : '')); await p.evaluate(() => localStorage.clear()); await p.reload(); await p.waitForTimeout(800);
   // set up the in-page helpers once
   await p.evaluate(([P, TUNE]) => {
     const D = dbg, { mergeInto, twinsOf, polishItem, POLISH, POLISH_MAX, itemOf, syncWeapons, OFFERS } = window.__x;
