@@ -14,7 +14,7 @@ from gen_art import call, sprite_fix, STYLE
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(HERE, 'concepts'); os.makedirs(OUT, exist_ok=True)
 VIEW = (" Single character, full body, centred, three-quarter front view turned slightly to the viewer's right, standing on an "
         "invisible floor, on a plain pure white background, nothing else in the picture. The character reads as a solid toy "
-        "figure with simple rounded volumes, no thin floating parts, and no text or letters anywhere on it.")
+        "figure with simple rounded volumes, no thin floating parts, and no text or letters anywhere on it. No shadow on the floor under it.")
 NEUTRAL = " Its main body is a plain medium grey-beige with no pattern, so it can be recoloured later."
 CREEPS = {
     'normal':    'a grumpy walking library book, a plain hard cover with a slightly darker spine, standing upright on two short stubby legs with little round shoes, two cross-looking eyes near the top of the cover' + NEUTRAL,
@@ -38,6 +38,15 @@ BOSSES = {
     'triangle': 'a huge ancient sea-blue tome shaped like a triangle standing on its base, a little sailing ship drawn on its cover, a small golden crown on the top point',
     'hot':      'a huge ancient orange tome standing upright with a blazing yellow sun on its cover and short sun rays sticking out around its edges, a small golden crown on top',
     'penguin':  'a huge ancient black tome standing upright with a white penguin belly on its front, an orange beak and two small flippers, a small golden crown on top',
+    # Book 2 ("The Little Book of Everybody Says"): drawn first as the 2D bosses (copied to assets/boss2_<id>.png), later the Meshy reference
+    'eggequinox':  'a huge ancient cream tome standing upright with a giant white egg balanced perfectly on its pointed end on top of it, a small spring daisy on the cover, a small golden crown perched on the egg',
+    'cowtummy':    'a huge ancient tome standing upright with a black-and-white cow-patch cover, little cow ears and short horns at the top corners, a pink cow nose on the front, a small golden crown between the horns',
+    'birddino':    'a huge ancient mossy-green tome standing upright with a leathery dinosaur crest of spikes running over its top and a small fossil footprint on its cover, a short dinosaur tail curling out behind, a small golden crown on top',
+    'skyscraper':  'a very tall narrow ancient grey tome standing upright like a skyscraper, its cover a grid of little glowing yellow office windows, a thin antenna on top with a small golden crown hanging on it',
+    'heartleft':   'a huge ancient red tome standing upright with a big plump red cartoon heart sticking out of the left side of its cover, a stethoscope draped over its top, a small golden crown on top',
+    'cloudweight': 'a huge ancient pale-blue tome standing upright with a big fluffy white cloud sitting on top like a hat and a light grey feather tucked into the cloud, a small golden crown on the cloud',
+    'everest':     'a huge ancient white-and-stone-grey tome standing upright with a snowy mountain peak rising from its top, a little red flag planted on the summit beside a small golden crown',
+    'sunfire':     'a huge ancient golden-orange tome standing upright with a glowing round sun on its cover, a ring of soft swirling golden light around its edges (no flames, no logs), a small golden crown on top',
     'flat':     'a huge thick flat disc shaped like a flat earth, blue ocean on top with green continents, standing on a short stand so it is tilted toward the viewer, a small golden crown on the rim',
 }
 def jobs():

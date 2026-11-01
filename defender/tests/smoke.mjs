@@ -339,7 +339,7 @@ await test('the 3D battle prototype (?r3d) runs a match without errors', async (
 
 await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap of 40 after Book 1', async () => {
   const sv = PROGRESSED(); Object.assign(sv, { unlocked: 40, cleared: [...Array(40).keys()], comics: [...Array(8).keys()].flatMap(i => [i + ':in', i + ':out', i + ':showdown']) });
-  sv.chars.webster.xp = 30000;
+  sv.chars.webster.xp = 30000; sv.comics.push('15:in', '15:showdown');
   const { p, errs, close } = await open(sv);
   await p.goto(URL + '&book2'); await p.waitForTimeout(1200);
   const info = await p.evaluate(() => ({ n: dbg.STAGES.length, first: dbg.STAGES[40].name, book: dbg.STAGES[40].book, last: dbg.STAGES[79].last, b1last: dbg.STAGES[39].last }));
@@ -349,6 +349,10 @@ await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap
   await play(p, 5000); expect(await p.evaluate(() => !!dbg.G || !document.querySelector('#clearm').hidden || !document.querySelector('#overm').hidden), 'a Book 2 match runs');
   for (const st of [42, 44]) { await p.evaluate(st => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(st); }, st); await play(p, 4000); } // its rough-draft and chapter-boss stages
   expect(await p.evaluate(() => dbg.charLevel(dbg.save.chars.webster.xp).L) > 30, 'friends grow past level 30 once Book 1 is done');
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(79); }); await p.waitForTimeout(600); // Lady Hearsay, the finale
+  await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true));
+  const hs = await p.evaluate(() => { const G = dbg.G; if (!G) return 'no match'; G.paused = false; const b = dbg.spawn('hearsay', { x: 640, y: 200 }); G.paused = false; dbg.step(30); b.hp = b.maxhp * .2; dbg.step(60); const rage = !!b.rage; b.hp = 0; dbg.kill(b); dbg.step(30); return { finale: G.S.finale, rage, sses: G.sses}; });
+  expect(hs.finale === 'hearsay' && hs.rage && hs.sses === 'done', 'Lady Hearsay is the last page, gets angry and is beaten: ' + JSON.stringify(hs));
   await close(); return errs;
 });
 await test('without ?book2 the game is Book 1 only', async () => {

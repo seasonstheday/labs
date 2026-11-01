@@ -67,6 +67,15 @@ ARENAS = [
     'pale blue-white snowy arctic ground with soft blue shadows, faint ice cracks and low snow drifts along the edges, and only a tiny igloo far off in one top corner',
     'a jungle floor crowded with big leaves and vines around the edge',
     'a night-time lawn under a starry sky, dark blue-green grass with a soft silvery glow in the middle as if lit by moonlight from off the picture (the moon itself is not in the picture), a few tiny stars and fireflies, and only a tiny folded picnic blanket tucked into one bottom corner',
+    # Book 2, "The Little Book of Everybody Says"
+    'a big friendly kitchen seen from above: a checked tile floor, a round rug in the middle, worktops, a stove and cupboards around the edge',
+    'a farmyard seen from above: soft dirt and straw in the middle, a wooden fence, hay bales, a water trough and a little red barn corner around the edge',
+    'a museum hall seen from above: a polished stone floor with a round mosaic in the middle, plinths, display cases and big potted ferns around the edge',
+    'a city plaza seen from above: pale paving stones with a round fountain-free open middle, benches, lamp posts, flower planters and the bases of tall buildings around the edge',
+    'a school sports field seen from above: green grass with white lines in the middle, a red running track curving around the edge, little cones and a finish-line flag',
+    'a weather station rooftop seen from above: a flat round roof with a painted circle in the middle, a spinning-cup wind meter, a rain gauge, a little white weather hut and railings around the edge',
+    'a high mountain ledge seen from above: a flat grassy alpine meadow in the middle with small flowers, grey rocks, patches of snow and pine trees around the edge',
+    'the inside of a round space station module seen from above: a soft grey padded floor with a round hatch pattern in the middle, panels with little lights, handrails and round windows showing stars around the edge',
 ]
 MAPS = [
     'a backyard with a red garden shed, a picket fence and flower beds, under a plain blue sky with a few clouds and no sun',
@@ -77,6 +86,15 @@ MAPS = [
     'a snowy arctic landscape with an igloo, a snowman and ice floes, under a plain pale sky with no sun or moon',
     'a dense green jungle with a monkey in a tree and a parrot',
     'a starry night sky over a dark lawn with a telescope and a crescent moon',
+    # Book 2
+    'a sunny family kitchen with a stove, a fridge, shelves of jars and a window with curtains',
+    'a farm with a red barn, a hay stack, a windmill and green fields, under a plain blue sky with no sun',
+    'a grand museum hall with a big dinosaur skeleton, statues and a knight in armour on plinths',
+    'a busy little city with tall buildings, a bus, a clock tower and pigeons on the rooftops, under a plain blue sky with no sun',
+    'a school sports day field with a running track, bunting flags and a plain white finish ribbon (no writing, no numbers anywhere), under a plain blue sky with no sun',
+    'a hilltop weather station with a white weather hut, a spinning wind meter, a big fluffy cloud and a rainbow, under a pale sky',
+    'snowy mountains with a tall peak, pine trees, a wooden signpost and a mountain goat on a rock, under a plain blue sky with no sun',
+    'a space station floating above the blue Earth, with solar panels and round windows, against a starry black sky; the station is an ordinary machine with no face, no eyes and no mouth',
 ]
 
 def call(prompt, aspect='1:1', refs=()):
@@ -163,7 +181,7 @@ STORY = {
     'story_8_out': 'Dad and the Kid sit together on the hill under the stars, the old book now closed and gently glowing in the Kid\'s lap; Dad has his arm around the Kid. Warm, happy ending.',
 }
 STORY_STYLE = (" A storyboard frame: one wide picture-book panel, cinematic composition, clear focal point, characters large enough to read on a phone, "
-               "warm painted light, clean thick dark-brown outlines like the reference pictures, no border, no speech bubbles, no text or letters anywhere.")
+               "warm painted light, clean thick dark-brown outlines like the reference pictures, no speech bubbles, no text or letters anywhere. The painting fills the whole image edge to edge: no border, no frame line, no rounded corners, no white margin or blank area.")
 HOME = ('A cosy suburban backyard at golden hour, seen from the side at a child\'s eye height, as the backdrop of a game\'s home screen. '
         'The top third is a calm warm sky, soft peach to pale blue, with two or three soft clouds and no sun disc. '
         'The middle has a low wooden picket fence, a big leafy tree on the left edge and the corner of a house porch with a warm lit window on the right edge. '
@@ -183,6 +201,15 @@ HOMES = {
   6: 'The Arctic on a bright day, far from any town: snowy pine trees on the left edge, a small round igloo on the right edge, white snow fields and blue ice floes across the middle, and smooth soft snow in front. No fence, no buildings.',
   7: 'A rainforest clearing: giant leaves, vines and a big tree trunk on the left and right edges, misty green jungle across the middle, and a soft mossy clearing in front with a few ferns along the bottom edge.',
   8: 'A grassy hilltop at dusk: a deep blue sky with the first stars and a crescent moon instead of clouds, a small telescope on a stand at the right edge, a leafy bush on the left edge, faraway hills across the middle, and soft dark-green grass in front.',
+  # Book 2
+  9: 'A sunny family kitchen: a tall fridge on the left edge, a stove with a pot on the right edge, a big window with curtains and a blue sky outside in the middle instead of open sky, and a checked tile floor in front.',
+  10: 'A farm: a red barn on the left edge, a wooden fence and a hay bale on the right edge, green fields and a windmill across the middle, and a soft dirt yard with straw in front.',
+  11: 'Inside a grand museum: a big dinosaur skeleton on the left edge, a knight in armour on a plinth on the right edge, tall arched windows in the middle instead of sky, and a polished stone floor in front.',
+  12: 'A little city: tall brick buildings on the left and right edges, a clock tower and rooftops across the middle under a blue sky, and pale paving stones in front.',
+  13: 'A school sports day: bunting flags and a little podium on the left edge, a finish-line flag on the right edge, a running track and green field across the middle, and soft green grass in front.',
+  14: 'A hilltop weather station: a white weather hut on the left edge, a tall spinning wind meter on the right edge, rolling green hills and a big fluffy cloud across the middle, and short green grass in front.',
+  15: 'High in the mountains: snowy pine trees on the left edge, a big grey rock on the right edge, snowy peaks across the middle under a blue sky, and a flat alpine meadow with small flowers in front.',
+  16: 'Inside a space station: round windows showing stars and the blue Earth on the left and right edges, a big round window with the starry sky in the middle instead of clouds, and a soft grey padded floor in front.',
 }
 # hats for the Wardrobe: worn by Dad and the friends, drawn on their own so the game can fit them to any head
 HATS = {
@@ -204,6 +231,50 @@ HATS = {
 }
 HAT = (" Just the hat by itself, seen from the front and a little above, as if worn, with nobody wearing it: no head, no hair, no face, no person. "
        "Centred on a plain pure white background, nothing else in the picture.")
+# Book 2's villain: generate hs_idle with --ref hs_face.png, then the story with --ref mascot_wave.png,kid.png,hs_idle.png
+HEARSAY_LOOK = ("Lady Hearsay is the back cover of a little green book, standing upright like a person: a cream book cover with a green cloth spine edge, "
+                "a cheerful theatrical face printed on it (big curious eyes, rosy cheeks, a wide grin), curly gold quotation marks and little gold stars floating around her top like a hairdo, "
+                "thin noodle arms with green gloves and small green shoes. Silly and gossipy, never scary. ")
+HEARSAY = {
+    'hs_idle': 'standing and whispering behind one gloved hand with a mischievous grin, as if sharing a juicy secret',
+    'hs_scribble': 'scribbling excitedly on a page with a big green quill, tongue out in concentration',
+    'hs_flee': 'running away to the right holding a rolled-up page high, looking back with a cheeky laugh',
+    'hs_shout': 'shouting through cupped hands, eyes squeezed shut, very loud and dramatic',
+    'hs_kind': 'standing quietly, a little embarrassed, hands clasped, with a small honest smile',
+}
+STORY_B2 = {
+    'story_b2_p1': 'The town library at dusk. A small green book drops through the brass return slot in the library door; dust puffs out; a tag on it shows it is very overdue. Nobody is around.',
+    'story_b2_p2': 'Inside the library at night. The little green book lies open on a table and Lady Hearsay stands on it, cupping her hand and whispering to the pages, delighted.',
+    'story_b2_p3': 'Lady Hearsay blows on the open little book and dozens of page myths fly out of the library window into the night, whispering to each other.',
+    'story_b2_p4': 'Morning in the backyard. Sir Ever-So-Sure, the old Title Page, now friendly and a little embarrassed, talks to Dad and the Kid and points toward the town; the Kid holds up a notebook, ready.',
+    'story_9_in': 'A big sunny family kitchen with pages everywhere: one page myth is stuck in a honey jar, another sits on the microwave. The Kid points; Dad pulls on oven gloves.',
+    'story_9_out': 'In the kitchen, an egg stands up on its end on the table and the Kid cheers. Pages blow out of the open back door toward a farm in the distance.',
+    'story_9_flee': 'Lady Hearsay runs out of the kitchen back door toward a farm with a rolled-up page, looking back with a cheeky laugh; Dad and the Kid hurry after her.',
+    'story_10_in': 'A sunny farmyard with a red barn. A pig happily rolls in mud; a page myth points at it; Dad explains while the Kid laughs.',
+    'story_10_out': 'On the farm, a friendly cow chews grass while the Kid counts on their fingers. Pages ride away on a red bus toward a town with a museum.',
+    'story_10_flee': 'Lady Hearsay runs off down a country lane toward a little town, waving a page; a hen flaps in surprise; Dad and the Kid run after her.',
+    'story_11_in': 'Inside a grand museum hall with a dinosaur skeleton and a knight in armour. The Kid stares up at the knight; Dad gestures as if explaining.',
+    'story_11_out': 'Outside the museum steps, the Kid points at pigeons on a railing, amazed (birds are dinosaurs); pages fly away with the pigeons toward city towers.',
+    'story_11_flee': 'Lady Hearsay rides away on the back of a startled pigeon over the museum roof, holding a page; Dad and the Kid watch from the steps.',
+    'story_12_in': 'A busy little city with tall buildings and a clock tower. Page myths dance on a bus roof; Dad and the Kid look up at a tall skyscraper.',
+    'story_12_out': 'In a city park, the Kid laughs as the trees sway; pages blow into a school field with bunting flags where sports day is happening.',
+    'story_12_flee': 'Lady Hearsay dashes away across a city park toward a sports field with a page, looking back cheekily; Dad and the Kid jog after her.',
+    'story_13_in': 'A school sports day field with a running track and bunting. Page myths line up at the start line; the Kid stretches, Dad holds a stopwatch.',
+    'story_13_out': 'At the finish line the Kid puts a hand on their chest, smiling; pages blow up a green hill toward a weather station with a spinning wind meter.',
+    'story_13_flee': 'Lady Hearsay runs up a green hill toward a weather station with a page; Dad and the Kid follow, the Kid waving a little flag.',
+    'story_14_in': 'A hilltop weather station with a white weather hut and a spinning wind meter. The Kid points at the cups spinning; a page myth floats on the wind.',
+    'story_14_out': 'On the hilltop, Dad and the Kid look up at a huge fluffy cloud; pages float off toward tall snowy mountains.',
+    'story_14_flee': 'Lady Hearsay climbs a mountain path with a rolled-up page under her arm; Dad and the Kid, in warm coats, start up behind her.',
+    'story_15_in': 'High in the snowy mountains. A mountain goat stands proudly on a rock; Dad and the Kid in warm coats and hats look at a page myth by a signpost.',
+    'story_15_out': 'On a mountain ledge the Kid cheers with arms up; in the distance a little rocket stands ready to launch with Lady Hearsay climbing into it.',
+    'story_15_flee': 'A little rocket blasts off from a mountain launch pad with Lady Hearsay waving from its window; Dad and the Kid watch, astonished.',
+    'story_16_in': 'Inside a bright space station: Dad and the Kid float gently in the cabin, smiling; the blue Earth fills the round window; page myths float around them.',
+    'story_16_boss': 'Inside the space station by the big round window: Lady Hearsay stands on the RIGHT holding up a huge glowing warm sun-shaped shield, laughing; Dad and the Kid face her on the LEFT, ready.',
+    'story_16_out': 'Dad and the Kid float by the space station window looking at the Earth, the little green book closed and glowing softly silver in the Kid\'s hands. Warm, happy ending.',
+    'story_b2_end1': 'Inside the space station, calm now. Lady Hearsay sits quietly, a little embarrassed, finger to her chin, thinking; the Kid kneels beside her, kind and curious.',
+    'story_b2_end2': 'The town library at dawn. The little book stands on a shelf next to the big old book; its cover glows silver; Sir Ever-So-Sure and Lady Hearsay stand side by side on the shelf, smiling.',
+    'story_b2_end3': 'The backyard on a starry night. Dad sets up a telescope while the Kid, Lady Hearsay and Sir Ever-So-Sure look up at the sky together, the animal friends around them.',
+}
 def jobs():
     for k, d in HATS.items(): yield k, STYLE + ' ' + d + '.' + HAT, 'hat', 'hats'
     for pid, d in PETS.items(): yield 'pet_' + pid, STYLE + ' ' + d + '.' + SPRITE, 'pet', 'pets'
@@ -213,6 +284,8 @@ def jobs():
     for k, d in STORY.items(): yield k, STYLE + ' ' + CAST + d + STORY_STYLE, 'story', 'story'
     for k, d in STORY_V.items(): yield k, STYLE + ' ' + CAST + VILLAIN + d + STORY_STYLE, 'story', 'villain'
     for i, d in enumerate(ARENAS): yield f'arena_{i + 1}', f'Top-down view, straight down, of {d}. Soft even daylight, {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, every flower, shell and object is ordinary and has no eyes or mouth. Keep the middle of the picture empty and simple. The scenery runs off all four edges.', 'arena', 'arenas'
+    for k, d in HEARSAY.items(): yield k, STYLE + ' ' + HEARSAY_LOOK + 'She is ' + d + '.' + SPRITE.replace('facing to the right', 'facing the viewer'), 'pet', 'hearsay'
+    for k, d in STORY_B2.items(): yield k, STYLE + ' ' + CAST + HEARSAY_LOOK.replace('Lady Hearsay is', 'Lady Hearsay is the character in the third reference picture,') + ('Sir Ever-So-Sure is a tall cream book page with gold edges, a gold monocle and a twirly brown moustache. ' if 'Ever-So-Sure' in d else '') + d + STORY_STYLE, 'story', 'book2story'
     for i, d in enumerate(MAPS): yield f'map_{i + 1}', f'A wide hand-painted children\'s storybook landscape strip of {d}, side view, left to right. {STYLE} It is an empty stage waiting for the characters to be added later: plain scenery only, and the sun, moon, trees, plants and buildings are ordinary and have no eyes or mouths. The scenery runs off all four edges of the image like a crop from a bigger painting, with no border or frame line around it.', 'map', 'maps'
 
 if __name__ == '__main__':
