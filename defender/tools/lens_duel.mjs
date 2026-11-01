@@ -7,7 +7,8 @@
 // party and Skill Trees all stay as they were, so every lens gets the same rank, gear and team. The level-up AI is
 // balance_sim's ("Pick tricks for me"). One browser context per lens, in parallel. Always loads ?debug&book2.
 // Output: per (profile, stage, lens): winRate, hpLeft (mean Patience % left over wins), hpAll (over all tries, losses 0),
-// minHp, secs, and dadShare (share of all damage dealt to myths that came from Dad's lens shots).
+// minHp, secs, share (of all damage dealt to myths, the part from Dad's lens shots); per try also jokes (Dad Joke casts)
+// and hits (Patience lost by source: melee / ranged / boss / elite). The hooks for these are added to the page as served.
 import { chromium } from '../tests/node_modules/playwright/index.mjs';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 const A = Object.fromEntries(process.argv.slice(2).map(s => { const m = s.match(/^--([^=]+)=?(.*)$/); return m ? [m[1], m[2]] : [s, '']; }));
