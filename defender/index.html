@@ -1418,7 +1418,7 @@ if (BOOK2_ON) {
 }
 const bookOf = w => (WORLDS[w] && WORLDS[w].book) || 1, LAST1 = 39; // the last stage of Book 1
 // how hard a stage plays: Book 1's index; Book 2 stage k plays like tier 36 + 0.75k for speed, elites and the Power it asks,
-// while its myths' health follows a straight line from tier 36 (x1.05 a stage), not Book 1's steepening curve
+// while its myths' health follows a straight line from tier 36 (x1.3, then +7.5% a stage), not Book 1's steepening curve
 const lvOf = i => STAGES[i] && STAGES[i].book === 2 ? 36 + .75 * STAGES[i].k : i;
 // 40 stages a book: five per chapter. Index = chapter * 5 + stage. In Book 1 the index is also the difficulty tier; Book 2
 // plays from about Night Sky 2 upward (see lvOf), so returning players start comfortable rather than at a wall.
@@ -1433,7 +1433,7 @@ WORLDS.forEach((W, w) => { for (let i = 0; i < 5; i++) {
 
 /* ───────── dad's weapons (one at a time, chosen in the garage) ───────── */
 const WEAPONS = {
-  glass: { em: '🔍', name: 'Classic Lens', desc: 'A beam of truth at the nearest myth.', cd: [.8, .7, .62, .55, .48],   dmg: [27, 34, 42, 51, 63], n: [2, 2, 3, 3, 4] },
+  glass: { em: '🔍', name: 'Classic Lens', desc: 'A beam of truth at the nearest myth.', cd: [.8, .7, .62, .55, .48],   dmg: [31, 40, 50, 61, 76], n: [2, 3, 4, 5, 6] },
   yoyo: { em: '💫', name: 'Halo Lens', desc: 'A ring of light flies out, bonks everything and comes back.', cd: [1.6, 1.45, 1.3, 1.1, .9], dmg: [14, 17, 20, 25, 30], n: [1, 1, 2, 2, 3] },
   bat: { em: '✨', name: 'Glare Lens', desc: 'A wide flash up close that knocks myths back.', cd: [1.3, 1.2, 1.05, .9, .75], dmg: [20, 24, 29, 35, 42], n: [80, 88, 96, 106, 120] },
   plane: { em: '🔭', name: 'Long Lens', desc: 'A dart of light that zips through a whole line.', cd: [1.0, .9, .8, .7, .6],     dmg: [9, 11, 14, 17, 20],  n: [1, 2, 2, 3, 4] },
@@ -2693,7 +2693,7 @@ function newRun(stage) {
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
   G = {
-    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1 + .05 * STAGES[stage].k : 1, wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
+    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .075 * STAGES[stage].k) : 1, wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
@@ -2745,7 +2745,8 @@ function spawn(id, at = null, q = {}) {
   if (G.twist === 'quick') { e.spd *= 1.3; e.xp *= 2; } else if (G.twist === 'crowd') e.hp = e.maxhp = e.hp * .6;
   if (q.elite) { e.elite = true; e.r *= 1.3; e.hp = e.maxhp = e.hp * 2.2; e.xp += 3; e.coin = 1; }
   if (e.kind === 'boss') { sfx('boss'); buzz('HEAVY'); G.boss = e; e.chargeT = 9; e.hp = e.maxhp = G.hk * K.hp * ((G.hlv ? .5 : .38) + G.hlv * .18 + G.hlv * G.hlv * .004) * G.D.hp * (1 + (TUNE.hp - 1) * tuneIn() * .5) * (1 + Math.max(0, G.hlv - 4) * TUNE.hs); if (G.S.rough) { e.rough = true; e.hp = e.maxhp = e.hp * .6; e.r *= .85; } if (G.S.w === 0 && G.S.idx === 2) { e.hp = e.maxhp = e.hp * .8; e.dmg *= .6; e.chargeT = 14; } $('#bossbar').hidden = false; $('#bossName').textContent = (e.rough ? 'Rough draft: ' : '') + M.name; music(id === 'sses' ? 'final' : G.S.finale && !G.endless && !G.twist && !G.room ? 'villain' : 'boss');
-    if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
+    if (G.S.idx === 2 && G.S.book === 2 && !G.endless && !G.twist && !G.room) text(e.x, e.y - 110, BOOK2.villain[chNum(G.S.w) - 1].cameo, '#e6d6fa', 17, 2.4); // Lady Hearsay has no arena drawing yet: just her line
+    else if (G.S.idx === 2 && !G.endless && !G.twist && !G.room) { G.cameo = { x: clamp(e.x + (e.x < CX ? 70 : -70), 60, 380), y: clamp(e.y, 120, 700), t: 0, life: 2.8 }; text(G.cameo.x, G.cameo.y - 110, VILLAIN[G.S.w].cameo, '#e6d6fa', 17, 2.4); } }
   G.enemies.push(e); return e;
 }
 // ranged myths: a pelter stands at the ring's edge, a spellbook a little further out; both aim at Dad most of the time

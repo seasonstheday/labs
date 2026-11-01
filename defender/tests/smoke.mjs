@@ -347,6 +347,7 @@ await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap
   await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true)); await p.evaluate(() => dbg.startGame(40)); await p.waitForTimeout(800);
   expect(await p.isVisible('#comicm') && /Little Book/.test(await p.textContent('#comicTitle')), 'the Book 2 prologue');
   await play(p, 5000); expect(await p.evaluate(() => !!dbg.G || !document.querySelector('#clearm').hidden || !document.querySelector('#overm').hidden), 'a Book 2 match runs');
+  for (const st of [42, 44]) { await p.evaluate(st => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(st); }, st); await play(p, 4000); } // its rough-draft and chapter-boss stages
   expect(await p.evaluate(() => dbg.charLevel(dbg.save.chars.webster.xp).L) > 30, 'friends grow past level 30 once Book 1 is done');
   await close(); return errs;
 });
