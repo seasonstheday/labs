@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(HERE, '..', 'assets', 'voice'); os.makedirs(OUT, exist_ok=True)
 MODEL = os.environ.get('TTS_MODEL', 'gemini-2.5-flash-preview-tts')
 PRO = 'gemini-2.5-pro-preview-tts'
-MODEL_OF = {'d': PRO}  # Dad is Iapetus on the pro model (picked from auditions, Nov 2026); the rest use MODEL
+MODEL_OF = {'d': [PRO, MODEL]}  # Dad is Iapetus (auditions, Nov 2026): the pro model first, then the standard one when its day runs out (the two sounded the same); the rest use MODEL
 # who: (Gemini voice, how to say it)
 CAST = {
   'd': ('Iapetus', 'Read this aloud like a warm, cheerful dad with a relaxed, deep baritone voice, telling his seven-year-old something amazing, clear and unhurried'),
@@ -23,8 +23,9 @@ def lines():
     return json.loads(subprocess.run(['node', '--input-type=module', '-e', js], capture_output=True, text=True, check=True).stdout)
 DAILY_OUT = set()  # models whose daily quota is used up
 def tts(text, who, out):
-    model = MODEL_OF.get(who, MODEL)
-    if model in DAILY_OUT: return False
+    models = [m for m in (MODEL_OF.get(who) or [MODEL]) if m not in DAILY_OUT]
+    if not models: return False
+    model = models[0]
     voice, style = CAST[who]
     body = json.dumps({'contents': [{'parts': [{'text': f'{style}: {text}'}]}], 'generationConfig': {'responseModalities': ['AUDIO'], 'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}).encode()
     err = None
@@ -38,7 +39,7 @@ def tts(text, who, out):
         except urllib.error.HTTPError as e:
             reply = e.read().decode('utf-8', 'replace'); err = f'HTTP {e.code}: {reply[:160]}'
             if e.code in (401, 402, 403): break  # out of credit or no key: stop trying
-            if e.code == 429 and ('per_day' in reply.lower() or 'perday' in reply.lower()): DAILY_OUT.add(model); break  # the day's quota (100 clips on Tier 1): try again tomorrow (the hint is past the first 160 characters)
+            if e.code == 429 and ('per_day' in reply.lower() or 'perday' in reply.lower()): DAILY_OUT.add(model); return tts(text, who, out)  # this model's day is used up: try the next one, if any  # the day's quota (100 clips on Tier 1): try again tomorrow (the hint is past the first 160 characters)
         except Exception as e: err = repr(e)
         time.sleep(3 + a * 5)
     print('  failed', who, text[:50], err, flush=True); return False
