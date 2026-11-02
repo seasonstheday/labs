@@ -167,7 +167,7 @@ How they were chosen:
 | `bigben` | 🔔 | Big Ben Clock | Big Ben is the name of London's clock tower. | The name Big Ben was first given to the giant bell inside. The tower's real name is the Elizabeth Tower. | gossip | UK Parliament · https://www.parliament.uk/about/living-heritage/building/palace/big-ben/facts-figures/ |
 | `liberty` | 🗽 | Always-Green Statue | The Statue of Liberty has always been green. | She started out shiny copper, like a new penny. Air and sea spray slowly turned her green, and the green coat protects the metal underneath. | caster | American Chemical Society · https://www.acs.org/pressroom/reactions/library/the-statue-of-libertys-true-colors.html |
 | `pigeon` | 🐦‍⬛ | Bird-Brain Pigeon | Pigeons are silly birds that can't learn anything. | Pigeons are clever. Scientists taught pigeons to tell paintings by two different artists apart, even paintings they had never seen. | fast | Journal of the Experimental Analysis of Behavior · https://pmc.ncbi.nlm.nih.gov/articles/PMC1334394/ |
-| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/2011/11/07/141858484/how-the-worlds-tallest-skyscrapers-work · https://scienceworld.scholastic.com/issues/2016-17/032717/sky-high-science.html |
+| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/2011/11/07/141858484/how-the-worlds-tallest-skyscrapers-work |
 
 ### 🏅 Sports Day
 
@@ -205,7 +205,7 @@ How they were chosen:
 |---|---|---|---|---|---|---|
 | `spacetall` | 🧑‍🚀 | Same-Height Astronaut | You stay the same height in space. | Astronauts get a few centimetres taller while they float, because nothing squashes their backbones. They shrink back on Earth. | normal | Smithsonian · https://www.smithsonianmag.com/smart-news/space-makes-astronauts-grow-taller-and-also-backs-180960922/ · https://www.nasa.gov/wp-content/uploads/2018/05/whatisyourspaceheight.pdf |
 | `twinkle` | ✨ | Twinkly Star | Stars twinkle all by themselves. | Stars shine steadily. The twinkle comes from Earth's wobbly, windy air, which bends the starlight on its way to your eyes. | rumour | NASA · https://apod.nasa.gov/apod/ap000725.html · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question26.html |
-| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://www.nasa.gov/missions/station/spot-the-station-frequently-asked-questions/ |
+| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://www.nasa.gov/missions/station/spot-the-station-frequently-asked-questions/ · https://spotthestation.nasa.gov/ |
 | `spaceline` | 🚀 | Far-Away Space | Space starts millions of kilometres up. | Space starts only about 100 km up. If a car could drive straight up, it would get there in about an hour. | fast | Space.com · https://www.space.com/karman-line-where-does-space-begin |
 | `sunfire` **Boss** | ☀️ | The Campfire Sun | The Sun is a giant ball of fire. | A fire needs oxygen to burn, but the Sun doesn't burn. It shines because tiny bits of hydrogen squeeze together deep inside it. | boss | NASA · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question36.html · https://hesperia.gsfc.nasa.gov/rhessi3/public-outreach/the-solar-faq/index.html |
 
@@ -287,6 +287,20 @@ How they were chosen:
 - `sunfire`: the Sun does have a little oxygen, so "hardly any" was dropped. The fact now says the Sun doesn't burn like a fire, it fuses hydrogen. Added NASA's RHESSI Solar FAQ, alongside StarChild.
 
 **Dropped:** none. **Spare myth (brown eggs):** checked. USDA ARS says shell colour comes from the hen's breed and the eggs are the same inside. URL added.
+
+### Click-through check (2 November 2026)
+
+With web access on, every link (48, counting backups) was downloaded and its text read against the fact as the game words it. Sites that turn away automated readers were not worked around: those need a person to open them in a browser.
+
+**Opened and backs the fact (26):** `saltboil`, `purplecarrot` (the 1600s, Netherlands), `eggequinox` (StarDate's page is about the equinox egg myth), `horsesleep` (no full REM sleep standing up), `sheepface` (four celebrities from photos), `rooster` (morning crows from the body clock), `paintstatue`, `birddino` (backup, NHM), `pigeon` (Monet and Picasso, new paintings too), `skyscraper` (NPR: built to sway), `babybones` (270 at birth, 206 to 213 for adults), `livebone` (backup, Cleveland Clinic: bone is living tissue that grows and repairs), `teethbone` (enamel won't regenerate), `yawn` (neither CO2 nor 100% oxygen changed yawning), `heartleft` (NHLBI "center of your chest"; Texas Heart "slightly to the left of your breastbone"), `heatbolt`, `fog` (Met Office: "a cloud at ground level"), `groundhog` (NOAA's table: Phil 35%), `forecast` (10-day forecasts right about half the time), `cloudweight` (about 500,000 kg), `himalaya` (rising more than 1 cm a year), `icevolcano`, `mtgoat` (goat-antelopes, not true goats), `everest` (Guinness and EarthDate), `spacetall` (backup, NASA: Kate Rubins came home 3.4 cm taller), `twinkle`, `spaceline` (100 km), `sunfire`.
+
+**Opened, backs the gist (2):**
+- `mountcold`: the Hong Kong Observatory page explains the air is heated by the ground after it absorbs sunlight, which fits; its fuller answer also involves rising air expanding and cooling. Fine for a 5-year-old.
+- `issspot`: NASA's FAQ confirms it's visible to the naked eye. The "no flashing lights" line comes from NASA's Spot the Station home page, now added as a backup. "Crossing the sky in a few minutes" isn't stated on either page; sightings are listed in minutes, so it's left as is.
+
+**Blocked to automated readers, so a person must open them (14 links, 12 facts):** USDA (`microwave`), Oregon State Extension (`honeycrunch`), University of Missouri Extension (`pigmud`), Britannica, both links (`cowtummy`), AMNH (`stegorex`, `pterosaur`, and `birddino`'s main link), The Met (`armour`), Tour Eiffel (`eiffel`), UK Parliament (`bigben`), NIH/NIAMS (`livebone`'s main link), Smithsonian (`spacetall`'s main link), and ACS (`liberty`, whose page builds itself in the browser). The search-index check of 1 November found all of these pages. `birddino`, `livebone` and `spacetall` are already covered by their backups.
+
+**Broken:** the Scholastic backup for `skyscraper` (404), now removed; NPR covers it.
 
 ---
 
