@@ -173,6 +173,10 @@
   #map { background: #d9c49a; }
   #map .head { display: flex; align-items: center; gap: 10px; padding: 14px; }
   #map h2 { margin: 0; flex: 1; font-size: 26px; }
+  .booktabs { display: flex; gap: 8px; padding: 0 14px 10px; }
+  .booktabs button { flex: 1; min-width: 0; font: 700 15px/1.15 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.55); border: 3px solid rgba(58,44,32,.35); border-radius: 14px; padding: 7px 8px; cursor: pointer; text-align: center; }
+  .booktabs button small { display: block; font: 600 12px/1.2 "Nunito", system-ui, sans-serif; opacity: .75; }
+  .booktabs button.on { background: #fbf3df; border-color: #3a2c20; box-shadow: 0 3px 0 #3a2c20; }
   #mapWrap { position: relative; flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
   #mapInner { position: relative; width: 440px; }
   #mapc { position: absolute; left: 0; top: 0; width: 440px; }
@@ -639,7 +643,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 90</div>
+    <div class="build">build 92</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -668,6 +672,7 @@
   <!-- ───────── world map ───────── -->
   <section id="map" class="screen" hidden>
     <div class="head"><button class="btn icon ghost back">←</button><h2 class="display">World Map</h2><span class="pill coins">⭐ <span id="starTotal">0</span></span></div>
+    <div id="bookTabs" class="booktabs" hidden></div>
     <div id="mapWrap"><div id="mapInner"><canvas id="mapc" width="880" height="3400"></canvas><canvas id="mapfx" width="880" height="1200"></canvas><div id="pins"></div></div></div>
     <div class="mapcard">
       <h3 id="mapName" title="More about this stage">The Backyard</h3>
@@ -4852,13 +4857,18 @@ function goHome() { music('home'); mode = 'title'; $('#prog').hidden = false; $(
 
 let pickStage = 0;
 // the map is one long scroll: chapter 1 at the bottom, chapter 8 at the top. Pins zigzag up through each band.
-const BAND = 200, MAP_H = WORLDS.length * BAND + 40, PINS = [[70, 160], [175, 128], [285, 152], [360, 88], [225, 42]];
-const pinXY = i => { const S = STAGES[i], [px, py] = PINS[S.idx]; return [px, MAP_H - (S.w + 1) * BAND + py]; };
+const BAND = 200, PINS = [[70, 160], [175, 128], [285, 152], [360, 88], [225, 42]];
+// the World Map shows one book at a time (a tab each, once Book 2 is open): MV is the run of chapters on show
+let MAPB = 1; const MV = { w0: 0, n: WORLDS.filter(W => (W.book || 1) === 1).length }; let MAP_H = MV.n * BAND + 40;
+const mapBooks = () => BOOK2_ON && save.cleared.includes(LAST1) ? [1, 2] : [1];
+function setMapView() { if (!mapBooks().includes(MAPB)) MAPB = 1; const ws = WORLDS.map((W, i) => i).filter(i => bookOf(i) === MAPB); MV.w0 = ws[0]; MV.n = ws.length; MAP_H = MV.n * BAND + 40; }
+const bandTop = w => MAP_H - (w - MV.w0 + 1) * BAND, inMap = i => i >= MV.w0 * 5 && i < (MV.w0 + MV.n) * 5, mapClamp = i => Math.max(MV.w0 * 5, Math.min((MV.w0 + MV.n) * 5 - 1, i));
+const pinXY = i => { const S = STAGES[i], [px, py] = PINS[S.idx]; return [px, bandTop(S.w) + py]; };
 function drawMap() {
-  const c = $('#mapc'), x = c.getContext('2d'); c.height = MAP_H * 2; c.style.height = MAP_H + 'px'; $('#mapInner').style.height = MAP_H + 'px';
+  setMapView(); const c = $('#mapc'), x = c.getContext('2d'); c.height = MAP_H * 2; c.style.height = MAP_H + 'px'; $('#mapInner').style.height = MAP_H + 'px';
   x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, 440, MAP_H);
-  WORLDS.forEach((W, w) => {
-    const top = MAP_H - (w + 1) * BAND, open = w * 5 <= save.unlocked;
+  WORLDS.forEach((W, w) => { if (bookOf(w) !== MAPB) return;
+    const top = bandTop(w), open = w * 5 <= save.unlocked;
     x.save(); x.beginPath(); x.rect(0, top, 440, BAND); x.clip(); x.translate(0, top);
     const png = art('map_' + (w + 1)); if (ready(png)) x.drawImage(png, 0, 0, 440, BAND); else drawBand(x, W, w);
     x.restore();
@@ -4867,14 +4877,14 @@ function drawMap() {
     if (!open) { x.fillStyle = 'rgba(58,44,32,.32)'; x.fillRect(0, top, 440, BAND); x.font = `34px ${EMOJI_FONT}`; x.textAlign = 'center'; x.fillText('🔒', 400, top + 44); }
   });
   // the path
-  x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); const [sx, sy] = pinXY(0); x.moveTo(sx, sy);
-  for (let i = 1; i < STAGES.length; i++) { const [ax, ay] = pinXY(i - 1), [bx, by] = pinXY(i); x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 30 : -30), (ay + by) / 2, bx, by); }
+  x.strokeStyle = '#3a2c20'; x.lineWidth = 4; x.setLineDash([9, 8]); x.lineCap = 'round'; x.beginPath(); const s0 = MV.w0 * 5, s1 = (MV.w0 + MV.n) * 5 - 1, [sx, sy] = pinXY(s0); x.moveTo(sx, sy);
+  for (let i = s0 + 1; i <= s1; i++) { const [ax, ay] = pinXY(i - 1), [bx, by] = pinXY(i); x.quadraticCurveTo((ax + bx) / 2 + (i % 2 ? 30 : -30), (ay + by) / 2, bx, by); }
   x.stroke(); x.setLineDash([]);
   { const done = save.cleared.includes(LAST1), at = done ? LAST1 : Math.min(LAST1, Math.floor(save.unlocked / 5) * 5 + 4), img = art(done ? 'sses_kind' : 'sses_flee'); // Sir Ever-So-Sure waits at Book 1's last page
-    if (!done) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
+    if (!done && MAPB === 1) { x.fillStyle = 'rgba(107,79,168,.55)'; for (let i = save.unlocked; i < at; i++) { const [ax, ay] = pinXY(i), [bx, by] = pinXY(i + 1); for (let k = 1; k < 4; k++) { const q = k / 4, px = ax + (bx - ax) * q + (k % 2 ? 4 : -4), py = ay + (by - ay) * q; x.beginPath(); x.ellipse(px, py, 3, 4.5, Math.atan2(by - ay, bx - ax) + Math.PI / 2, 0, 7); x.fill(); } } }
     MFX.sses = { at, img: done ? 'sses_kind' : 'sses_flee' };
-    if (BOOK2_ON && done) { const L2 = STAGES.length - 1, d2 = save.cleared.includes(L2); MFX.sses = { at: d2 ? L2 : Math.min(L2, Math.floor(save.unlocked / 5) * 5 + 4), img: d2 ? 'hs_kind' : 'hs_flee' }; } } // drawn on the motion layer, where he bobs and taunts
-  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Nunito", system-ui, sans-serif'; x.textAlign = 'center'; x.fillText(BOOK2_ON && save.cleared.includes(LAST1) ? (save.cleared.includes(STAGES.length - 1) ? 'the Little Book of How' : 'the last page of the Little Book of Everybody Says') : save.cleared.includes(LAST1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
+    if (MAPB === 2) { const L2 = STAGES.length - 1, d2 = save.cleared.includes(L2); MFX.sses = { at: d2 ? L2 : Math.min(L2, Math.floor(save.unlocked / 5) * 5 + 4), img: d2 ? 'hs_kind' : 'hs_flee' }; } } // drawn on the motion layer, where he bobs and taunts
+  x.fillStyle = 'rgba(58,44,32,.55)'; x.font = '400 14px "Nunito", system-ui, sans-serif'; x.textAlign = 'center'; x.fillText(MAPB === 2 ? (save.cleared.includes(STAGES.length - 1) ? 'the Little Book of How' : 'the last page of the Little Book of Everybody Says') : save.cleared.includes(LAST1) ? 'the Big Book of Why' : 'the last page of the Big Book of Wrong', 220, 24);
 }
 // one chapter's strip of the map, 440 x BAND, origin at its top-left: sky and ground, then the things that live there
 function drawBand(x, W, w) {
@@ -4895,11 +4905,13 @@ function drawBand(x, W, w) {
   }
 }
 function buildMap(scroll = true) {
-  drawMap(); pickStage = Math.min(pickStage, save.unlocked);
+  drawMap(); pickStage = Math.min(pickStage, save.unlocked); if (!inMap(pickStage)) pickStage = mapClamp(save.unlocked);
+  { const bt = $('#bookTabs'), books = mapBooks(); bt.hidden = books.length < 2; bt.innerHTML = books.map(b => `<button class="${b === MAPB ? 'on' : ''}" data-b="${b}"><small>Book ${b}</small>${b === 1 ? 'The Big Book of Wrong' : 'The Little Book of Everybody Says'}</button>`).join('');
+    bt.querySelectorAll('[data-b]').forEach(el => el.onclick = () => { const b = +el.dataset.b; if (b === MAPB) return; MAPB = b; sfx('tap'); MFX.hop = MFX.reveal = null; pickStage = -1; buildMap(); }); }
   const box = $('#pins'); box.innerHTML = '';
   let total = 0; for (const k in save.stars) total += save.stars[k]; $('#starTotal').textContent = total;
-  WORLDS.forEach((W, w) => { const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (MAP_H - (w + 1) * BAND + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}${w * 5 <= save.unlocked ? ` <span class="wst">★ ${[0, 1, 2, 3, 4].reduce((n, i) => n + Math.max(starsOf(w * 5 + i, 'easy'), starsOf(w * 5 + i, 'normal'), starsOf(w * 5 + i, 'hard'), starsOf(w * 5 + i, 'master')), 0)}/15</span>` : ''}${mastered(w) ? ` <span class="wmast" title="Every myth here busted: ${TRAITS[w][1]}">${TRAITS[w][0]}</span>` : ''}<small>${chName(w)}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
-  STAGES.forEach((st, i) => {
+  WORLDS.forEach((W, w) => { if (bookOf(w) !== MAPB) return; const d = document.createElement('div'); d.className = 'wlab' + (w * 5 <= save.unlocked ? '' : ' locked'); d.style.top = (bandTop(w) + 12) + 'px'; d.innerHTML = `${W.em} ${W.name}${w * 5 <= save.unlocked ? ` <span class="wst">★ ${[0, 1, 2, 3, 4].reduce((n, i) => n + Math.max(starsOf(w * 5 + i, 'easy'), starsOf(w * 5 + i, 'normal'), starsOf(w * 5 + i, 'hard'), starsOf(w * 5 + i, 'master')), 0)}/15</span>` : ''}${mastered(w) ? ` <span class="wmast" title="Every myth here busted: ${TRAITS[w][1]}">${TRAITS[w][0]}</span>` : ''}<small>${chName(w)}${CHARS[W.comp] && !chr(W.comp).own ? ` · ${CHARS[W.comp].name} lives here` : ''}</small>`; box.appendChild(d); });
+  STAGES.forEach((st, i) => { if (!inMap(i)) return;
     const locked = i > save.unlocked, stars = Math.max(starsOf(i, 'easy'), starsOf(i, 'normal'), starsOf(i, 'hard'), starsOf(i, 'master')), b = document.createElement('button'), [px, py] = pinXY(i);
     b.className = 'pin' + (locked ? ' locked' : save.cleared.includes(i) ? ' done' : '') + (i === pickStage ? ' on' : '') + (i === save.unlocked && !save.cleared.includes(i) ? ' next' : '') + (st.idx === 4 ? ' bossp' : st.idx === 2 ? ' rough' : '');
     b.style.left = px + 'px'; b.style.top = py + 'px';
@@ -4936,7 +4948,7 @@ function mapFxStart() {
     if (c.width !== 880 || c.height !== Math.round(H * 2)) { c.width = 880; c.height = Math.round(H * 2); c.style.height = H + 'px'; }
     c.style.top = top + 'px'; const x = c.getContext('2d'); x.setTransform(2, 0, 0, 2, 0, -top * 2); x.clearRect(0, top, 440, H);
     const calm = mapCalm(); MFX.chests = [];
-    WORLDS.forEach((Wd, wi) => { const bt = MAP_H - (wi + 1) * BAND; if (bt > top + H || bt + BAND < top) return;
+    WORLDS.forEach((Wd, wi) => { if (bookOf(wi) !== MAPB) return; const bt = bandTop(wi); if (bt > top + H || bt + BAND < top) return;
       if (wi * 5 > save.unlocked) mapFog(x, bt, wi, calm); else if (chestReady(wi)) mapChest(x, wi, bt, calm);
       if (calm) return;
       x.save(); x.beginPath(); x.rect(0, bt, 440, BAND); x.clip(); x.translate(0, bt); AMB[wi % AMB.length](x, MFX.t, wi * 5 <= save.unlocked); x.restore(); });
@@ -4975,14 +4987,14 @@ function bubble(x, bx, by, s, a) { x.save(); x.globalAlpha = Math.max(0, a); x.f
   x.beginPath(); x.moveTo(bx - 5, by - 3); x.lineTo(bx, by + 5); x.lineTo(bx + 5, by - 3); x.fill(); x.fillStyle = '#3a2c20'; x.textAlign = 'left'; x.fillText(s, l + 8, by - 8); x.restore(); }
 // a new chapter's welcome: a ring of sparkles and confetti over the band, and its friend hopping in to wave
 function mapReveal(x, dt) { const R = MFX.reveal; if (!R) return; R.t += dt; if (R.t < 0) return; if (R.t > 3.2) { MFX.reveal = null; return; }
-  const W = WORLDS[R.w], bt = MAP_H - (R.w + 1) * BAND, calm = mapCalm();
+  if (bookOf(R.w) !== MAPB) { MFX.reveal = null; return; } const W = WORLDS[R.w], bt = bandTop(R.w), calm = mapCalm();
   if (!R.said) { R.said = true; toastMsg(`${W.em} A new chapter: ${W.name}!`); sfx('shine'); const wrap = $('#mapWrap'); wrap.scrollTo({ top: Math.max(0, bt + BAND / 2 - wrap.clientHeight / 2), behavior: calm ? 'auto' : 'smooth' });
     if (!calm) for (let i = 0; i < 60; i++) MFX.parts.push({ x: Math.random() * 440, y: bt - 10, vx: (Math.random() - .5) * 60, vy: 20 + Math.random() * 60, g: 40, r: 2.5 + Math.random() * 2, col: ['#e5533d', '#f2c14e', '#4fa3e0', '#6aa84f', '#c9a6f2'][i % 5], life: 2.6, t: 0 }); }
   const a = Math.min(1, R.t * 3, (3.2 - R.t) * 2); x.save(); x.globalAlpha = a * .5; const g = x.createRadialGradient(220, bt + 110, 10, 220, bt + 110, 230); g.addColorStop(0, 'rgba(255,240,160,.9)'); g.addColorStop(1, 'rgba(255,240,160,0)'); x.fillStyle = g; x.fillRect(0, bt, 440, BAND); x.restore();
   const im = art('pet_' + W.comp); if (ready(im)) { const h = 74, w = h * im.naturalWidth / im.naturalHeight, hop = calm ? 0 : Math.abs(Math.sin(R.t * 6)) * 16 * Math.max(0, 1 - R.t / 3); x.globalAlpha = a; x.drawImage(im, 330 - w / 2, bt + 150 - h - hop, w, h); x.globalAlpha = 1;
     if (CHARS[W.comp]) bubble(x, 330, bt + 150 - h - hop - 4, `Hi! I'm ${CHARS[W.comp].name}!`, a); } }
 // where the Kid stands: beside the next stage's pin; while hopping, along the dotted path from the old pin
-function kidAt() { const H = MFX.hop; if (!H) { const [px, py] = pinXY(Math.min(save.unlocked, STAGES.length - 1)); return [px - 34, py + 14, 0]; }
+function kidAt() { const H = MFX.hop && inMap(MFX.hop.from) && inMap(MFX.hop.to) ? MFX.hop : null; if (!H) { MFX.hop = null; const [px, py] = pinXY(mapClamp(Math.min(save.unlocked, STAGES.length - 1))); return [px - 34, py + 14, 0]; }
   const n = H.to - H.from, f = Math.min(1, H.t / (.7 * n)), seg = Math.min(n - 1, Math.floor(f * n)), q = f * n - seg, [ax, ay] = pinXY(H.from + seg), [bx, by] = pinXY(H.from + seg + 1);
   return [ax + (bx - ax) * q - 34, ay + (by - ay) * q + 14, Math.sin(q * Math.PI) * 26]; }
 function mapKid(x, dt) {
@@ -5036,7 +5048,7 @@ function mapTap(e) {
   const ch = MFX.chests.find(c => Math.hypot(mx - c.x, my - c.y) < 24); if (ch) { sfx('coin'); openChests(ch.wi); return; }
   if (MFX.sses && /_flee$/.test(MFX.sses.img)) { const [px, py] = pinXY(MFX.sses.at); if (Math.abs(mx - px - 47) < 28 && my > py - 66 && my < py) { MFX.taunt = { s: pick(MFX.sses.img[0] === 'h' ? HS_TAUNTS : SSES_TAUNTS), t: 0 }; sfx('tap'); return; } }
   const [kx, ky] = kidAt(); if (Math.abs(mx - kx) < 22 && my > ky - 66 && my < ky + 6) { MFX.giggle = 1; sfx('coin'); buzz('LIGHT'); return; }
-  const wi = WORLDS.findIndex((W, i) => my >= MAP_H - (i + 1) * BAND && my < MAP_H - i * BAND); if (wi < 0 || mapCalm()) return;
+  const wi = WORLDS.findIndex((W, i) => bookOf(i) === MAPB && my >= bandTop(i) && my < bandTop(i) + BAND); if (wi < 0 || mapCalm()) return;
   sfx('pop'); buzz('LIGHT'); for (let i = 0; i < 16; i++) { const a = Math.random() * 7, s = 30 + Math.random() * 80; MFX.parts.push({ x: mx, y: my, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 40, g: wi % 8 === 5 ? 20 : 110, r: 2 + Math.random() * 2.5, col: SURPRISE[wi % 8], life: 1.1, t: 0 }); }
 }
 
@@ -5426,7 +5438,7 @@ function checkDaily() {
   $('#dailym').hidden = false;
 }
 
-$('#play').onclick = () => { pickStage = save.unlocked; buildMap(); showScreen('#map'); };
+$('#play').onclick = () => { pickStage = save.unlocked; MAPB = bookOf(STAGES[Math.min(save.unlocked, STAGES.length - 1)].w); buildMap(); showScreen('#map'); };
 $('#mapPlay').onclick = () => startGame(pickStage);
 $('#openBook').onclick = () => { buildBook(); showScreen('#book'); };
 $('#openShop').onclick = () => { buildShop(); showScreen('#shop'); };

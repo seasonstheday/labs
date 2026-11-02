@@ -212,7 +212,7 @@ const BOOK2 = {
 "em": "🥱",
 "name": "Air-Gulp Yawn",
 "myth": "You yawn because your body needs more air.",
-"fact": "Scientists tested it: breathing extra oxygen didn't stop people yawning. They're still working out why we yawn, and why yawns are catching!",
+"fact": "Scientists tested it: breathing extra oxygen didn't change how much people yawned. They're still working out why we yawn, and why yawns are catching!",
 "kind": "rumour",
 "col": "#f3d36b",
 "book": 2
@@ -347,7 +347,7 @@ const BOOK2 = {
 "em": "🚀",
 "name": "Far-Away Space",
 "myth": "Space starts millions of kilometres up.",
-"fact": "Space starts only about 100 km up. If a car could drive straight up, it would get there in about an hour.",
+"fact": "Space starts only about 100 km up. If a car could drive straight up at highway speed, it would get there in about an hour.",
 "kind": "fast",
 "col": "#8fc7e8",
 "book": 2
@@ -461,7 +461,7 @@ const BOOK2 = {
 ],
 "heartleft": [
 "body",
-"NIH (NHLBI)"
+"Texas Heart Institute"
 ],
 "heatbolt": [
 "weather",

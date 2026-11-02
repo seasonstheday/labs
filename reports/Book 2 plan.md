@@ -167,7 +167,7 @@ How they were chosen:
 | `bigben` | 🔔 | Big Ben Clock | Big Ben is the name of London's clock tower. | The name Big Ben was first given to the giant bell inside. The tower's real name is the Elizabeth Tower. | gossip | UK Parliament · https://www.parliament.uk/about/living-heritage/building/palace/big-ben/facts-figures/ |
 | `liberty` | 🗽 | Always-Green Statue | The Statue of Liberty has always been green. | She started out shiny copper, like a new penny. Air and sea spray slowly turned her green, and the green coat protects the metal underneath. | caster | American Chemical Society · https://www.acs.org/pressroom/reactions/library/the-statue-of-libertys-true-colors.html |
 | `pigeon` | 🐦‍⬛ | Bird-Brain Pigeon | Pigeons are silly birds that can't learn anything. | Pigeons are clever. Scientists taught pigeons to tell paintings by two different artists apart, even paintings they had never seen. | fast | Journal of the Experimental Analysis of Behavior · https://pmc.ncbi.nlm.nih.gov/articles/PMC1334394/ |
-| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/2011/11/07/141858484/how-the-worlds-tallest-skyscrapers-work · https://scienceworld.scholastic.com/issues/2016-17/032717/sky-high-science.html |
+| `skyscraper` **Boss** | 🏢 | The Stiff Skyscraper | Skyscrapers stand perfectly still. | Tall buildings are built to sway a little in the wind, like trees. Bending a bit keeps them from breaking. | boss | NPR · https://www.npr.org/2011/11/07/141858484/how-the-worlds-tallest-skyscrapers-work |
 
 ### 🏅 Sports Day
 
@@ -176,14 +176,14 @@ How they were chosen:
 | `babybones` | 🍼 | Same-Bones Baby | Babies have the same number of bones as grown-ups. | Babies are born with about 270 bones. As they grow, some join together, so grown-ups have about 206. | splitter | Cleveland Clinic · https://my.clevelandclinic.org/health/body/25176-bones |
 | `livebone` | 🦴 | Dry-Stick Bone | Bones are dry and dead, like sticks. | Your bones are alive! They grow as you grow, and they can even fix themselves. | tank | NIH (NIAMS) · https://www.niams.nih.gov/health-topics/kids-and-their-bones · https://health.clevelandclinic.org/are-teeth-bones |
 | `teethbone` | 🦷 | Bony Tooth | Teeth are bones. | Teeth aren't bones. Their hard outside, called enamel, can't grow back, so brushing really matters. | hardcover | Cleveland Clinic · https://health.clevelandclinic.org/are-teeth-bones |
-| `yawn` | 🥱 | Air-Gulp Yawn | You yawn because your body needs more air. | Scientists tested it: breathing extra oxygen didn't stop people yawning. They're still working out why we yawn, and why yawns are catching! | rumour | University of Washington · https://faculty.washington.edu/chudler/yawning.html (Provine, 1987) |
-| `heartleft` **Boss** | ❤️ | The Left-Side Heart | Your heart is on the left side of your chest. | Your heart sits near the middle of your chest, between your lungs, just behind your breastbone. It only leans a little to the left. | boss | NIH (NHLBI) · https://www.nhlbi.nih.gov/health/heart/anatomy · https://www.texasheart.org/heart-health/heart-information-center/topics/heart-anatomy/ |
+| `yawn` | 🥱 | Air-Gulp Yawn | You yawn because your body needs more air. | Scientists tested it: breathing extra oxygen didn't change how much people yawned. They're still working out why we yawn, and why yawns are catching! | rumour | University of Washington · https://faculty.washington.edu/chudler/yawning.html (Provine, 1987) |
+| `heartleft` **Boss** | ❤️ | The Left-Side Heart | Your heart is on the left side of your chest. | Your heart sits near the middle of your chest, between your lungs, just behind your breastbone. It only leans a little to the left. | boss | Texas Heart Institute · https://www.texasheart.org/heart-health/heart-information-center/topics/heart-anatomy/ · https://www.nhlbi.nih.gov/health/heart/anatomy |
 
 ### 🌦️ The Weather Station
 
 | id | | Name | Myth | Fact | Kind | Source in game · URL |
 |---|---|---|---|---|---|---|
-| `heatbolt` | 🌩️ | Heat Lightning | Hot summer nights make a special silent "heat lightning". | It's ordinary lightning from a storm too far away to hear the thunder. If you can hear thunder, go indoors. | dasher | National Weather Service · https://www.weather.gov/safety/lightning-heat |
+| `heatbolt` | 🌩️ | Heat Lightning | Hot summer nights make a special silent "heat lightning". | It's ordinary lightning from a storm too far away to hear the thunder. If you can hear thunder, go indoors. | dasher | National Weather Service · https://www.weather.gov/safety/lightning-heat · https://www.weather.gov/safety/lightning-safety |
 | `fog` | 🌫️ | Sky-Only Cloud | Clouds only live high up in the sky. | Fog is a cloud that sits on the ground. When you walk through fog, you're walking through a cloud! | rumour | Met Office · https://weather.metoffice.gov.uk/learn-about/weather/types-of-weather/fog |
 | `groundhog` | 🐿️ | Weather Groundhog | A groundhog can tell if spring will come early. | Weather scientists at NOAA checked. The most famous groundhog, Phil, was right only about a third of the time. | gossip | NOAA · https://www.noaa.gov/heritage/stories/grading-groundhogs |
 | `forecast` | 📡 | Always-Wrong Forecast | Weather forecasts are always wrong. | Forecasts for the next few days are right most of the time. Forecasts ten or more days ahead are right only about half the time. | caster | NOAA · https://www.nesdis.noaa.gov/about/k-12-education/weather-forecasting/how-reliable-are-weather-forecasts |
@@ -205,8 +205,8 @@ How they were chosen:
 |---|---|---|---|---|---|---|
 | `spacetall` | 🧑‍🚀 | Same-Height Astronaut | You stay the same height in space. | Astronauts get a few centimetres taller while they float, because nothing squashes their backbones. They shrink back on Earth. | normal | Smithsonian · https://www.smithsonianmag.com/smart-news/space-makes-astronauts-grow-taller-and-also-backs-180960922/ · https://www.nasa.gov/wp-content/uploads/2018/05/whatisyourspaceheight.pdf |
 | `twinkle` | ✨ | Twinkly Star | Stars twinkle all by themselves. | Stars shine steadily. The twinkle comes from Earth's wobbly, windy air, which bends the starlight on its way to your eyes. | rumour | NASA · https://apod.nasa.gov/apod/ap000725.html · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question26.html |
-| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://www.nasa.gov/missions/station/spot-the-station-frequently-asked-questions/ |
-| `spaceline` | 🚀 | Far-Away Space | Space starts millions of kilometres up. | Space starts only about 100 km up. If a car could drive straight up, it would get there in about an hour. | fast | Space.com · https://www.space.com/karman-line-where-does-space-begin |
+| `issspot` | 🛰️ | Hidden Space Station | You need a telescope to see the space station. | You can see it with just your eyes. It looks like a bright star with no blinking lights, crossing the sky in a few minutes. | flyer | NASA · https://www.nasa.gov/missions/station/spot-the-station-frequently-asked-questions/ · https://spotthestation.nasa.gov/ · https://fi.edu/en/blog/seeing-international-space-station |
+| `spaceline` | 🚀 | Far-Away Space | Space starts millions of kilometres up. | Space starts only about 100 km up. If a car could drive straight up at highway speed, it would get there in about an hour. | fast | Space.com · https://www.space.com/karman-line-where-does-space-begin |
 | `sunfire` **Boss** | ☀️ | The Campfire Sun | The Sun is a giant ball of fire. | A fire needs oxygen to burn, but the Sun doesn't burn. It shines because tiny bits of hydrogen squeeze together deep inside it. | boss | NASA · https://starchild.gsfc.nasa.gov/docs/StarChild/questions/question36.html · https://hesperia.gsfc.nasa.gov/rhessi3/public-outreach/the-solar-faq/index.html |
 
 **Final boss:** `hearsay` 🗣️ **Lady Hearsay**. Myth: "If everybody says it, it must be true." Fact: "Lots of people saying something doesn't make it true. Good thinkers ask where an idea came from, and check." Kind: boss. Source in game: Understanding Science, UC Berkeley (the same as `sses`).
@@ -287,6 +287,28 @@ How they were chosen:
 - `sunfire`: the Sun does have a little oxygen, so "hardly any" was dropped. The fact now says the Sun doesn't burn like a fire, it fuses hydrogen. Added NASA's RHESSI Solar FAQ, alongside StarChild.
 
 **Dropped:** none. **Spare myth (brown eggs):** checked. USDA ARS says shell colour comes from the hen's breed and the eggs are the same inside. URL added.
+
+### Click-through check (2 November 2026)
+
+With web access on, every link (48, counting backups) was downloaded and its text read against the fact as the game words it. Sites that turn away automated readers were not worked around: those need a person to open them in a browser.
+
+**Opened and backs the fact (26):** `saltboil`, `purplecarrot` (the 1600s, Netherlands), `eggequinox` (StarDate's page is about the equinox egg myth), `horsesleep` (no full REM sleep standing up), `sheepface` (four celebrities from photos), `rooster` (morning crows from the body clock), `paintstatue`, `birddino` (backup, NHM), `pigeon` (Monet and Picasso, new paintings too), `skyscraper` (NPR: built to sway), `babybones` (270 at birth, 206 to 213 for adults), `livebone` (backup, Cleveland Clinic: bone is living tissue that grows and repairs), `teethbone` (enamel won't regenerate), `yawn` (neither CO2 nor 100% oxygen changed yawning), `heartleft` (NHLBI "center of your chest"; Texas Heart "slightly to the left of your breastbone"), `heatbolt`, `fog` (Met Office: "a cloud at ground level"), `groundhog` (NOAA's table: Phil 35%), `forecast` (10-day forecasts right about half the time), `cloudweight` (about 500,000 kg), `himalaya` (rising more than 1 cm a year), `icevolcano`, `mtgoat` (goat-antelopes, not true goats), `everest` (Guinness and EarthDate), `spacetall` (backup, NASA: Kate Rubins came home 3.4 cm taller), `twinkle`, `spaceline` (100 km), `sunfire`.
+
+**Opened, backs the gist (2):**
+- `mountcold`: the Hong Kong Observatory page explains the air is heated by the ground after it absorbs sunlight, which fits; its fuller answer also involves rising air expanding and cooling. Fine for a 5-year-old.
+- `issspot`: NASA's FAQ confirms it's visible to the naked eye. The "no flashing lights" line comes from NASA's Spot the Station home page, now added as a backup. "Crossing the sky in a few minutes" isn't stated on either page; sightings are listed in minutes, so it's left as is.
+
+**Blocked to automated readers, so a person must open them (14 links, 12 facts):** USDA (`microwave`), Oregon State Extension (`honeycrunch`), University of Missouri Extension (`pigmud`), Britannica, both links (`cowtummy`), AMNH (`stegorex`, `pterosaur`, and `birddino`'s main link), The Met (`armour`), Tour Eiffel (`eiffel`), UK Parliament (`bigben`), NIH/NIAMS (`livebone`'s main link), Smithsonian (`spacetall`'s main link), and ACS (`liberty`, whose page builds itself in the browser). The search-index check of 1 November found all of these pages. `birddino`, `livebone` and `spacetall` are already covered by their backups.
+
+**Broken:** the Scholastic backup for `skyscraper` (404), now removed; NPR covers it.
+
+**A second, stricter read, and what changed:**
+- `yawn` reworded: the study found extra oxygen didn't change how much people yawned, which isn't quite "didn't stop people yawning".
+- `spaceline` reworded: the "about an hour" only works at highway speed, so the fact says so.
+- `heatbolt`: added the National Weather Service lightning-safety page for "if you can hear thunder, go indoors".
+- `issspot`: added the Franklin Institute page ("no flashing lights", passes from under two to just under eight minutes), which covers "a few minutes".
+- `heartleft`: the Texas Heart Institute page ("slightly to the left of your breastbone") is now the main source, NHLBI the backup.
+- `groundhog`: NOAA updates its table every February, so re-check Phil's figure before each release.
 
 ---
 
