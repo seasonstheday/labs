@@ -337,11 +337,11 @@ await test('the 3D battle prototype (?r3d) runs a match without errors', async (
   expect(await p.evaluate(() => !!dbg.G), 'a match is running'); await close(); return errs.filter(e => !/WebGL|404/.test(e));
 });
 
-await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap of 40 after Book 1', async () => {
+await test('Book 2: 80 stages, its prologue, a match, and the level cap of 40 after Book 1', async () => {
   const sv = PROGRESSED(); Object.assign(sv, { unlocked: 40, cleared: [...Array(40).keys()], comics: [...Array(8).keys()].flatMap(i => [i + ':in', i + ':out', i + ':showdown']) });
   sv.chars.webster.xp = 30000; sv.comics.push('15:in', '15:showdown');
   const { p, errs, close } = await open(sv);
-  await p.goto(URL + '&book2'); await p.waitForTimeout(1200);
+  await p.reload(); await p.waitForTimeout(1200);
   const info = await p.evaluate(() => ({ n: dbg.STAGES.length, first: dbg.STAGES[40].name, book: dbg.STAGES[40].book, last: dbg.STAGES[79].last, b1last: dbg.STAGES[39].last }));
   expect(info.n === 80 && info.first === 'The Kitchen 1' && info.book === 2 && info.last && info.b1last, 'two books of 40 stages, each with its last stage: ' + JSON.stringify(info));
   await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true)); await p.evaluate(() => dbg.startGame(40)); await p.waitForTimeout(800);
@@ -349,15 +349,25 @@ await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap
   await play(p, 5000); expect(await p.evaluate(() => !!dbg.G || !document.querySelector('#clearm').hidden || !document.querySelector('#overm').hidden), 'a Book 2 match runs');
   for (const st of [42, 44]) { await p.evaluate(st => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(st); }, st); await play(p, 4000); } // its rough-draft and chapter-boss stages
   expect(await p.evaluate(() => dbg.charLevel(dbg.save.chars.webster.xp).L) > 30, 'friends grow past level 30 once Book 1 is done');
+  const ex = await p.evaluate(() => { const S = dbg.save, w = S.chars.webster; w.star = 5; S.pages = S.pages || {}; S.pages.webster = 40; const up = dbg.starUp('webster');
+    S.chars.coco = { own: true, xp: 30000, star: 1 }; S.chars.hopper.xp = 30000; S.party = ['coco', 'hopper', 'sparky'];
+    return { star: w.star, up, starMax: dbg.starMax('webster'), tMax: dbg.tMax('webster'), pair: dbg.synOn(dbg.SYNERGY.find(sy => sy.name === 'Farm Breakfast')) }; });
+  expect(ex.up && ex.star === 6 && ex.tMax === 4 && ex.pair, 'Book 2 extras at level 34-38: Gold Star, a fourth skill rank and a second pair-up: ' + JSON.stringify(ex));
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(79); }); await p.waitForTimeout(600); // Lady Hearsay, the finale
   await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true));
   const hs = await p.evaluate(() => { const G = dbg.G; if (!G) return 'no match'; G.paused = false; const b = dbg.spawn('hearsay', { x: 640, y: 200 }); G.paused = false; dbg.step(30); b.hp = b.maxhp * .2; dbg.step(60); const rage = !!b.rage; b.hp = 0; dbg.kill(b); dbg.step(30); return { finale: G.S.finale, rage, sses: G.sses}; });
   expect(hs.finale === 'hearsay' && hs.rage && hs.sses === 'done', 'Lady Hearsay is the last page, gets angry and is beaten: ' + JSON.stringify(hs));
   await close(); return errs;
 });
-await test('without ?book2 the game is Book 1 only', async () => {
+await test('Book 2 stays closed until Book 1 is finished', async () => {
   const { p, errs, close } = await open(PROGRESSED());
-  expect(await p.evaluate(() => dbg.STAGES.length === 40 && dbg.charLevel(1e9).L === 30), '40 stages and a level cap of 30'); await close(); return errs;
+  expect(await p.evaluate(() => dbg.STAGES.length === 80 && dbg.charLevel(1e9).L === 30), '80 stages, but a level cap of 30 until Book 1 is done');
+  expect(await p.evaluate(() => { const b2 = Object.keys(dbg.MYTHS).filter(id => dbg.MYTHS[id].book === 2); return b2.length >= 40 && dbg.baseMyths().every(id => !b2.includes(id)); }), 'Book 2 myths stay out of the Diary count until it opens');
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); document.querySelector('#play').click(); }); await p.waitForTimeout(600);
+  expect(await p.evaluate(() => document.querySelector('#bookTabs').hidden), 'no book tabs on the map yet');
+  expect(await p.evaluate(() => { dbg.save.chars.webster.xp = 1e9; dbg.save.chars.webster.star = 5; return dbg.starMax('webster') === 5 && dbg.tMax('webster') === 3 && !dbg.SYNERGY.filter(sy => sy.at).some(dbg.synOn); }), 'no Book 2 extras in Book 1');
+  await p.goto(URL + '&nobook2'); await p.waitForTimeout(800);
+  expect(await p.evaluate(() => dbg.STAGES.length === 40), '?nobook2 leaves Book 2 out'); await close(); return errs;
 });
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);

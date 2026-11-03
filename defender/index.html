@@ -245,6 +245,7 @@
   .tierrow { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; flex-wrap: wrap; font: 700 14px/1 "Fredoka", Arial, sans-serif; }
   .tier { color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 3px 9px; font: 700 13px/1 "Fredoka", Arial, sans-serif; }
   .stars { color: #ecb23c; font-size: 16px; letter-spacing: 1px; text-shadow: 0 1px 0 #3a2c20; } .stars i { color: rgba(58,44,32,.2); font-style: normal; text-shadow: none; }
+  .gold { color: #ffb21f; font-weight: 400; text-shadow: 0 0 6px #ffe27a, 0 1px 0 #3a2c20; } /* the sixth star (Book 2) */
   .tierrow .pg { white-space: nowrap; } .tierrow .pbar { flex: 1; min-width: 80px; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: rgba(58,44,32,.15); overflow: hidden; } .tierrow .pbar div { height: 100%; background: #ecb23c; }
   .pgbtns { display: flex; gap: 6px; margin: 4px 0; }
   .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } .reacts span { font: 600 15px/1 "Nunito", system-ui, sans-serif; background: rgba(95,191,174,.15); border: 2px solid rgba(58,44,32,.25); border-radius: 999px; padding: 3px 8px; } .reacts .team { background: rgba(236,178,60,.25); border-color: #ecb23c; }
@@ -643,7 +644,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 92</div>
+    <div class="build">build 94</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -831,7 +832,7 @@
         <h3>Facts checked with</h3><p>museums, universities, NASA, and a lot of patient librarians</p>
         <h3>Music</h3><p>Original score made with Google's Lyria music model</p>
         <h3>Made by</h3><p>The Backyard Library</p>
-        <h3>What's next?</h3><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
+        <h3>What's next?</h3><p id="credB2" hidden>📖 A little overdue book just came back to the library…<br><br></p><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
       </div></div>
       <div class="row"><button class="btn" id="creditsGo">Back to the backyard ▶</button></div>
     </div>
@@ -1295,7 +1296,8 @@ const EVENTS = {
 };
 const EVENT_IDS = new Set();
 for (const k in EVENTS) for (const [id, M] of Object.entries(EVENTS[k].myths)) { MYTHS[id] = M; META[id] = ['seasons', M.src]; EVENT_IDS.add(id); }
-const baseMyths = () => Object.keys(MYTHS).filter(id => !EVENT_IDS.has(id)), baseFacts = () => save.facts.filter(id => !EVENT_IDS.has(id)).length;
+const inBook = id => !(MYTHS[id] && MYTHS[id].book === 2) || gold(); // Book 2's myths count once Book 2 is open
+const baseMyths = () => Object.keys(MYTHS).filter(id => !EVENT_IDS.has(id) && inBook(id)), baseFacts = () => save.facts.filter(id => !EVENT_IDS.has(id)).length;
 function eventOn(id, d = new Date()) { const E = EVENTS[id], md = d.toISOString().slice(5, 10); return E.from <= E.to ? md >= E.from && md <= E.to : md >= E.from || md <= E.to; }
 function activeEvent() { const f = (location.search.match(/[?&]event=(\w+)/) || [])[1] || (save && save.evForce); if (f && EVENTS[f]) return f; return Object.keys(EVENTS).find(k => eventOn(k)) || null; }
 function eventDaysLeft(id) { const E = EVENTS[id], now = new Date(); let end = new Date(now.getUTCFullYear() + '-' + E.to + 'T23:59:59Z'); if (end < now) end = new Date((now.getUTCFullYear() + 1) + '-' + E.to + 'T23:59:59Z'); return Math.max(1, Math.ceil((end - now) / 864e5)); }
@@ -1320,7 +1322,7 @@ const CATBON = {
   seasons: { k: 'evtok', n: 'Event tokens', u: '%', per: 2,  half: 5, all: 10 },
 };
 let diaryCache = null;
-function catCount(c) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); return { got: ids.filter(id => save.facts.includes(id)).length, all: ids.length }; }
+function catCount(c) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c && inBook(id)); return { got: ids.filter(id => save.facts.includes(id)).length, all: ids.length }; }
 function catBonus(c) { const B = CATBON[c], { got, all } = catCount(c); return Math.round((got * B.per + (got * 2 >= all ? B.half : 0) + (got >= all ? B.all : 0)) * 10) / 10; }
 const diaryStat = k => { if (!diaryCache || diaryCache.n !== save.facts.length) { diaryCache = { n: save.facts.length }; for (const c in CATBON) diaryCache[CATBON[c].k] = catBonus(c); } return diaryCache[k] || 0; };
 // what busting every myth in a chapter earns, for good
@@ -1441,7 +1443,7 @@ const WORLDS = [
 // Book 2, "The Little Book of Everybody Says" (book2.js, from reports/Book 2 plan.md): eight more worlds after Book 1's, opened
 // by Book 1's credits. Each borrows Book 1 myths on its topics (Lady Hearsay spreads the old rumours too) so its waves have
 // variety while its own five myths lead. Off until its art and voices are in: ?book2 turns it on for testing.
-const BOOK2_ON = typeof BOOK2 !== 'undefined' && /[?&]book2\b/.test(location.search);
+const BOOK2_ON = typeof BOOK2 !== 'undefined' && !/[?&]nobook2\b/.test(location.search); // Book 2 ships with the game and opens once Book 1 is finished (?nobook2 leaves it out, for testing)
 if (BOOK2_ON) {
   Object.assign(MYTHS, BOOK2.myths); Object.assign(META, BOOK2.meta); TRAITS.push(...BOOK2.traits);
   // Lady Hearsay, the back cover of the little book: Book 2's last page, fought like Sir Ever-So-Sure behind the Campfire Sun
@@ -1676,7 +1678,9 @@ const MAX_RANK = 5, MAX_COMPANIONS = 3;
 // friend has joined (★1 to ★5, +4% Power and Quick each). Pages are earned in play, never sold.
 const TIER = [{ n: 'Common', col: '#6f8a5a', pages: 10, mul: 1 }, { n: 'Rare', col: '#3f7fb5', pages: 30, mul: 1.06 }, { n: 'Epic', col: '#8a4fb5', pages: 60, mul: 1.12 }, { n: 'Legendary', col: '#d9971c', pages: 120, mul: 1.2 }];
 const CTIER = { webster: 0, hopper: 0, sparky: 0, puddles: 0, dusty: 1, pip: 1, scuttle: 1, nilla: 2, luna: 2, shelly: 0, goldie: 0, prickles: 1, jelly: 1, echo: 2, inky: 3, chroma: 3 };
-const STAR_COST = [0, 6, 10, 14, 20], STAR_MAX = 5, DAD_STAR = [0, 12, 24, 36, 48]; // Dad's pages come from facts, so his stars land across the whole story
+const STAR_COST = [0, 6, 10, 14, 20, 28], STAR_MAX = 5, DAD_STAR = [0, 12, 24, 36, 48, 60];
+// Book 2: a sixth star ("Gold Star") at level 34, which only Book 2 can reach (Book 1 stops at 30); it lifts training to 30 ranks
+const gold = () => BOOK2_ON && typeof save !== 'undefined' && save && (save.cleared || []).includes(LAST1), starMax = id => gold() && clv(id) >= 34 ? 6 : 5; // Dad's pages come from facts, so his stars land across the whole story
 const starCost = id => (id === 'dad' ? DAD_STAR : STAR_COST)[fstars(id)]; // pages to go from ★n to ★n+1, by current star
 const tierOf = id => TIER[CTIER[id] || 0];
 const pagesOf = id => (save.pages || {})[id] || 0;
@@ -1690,7 +1694,7 @@ function addPages(id, n) {
   if (!c.own && save.pages[id] >= tierOf(id).pages) { save.pages[id] -= tierOf(id).pages; c.own = true; c.star = 1; if (save.party.length < MAX_COMPANIONS && !save.party.includes(id)) save.party.push(id); persist(); return true; }
   persist(); return false;
 }
-function starUp(id) { const c = chr(id), st = fstars(id), cost = starCost(id); if (!c.own || st >= STAR_MAX) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
+function starUp(id) { const c = chr(id), st = fstars(id), cost = starCost(id); if (!c.own || st >= starMax(id)) return false; const have = pagesOf(id) + (save.blank || 0); if (have < cost) return false; const fromOwn = Math.min(pagesOf(id), cost); save.pages[id] = pagesOf(id) - fromOwn; save.blank = (save.blank || 0) - (cost - fromOwn); c.star = st + 1; persist(); return true; }
 // the friend the story is building toward: the next one to join, in the order they used to join for free
 // elements: five on a wheel. A myth hit by one element and then, within a moment, by its neighbour on the wheel
 // sets off a reaction. Two friends of the same element in the party hit 10% harder together.
@@ -1824,6 +1828,8 @@ const TNODE = {
   boost: { em: '📈', n: 'Stronger', d: 'Works 10% better per rank.' },
 };
 const TREE_MAX = 3, T_PICK_COST = 300, T_FIN_COST = 600;
+// Book 2: every upgrade in a skill tree gets a fourth rank at level 36 (the choice and the finisher still open at rank 3)
+const tMax = id => gold() && clv(id) >= 36 ? 4 : TREE_MAX;
 const isPassive = a => { const D = ABIL[a]; return !!(D && (D.passive || D.aura)); };
 const isSupport = a => a !== 'weapon' && !isPassive(a) && !(ABIL[a] && ABIL[a].dmg);
 const giftBranch = a => isPassive(a) || isSupport(a);
@@ -1839,7 +1845,7 @@ function tBr(id, a) { const c = save.chars[id] || {}; c.tree = c.tree || {}; ret
 const tRank = (id, a, k) => k === 'sig' ? sk(id, a) : ((save.chars[id] || {}).tree || {})[a] ? save.chars[id].tree[a][k] || 0 : 0;
 const tBase = (id, a) => tNodes(a).reduce((s, k) => s + tRank(id, a, k), 0);
 const tPickAt = a => Math.ceil(tNodes(a).length * TREE_MAX * .55);
-const tFull = (id, a) => tBase(id, a) >= tNodes(a).length * TREE_MAX;
+const tFull = (id, a) => tNodes(a).every(k => tRank(id, a, k) >= TREE_MAX); // every upgrade at rank 3 (a Book 2 rank 4 can't cover for another)
 const tPicked = (id, a) => ((save.chars[id] || {}).tree || {})[a] ? save.chars[id].tree[a].pick || 0 : 0;
 const tHasFin = (id, a) => !!(((save.chars[id] || {}).tree || {})[a] || {}).fin;
 // the effects live on a branch: its choice, or both with Best of Both
@@ -2080,7 +2086,17 @@ const SYNERGY = [
   { ids: ['frost', 'shelly'], name: 'Cold Shell', desc: 'Dad loses 8% less Patience.', eff: { guard: 8 }, party: true },
   { ids: ['bluey', 'inky'], name: 'Deep Sea', desc: 'Both hit 20% harder.', eff: { pow: 20 } },
   { ids: ['uni', 'luna'], name: 'Moonbeam', desc: 'Dad gets 0.5 Patience back every second.', eff: { regen: .5 }, party: true },
+  // Book 2: a second pair-up for each of its chapter friends, once both are level 38
+  { ids: ['coco', 'hopper'], name: 'Farm Breakfast', desc: '+10% coins for everyone.', eff: { coin: 10 }, party: true, at: 38 },
+  { ids: ['dusty', 'scuttle'], name: 'Dig Site', desc: 'Both hit 20% harder.', eff: { pow: 20 }, at: 38 },
+  { ids: ['gizmo', 'echo'], name: 'Rush Hour Radio', desc: 'Both work 15% faster.', eff: { quick: 15 }, at: 38 },
+  { ids: ['sparky', 'shelly'], name: 'Relay Race', desc: 'Both land 10% more critical hits.', eff: { crit: 10 }, at: 38 },
+  { ids: ['frost', 'prickles'], name: 'Thin Air', desc: 'Dad loses 8% less Patience.', eff: { guard: 8 }, party: true, at: 38 },
+  { ids: ['luna', 'jelly'], name: 'Mission Control', desc: 'Dad gets 0.5 Patience back every second.', eff: { regen: .5 }, party: true, at: 38 },
+  { ids: ['bramble', 'rosie'], name: 'Picnic Basket', desc: 'Both hit 20% harder.', eff: { pow: 20 }, at: 38 },
+  { ids: ['goldie', 'dot'], name: 'Lucky Penny', desc: 'Both land 10% more critical hits.', eff: { crit: 10 }, at: 38 },
 ];
+const synAt = sy => sy.at || SYN_AT, synShown = sy => !sy.at || gold(); // the level-38 pair-ups exist only once Book 2 is open
 // a live pair-up's stat: for one of the pair (id), or the party-wide ones (no id)
 function synStat(st, id) { let v = 0; for (const sy of SYNERGY) if (sy.eff && sy.eff[st] && (id ? !sy.party && sy.ids.includes(id) : sy.party) && synOn(sy)) v += sy.eff[st]; return v; }
 // training: coin upgrades on a friend's Grow tab. Each star opens five more ranks (up to 25 at five stars); the first five ranks
@@ -2568,7 +2584,7 @@ function famMoves(dt) {
   }
 }
 // a friend's pair-up is live once they have the level for it and both halves are coming
-const synOn = sy => sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= SYN_AT));
+const synOn = sy => synShown(sy) && sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= synAt(sy)));
 const radiusFor = () => BASE_RADIUS + rEff(chr('dad').ring) * 22 + partyGear().ring + famStat('ring');
 function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!save.wv2) { // one weapon each (build 32)
@@ -2729,7 +2745,7 @@ function newRun(stage) {
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
   G = {
-    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .075 * STAGES[stage].k) : 1, wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
+    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .095 * STAGES[stage].k) : 1, /* Book 2 steepened from .075 once the Gold Star, fourth skill rank and second pair-ups landed */ wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
@@ -4372,7 +4388,7 @@ function askCheck(id) {
   say(`Myth check! ${isFact ? M.fact : M.myth} Myth, or fact?`);
 }
 function askQuiz() { $('#quizm h2').textContent = 'Myth or fact?'; $('#quizCard small').textContent = 'The Kid holds up a card';
-  G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
+  G.asked = G.asked || []; const all = Object.keys(MYTHS).filter(inBook), pool = (save.facts.length >= 3 ? save.facts : all).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : all); G.asked.push(id);
   const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
   const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
@@ -4585,7 +4601,7 @@ function payBadges(pay) { const got = []; if (pay.epic) { pay = { ...pay }; dele
 // the Club Raid: a chapter boss each week with one health bar for the whole club. Bosses, elites, clears and three-star
 // clears all hit it; the clubmates chip in every day.
 const RAID_HP = 12000, RAID_HIT = { boss: 400, elite: 40, clear: 100, star3: 150 }, RAID_STEPS = [[.5, { badges: 40, coins: 500 }], [1, { badges: 80, gems: 40, epic: 1 }]];
-const raidBoss = () => { const ids = Object.keys(MYTHS).filter(id => MYTHS[id].kind === 'boss' && !EVENT_IDS.has(id)); return ids[hashS('raid' + weekKey()) % ids.length]; };
+const raidBoss = () => { const ids = Object.keys(MYTHS).filter(id => MYTHS[id].kind === 'boss' && !EVENT_IDS.has(id) && !MYTHS[id].book); return ids[hashS('raid' + weekKey()) % ids.length]; };
 function mateSum(week, perDay, full) { const start = Date.parse(week + 'T00:00:00Z'), now = full ? Infinity : Date.now(); let t = 0;
   for (const m of CLUBMATES) for (let d = 0; d < 7; d++) { const t0 = start + d * 864e5; if (t0 > now) break; t += Math.min(1, (now - t0) / 864e5) * perDay(m.n + week + d); } return Math.round(t); }
 const raidDmg = () => { const C = clubState(); return Math.min(RAID_HP, (C.raid || 0) + mateSum(C.week, s => 80 + rnd01('r' + s) * 170)); };
@@ -4760,7 +4776,7 @@ function comicNext() {
 function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'showdown', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w, false)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
 // after the last page: a short roll of who did what, and what's left to play
 function showCredits(done) {
-  const m = $('#creditsm'); m.hidden = false; const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
+  const m = $('#creditsm'); m.hidden = false; $('#credB2').hidden = !(BOOK2_ON && G && G.S && G.S.book === 1); // Book 1's end hands over to Book 2 const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
   $('#creditsGo').onclick = () => { m.hidden = true; done && done(); };
 }
 function closeComic() { $('#comicm').hidden = true; voStop(); const f = comicDone; comicDone = null; if (f) f(); }
@@ -4807,7 +4823,7 @@ function stageClear() { if (G.cup) { sfx('win'); collectAll(); return cupEnd(tru
   if (joined) addPages(joined, Math.max(0, tierOf(joined).pages - pagesOf(joined)));
   else if (first) { const nf = nextFriend(true); if (nf) { const n = 3 + (G.S.boss ? 3 : 0); if (addPages(nf, n)) joined = nf; else notes.push(`📄 +${n} pages for ${CHARS[nf].em} ${CHARS[nf].name} (${pagesOf(nf)}/${tierOf(nf).pages})`); } }
   // a lucky page after any clear, from any friend's book: rarer friends turn up less
-  if (Math.random() < .35 + (stars === 3 ? .2 : 0)) { const pool = Object.keys(CHARS).filter(id => id !== 'dad' && (!chr(id).own || fstars(id) < STAR_MAX)), wt = id => [4, 2, 1, .35][CTIER[id] || 0];
+  if (Math.random() < .35 + (stars === 3 ? .2 : 0)) { const pool = Object.keys(CHARS).filter(id => id !== 'dad' && (!chr(id).own || fstars(id) < starMax(id))), wt = id => [4, 2, 1, .35][CTIER[id] || 0];
     let r = Math.random() * pool.reduce((a, id) => a + wt(id), 0), lid = pool.find(id => (r -= wt(id)) < 0) || pool[0];
     if (lid) { const n = Math.random() < .25 ? 2 : 1, was = chr(lid).own; if (addPages(lid, n) && !was && !joined) joined = lid; else notes.push(`🎲 Lucky page${n > 1 ? 's' : ''}: +${n} for ${CHARS[lid].em} ${CHARS[lid].name}${chr(lid).own ? '' : ` (${pagesOf(lid)}/${tierOf(lid).pages})`}`); } }
   if (has('month')) { const E = monthEv(), n = stars === 3 ? 2 : 1, was = chr(E.id).own; if (addPages(E.id, n) && !was && !joined) joined = E.id; else notes.push(`${E.C[0]} ${E.C[1]} Month: +${n} page${n > 1 ? 's' : ''} for ${CHARS[E.id].em} ${CHARS[E.id].name}${chr(E.id).own ? '' : ` (${pagesOf(E.id)}/${tierOf(E.id).pages})`}`); }
@@ -4835,7 +4851,7 @@ function giveXp(cleared) {
   const gain = Math.round((G.busted * .6 + (cleared ? 20 : 5) + G.lvl * 2) * (G.room ? .5 : 1)), lines = [];
   for (const m of G.party) {
     const c = chr(m.id), before = clv(m.id); c.xp = (c.xp || 0) + gain; const after = clv(m.id);
-    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = before < SYN_AT && after >= SYN_AT && SYNERGY.some(sy => sy.ids.includes(m.id)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
+    if (after > before) { const news = CHARS[m.id].abil.filter((a, i) => UNLOCK_AT[i] > before && UNLOCK_AT[i] <= after).map(abilName); const syn = SYNERGY.some(sy => synShown(sy) && sy.ids.includes(m.id) && before < synAt(sy) && after >= synAt(sy)); lines.push(`${faceH(m.id)} ${CHARS[m.id].name} reached level ${after}${news.length ? `: ${news.join(', ')} unlocked` : ''}${syn ? ' and can pair up' : ''}!`); }
   }
   persist(); $('#grew').innerHTML = [`✨ +${gain} XP for everyone`, ...lines].map(n => `<div class="nline">${n}</div>`).join(''); return true;
 }
@@ -4843,7 +4859,7 @@ function giveXp(cleared) {
 function payFacts() {
   let gems = 0;
   for (const id of save.facts) if (!save.paidFacts.includes(id)) { save.paidFacts.push(id); gems += 2; }
-  for (const c in CATS) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); if (ids.length && ids.every(id => save.facts.includes(id)) && !save.catCards.includes(c)) { save.catCards.push(c); save.tix++; toastLine(`📚 Every ${CATS[c][1]} page is in the Diary. Library Card earned!`); } }
+  for (const c in CATS) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c && inBook(id)); if (ids.length && ids.every(id => save.facts.includes(id)) && !save.catCards.includes(c)) { save.catCards.push(c); save.tix++; toastLine(`📚 Every ${CATS[c][1]} page is in the Diary. Library Card earned!`); } }
   WORLDS.forEach((W, w) => { if (mastered(w) && !save.traits.includes(w)) { save.traits.push(w); toastLine(`${TRAITS[w][0]} Chapter mastered: ${TRAITS[w][1]}. ${TRAITS[w][2]}, for good.`); } });
   persist(); return gems;
 }
@@ -5076,7 +5092,7 @@ function buildBook() {
       + Object.keys(CATS).map(c => { const { got, all } = catCount(c), B = CATBON[c], next = got * 2 < all ? `At half: +${B.half}${B.u}` : got < all ? `At all: +${B.all}${B.u}` : 'Complete!';
         return `<div class="ctile ${c === diaryCat ? 'on' : ''} ${got === all ? 'done' : ''}" data-cat="${c}"><i>${CATS[c][0]}</i><b>${CATS[c][1]}</b><small>${got} / ${all}</small><div class="cbar"><div style="width:${got / all * 100}%"></div><span></span></div><em>+${catBonus(c)}${B.u} ${B.n}</em>${c === diaryCat ? `<small class="nx">${next}</small>` : ''}</div>`; }).join(''); // the next milestone only on the topic you picked
     cats.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { diaryCat = b.dataset.cat; buildBook(); });
-    const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat), got = ids.filter(id => save.facts.includes(id));
+    const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat && inBook(id)), got = ids.filter(id => save.facts.includes(id));
     const today = new Date().toISOString().slice(0, 10), studied = save.study === today, can = got.length >= 3;
     $('#study').hidden = false; $('#studyTxt').textContent = studied ? 'Done for today. The Kid will read again tomorrow.' : can ? `Re-read three ${CATS[diaryCat][1]} pages with the Kid. Once a day, +🪙 40.` : `Learn three ${CATS[diaryCat][1]} facts and the Kid can read them back to you.`; $('#studyGo').disabled = studied || !can;
     ids.filter(id => save.facts.includes(id)).forEach(kidRow); lockedCard(ids.filter(id => !save.facts.includes(id)));
@@ -5133,10 +5149,11 @@ function outfitH(id) {
   return h + '</div>';
 }
 // a dot only when a friend's own pages are enough: Blank pages are a choice, shown as a count, not a dot on everyone
-const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < STAR_MAX && pagesOf(id) >= starCost(id) : pagesOf(id) >= tierOf(id).pages; };
+const canGrow = id => { const c = chr(id), st = fstars(id); return c.own ? st < starMax(id) && pagesOf(id) >= starCost(id) : pagesOf(id) >= tierOf(id).pages; };
 const tcol = id => id === 'dad' ? '#c0682e' : tierOf(id).col;
 const elOf = id => ELEM[id === 'dad' ? WELEM[save.weapon] : CELEM[id]];
-const starsH = st => `${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i>`;
+const starsH = (st, id) => { const mx = id ? starMax(id) : 5; return `${'★'.repeat(Math.min(st, 5))}${st >= 6 ? '<span class="gold">★</span>' : ''}<i>${'★'.repeat(Math.max(0, mx - st))}</i>`; };
+const allStars = (id, st) => st >= 6 ? 'All six stars!' : gold() && clv(id) < 34 ? 'All five stars! A Gold Star opens at level 34.' : 'All five stars!';
 // what a friend's ranks, gear and weapon add: the friend page's stat row and the Gear tab's summary
 function boosts(id) {
   const c = chr(id), g = gear(id), V = wv(id), parts = [];
@@ -5150,7 +5167,7 @@ function buildParty() {
   const box = $('#partyList'); box.innerHTML = '';
   if (!partySel) { // the grid: the party on top, then everyone
     const card = id => { const C = CHARS[id], c = chr(id), own = c.own || id === 'dad', st = fstars(id), EL = elOf(id);
-      return `<div class="fcard ${own ? '' : 'locked'}" data-pick="${id}" style="--tc:${tcol(id)}">${own ? `<span class="lv">Lv.${clv(id)}</span>` : `<span class="lv tn">${tierOf(id).n}</span>`}${EL ? `<span class="el" style="background:${EL.col}">${EL.em}</span>` : ''}${id !== 'dad' && save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="176" height="176"></canvas>${own ? `<div class="st">${starsH(st)}</div>` : ''}<div class="nm"><b>${C.name}</b>${own ? powH(powerOf(id)) : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}</div>${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
+      return `<div class="fcard ${own ? '' : 'locked'}" data-pick="${id}" style="--tc:${tcol(id)}">${own ? `<span class="lv">Lv.${clv(id)}</span>` : `<span class="lv tn">${tierOf(id).n}</span>`}${EL ? `<span class="el" style="background:${EL.col}">${EL.em}</span>` : ''}${id !== 'dad' && save.party.includes(id) ? '<span class="inp">✔</span>' : ''}<canvas class="pc" data-c="${id}" width="176" height="176"></canvas>${own ? `<div class="st">${starsH(st, id)}</div>` : ''}<div class="nm"><b>${C.name}</b>${own ? powH(powerOf(id)) : `<div class="pb"><div style="width:${Math.min(100, pagesOf(id) / tierOf(id).pages * 100)}%"></div></div><small>📄 ${pagesOf(id)}/${tierOf(id).pages}</small>`}</div>${canGrow(id) ? '<i class="dot"></i>' : ''}</div>`; };
     const slots = [...save.party]; while (slots.length < MAX_COMPANIONS) slots.push(null);
     const keep = id => !fEl || CELEM[id] === fEl, els = Object.keys(ELEM).filter(k => Object.values(CELEM).includes(k));
     const owned = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && keep(id)), locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own && keep(id)).sort((a, b) => (CTIER[a] || 0) - (CTIER[b] || 0));
@@ -5170,19 +5187,19 @@ function buildParty() {
     const T = id === 'dad' ? { n: '📓 Dad', col: tcol('dad') } : tierOf(id), EL = elOf(id), K = CLASS[id], own = c.own || id === 'dad', st = fstars(id), B = boosts(id);
     const act = !c.own ? `<button class="btn small" data-draw="1">🎟️ Card</button>` : id === 'dad' ? '<span class="always">Always in</span>' : inP ? `<button class="btn small ghost" data-leave="${id}">Take out</button>` : `<button class="btn small green" data-join="${id}">Bring in</button>`;
     let html = `<div class="fhero${own ? '' : ' locked'}" style="--tc:${T.col}">${own ? `<span class="lv">Lv.${clv(id)}</span>` : ''}${EL ? `<span class="el" style="background:${EL.col}" title="${EL.n}">${EL.em}</span>` : ''}<canvas class="pc" data-c="${id}" width="320" height="320"></canvas>`
-      + `<div class="hband"><div class="hn"><b>${C.name}</b><div class="pills"><span class="tier" style="background:${id === 'dad' ? '#3a2c20' : T.col}">${T.n}</span>${K ? `<span class="tier kls">${K.em} ${K.name}</span>` : ''}${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}</div>${own ? `<div class="st">${starsH(st)}</div>` : `<small>📄 ${pagesOf(id)}/${T.pages} pages to join</small>`}</div>${own ? powH(powerOf(id), true) : ''}</div></div>`
+      + `<div class="hband"><div class="hn"><b>${C.name}</b><div class="pills"><span class="tier" style="background:${id === 'dad' ? '#3a2c20' : T.col}">${T.n}</span>${K ? `<span class="tier kls">${K.em} ${K.name}</span>` : ''}${EL ? `<span class="tier" style="background:${EL.col}">${EL.em} ${EL.n}</span>` : ''}</div>${own ? `<div class="st">${starsH(st, id)}</div>` : `<small>📄 ${pagesOf(id)}/${T.pages} pages to join</small>`}</div>${own ? powH(powerOf(id), true) : ''}</div></div>`
       + `<div class="hfoot"><span class="d">${C.desc}</span>${act}</div>`;
     if (own) { const lv = charLevel(c.xp || 0);
-      html += `<div class="hstats"><div><small>Level</small><b>${lv.L}</b><div class="mb"><div style="width:${Math.round(lv.into / lv.need * 100)}%"></div></div><em>${lv.into}/${lv.need} XP</em></div><div><small>⚔️ Hit</small><b>${B.powP >= 0 ? '+' : ''}${B.powP}%</b></div><div><small>⚡ Quick</small><b>${B.qP >= 0 ? '+' : ''}${B.qP}%</b></div></div>`
+      html += `<div class="hstats"><div><small>Level</small><b>${lv.L}</b><div class="mb"><div style="width:${lv.L >= lvCap() ? 100 : Math.round(lv.into / lv.need * 100)}%"></div></div><em>${lv.L >= lvCap() ? 'Top level' : `${lv.into}/${lv.need} XP`}</em></div><div><small>⚔️ Hit</small><b>${B.powP >= 0 ? '+' : ''}${B.powP}%</b></div><div><small>⚡ Quick</small><b>${B.qP >= 0 ? '+' : ''}${B.qP}%</b></div></div>`
         + `<div class="skring">${C.abil.map((a, i) => { const on = a === 'weapon' || lv.L >= UNLOCK_AT[i], r = a === 'weapon' ? 0 : tBase(id, a); return `<button class="${on ? '' : 'off'}" data-skj="${i}" title="${abilName(a)}"><span>${on ? abilIcon(a) : '🔒'}</span>${on && r ? `<i>${r}</i>` : ''}</button>`; }).join('')}</div>`; }
     let moves = '', gearH = '', grow = '';
     if (c.own) gearH += outfitH(id);
     if (id === 'dad') { const st = fstars('dad'), need = starCost('dad'), have = pagesOf('dad');
-      grow += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>${st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
-      if (st < STAR_MAX && have + (save.blank || 0) >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
+      grow += `<div class="tierrow"><span class="tier" style="background:#3a2c20">📓 Dad's notebook</span><span class="stars">${starsH(st, 'dad')}</span>${st >= starMax('dad') ? `<span class="pg">${allStars('dad', st)}</span>` : `<span class="pg">📄 ${have}/${need} to ★${st + 1}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div><p class="hand" style="margin:4px 0 0">Every new fact you bust is a page in Dad's notebook. Each star: +5% Power, +3% Quick, +10 Patience.</p>`;
+      if (st < starMax('dad') && have + (save.blank || 0) >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="dad">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; }
     if (id !== 'dad') { const T = tierOf(id), st = fstars(id), need = c.own ? STAR_COST[st] : T.pages, have = pagesOf(id);
-      grow += `<div class="tierrow">${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${'★'.repeat(st)}<i>${'★'.repeat(STAR_MAX - st)}</i></span>` : ''}${c.own && st >= STAR_MAX ? '<span class="pg">All five stars!</span>' : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
-      if (!(c.own && st >= STAR_MAX)) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) grow += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
+      grow += `<div class="tierrow">${(id === 'chroma' ? ['any'] : famOf(id)).map(k => `<span class="tier" style="background:#3a2c20">${k === 'any' ? '🦎 Fits any family' : FAMILY[k].em + ' ' + FAMILY[k].n}</span>`).join('')}${c.own ? `<span class="stars">${starsH(st, id)}</span>` : ''}${c.own && st >= starMax(id) ? `<span class="pg">${allStars(id, st)}</span>` : `<span class="pg">📄 ${have}/${need}${c.own ? ' to ★' + (st + 1) : ' pages to join'}</span><div class="pbar"><div style="width:${Math.min(100, have / need * 100)}%"></div></div>`}</div>`;
+      if (!(c.own && st >= starMax(id))) { const gap = Math.max(0, need - have); if (c.own && have + save.blank >= need) grow += `<div class="pgbtns"><button class="btn small green" data-star="${id}">⭐ Star up${have < need ? ` (uses ${need - have} Blank)` : ''}</button></div>`; else if (!c.own && save.blank > 0) grow += `<div class="pgbtns"><button class="btn small" data-blank="${id}">📄 Add ${Math.min(gap, save.blank)} Blank page${Math.min(gap, save.blank) > 1 ? 's' : ''}</button></div>`; } }
     if (K) moves += `<div class="vs">${K.role} <b>✓ ${K.strong.map(k => KNAME[k]).join(', ')}</b>${K.weak.length ? ` · <s>✗ ${K.weak.map(k => KNAME[k]).join(', ')}</s>` : ''}</div>`;
     if (c.own) {
       const lv = charLevel(c.xp || 0);
@@ -5191,18 +5208,18 @@ function buildParty() {
         return `<div class="skill ${on ? '' : 'locked'}"><div class="em">${on ? abilIcon(a) : '🔒'}</div><div class="txt"><b>${abilName(a)}${ev ? ` → ${ev[0]}` : ''}</b><span>${abilDesc(a)}</span>${on ? (tPicked(id, a) ? `<span><em>${(giftBranch(a) ? TAURA : TFX)[(TPICK[a] || [])[tPicked(id, a) - 1]]?.n || ''}${tHasFin(id, a) ? ' · ' + tFin(id, a).n : ''}</em></span>` : '') : `<span><em>Unlocks at level ${UNLOCK_AT[i]}.</em></span>`}</div></div>`; }).join('') + '</div>' + (has('tree') ? `<button class="btn small tbtn" data-tree="${id}">🌳 Skill Tree${tLeft(id) > 0 ? ` · <b>${tLeft(id)}</b> to spend` : ''}</button>` : '');
       if (CELEM[id]) { const el = CELEM[id], mates = save.party.filter(o => o !== id && CELEM[o] === el); moves += `<div class="reacts">${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}${inP && mates.length ? `<span class="team">${ELEM[el].em} Team ${ELEM[el].n} with ${CHARS[mates[0]].name}: +10%</span>` : ''}</div>`; }
       if (id === 'dad' && WELEM[save.weapon]) { const el = WELEM[save.weapon]; moves += `<div class="reacts"><span class="team">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name} is ${ELEM[el].em} ${ELEM[el].n}</span>${reactsWith(el).map(x => `<span title="${x.R.desc}">${x.R.em} ${x.R.n} with ${ELEM[x.o].em} ${ELEM[x.o].n}</span>`).join('')}</div>`; }
-      const pairs = SYNERGY.filter(sy => sy.ids.includes(id)); moves += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < SYN_AT && id !== 'dad' ? ` (level ${SYN_AT})` : ''}</span>`; }).join('')}</div>`;
+      const pairs = SYNERGY.filter(sy => synShown(sy) && sy.ids.includes(id)); moves += `<div class="syn">${pairs.map(sy => { const other = sy.ids.find(x => x !== id); const on = inP && synOn(sy); return `<span class="${on ? '' : 'off'}" title="${sy.desc}">🤝 ${sy.name} with ${CHARS[other].name}${lv.L < synAt(sy) && id !== 'dad' ? ` (level ${synAt(sy)})` : ''}</span>`; }).join('')}</div>`;
       // what all of it adds up to
       const parts = B.parts;
       gearH += `<div class="statsum">${parts.length ? parts.join(' · ') : 'No bonuses yet. Equip items here and buy ranks in Grow.'}</div>`;
     } else moves += `<div class="abils">${C.abil.map((a, i) => `<span>${abilIcon(a)} ${abilName(a)}</span>`).join('')}</div>`;
     if (c.own) {
       const R = id === 'dad' ? DADRANKS : WRANKS; grow += '<div class="ranks">';
-      const cap = rankCap(id), lvl = clv(id); grow += `<p class="hand tr">Training: each star opens 5 more ranks (${cap} of 25 open)${cap < 25 ? '. Star up for more.' : '.'}</p>`;
+      const cap = rankCap(id), lvl = clv(id), top = gold() ? 30 : 25; grow += `<p class="hand tr">Training: each star opens 5 more ranks (${cap} of ${top} open)${cap < 5 * starMax(id) ? '. Star up for more.' : cap < top ? '. The Gold Star opens at level 34.' : '.'}</p>`;
       for (const r in R) { const lv = c[r] || 0, cost = R[r].base + lv * R[r].step;
         if (R[r].at > lvCap()) continue;
         if (R[r].at && lvl < R[r].at) { grow += `<div class="rank off" data-tip="${attrQ(RANK_TIP[r])}"><span class="nm">${R[r].name}</span><span class="rlk">🔒 Opens at level ${R[r].at}</span></div>`; continue; }
-        grow += `<div class="rank" data-tip="${attrQ(RANK_TIP[r])}"><span class="nm">${R[r].name}</span><div class="rbar"><div style="width:${lv / 25 * 100}%"></div><i style="left:${cap / 25 * 100}%"></i><b>${lv}/${cap}</b></div><span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= cap, cap < 25 ? '⭐ Star up' : 'Maxed')}</span></div>`; }
+        grow += `<div class="rank" data-tip="${attrQ(RANK_TIP[r])}"><span class="nm">${R[r].name}</span><div class="rbar"><div style="width:${lv / top * 100}%"></div><i style="left:${cap / top * 100}%"></i><b>${lv}/${cap}</b></div><span data-crank="${id}:${r}">${buyBtn(cost, save.coins >= cost, lv >= cap, cap < 5 * starMax(id) ? '⭐ Star up' : cap < top ? 'Level 34' : 'Maxed')}</span></div>`; }
       if (id === 'dad') grow += `<div class="rank"><span class="nm">Lens</span><span style="flex:1">${WEAPONS[save.weapon].em} ${WEAPONS[save.weapon].name}: change it in Gear</span></div>`;
       else if (CWEAP[id]) { const V = cweapOf(id); grow += `<div class="rank"><span class="nm">${CWEAP[id].line}</span><span style="flex:1">${V.em} ${V.name}: change it in Gear</span></div>`; }
       grow += '</div>';
@@ -5401,7 +5418,7 @@ const PITY = 5;
 function openDraw() { updateDraw(); $('#drawm').hidden = false; }
 // three face-up offers kept in the save, so closing and reopening never reshuffles them
 function makeShelf() {
-  const locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own), growing = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && fstars(id) < STAR_MAX), sh = [];
+  const locked = Object.keys(CHARS).filter(id => id !== 'dad' && !chr(id).own), growing = Object.keys(CHARS).filter(id => id !== 'dad' && chr(id).own && fstars(id) < starMax(id)), sh = [];
   const f = locked.length ? (Math.random() < .6 && nextFriend() ? nextFriend() : pick(locked)) : growing.length ? pick(growing) : null;
   if (f) sh.push({ k: 'pages', id: f, n: (CTIER[f] || 0) >= 2 ? 6 : 4 });
   sh.push({ k: 'blank', n: 3 });
@@ -5584,8 +5601,8 @@ function buildTree() {
   for (const a of C.abil) {
     const open = tOpen(id, a), nodes = tNodes(a), base = tBase(id, a), need = tPickAt(a), P = TPICK[a] || (giftBranch(a) ? ['pow', 'guard'] : ['sharp', 'mop']), pk = tPicked(id, a), F = tFin(id, a), fin = tHasFin(id, a);
     h += `<div class="tbr ${open ? '' : 'locked'}"><h3>${abilIcon(a)} ${abilName(a)}<small>${open ? (isPassive(a) ? 'always on' : 'a skill') : `opens at level ${UNLOCK_AT[C.abil.indexOf(a)]}`}</small></h3>`;
-    h += '<div class="tlab">Upgrades</div><div class="ttier">' + nodes.map(k => { const r = tRank(id, a, k), N = k === 'sig' ? { em: '⭐', n: SKILL[a][0], d: SKILL[a][1] } : TNODE[k], cost = tCost(r), can = open && r < TREE_MAX && left > 0 && save.coins >= cost;
-      return `<div class="tn ${r ? 'on' : ''}"><span class="te">${N.em}</span><b>${N.n}</b><p>${N.d}</p>${pips(r, TREE_MAX)}${r >= TREE_MAX ? '<button class="btn small maxed" disabled>Maxed</button>' : `<button class="btn small" data-tn="${a}:${k}" ${can ? '' : 'disabled'}>+1 · 🪙${cost}</button>`}</div>`; }).join('') + '</div>';
+    h += '<div class="tlab">Upgrades</div><div class="ttier">' + nodes.map(k => { const r = tRank(id, a, k), N = k === 'sig' ? { em: '⭐', n: SKILL[a][0], d: SKILL[a][1] } : TNODE[k], cost = tCost(r), can = open && r < tMax(id) && left > 0 && save.coins >= cost;
+      return `<div class="tn ${r ? 'on' : ''}"><span class="te">${N.em}</span><b>${N.n}</b><p>${N.d}</p>${pips(r, tMax(id))}${r >= tMax(id) ? `<button class="btn small maxed" disabled>${r >= 4 || !gold() ? 'Maxed' : 'Level 36'}</button>` : `<button class="btn small" data-tn="${a}:${k}" ${can ? '' : 'disabled'}>+1 · 🪙${cost}</button>`}</div>`; }).join('') + '</div>';
     const pOpen = open && base >= need;
     h += `<div class="tlab">Choose one${pOpen ? (pk ? ' · swap any time, free' : '') : ` · after ${need} upgrades`}</div><div class="ttier">` + P.map((k, i) => { const X = giftBranch(a) ? TAURA[k] : TFX[k], on = pk === i + 1 || (pk && fin && tFinKey(id, a) === 'both'), first = !pk, can = pOpen && (first ? left > 0 && save.coins >= T_PICK_COST : true);
       return `<div class="tn ${on ? 'on' : pk ? 'off' : ''}"><span class="te">${X.em}</span><b>${X.n}</b><p>${X.d}</p>${on ? '<button class="btn small maxed" disabled>Chosen</button>' : `<button class="btn small" data-tp="${a}:${i + 1}" ${can ? '' : 'disabled'}>${first ? `Pick · 🪙${T_PICK_COST}` : 'Swap'}</button>`}</div>`; }).join('') + '</div>';
@@ -5594,7 +5611,7 @@ function buildTree() {
   }
   $('#tList').innerHTML = h;
   const done = () => { persist(); buildTree(); buildParty(); const f = $('#tHead .fc'); if (f) { f.classList.add('cheer'); setTimeout(() => f.classList.remove('cheer'), 650); } };
-  $('#tList').querySelectorAll('[data-tn]').forEach(b => b.onclick = () => { const [a, k] = b.dataset.tn.split(':'), r = tRank(id, a, k), cost = tCost(r); if (r >= TREE_MAX || tLeft(id) <= 0 || save.coins < cost || !tOpen(id, a)) return;
+  $('#tList').querySelectorAll('[data-tn]').forEach(b => b.onclick = () => { const [a, k] = b.dataset.tn.split(':'), r = tRank(id, a, k), cost = tCost(r); if (r >= tMax(id) || tLeft(id) <= 0 || save.coins < cost || !tOpen(id, a)) return;
     setWallet({ coins: save.coins - cost }); if (k === 'sig') c.sk[a] = r + 1; else tBr(id, a)[k] = r + 1; sfx('forge'); buzz('LIGHT'); done(); });
   $('#tList').querySelectorAll('[data-tp]').forEach(b => b.onclick = () => { const [a, i] = b.dataset.tp.split(':'), B = tBr(id, a);
     if (!B.pick) { if (tLeft(id) <= 0 || save.coins < T_PICK_COST || tBase(id, a) < tPickAt(a) || !sure(b, 'Pick it?')) return; setWallet({ coins: save.coins - T_PICK_COST }); }
@@ -5639,7 +5656,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
