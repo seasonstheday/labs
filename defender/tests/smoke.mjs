@@ -349,6 +349,10 @@ await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap
   await play(p, 5000); expect(await p.evaluate(() => !!dbg.G || !document.querySelector('#clearm').hidden || !document.querySelector('#overm').hidden), 'a Book 2 match runs');
   for (const st of [42, 44]) { await p.evaluate(st => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(st); }, st); await play(p, 4000); } // its rough-draft and chapter-boss stages
   expect(await p.evaluate(() => dbg.charLevel(dbg.save.chars.webster.xp).L) > 30, 'friends grow past level 30 once Book 1 is done');
+  const ex = await p.evaluate(() => { const S = dbg.save, w = S.chars.webster; w.star = 5; S.pages = S.pages || {}; S.pages.webster = 40; const up = dbg.starUp('webster');
+    S.chars.coco = { own: true, xp: 30000, star: 1 }; S.chars.hopper.xp = 30000; S.party = ['coco', 'hopper', 'sparky'];
+    return { star: w.star, up, starMax: dbg.starMax('webster'), tMax: dbg.tMax('webster'), pair: dbg.synOn(dbg.SYNERGY.find(sy => sy.name === 'Farm Breakfast')) }; });
+  expect(ex.up && ex.star === 6 && ex.tMax === 4 && ex.pair, 'Book 2 extras at level 34-38: Gold Star, a fourth skill rank and a second pair-up: ' + JSON.stringify(ex));
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(79); }); await p.waitForTimeout(600); // Lady Hearsay, the finale
   await p.evaluate(() => document.querySelectorAll('.modal').forEach(m => m.hidden = true));
   const hs = await p.evaluate(() => { const G = dbg.G; if (!G) return 'no match'; G.paused = false; const b = dbg.spawn('hearsay', { x: 640, y: 200 }); G.paused = false; dbg.step(30); b.hp = b.maxhp * .2; dbg.step(60); const rage = !!b.rage; b.hp = 0; dbg.kill(b); dbg.step(30); return { finale: G.S.finale, rage, sses: G.sses}; });
@@ -357,7 +361,8 @@ await test('Book 2 (?book2): 80 stages, its prologue, a match, and the level cap
 });
 await test('without ?book2 the game is Book 1 only', async () => {
   const { p, errs, close } = await open(PROGRESSED());
-  expect(await p.evaluate(() => dbg.STAGES.length === 40 && dbg.charLevel(1e9).L === 30), '40 stages and a level cap of 30'); await close(); return errs;
+  expect(await p.evaluate(() => dbg.STAGES.length === 40 && dbg.charLevel(1e9).L === 30), '40 stages and a level cap of 30');
+  expect(await p.evaluate(() => { dbg.save.chars.webster.xp = 1e9; dbg.save.chars.webster.star = 5; return dbg.starMax('webster') === 5 && dbg.tMax('webster') === 3 && !dbg.SYNERGY.filter(sy => sy.at).some(dbg.synOn); }), 'no Book 2 extras in Book 1'); await close(); return errs;
 });
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);

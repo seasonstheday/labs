@@ -91,7 +91,7 @@ async function career(name) {
       for (const id of ['dad', ...s.party]) { const c = D.chr(id); let guard = 60;
         while (D.tLeft(id) > 0 && guard--) { let best = null;
           for (const a of D.CHARS[id].abil) { if (D.clv(id) < D.UNLOCK_AT[D.CHARS[id].abil.indexOf(a)]) continue;
-            for (const k of D.tNodes(a)) { const r = D.tRank(id, a, k); if (r < D.TREE_MAX) { const cost = D.skCost(r); if (!best || cost < best.cost) best = { a, k, cost, r }; } }
+            for (const k of D.tNodes(a)) { const r = D.tRank(id, a, k); if (r < (D.tMax ? D.tMax(id) : D.TREE_MAX)) { const cost = D.skCost(r); if (!best || cost < best.cost) best = { a, k, cost, r }; } }
             if (!D.tPicked(id, a) && D.tNodes(a).reduce((n, k) => n + D.tRank(id, a, k), 0) >= D.tPickAt(a) && (!best || D.T_PICK_COST < best.cost * 2)) best = { a, pick: 1, cost: D.T_PICK_COST };
             if (D.tPicked(id, a) && D.tFull(id, a) && !D.tHasFin(id, a)) best = { a, fin: 1, cost: D.T_FIN_COST }; }
           if (!best || s.coins < best.cost) break; s.coins -= best.cost; const B = D.tBr(id, best.a);
