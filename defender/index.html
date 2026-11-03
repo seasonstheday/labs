@@ -644,7 +644,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 93</div>
+    <div class="build">build 94</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -832,7 +832,7 @@
         <h3>Facts checked with</h3><p>museums, universities, NASA, and a lot of patient librarians</p>
         <h3>Music</h3><p>Original score made with Google's Lyria music model</p>
         <h3>Made by</h3><p>The Backyard Library</p>
-        <h3>What's next?</h3><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
+        <h3>What's next?</h3><p id="credB2" hidden>📖 A little overdue book just came back to the library…<br><br></p><p>Every stage can be played again on Hard, then Myth Master 🔥.<br>The Endless Stacks never run out of pages.</p>
       </div></div>
       <div class="row"><button class="btn" id="creditsGo">Back to the backyard ▶</button></div>
     </div>
@@ -1296,7 +1296,8 @@ const EVENTS = {
 };
 const EVENT_IDS = new Set();
 for (const k in EVENTS) for (const [id, M] of Object.entries(EVENTS[k].myths)) { MYTHS[id] = M; META[id] = ['seasons', M.src]; EVENT_IDS.add(id); }
-const baseMyths = () => Object.keys(MYTHS).filter(id => !EVENT_IDS.has(id)), baseFacts = () => save.facts.filter(id => !EVENT_IDS.has(id)).length;
+const inBook = id => !(MYTHS[id] && MYTHS[id].book === 2) || gold(); // Book 2's myths count once Book 2 is open
+const baseMyths = () => Object.keys(MYTHS).filter(id => !EVENT_IDS.has(id) && inBook(id)), baseFacts = () => save.facts.filter(id => !EVENT_IDS.has(id)).length;
 function eventOn(id, d = new Date()) { const E = EVENTS[id], md = d.toISOString().slice(5, 10); return E.from <= E.to ? md >= E.from && md <= E.to : md >= E.from || md <= E.to; }
 function activeEvent() { const f = (location.search.match(/[?&]event=(\w+)/) || [])[1] || (save && save.evForce); if (f && EVENTS[f]) return f; return Object.keys(EVENTS).find(k => eventOn(k)) || null; }
 function eventDaysLeft(id) { const E = EVENTS[id], now = new Date(); let end = new Date(now.getUTCFullYear() + '-' + E.to + 'T23:59:59Z'); if (end < now) end = new Date((now.getUTCFullYear() + 1) + '-' + E.to + 'T23:59:59Z'); return Math.max(1, Math.ceil((end - now) / 864e5)); }
@@ -1321,7 +1322,7 @@ const CATBON = {
   seasons: { k: 'evtok', n: 'Event tokens', u: '%', per: 2,  half: 5, all: 10 },
 };
 let diaryCache = null;
-function catCount(c) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); return { got: ids.filter(id => save.facts.includes(id)).length, all: ids.length }; }
+function catCount(c) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c && inBook(id)); return { got: ids.filter(id => save.facts.includes(id)).length, all: ids.length }; }
 function catBonus(c) { const B = CATBON[c], { got, all } = catCount(c); return Math.round((got * B.per + (got * 2 >= all ? B.half : 0) + (got >= all ? B.all : 0)) * 10) / 10; }
 const diaryStat = k => { if (!diaryCache || diaryCache.n !== save.facts.length) { diaryCache = { n: save.facts.length }; for (const c in CATBON) diaryCache[CATBON[c].k] = catBonus(c); } return diaryCache[k] || 0; };
 // what busting every myth in a chapter earns, for good
@@ -1442,7 +1443,7 @@ const WORLDS = [
 // Book 2, "The Little Book of Everybody Says" (book2.js, from reports/Book 2 plan.md): eight more worlds after Book 1's, opened
 // by Book 1's credits. Each borrows Book 1 myths on its topics (Lady Hearsay spreads the old rumours too) so its waves have
 // variety while its own five myths lead. Off until its art and voices are in: ?book2 turns it on for testing.
-const BOOK2_ON = typeof BOOK2 !== 'undefined' && /[?&]book2\b/.test(location.search);
+const BOOK2_ON = typeof BOOK2 !== 'undefined' && !/[?&]nobook2\b/.test(location.search); // Book 2 ships with the game and opens once Book 1 is finished (?nobook2 leaves it out, for testing)
 if (BOOK2_ON) {
   Object.assign(MYTHS, BOOK2.myths); Object.assign(META, BOOK2.meta); TRAITS.push(...BOOK2.traits);
   // Lady Hearsay, the back cover of the little book: Book 2's last page, fought like Sir Ever-So-Sure behind the Campfire Sun
@@ -2744,7 +2745,7 @@ function newRun(stage) {
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
   G = {
-    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .075 * STAGES[stage].k) : 1, wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
+    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .095 * STAGES[stage].k) : 1, /* Book 2 steepened from .075 once the Gold Star, fourth skill rank and second pair-ups landed */ wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
@@ -4387,7 +4388,7 @@ function askCheck(id) {
   say(`Myth check! ${isFact ? M.fact : M.myth} Myth, or fact?`);
 }
 function askQuiz() { $('#quizm h2').textContent = 'Myth or fact?'; $('#quizCard small').textContent = 'The Kid holds up a card';
-  G.asked = G.asked || []; const pool = (save.facts.length >= 3 ? save.facts : Object.keys(MYTHS)).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : Object.keys(MYTHS)); G.asked.push(id);
+  G.asked = G.asked || []; const all = Object.keys(MYTHS).filter(inBook), pool = (save.facts.length >= 3 ? save.facts : all).filter(id => !G.asked.includes(id)), id = pick(pool.length ? pool : all); G.asked.push(id);
   const M = MYTHS[id], isFact = Math.random() < .5; G.quiz = { id, isFact };
   $('#quizText').textContent = isFact ? M.fact : M.myth; $('#quizAfter').textContent = '';
   const c = $('#kidc'), x = c.getContext('2d'); x.clearRect(0, 0, 240, 240); drawKid(x, 110, 232, 220, true);
@@ -4600,7 +4601,7 @@ function payBadges(pay) { const got = []; if (pay.epic) { pay = { ...pay }; dele
 // the Club Raid: a chapter boss each week with one health bar for the whole club. Bosses, elites, clears and three-star
 // clears all hit it; the clubmates chip in every day.
 const RAID_HP = 12000, RAID_HIT = { boss: 400, elite: 40, clear: 100, star3: 150 }, RAID_STEPS = [[.5, { badges: 40, coins: 500 }], [1, { badges: 80, gems: 40, epic: 1 }]];
-const raidBoss = () => { const ids = Object.keys(MYTHS).filter(id => MYTHS[id].kind === 'boss' && !EVENT_IDS.has(id)); return ids[hashS('raid' + weekKey()) % ids.length]; };
+const raidBoss = () => { const ids = Object.keys(MYTHS).filter(id => MYTHS[id].kind === 'boss' && !EVENT_IDS.has(id) && !MYTHS[id].book); return ids[hashS('raid' + weekKey()) % ids.length]; };
 function mateSum(week, perDay, full) { const start = Date.parse(week + 'T00:00:00Z'), now = full ? Infinity : Date.now(); let t = 0;
   for (const m of CLUBMATES) for (let d = 0; d < 7; d++) { const t0 = start + d * 864e5; if (t0 > now) break; t += Math.min(1, (now - t0) / 864e5) * perDay(m.n + week + d); } return Math.round(t); }
 const raidDmg = () => { const C = clubState(); return Math.min(RAID_HP, (C.raid || 0) + mateSum(C.week, s => 80 + rnd01('r' + s) * 170)); };
@@ -4775,7 +4776,7 @@ function comicNext() {
 function playStory() { const list = []; WORLDS.forEach((W, i) => { for (const w of ['in', 'showdown', 'out']) if (save.comics.includes(i + ':' + w)) list.push(...chapterFrames(W, w, false)); }); if (list.length) showFrames(list, '📖 The story so far', null); }
 // after the last page: a short roll of who did what, and what's left to play
 function showCredits(done) {
-  const m = $('#creditsm'); m.hidden = false; const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
+  const m = $('#creditsm'); m.hidden = false; $('#credB2').hidden = !(BOOK2_ON && G && G.S && G.S.book === 1); // Book 1's end hands over to Book 2 const roll = m.querySelector('.roll'); roll.style.animation = 'none'; void roll.offsetWidth; roll.style.animation = '';
   $('#creditsGo').onclick = () => { m.hidden = true; done && done(); };
 }
 function closeComic() { $('#comicm').hidden = true; voStop(); const f = comicDone; comicDone = null; if (f) f(); }
@@ -4858,7 +4859,7 @@ function giveXp(cleared) {
 function payFacts() {
   let gems = 0;
   for (const id of save.facts) if (!save.paidFacts.includes(id)) { save.paidFacts.push(id); gems += 2; }
-  for (const c in CATS) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c); if (ids.length && ids.every(id => save.facts.includes(id)) && !save.catCards.includes(c)) { save.catCards.push(c); save.tix++; toastLine(`📚 Every ${CATS[c][1]} page is in the Diary. Library Card earned!`); } }
+  for (const c in CATS) { const ids = Object.keys(MYTHS).filter(id => catOf(id) === c && inBook(id)); if (ids.length && ids.every(id => save.facts.includes(id)) && !save.catCards.includes(c)) { save.catCards.push(c); save.tix++; toastLine(`📚 Every ${CATS[c][1]} page is in the Diary. Library Card earned!`); } }
   WORLDS.forEach((W, w) => { if (mastered(w) && !save.traits.includes(w)) { save.traits.push(w); toastLine(`${TRAITS[w][0]} Chapter mastered: ${TRAITS[w][1]}. ${TRAITS[w][2]}, for good.`); } });
   persist(); return gems;
 }
@@ -5091,7 +5092,7 @@ function buildBook() {
       + Object.keys(CATS).map(c => { const { got, all } = catCount(c), B = CATBON[c], next = got * 2 < all ? `At half: +${B.half}${B.u}` : got < all ? `At all: +${B.all}${B.u}` : 'Complete!';
         return `<div class="ctile ${c === diaryCat ? 'on' : ''} ${got === all ? 'done' : ''}" data-cat="${c}"><i>${CATS[c][0]}</i><b>${CATS[c][1]}</b><small>${got} / ${all}</small><div class="cbar"><div style="width:${got / all * 100}%"></div><span></span></div><em>+${catBonus(c)}${B.u} ${B.n}</em>${c === diaryCat ? `<small class="nx">${next}</small>` : ''}</div>`; }).join(''); // the next milestone only on the topic you picked
     cats.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { diaryCat = b.dataset.cat; buildBook(); });
-    const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat), got = ids.filter(id => save.facts.includes(id));
+    const ids = Object.keys(MYTHS).filter(id => catOf(id) === diaryCat && inBook(id)), got = ids.filter(id => save.facts.includes(id));
     const today = new Date().toISOString().slice(0, 10), studied = save.study === today, can = got.length >= 3;
     $('#study').hidden = false; $('#studyTxt').textContent = studied ? 'Done for today. The Kid will read again tomorrow.' : can ? `Re-read three ${CATS[diaryCat][1]} pages with the Kid. Once a day, +🪙 40.` : `Learn three ${CATS[diaryCat][1]} facts and the Kid can read them back to you.`; $('#studyGo').disabled = studied || !can;
     ids.filter(id => save.facts.includes(id)).forEach(kidRow); lockedCard(ids.filter(id => !save.facts.includes(id)));
