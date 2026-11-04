@@ -60,5 +60,5 @@ if __name__ == '__main__':
     print(f'{len(L)} lines, {len(todo)} to record' + (f' into {stage}' if stage else ''), flush=True)
     with ThreadPoolExecutor(4) as ex: list(ex.map(lambda x: tts(x['text'], x['who'], dest(x)), todo))
     left = len([x for x in L if not os.path.exists(dest(x))])
-    if stage: print(f'staged {len(L) - left} of {len(L)}; {left} left' + (' (daily quota used up: run again tomorrow)' if DAILY_OUT else '; complete: run with --swap ' + stage), flush=True)
+    if stage: print(f'staged {len(L) - left} of {len(L)}; {left} left' + (' (daily quota used up: run again tomorrow)' if DAILY_OUT else ' (some lines failed: see the errors above, e.g. out of credit)' if left else '; complete: run with --swap ' + stage), flush=True)
     else: print(f'index: {len(index())} clips' + (f' ({left} left: daily quota used up on {", ".join(sorted(DAILY_OUT))}; run again tomorrow)' if DAILY_OUT else ''), flush=True)
