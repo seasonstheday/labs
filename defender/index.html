@@ -494,6 +494,7 @@
   .wt.on { border-color: var(--green); background: #eef7e6; } .wt.buy { background: #f7efe0; } .wt:disabled { opacity: .5; } .wt b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; } .wt small { font: 700 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .wt .wem { font-size: 28px; line-height: 34px; } .wt .what { width: 44px; height: 44px; object-fit: contain; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
   #socBody .intro { font: 600 15px/1.35 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 6px 2px; text-align: left; }
+  #title .goalpill { position: absolute; top: 272px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 7px 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: linear-gradient(90deg, #f5c95a var(--f, 0%), #fff6dc var(--f, 0%)); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); white-space: nowrap; box-shadow: 0 3px 0 rgba(58,44,32,.35); cursor: pointer; } #title .goalpill.can { animation: goalglow 1s ease-in-out infinite alternate; } @keyframes goalglow { to { box-shadow: 0 3px 0 rgba(58,44,32,.35), 0 0 0 5px rgba(245,201,90,.55); } } .wt { position: relative; } .wt .pin { position: absolute; top: 2px; right: 4px; font-style: normal; }
   #title .evpill { position: absolute; top: 232px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 7px 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: #fff6dc; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 3px 0 rgba(58,44,32,.3); white-space: nowrap; }
   .raidboss { text-align: center; margin: 4px 0; } .raidboss span { font-size: 52px; display: block; } .raidboss b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; display: block; } .raidboss small { font: 600 14px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); } .lvbar.raid i { background: var(--red); }
   .soctabs { display: flex; gap: 6px; margin: 2px 0 8px; } .soctabs button { flex: 1; padding: 8px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); } .soctabs button.on { background: var(--gold); }
@@ -583,6 +584,8 @@
   .offer b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
   .offer span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .offer .btn { min-width: 96px; }
+  .sets { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 2px; } .setc { font: 700 14px/1 Fredoka, Arial, sans-serif; padding: 7px 10px; border: 2px solid var(--line); border-radius: 999px; background: #fff; } .setc.done { border-color: #3a2c20; background: #dff0c8; } .setnote { font-size: 14px; color: var(--muted); margin: 6px 2px; }
+  #pick3Box { margin-bottom: 8px; padding: 8px; border: 3px dashed #ecb23c; border-radius: 14px; background: #fff6dc; } #pick3Box .lootrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; } #pick3Box .lootc { width: auto; cursor: pointer; }
   #picksBox { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; } #picksBox .rackh { margin: 2px 2px 0; display: flex; justify-content: space-between; align-items: baseline; } #picksBox .rackh small { font: 600 13px/1 Nunito, Arial, sans-serif; color: #6b5a48; }
   .offer.pick { background: #fff6dc; } .offer.pick.done { opacity: .6; } .swatch.big { display: inline-block; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a2c20; vertical-align: middle; }
   .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
@@ -646,10 +649,11 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 99</div>
+    <div class="build">build 100</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
+    <button class="goalpill" id="goalBtn" hidden></button>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubClub" data-lock="club">🏡<small>Club</small><i class="dot" hidden></i></button></div>
     <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubCup" data-lock="cup">🥇<small>Myth Cup</small><i class="dot" hidden></i></button></div>
     <div class="side" hidden>
@@ -2593,7 +2597,7 @@ function famMoves(dt) {
 // a friend's pair-up is live once they have the level for it and both halves are coming
 const synOn = sy => synShown(sy) && sy.ids.every(id => (id === 'dad' || save.party.includes(id)) && (id === 'dad' || clv(id) >= synAt(sy)));
 const radiusFor = () => BASE_RADIUS + rEff(chr('dad').ring) * 22 + partyGear().ring + famStat('ring');
-function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
+function setWallet(o = {}) { for (const k of ['coins', 'gems', 'tix']) if (o[k] != null) save[k] = Math.max(0, Math.round(o[k])); persist(); try { goalUpd(); } catch (e) {} $$('.coinsN').forEach(e => e.textContent = save.coins); $$('.gemsN').forEach(e => e.textContent = save.gems); $$('.tixN').forEach(e => e.textContent = save.tix); }
 if (!save.wv2) { // one weapon each (build 32)
   save.wv2 = true; const d = chr('dad'); let coins = 0, held = save.weapon;
   for (const k in save.wep || {}) { d.pow = Math.max(d.pow || 0, save.wep[k].pow || 0); d.quick = Math.max(d.quick || 0, save.wep[k].quick || 0); }
@@ -2905,6 +2909,15 @@ function spawnMini(parent) {
 
 /* ───────── helpers ───────── */
 // a spoken line in the arena: a cream bubble with ink words, a tail, and a name tab (the Kid in teal, a villain in purple)
+// the bought Pop style: extra bits on every burst
+const POPS = { confetti: { n: 8, g: null }, bubbles: { n: 5, g: 'bubble' }, hearts: { n: 4, g: '💖' }, twinkle: { n: 4, g: '🌟' } };
+function popStyle(e, big) { const P = POPS[wardItem('pop').id]; if (!P) return;
+  for (let i = 0; i < fxN(P.n * big); i++) { const up = P.g && P.g !== null; G.fx.push({ k: 'glyph', g: P.g, x: e.x + rnd(-8, 8), y: e.y - e.r * .4, vx: rnd(-120, 120), vy: P.g ? rnd(-140, -60) : rnd(-260, -100), grav: P.g ? -20 : 420, rot: rnd(0, 6), vr: rnd(-8, 8), t: 0, life: rnd(.7, 1.1), col: pick(['#e55', '#ecb23c', '#5c5', '#59e', '#b48be6', '#f39ac0']), s: rnd(10, 16) }); } }
+// the bought Pet: trails Dad with a bob, faces where it's going
+function drawPet() { const P = wardItem('pet'); if (!P.c && !P.only || !G.dad) return; const pt = G.pet || (G.pet = { x: G.dad.x - 44, y: G.dad.y - 40, f: 1 });
+  const tx = G.dad.x - 34 * (G.dad.face || 1), ty = G.dad.y - 36, k = Math.min(1, (G.dtLast || .016) * 3); const nx = pt.x + (tx - pt.x) * k; if (Math.abs(nx - pt.x) > .2) pt.f = nx > pt.x ? -1 : 1; pt.x = nx; pt.y += (ty - pt.y) * k;
+  const fly = P.id === 'butterfly' || P.id === 'owl' || P.id === 'dragon', bob = save.opt.calm ? 0 : fly ? Math.sin(G.t * 5) * 6 : Math.abs(Math.sin(G.t * 6)) * -4;
+  ctx.save(); ctx.globalAlpha = 1; ctx.fillStyle = 'rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(pt.x, G.dad.y + 26, 12, 4, 0, 0, 7); ctx.fill(); ctx.translate(pt.x, pt.y + (fly ? 0 : 52) + bob); ctx.scale(pt.f, 1); ctx.fillStyle = '#000'; ctx.font = `30px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(P.em, 0, 0); ctx.restore(); }
 function speechBubble(t) {
   const p = t.t / t.life, kid = /^The Kid: /.test(t.s), vil = t.col === '#e6d6fa', who = kid ? 'The Kid' : vil ? (G.S.finale === 'hearsay' ? 'Lady Hearsay' : 'Sir Ever-So-Sure') : '', line = kid ? t.s.replace(/^The Kid: /, '') : t.s;
   const fs = Math.max(16, Math.min(22, t.size)), pop = 1 + Math.max(0, 1 - t.t / .12) * .2;
@@ -2986,6 +2999,7 @@ function kill(e) {
   for (let i = 0; i < fxN(5 * big); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.35, .7), col: pick([e.col || e.M.col, '#fff', '#fbf3df']), r: rnd(4, 9) });
   for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(.6, 1) });
   for (let i = 0; i < fxN(2 * big); i++) G.fx.push({ k: 'star', x: e.x + rnd(-e.r, e.r), y: e.y - e.r + rnd(-8, 8), t: 0, life: rnd(.35, .55), s: rnd(8, 13) });
+  popStyle(e, big);
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
   sfx('pop', e.elite || e.kind === 'boss'); if (e.kind === 'boss') buzz('HEAVY');
   text(e.x, e.y - 10, e.kind === 'brick' ? 'CRUMBLE' : 'POP!', '#cb382e', 22, .8);
@@ -3395,7 +3409,8 @@ function update(dt) {
     if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v * (1 + diaryStat('xp') / 100); if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
-  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
+  G.dtLast = dt;
+  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'glyph') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += f.grav * dt; f.vx *= 1 - dt * 1.5; f.rot += f.vr * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
   G.fx = G.fx.filter(f => f.t < f.life);
   for (const t of G.texts) { t.t += dt; t.y -= 28 * dt; }
   G.texts = G.texts.filter(t => t.t < t.life);
@@ -4146,6 +4161,7 @@ function draw() {
     if (f.k === 'die') { const e = f.e; ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(e.x, e.y); ctx.scale(1 + p * .55, 1 - p * .45); ctx.translate(-e.x, -e.y); e.hit = 1; drawEnemy(e); ctx.restore(); ctx.globalAlpha = 1; }
     else if (f.k === 'spark') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#ffd76a' : '#fff'; ctx.lineWidth = f.big ? 4 : 3; ctx.lineCap = 'round'; const L = (f.big ? 22 : 14) * (.5 + p); for (let i = -2; i <= 2; i++) { const a = f.a + i * .45; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a) * L * .35, f.y + Math.sin(a) * L * .35); ctx.lineTo(f.x + Math.cos(a) * L, f.y + Math.sin(a) * L); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
+    else if (f.k === 'glyph') { ctx.save(); ctx.globalAlpha = 1 - p * p; ctx.translate(f.x, f.y); if (!f.g) { ctx.rotate(f.rot); ctx.fillStyle = f.col; ctx.fillRect(-f.s * .3, -f.s * .18, f.s * .6, f.s * .36); } else if (f.g === 'bubble') { ctx.strokeStyle = 'rgba(92,140,190,.9)'; ctx.lineWidth = 2; ctx.fillStyle = 'rgba(220,240,255,.35)'; ctx.beginPath(); ctx.arc(0, 0, f.s * .6 * (1 + p * .4), 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-f.s * .2, -f.s * .2, f.s * .14, 0, 7); ctx.fill(); } else { ctx.rotate(Math.sin(f.rot) * .3); ctx.fillStyle = '#000'; ctx.font = `${Math.round(f.s * 1.3)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(f.g, 0, 0); } ctx.restore(); }
     else if (f.k === 'star') { ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(f.x, f.y - p * 18); ctx.rotate(p * 3); const R = f.s * (p < .3 ? p / .3 : 1); ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i < 8; i++) { const r2 = i % 2 ? R * .4 : R, a = i / 8 * Math.PI * 2; ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
     else if (f.k === 'buzz') { ctx.globalAlpha = p < .8 ? 1 : (1 - p) * 5; ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 10; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.3 + p * .75), f.R * (.3 + p * .75) * .8, 0, 0, 7); ctx.stroke(); ctx.font = `24px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2 + p * 7, R = f.R * (.3 + p * .75) + Math.sin(i * 3 + p * 20) * 12; ctx.fillText('🐝', f.x + Math.cos(a) * R, f.y + Math.sin(a) * R * .8); } ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1; }
     else if (f.k === 'dim') { ctx.globalAlpha = (p < .2 ? p / .2 : 1 - (p - .2) / .8) * .45; ctx.fillStyle = '#1d1840'; ctx.fillRect(-40, -40, W + 80, H + 80); ctx.globalAlpha = 1; }
@@ -4191,6 +4207,7 @@ function draw() {
     else if (f.k === 'quack') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(f.x, f.y, 30 + k * 25 + p * 90, f.a - .6, f.a + .6); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'webhit') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(a) * 22, f.y + Math.sin(a) * 22); ctx.stroke(); } ctx.globalAlpha = 1; }
   }
+  drawPet();
   for (const t of G.texts) { if (t.s[0] === '"' || /^The Kid: "/.test(t.s)) { speechBubble(t); continue; } const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${Math.round(t.size * (1 + Math.max(0, 1 - t.t / .12) * .5))}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
   if (R3D) R3D.render();
   if (G.focus && G.focus.hp > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(G.focus.x, G.focus.y, G.focus.r + 10, G.t * 3, G.t * 3 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
@@ -4244,6 +4261,12 @@ const WARD = {
   team: { name: 'Team hats', items: [
     { id: 'none', n: 'Bare heads', c: 0, em: '🙂' }, { id: 'bow', n: 'Bows', c: 1000, em: '🎀' }, { id: 'flower', n: 'Daisies', c: 1000, em: '🌼' },
     { id: 'party', n: 'Party Hats', c: 2500, em: '🥳' }, { id: 'wizard', n: 'Wizard Hats', c: 5000, em: '🧙' }, { id: 'crown', n: 'Little Crowns', c: 0, st: 50, only: 'stars', em: '👑' }, { id: 'clubcap', n: 'Club Caps', c: 300, em: '🧢', only: 'club' }, { id: 'laurel', n: 'Myth League Laurels', c: 500, em: '🌿', only: 'cup' }, { id: 'leafcrown', n: 'Leaf Crowns', c: 200, em: '🍁', only: 'harvest' }, { id: 'antlers', n: 'Reindeer Antlers', c: 200, em: '🦌', only: 'winter' }] },
+  pop: { name: 'Pop style', items: [ // how a myth bursts: moving looks, still no Power
+    { id: 'classic', n: 'Pages and stars', c: 0, em: '📄' }, { id: 'confetti', n: 'Confetti', c: 1000, em: '🎊' }, { id: 'bubbles', n: 'Bubbles', c: 2500, em: '🫧' },
+    { id: 'hearts', n: 'Hearts', c: 2500, em: '💖' }, { id: 'twinkle', n: 'Twinkle Stars', c: 5000, em: '🌟' }] },
+  pet: { name: 'Pets', items: [ // a little friend who follows Dad around the arena
+    { id: 'none', n: 'No pet', c: 0, em: '🙂' }, { id: 'butterfly', n: 'Butterfly', c: 1000, em: '🦋' }, { id: 'ladybug', n: 'Ladybug', c: 1000, em: '🐞' },
+    { id: 'chick', n: 'Chick', c: 2500, em: '🐥' }, { id: 'puppy', n: 'Puppy', c: 2500, em: '🐶' }, { id: 'owl', n: 'Wise Owl', c: 5000, em: '🦉' }, { id: 'dragon', n: 'Tiny Dragon', c: 0, st: 150, only: 'stars', em: '🐉' }] },
   yard: { name: 'Backyard', many: true, items: [
     { id: 'sunflower', n: 'Sunflowers', c: 1000, em: '🌻', at: [38, 290, 32] }, { id: 'mush', n: 'Mushrooms', c: 1000, em: '🍄', at: [408, 266, 24] },
     { id: 'balloons', n: 'Balloons', c: 1000, em: '🎈', at: [340, 176, 34] }, { id: 'kite', n: 'Kite', c: 2500, em: '🪁', at: [116, 64, 34] },
@@ -4260,6 +4283,16 @@ const STAR_LOOKS = () => Object.entries(WARD).flatMap(([cat, C]) => C.items.filt
 function starGifts() { const n = starTotal(), got = []; for (const { cat, it } of STAR_LOOKS()) if (n >= it.st && !wardOwns(cat, it.id)) { (save.wardrobe = save.wardrobe || []).push(cat + ':' + it.id); got.push(it); } if (got.length) persist(); return got; }
 const nextStarLook = () => STAR_LOOKS().find(({ cat, it }) => !wardOwns(cat, it.id));
 setTimeout(() => starGifts(), 0); // players who already have the stars get their looks on load
+// sets: every look from one place (an event, the Club, the Cup, the stars). Finishing one pays 💎50, once.
+const SETS = { harvest: ['🍂', 'Harvest'], winter: ['❄️', 'Winter'], club: ['🏡', 'Club'], cup: ['🥇', 'Cup'], stars: ['⭐', 'Star'] };
+const setOf = k => Object.entries(WARD).flatMap(([cat, C]) => C.items.filter(i => i.only === k).map(i => cat + ':' + i.id));
+const setHave = k => setOf(k).filter(key => (save.wardrobe || []).includes(key)).length;
+function setCheck() { const done = save.setsDone = save.setsDone || []; for (const k in SETS) { const all = setOf(k).length; if (all && setHave(k) === all && !done.includes(k)) { done.push(k); setWallet({ gems: save.gems + 50 }); toastMsg(`${SETS[k][0]} ${SETS[k][1]} set complete! +💎50`); persist(); } } }
+const setsH = () => `<div class="sets">${Object.entries(SETS).map(([k, [em, n]]) => { const all = setOf(k).length, h = setHave(k); return `<span class="setc ${h === all ? 'done' : ''}">${em} ${n} ${h}/${all}${h === all ? ' ✓' : ''}</span>`; }).join('')}</div><p class="setnote">Collect a whole set for 💎50. Event looks come back every year.</p>`;
+// "Save for this!": a look you can't afford yet is pinned, and the Play screen fills a bar toward it
+function goalUpd() { const b = $('#goalBtn'); if (!b) return; const g = save.goal, it = g && wardOf(g); if (!it || wardOwns(...g.split(':'))) { if (g) { save.goal = null; } b.hidden = true; return; }
+  const f = Math.min(1, save.coins / it.c), can = f >= 1; b.hidden = false; b.classList.toggle('can', can); b.style.setProperty('--f', (f * 100).toFixed(1) + '%');
+  b.innerHTML = can ? `📌 ${it.n}: you can buy it! ✨` : `📌 ${it.n} · 🪙 ${save.coins}/${it.c}`; b.onclick = openWardrobe; }
 const wardItem = cat => WARD[cat].items.find(i => i.id === look()[cat]) || WARD[cat].items[0];
 // a recoloured copy of a Dad drawing, cached per picture and sweater; the lens rim (same gold) is left alone
 const DRESSED = new Map();
@@ -4300,11 +4333,11 @@ const dadHat = () => { const H = wardItem('hat'); return H.c ? H.id : null; };
 function teamHat(c, img, x0, y0, w, h) { const t = look().team; if (t !== 'none') hatOn(c, img, x0, y0, w, h, t, .8); }
 function openWardrobe() { const L = look();
   pickFor = null; $('#pickTitle').textContent = '👕 Wardrobe'; { const nx = nextStarLook(); $('#pickSub').textContent = `🪙 ${save.coins} to spend. Just for looks: no Power.${nx ? ` ⭐ ${starTotal()}/${nx.it.st} stars to the ${nx.it.n}.` : ''}`; } $('#pickUnequip').hidden = true;
-  $('#pickList').innerHTML = Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
+  setCheck(); $('#pickList').innerHTML = setsH() + Object.entries(WARD).map(([cat, C]) => `<h3 class="rackh">${C.name}</h3><div class="ward">${C.items.map(it => { const own = wardOwns(cat, it.id), on = C.many ? L.yard.includes(it.id) : L[cat] === it.id;
     const sw = cat === 'sweater' ? `<span class="swatch" style="background:${swatchCss(it)}"></span>` : (cat !== 'yard' && HATFIT[it.id] ? `<img class="what" src="assets/hat_${it.id}.webp" alt="">` : `<span class="wem">${it.em}</span>`);
-    return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && (it.only || save.coins < it.c) ? 'disabled' : ''}>${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : it.only === 'stars' ? `⭐ ${Math.min(starTotal(), it.st)}/${it.st}` : it.only ? ({ club: '🏡 Club Shop', cup: '🥇 Cup Shop' }[it.only] || '🎉 Event shop') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
+    return `<button class="wt ${on ? 'on' : ''} ${own ? '' : 'buy'}" data-w="${cat}:${it.id}" ${!own && it.only ? 'disabled' : ''}>${save.goal === cat + ':' + it.id && !own ? '<i class="pin">📌</i>' : ''}${sw}<b>${it.n}</b><small>${on ? (C.many ? 'Out ✓' : 'Wearing') : own ? (C.many ? 'Put out' : 'Wear') : it.only === 'stars' ? `⭐ ${Math.min(starTotal(), it.st)}/${it.st}` : it.only ? ({ club: '🏡 Club Shop', cup: '🥇 Cup Shop' }[it.only] || '🎉 Event shop') : '🪙 ' + it.c}</small></button>`; }).join('')}</div>`).join('');
   $('#pickList').querySelectorAll('[data-w]').forEach(b => b.onclick = () => { const [cat, id] = b.dataset.w.split(':'), it = WARD[cat].items.find(i => i.id === id);
-    const fresh = !wardOwns(cat, id); if (fresh) { if (save.coins < it.c || !sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
+    const fresh = !wardOwns(cat, id); if (fresh && save.coins < it.c) { save.goal = cat + ':' + id; persist(); toastMsg(`📌 Saving up for the ${it.n}! Watch the Play screen.`); openWardrobe(); return; } if (fresh) { if (!sure(b, `Buy · 🪙 ${it.c}?`)) return; setWallet({ coins: save.coins - it.c }); (save.wardrobe = save.wardrobe || []).push(cat + ':' + id); sfx('coin'); }
     if (WARD[cat].many) L.yard = L.yard.includes(id) && !fresh ? L.yard.filter(y => y !== id) : [...new Set([...L.yard, id])]; else L[cat] = id;
     persist(); drawStatics(); openWardrobe(); });
   $('#pickm').hidden = false; }
@@ -4326,7 +4359,7 @@ function drawTitleParty() {
     x.restore(); } } // the event's leaves or snow drift down behind the team
   const items = [{ id: 'dad', y: 296 }, ...save.party.map((id, i) => ({ id, i, y: SPOT[i][1] }))].sort((a, b) => a.y - b.y); // back to front
   for (const it of items) {
-    if (it.id === 'dad') { shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true) && IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
+    if (it.id === 'dad') { const PT = wardItem('pet'); if (PT.c || PT.only) { const fl = PT.id === 'butterfly' || PT.id === 'owl' || PT.id === 'dragon'; shadow(276, 301, 13); x.save(); x.fillStyle = '#000'; x.font = `34px ${EMOJI_FONT}`; x.textAlign = 'center'; x.textBaseline = 'bottom'; x.fillText(PT.em, 276, 302 - (fl ? 70 + Math.sin(t * 4) * 5 : Math.abs(Math.sin(t * 5)) * 4)); x.restore(); } shadow(214, 297, 42); if (!stand(IMG.wave, 214, 298, 218, 1, 0, .8, true) && IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .12, t, 214, 298, 236); } continue; }
     const [sx, sy, h, face] = SPOT[it.i], ph = it.i * 2.1, hop = Math.max(0, Math.sin(t * 3 + ph * 1.7)) ** 6 * 10; // a little hop now and then
     shadow(sx, sy - 1, 34);
     if (want3d(it.id) || !stand(art('pet_' + it.id), sx, sy - hop, h, face, ph)) drawCompanionAt(x, it.id, sx, sy, 1.85, face, t, { aim: face > 0 ? Math.PI / 2 - .45 : Math.PI / 2 + .45, bob: ph });
@@ -4337,7 +4370,7 @@ let homeOdd = false;
 requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if ((homeOdd = !homeOdd) && mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
 let staticsQ = 0;
 function drawStatics() { if (!staticsQ) staticsQ = requestAnimationFrame(() => { staticsQ = 0; drawStaticsNow(); }); }
-function drawStaticsNow() { try { misDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
+function drawStaticsNow() { try { misDot(); goalUpd(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -4732,8 +4765,8 @@ const shop2Of = k => k === 'ev' ? { em: EVENTS[activeEvent()].tok[0], items: EVE
 const bal2 = k => k === 'ev' ? evState(activeEvent()).tok : save[SHOP2[k].cur] || 0;
 const spend2 = (k, c) => { if (k === 'ev') evState(activeEvent()).tok -= c; else save[SHOP2[k].cur] -= c; };
 const swatchCss = wi => wi.rainbow ? 'linear-gradient(90deg,#e55,#eb5,#5c5,#59e,#a5e)' : wi.stripes ? `repeating-linear-gradient(0deg,hsl(${wi.stripes[0]},70%,48%) 0 6px,hsl(${wi.stripes[1]},65%,42%) 6px 12px)` : wi.c || wi.only ? `hsl(${wi.h},${Math.round((wi.s ?? 1) * 70)}%,${Math.round((wi.v ?? 1) * 52)}%)` : '#d59e3d';
-function shop2H(k) { const S = shop2Of(k), have = bal2(k);
-  return `<div class="ward">${S.items.map((it, i) => { const W = it.ward && it.ward.split(':'), wi = W && WARD[W[0]].items.find(x => x.id === W[1]), own = W && wardOwns(W[0], W[1]);
+function shop2H(k) { const S = shop2Of(k), have = bal2(k); setCheck(); const sk = k === 'ev' ? activeEvent() : k, SK = SETS[sk];
+  return `${SK ? `<p class="setnote"><b>${SK[0]} ${SK[1]} set ${setHave(sk)}/${setOf(sk).length}</b> · collect them all for 💎50.${k === 'ev' ? ' Back next year, so there\'s no rush!' : ''}</p>` : ''}<div class="ward">${S.items.map((it, i) => { const W = it.ward && it.ward.split(':'), wi = W && WARD[W[0]].items.find(x => x.id === W[1]), own = W && wardOwns(W[0], W[1]);
     const pic = W ? (W[0] === 'sweater' ? `<span class="swatch" style="background:${swatchCss(wi)}"></span>` : W[0] !== 'yard' && HATFIT[wi.id] ? `<img class="what" src="assets/hat_${wi.id}.webp" alt="">` : `<span class="wem">${wi.em}</span>`) : `<span class="wem">${it.em}</span>`;
     const lock = it.tier && cupTier() < it.tier; return `<button class="wt ${own ? 'on' : 'buy'}" data-s2="${i}" ${own || lock || have < it.c ? 'disabled' : ''}>${pic}<b>${W ? wi.n : it.n}</b><small>${own ? 'Yours: in the Wardrobe' : lock ? `🔒 ${CUP_TIERS[it.tier]}` : `${S.em} ${it.c}`}</small></button>`; }).join('')}</div>`; }
 function wireShop2(k) { const S = shop2Of(k); $$('#socBody [data-s2]').forEach(b => b.onclick = () => { const it = S.items[+b.dataset.s2]; if (bal2(k) < it.c || !sure(b, `Buy · ${S.em} ${it.c}?`)) return;
@@ -5423,22 +5456,22 @@ async function buildIap() {
   const r = $('#iapRestore'); if (r) r.onclick = () => adultGate('Restoring purchases is for grown-ups.', async () => { try { for (const id of await window.iap.restore()) grantIap(id); } catch (e) {} buildIap(); drawStatics(); });
 }
 const OFFERS = [
-  { em: '🍱', name: 'Lunchbox', desc: 'One item: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 300], run: () => [randItem(.1)] },
+  { em: '🍱', name: 'Lunchbox', desc: 'Open it, see three items, keep the one you like.', pick3: true, cost: ['coins', 300], run: () => [randItem(.1)] },
   { em: '🎒', name: 'Backpack', desc: 'Exactly one Epic and two Rare items.', cost: ['gems', 60], run: () => [itemOf(2), itemOf(1), itemOf(1)] },
   { em: '🎟️', name: 'Library Card', desc: 'Pick one of three: a friend\'s pages, Blank pages, or an item.', cost: ['gems', 50], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🎟️', name: 'Library Card', desc: 'The same card, paid for in coins.', cost: ['coins', 600], run: () => { setWallet({ tix: save.tix + 1 }); return []; } },
   { em: '🪙', name: 'Pocket Money', desc: '10 gems becomes 120 coins.', cost: ['gems', 10], run: () => { setWallet({ coins: save.coins + 120 }); return []; } },
-  { em: '🔖', name: 'Bookmark', desc: 'One bookmark of a random colour: 65% Common, 30% Rare, 5% Epic.', cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
+  { em: '🔖', name: 'Bookmark', desc: 'See three bookmarks, keep the one you like.', pick3: true, cost: ['coins', 250], run: () => [makeMark(rollRar(.1))] },
   // rewarded-ad hooks: only rendered when the native build provides window.rewardedAd (never in the web build), and only behind the adult gate
   { em: '📺', name: 'Watch a short video', desc: '+20 gems, once a day. A grown-up has to say yes.', cost: ['ad', 0], run: () => { setWallet({ gems: save.gems + 20 }); return []; } },
 ];
 function buildStore() {
   const box = $('#storeList');
-  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">${itemImg('s_library_card', '🎟️')}</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div><div class="offer" id="wardRow"><div class="em">${itemImg('s_wardrobe', '👕')}</div><div class="txt"><b>Dad's Wardrobe</b><span>Sweaters, hats and things for the backyard. Just for looks.</span></div><button class="btn small" id="wardGo">Look</button></div>`); box.insertAdjacentHTML('afterbegin', picksH()); wirePicks(box); const g = $('#shelfGo'); if (g) g.onclick = openDraw; const wg = $('#wardGo'); if (wg) wg.onclick = openWardrobe; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${itemImg('s_' + slugOf(o.name), o.em)}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">${itemImg('s_library_card', '🎟️')}</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div><div class="offer" id="wardRow"><div class="em">${itemImg('s_wardrobe', '👕')}</div><div class="txt"><b>Dad's Wardrobe</b><span>Sweaters, hats and things for the backyard. Just for looks.</span></div><button class="btn small" id="wardGo">Look</button></div>`); box.insertAdjacentHTML('afterbegin', picksH()); wirePicks(box); pick3H(box); const g = $('#shelfGo'); if (g) g.onclick = openDraw; const wg = $('#wardGo'); if (wg) wg.onclick = openWardrobe; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${itemImg('s_' + slugOf(o.name), o.em)}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Nothing here costs real money.';
-  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+  box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); if (o.pick3) { save.pick3 = [0, 1, 2].map(() => o.run()[0]); persist(); buildStore(); return; } const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
 }
 
 /* ───────── Dad's Picks: three face-up offers that change once a day; the first is free. No countdown, nothing to miss. ───────── */
@@ -5462,6 +5495,10 @@ function picksH() {
     + (P.ward ? row(1, wardEm(P.ward), wardOf(P.ward).n, `A look for Dad · <s>🪙${wardOf(P.ward).c}</s>`, pickWardC(P)) : '')
     + row(2, icon(P.item), P.item.name, `${RAR[P.item.rar].n} · ${itemDesc(P.item)}`, P.itemC) + '</div>';
 }
+// a bought Lunchbox or Bookmark: three face-up, keep one. Kept in the save, so leaving the Shop never loses it.
+function pick3H(box) { const L = save.pick3; if (!L || !L.length) return;
+  box.insertAdjacentHTML('afterbegin', `<div id="pick3Box"><h3 class="rackh"><span>👇 Keep one</span></h3><div class="lootrow">${L.map((it, i) => `<button class="lootc r${it.rar}" data-p3="${i}"><span class="ie">${icon(it)}</span>${it.name}<br><small>${RAR[it.rar].n} · ${itemDesc(it)}</small></button>`).join('')}</div></div>`);
+  box.querySelectorAll('[data-p3]').forEach(b => b.onclick = () => { const it = save.pick3[+b.dataset.p3]; save.items.push(it); save.pick3 = null; persist(); sfx('coin'); toastMsg(`${it.name} is in your Bag.`); buildStore(); }); }
 function wirePicks(box) {
   box.querySelectorAll('[data-pk]').forEach(b => b.onclick = () => { const P = dayPicks(), i = +b.dataset.pk; if (P.got[i]) return;
     const cost = i === 1 ? pickWardC(P) : i === 2 ? P.itemC : 0; if (cost && (save.coins < cost || !sure(b, `Buy · 🪙 ${cost}?`))) return;

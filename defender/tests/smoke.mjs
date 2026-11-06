@@ -333,6 +333,28 @@ await test("Dad's Picks: a free present, a look on sale and a named item, the sa
   expect(await p.evaluate(([c, coins]) => dbg.save.coins === coins - c && dbg.save.wardrobe.includes(dbg.picks().ward), [c, coins]), 'the look costs 30% less and goes in the Wardrobe');
   await close(); return errs;
 });
+await test('the Store: pick 1 of 3, pets and pop styles, sets and a saved-for look', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), coins: 3000 });
+  await p.click('[data-tab="shop"]'); await p.waitForTimeout(400);
+  await p.evaluate(() => { const b = [...document.querySelectorAll('[data-offer]')].find(x => x.closest('.offer').textContent.includes('Lunchbox')); b.click(); b.click(); }); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => document.querySelectorAll('#pick3Box [data-p3]').length === 3 && dbg.save.coins === 2700), 'a Lunchbox shows three face-up items');
+  await p.click('[data-tab="play"]'); await p.click('[data-tab="shop"]'); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => document.querySelectorAll('#pick3Box [data-p3]').length === 3), 'leaving the Shop keeps the three');
+  const n = await p.evaluate(() => dbg.save.items.length); await p.click('[data-p3="2"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(n => dbg.save.items.length === n + 1 && !dbg.save.pick3, n), 'keeping one puts it in the Bag');
+  await p.click('#wardGo'); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => document.querySelectorAll('#pickList .setc').length === 5), 'the five sets are counted');
+  await p.click('[data-w="pet:butterfly"]'); await p.click('[data-w="pet:butterfly"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.look.pet === 'butterfly'), 'a pet can be bought and worn');
+  await p.click('[data-w="hat:top"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.goal === 'hat:top' && !dbg.save.wardrobe.includes('hat:top')), 'a look too dear is pinned, not bought');
+  await p.click('#pickClose'); await p.click('[data-tab="play"]'); await p.waitForTimeout(400);
+  expect(await p.evaluate(() => !document.querySelector('#goalBtn').hidden && document.querySelector('#goalBtn').textContent.includes('Top Hat')), 'the Play screen shows the saved-for look');
+  await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(800);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(120); });
+  expect(await p.evaluate(() => !!dbg.G.pet), 'the pet follows Dad into the arena');
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
