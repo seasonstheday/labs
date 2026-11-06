@@ -28,7 +28,9 @@ const PROGRESSED = () => ({ unlocked: 12, cleared: [...Array(12).keys()], stars:
 async function open(save) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' }), p = await ctx.newPage(), errs = [];
   p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error' && !/404|Failed to load resource/.test(m.text())) errs.push(m.text()); });
-  await p.goto(URL); await p.evaluate(s => { localStorage.clear(); if (s) localStorage.setItem('whydad.defender.v3', JSON.stringify(s)); }, save); await p.reload(); await p.waitForTimeout(700);
+  // the save goes in before the game's own code runs, so a first empty load can't save over it
+  await ctx.addInitScript(s => { if (!sessionStorage.getItem('fx')) { sessionStorage.setItem('fx', '1'); localStorage.clear(); if (s) localStorage.setItem('whydad.defender.v3', JSON.stringify(s)); } }, save);
+  await p.goto(URL); await p.waitForTimeout(700);
   return { p, errs, close: () => ctx.close() };
 }
 // let a match run, answering whatever the game asks
@@ -358,6 +360,16 @@ await test('the Store: pick 1 of 3, pets and pop styles, sets and a saved-for lo
 await test('old saves: Club badges and Cup points become one pile of Medals', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), badges: 70, cupp: 45 });
   expect(await p.evaluate(() => dbg.save.medals === 115 && dbg.save.badges === undefined && dbg.save.cupp === undefined), 'badges and Cup points are added together, once');
+  await close(); return errs;
+});
+await test('the victory dance plays on the stage-clear screen', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), wardrobe: ['dance:hop'], look: { sweater: 'classic', hat: 'none', team: 'none', yard: [], dance: 'hop' } });
+  await p.evaluate(() => dbg.startGame(2)); await p.waitForTimeout(800);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.busted = 30; dbg.stageClear(); });
+  await p.waitForSelector('#clearm', { state: 'visible', timeout: 5000 }); await p.waitForTimeout(400);
+  const a = await p.evaluate(() => document.querySelector('#clearDad').toDataURL()); await p.waitForTimeout(150);
+  const b = await p.evaluate(() => document.querySelector('#clearDad').toDataURL());
+  expect(a.length > 3000 && a !== b, 'Dad is drawn and moving');
   await close(); return errs;
 });
 await test('the Clubhouse and the Myth Cup', async () => {
