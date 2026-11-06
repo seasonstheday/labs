@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Static Lab</title>
+<meta name="description" content="Two small games from the Backyard Library static-shocks episode: be the battery and walk the socks across the rug in winter air and summer air, then guess the gap the spark will jump.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f;
+    --spark: #9fe0ff; --hot: #c44c3c;
+    --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  }
+  :root[data-theme="dark"] { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding-inline: 14px; padding-block: 14px 40px; overflow-x: hidden; margin: 0; }
+  main { max-width: 980px; margin: 0 auto; position: relative; }
+  .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
+  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .mote { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--spark); opacity: 0; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0; transform: translateY(0); } 50% { opacity: .5; transform: translateY(-14px); } }
+  main > * { position: relative; z-index: 1; }
+  [hidden] { display: none !important; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); border: 4px solid #3a2c20; user-select: none; -webkit-user-select: none; }
+  .stage > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; transition: opacity .6s; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(10,8,20,.35) 100%); pointer-events: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .topbar .spacer { flex: 1; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  #title .stage { aspect-ratio: 16 / 8; }
+  .hero-title { position: absolute; left: 4%; top: 7%; color: #fff; font-size: clamp(38px, 8vw, 92px); line-height: .95; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.35); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  .hero-sub { position: absolute; left: 4.5%; top: 44%; color: #fff; font-size: clamp(16px, 2.6vw, 26px); text-shadow: 0 2px 0 #3a2c20, 0 6px 14px rgba(0,0,0,.4); max-width: 46%; }
+  .hero-btns { position: absolute; left: 4%; bottom: 7%; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stickers { position: absolute; right: 3%; top: 5%; display: flex; gap: 8px; }
+  .stickers img { height: 72px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .stickers img.locked { filter: grayscale(1) opacity(.35); animation: none; }
+  .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); color: var(--ink); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 16px; padding: 8px 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+  .btn:focus-visible { outline: 3px solid var(--water); outline-offset: 3px; }
+  .bubble { position: absolute; background: var(--card); color: var(--ink); border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 14px; font: 400 clamp(14px, 2.2vw, 22px)/1.25 "Patrick Hand", cursive; max-width: 46%; box-shadow: var(--shadow); animation: pop .35s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; pointer-events: none; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; border: 10px solid transparent; border-left-color: #3a2c20; }
+  .pop-text { position: absolute; font-size: clamp(22px, 4.4vw, 50px); color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; animation: punch .9s cubic-bezier(.2,1.6,.4,1) both; z-index: 7; white-space: nowrap; }
+  .pop-text.bad { color: #ffd0c8; }
+  @keyframes punch { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  .wobble { animation: wob .5s ease-in-out infinite; } @keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .status { font: 400 22px/1.3 "Patrick Hand", cursive; margin-top: 10px; min-height: 1.4em; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+  .confetti i { position: absolute; width: 10px; height: 14px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+  .results { position: absolute; inset: 6%; background: var(--card); color: var(--ink); border: 4px solid #3a2c20; border-radius: 18px; padding: 18px 22px; box-shadow: var(--shadow); animation: bounceIn .6s cubic-bezier(.2,1.4,.4,1) both; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; overflow: auto; z-index: 9; }
+  .results h3 { margin: 0 0 6px; font: 700 clamp(20px, 4vw, 34px)/1.1 "Fredoka", Arial, sans-serif; }
+  .results p { margin: 4px 0; font-size: clamp(13px, 2vw, 18px); }
+  .results img { height: clamp(80px, 18vw, 170px); filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); animation: pop .6s .3s cubic-bezier(.2,1.6,.4,1) both; }
+  .pill { position: absolute; font: 700 clamp(12px, 2.2vw, 20px)/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(20,16,30,.8); padding: 7px 12px; border-radius: 999px; z-index: 5; pointer-events: none; }
+  .controls { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; }
+  .controls label { font: 400 20px/1.2 "Patrick Hand", cursive; display: block; }
+  input[type=range] { width: 100%; accent-color: #cb6a2e; height: 28px; }
+  footer { margin-top: 22px; font-size: 14px; color: var(--muted); border-top: 2px solid var(--line); padding-top: 10px; }
+
+  /* ───────── game 1: you are the battery ───────── */
+  #room { cursor: pointer; touch-action: manipulation; }
+  #sock { position: absolute; width: 9%; bottom: 9%; left: 8%; z-index: 4; transform-origin: 50% 100%; transition: left .26s ease-in-out; filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); pointer-events: none; --face: -1; }
+  #sock img { display: block; width: 100%; transform: scaleX(var(--face)); }
+  #sock.hop img { animation: hop .26s ease-in-out; }
+  @keyframes hop { 0%, 100% { transform: scaleX(var(--face)) translateY(0) rotate(0); } 50% { transform: scaleX(var(--face)) translateY(-28%) rotate(-8deg); } }
+  .elec { position: absolute; width: 1.5%; aspect-ratio: 1; border-radius: 50%; background: var(--hot); border: 2px solid #3a2c20; z-index: 4; pointer-events: none; animation: rise .5s ease-out forwards; }
+  .elec::after { content: ""; position: absolute; left: 25%; right: 25%; top: 45%; height: 12%; background: #fff; }
+  @keyframes rise { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(var(--dx), -42px); opacity: 0; } }
+  #knob1 { position: absolute; right: 12.5%; bottom: 41%; width: 7%; z-index: 3; pointer-events: none; filter: drop-shadow(0 3px 3px rgba(0,0,0,.35)); }
+  #zap1 { position: absolute; right: 17%; bottom: 46%; width: 9%; height: 6%; z-index: 6; pointer-events: none; display: none; }
+  #zap1.on { display: block; animation: zap .35s linear 2; }
+  @keyframes zap { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
+  .meter { position: absolute; left: 2%; top: 8%; width: 7%; height: 62%; border: 4px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.75); overflow: hidden; z-index: 5; pointer-events: none; }
+  .meter .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: linear-gradient(0deg, #e8a040, #c44c3c); transition: height .25s; }
+  .meter .feel { position: absolute; left: 0; right: 0; bottom: 25%; border-top: 3px dashed #c44c3c; }
+  .meter-lbl { position: absolute; left: 1%; top: 72%; width: 10%; text-align: center; font: 700 clamp(11px, 1.8vw, 17px)/1.1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; z-index: 5; pointer-events: none; }
+  .feel-lbl { position: absolute; left: 9.5%; top: 52%; font: 400 clamp(11px, 1.7vw, 16px)/1.1 "Patrick Hand", cursive; color: #fff; text-shadow: 0 2px 0 #3a2c20; z-index: 5; pointer-events: none; }
+  .frost { position: absolute; inset: 0; pointer-events: none; z-index: 2; background: radial-gradient(ellipse at 30% 30%, rgba(200,224,245,.0) 60%, rgba(200,224,245,.18) 100%); opacity: 0; transition: opacity .6s; }
+  .frost.on { opacity: 1; }
+
+  /* ───────── game 2: the spark gap ───────── */
+  #gap { touch-action: manipulation; }
+  #hand2 { position: absolute; width: 46%; top: 36%; right: -8%; z-index: 4; transition: right .9s cubic-bezier(.3,.7,.4,1); filter: drop-shadow(0 6px 8px rgba(0,0,0,.35)); pointer-events: none; }
+  #zap2 { position: absolute; left: 44.5%; top: 47%; width: 14%; height: 8%; z-index: 6; pointer-events: none; display: none; }
+  #zap2.on { display: block; animation: zap .35s linear 2; }
+  .ruler { position: absolute; left: 30%; right: 30%; bottom: 6%; height: 28px; z-index: 5; pointer-events: none; }
+  .ruler .line { position: absolute; left: 0; right: 0; top: 14px; border-top: 4px solid #fff; box-shadow: 0 2px 0 #3a2c20; }
+  .ruler .tick { position: absolute; top: 4px; width: 3px; height: 20px; background: #fff; box-shadow: 0 0 0 1px #3a2c20; }
+  .ruler .tick span { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); font: 700 clamp(11px, 1.8vw, 16px)/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; white-space: nowrap; }
+  .ruler .mark { position: absolute; top: -8px; width: 0; height: 0; border: 12px solid transparent; border-top-color: var(--gold); transform: translateX(-50%); transition: left .2s; filter: drop-shadow(0 2px 0 #3a2c20); }
+  .ruler .mark.actual { border-top-color: var(--spark); top: 26px; border-top-color: transparent; border-bottom-color: var(--spark); }
+  .volts-big { position: absolute; left: 3%; top: 6%; font: 700 clamp(22px, 4.8vw, 54px)/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); z-index: 5; pointer-events: none; }
+  .volts-big small { display: block; font-size: .42em; font-weight: 500; margin-top: 4px; }
+  @media (max-width: 560px) { #title .stage { aspect-ratio: 4 / 3; } #title .stage > img.bg { object-position: 60% 50%; } .hero-title { font-size: 36px; top: 5%; } .hero-btns { flex-direction: column; gap: 6px; bottom: 5%; } .stickers img { height: 44px; } .hero-sub { display: none; } .bubble { max-width: 60%; font-size: 13px; padding: 6px 9px; } .btn { font-size: 17px; padding: 10px 13px; } .controls { grid-template-columns: 1fr; } }
+</style>
+
+<div class="motes" id="motes" aria-hidden="true"></div>
+<main>
+  <div class="topbar">
+    <span class="eyebrow">The Backyard Library · Why, Dad? · Episode 24</span>
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="home" type="button" hidden>⌂ Title</button>
+    <button class="btn ghost small" id="mute" type="button" aria-pressed="false">🔔 sound</button>
+  </div>
+
+  <!-- ═══════════ TITLE ═══════════ -->
+  <section class="screen" id="title">
+    <div class="stage">
+      <img class="bg" src="assets/title_key.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="hero-title display">The<br>Static Lab</div>
+      <div class="hero-sub hand">Be the battery: walk the socks across the rug and see if the knob bites. Then guess the gap the spark will jump.</div>
+      <div class="stickers" id="stickers" aria-label="Badges earned"></div>
+      <div class="hero-btns">
+        <button class="btn" id="play1" type="button">🧦 You are the battery</button>
+        <button class="btn teal" id="play2" type="button">⚡ The spark gap</button>
+      </div>
+    </div>
+    <p class="status">Two games from the episode <a href="https://www.youtube.com/@thebackyardlibrary">Why Do We Get Static Shocks in Winter?</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a><br><span id="bestline"></span></p>
+  </section>
+
+  <!-- ═══════════ GAME 1: YOU ARE THE BATTERY ═══════════ -->
+  <section class="screen" id="g1" hidden>
+    <div class="stage" id="room">
+      <img class="bg" id="bgw" src="assets/bg_winter.jpg" alt="">
+      <img class="bg" id="bgs" src="assets/bg_summer.jpg" alt="" style="opacity:0">
+      <div class="frost on" id="frost"></div>
+      <div class="meter"><div class="feel"></div><div class="fill" id="fill1"></div></div>
+      <div class="meter-lbl" id="vlbl">0<br>volts</div>
+      <div class="feel-lbl hand">you can feel it from here</div>
+      <img id="knob1" src="assets/knob.png" alt="">
+      <svg id="zap1" viewBox="0 0 100 60" aria-hidden="true"><polyline points="2,30 22,14 38,40 56,18 74,42 98,28" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/><polyline points="2,30 22,14 38,40 56,18 74,42 98,28" fill="none" stroke="#5fd0ff" stroke-width="5" stroke-linejoin="round"/></svg>
+      <div id="sock"><img src="assets/sock.png" alt="you, the sock"></div>
+      <div class="pill" style="right:2%;top:3%" id="pill1">steps: 0 / 20</div>
+      <div class="bubble" id="bubble1" style="left:12%;top:5%;max-width:50%">You are the sock. Tap the room (or press space) to take a step. Twenty steps to the door.</div>
+      <div class="confetti" id="conf1"></div>
+      <div class="results" id="card1" hidden></div>
+    </div>
+    <div class="controls">
+      <div>
+        <label for="rh">Water in the air: <b id="rhv">20% - a heated winter room</b></label>
+        <input type="range" id="rh" min="10" max="90" value="20" step="5">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="step1" type="button">🧦 Step</button><button class="btn red small" id="touch1" type="button" disabled>✋ Touch the knob</button><button class="btn ghost small" id="reset1" type="button">↺ Back to the start</button></div>
+    </div>
+    <div class="status" id="s1"></div>
+  </section>
+
+  <!-- ═══════════ GAME 2: THE SPARK GAP ═══════════ -->
+  <section class="screen" id="g2" hidden>
+    <div class="stage" id="gap">
+      <img class="bg" src="assets/bg_knob.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="volts-big display" id="vbig">5,000 volts<small>on your finger</small></div>
+      <img id="hand2" src="assets/hand.png" alt="">
+      <svg id="zap2" viewBox="0 0 100 60" aria-hidden="true"><polyline points="2,30 22,14 38,40 56,18 74,42 98,28" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/><polyline points="2,30 22,14 38,40 56,18 74,42 98,28" fill="none" stroke="#5fd0ff" stroke-width="5" stroke-linejoin="round"/></svg>
+      <div class="ruler" id="ruler"><div class="line"></div><div class="mark" id="guessmark"></div><div class="mark actual" id="actualmark" hidden></div></div>
+      <div class="pill" style="right:2%;top:3%" id="pill2">round 1 of 5 · score 0</div>
+      <div class="bubble" id="bubble2" style="left:3%;top:30%;max-width:40%">Air gives up at about 3,000 volts for every millimeter. Guess how far away the spark will jump, then reach.</div>
+      <div class="confetti" id="conf2"></div>
+      <div class="results" id="card2" hidden></div>
+    </div>
+    <div class="controls">
+      <div>
+        <label for="guess">Your guess: the spark jumps at <b id="guessv">1.5 mm</b></label>
+        <input type="range" id="guess" min="0.3" max="4.5" value="1.5" step="0.1">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="reach2" type="button">☝ Reach for the knob</button><button class="btn ghost small" id="reset2" type="button">↺ New game</button></div>
+    </div>
+    <div class="status" id="s2"></div>
+  </section>
+
+  <footer>Game 1 is the charge pump from the video: every step on the carpet rubs a few hundred volts onto you; summer air carries most of it away between steps, a heated winter room (around 20% humidity) keeps nearly all of it, and you feel a static spark from about 3,000 volts up. Game 2: air breaks down at roughly 3,000 volts per millimeter, so a 6,000-volt finger sparks across about 2 mm before it touches. Numbers are illustrative and rounded; the spark is tiny in energy, which is why it stings and does nothing else.</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const store = { get: (k) => { try { return JSON.parse(localStorage.getItem("staticlab:" + k)); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem("staticlab:" + k, JSON.stringify(v)); } catch (e) {} } };
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+
+  /* ───────── sound ───────── */
+  let ac = null, muted = false, musicTimer = null;
+  function tone(f0, f1, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || "sine";
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = { tap: () => tone(600, 900, 0.08, "square", 0.035), step: () => tone(180, 120, 0.07, "square", 0.03), pop: () => tone(300, 900, 0.12, "triangle", 0.07),
+                sad: () => tone(380, 200, 0.35, "sine", 0.04), chime: () => tone(880, 1320, 0.25, "triangle", 0.05),
+                zap: () => { tone(2400, 300, 0.09, "sawtooth", 0.07); tone(1800, 200, 0.12, "square", 0.05, 0.05); },
+                win: () => [0, .12, .24, .4].forEach((d, i) => tone([523, 659, 784, 1047][i], [523, 659, 784, 1047][i] * 1.01, 0.3, "triangle", 0.06, d)) };
+  const TUNE = [262, 330, 392, 330, 440, 392, 330, 294, 262, 330, 392, 523, 440, 392, 330, 294];
+  function music(on) {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!on || muted) return;
+    let i = 0; musicTimer = setInterval(() => { tone(TUNE[i % TUNE.length], TUNE[i % TUNE.length], 0.22, "triangle", 0.018); if (i % 4 === 0) tone(TUNE[i % TUNE.length] / 2, TUNE[i % TUNE.length] / 2, 0.4, "sine", 0.012); i++; }, 300);
+  }
+  let screen = "title";
+  $("mute").addEventListener("click", () => { muted = !muted; $("mute").textContent = muted ? "🔕 sound" : "🔔 sound"; $("mute").setAttribute("aria-pressed", String(muted)); music(screen !== "title"); });
+
+  /* ───────── motes (sparks), confetti, pops ───────── */
+  const motes = $("motes");
+  for (let i = 0; i < 16; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = Math.random() * 100 + "%"; m.style.top = Math.random() * 100 + "%"; m.style.animationDuration = 6 + Math.random() * 10 + "s"; m.style.animationDelay = -Math.random() * 16 + "s"; motes.appendChild(m); }
+  function confetti(host, n) { if (reduce) return; const cols = ["#ecb23c", "#20525c", "#cb382e", "#5c8cbe", "#9fe0ff"]; for (let i = 0; i < n; i++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.top = "-5%"; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * .6 + "s"; p.style.animationDuration = 1.2 + Math.random() + "s"; host.appendChild(p); setTimeout(() => p.remove(), 2600); } }
+  function popText(stage, text, x, y, bad) { const el = document.createElement("div"); el.className = "pop-text display" + (bad ? " bad" : ""); el.textContent = text; el.style.left = x; el.style.top = y; stage.appendChild(el); setTimeout(() => el.remove(), 1400); }
+  function say(el, t) { el.textContent = t; el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+
+  /* ───────── screens ───────── */
+  function show(id) {
+    screen = id;
+    for (const s of ["title", "g1", "g2"]) $(s).hidden = (s !== id);
+    $("home").hidden = (id === "title"); music(id !== "title"); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "title") { renderStickers(); bestLine(); }
+  }
+  $("home").addEventListener("click", () => { sfx.tap(); show("title"); });
+  $("play1").addEventListener("click", () => { sfx.tap(); show("g1"); });
+  $("play2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  function renderStickers() {
+    const got = store.get("badges") || {}; const host = $("stickers"); host.innerHTML = "";
+    for (const [k, src] of [["battery", "assets/badge_battery.png"], ["spark", "assets/badge_spark.png"]]) { const im = document.createElement("img"); im.src = src; im.alt = got[k] ? k + " badge earned" : k + " badge locked"; if (!got[k]) im.className = "locked"; host.appendChild(im); }
+  }
+  function earn(k) { const got = store.get("badges") || {}; got[k] = true; store.set("badges", got); }
+  function bestLine() {
+    const b = store.get("best") || {}; const parts = [];
+    if (b.volts) parts.push(`🧦 biggest shock: ${fmt(b.volts)} volts`); if (b.gap) parts.push(`⚡ best spark-gap round: ${b.gap} of 5`);
+    $("bestline").textContent = parts.join("  ·  ");
+  }
+
+  /* ═══════════ GAME 1: YOU ARE THE BATTERY ═══════════ */
+  // The model from the video's charge-pump plate: each step adds GAIN volts; between steps the air leaks a
+  // fraction away that depends on the water in it (a heated winter room ~20% RH keeps almost all of it; summer
+  // air ~70% carries most of it off). You feel a spark from FEEL volts; VMAX is the meter's top.
+  const STEPS = 20, GAIN = 650, FEEL = 3000, VMAX = 12000;
+  const leak = (rh) => clamp(0.02 + 0.6 * Math.pow(clamp((rh - 20) / 60, 0, 1), 1.4), 0.02, 0.62);
+  const g1 = { step: 0, v: 0, busy: false, done: false, dryShock: false, dampNothing: false };
+  const sock = $("sock"), room = $("room");
+  function rhText(rh) { return rh <= 25 ? `${rh}% - a heated winter room` : rh <= 45 ? `${rh}% - a spring day` : rh <= 65 ? `${rh}% - a mild summer day` : `${rh}% - a muggy summer day`; }
+  function setRoom() {
+    const rh = +$("rh").value; $("rhv").textContent = rhText(rh);
+    const summer = rh >= 45; $("bgs").style.opacity = summer ? "1" : "0"; $("frost").classList.toggle("on", !summer);
+  }
+  $("rh").addEventListener("input", () => { setRoom(); $("s1").textContent = g1.step ? "Changing the air mid-walk? Fine: the next step uses the new air." : ""; });
+  function meter() {
+    $("fill1").style.height = clamp(g1.v / VMAX, 0, 1) * 100 + "%"; $("vlbl").innerHTML = `${fmt(g1.v)}<br>volts`;
+    $("pill1").textContent = `steps: ${g1.step} / ${STEPS}`;
+  }
+  async function stepOnce() {
+    if (g1.busy || g1.done || g1.step >= STEPS) return;
+    g1.busy = true; sfx.step();
+    const rh = +$("rh").value; const before = g1.v;
+    g1.step++; g1.v = (g1.v + GAIN) * (1 - leak(rh));
+    sock.style.left = (8 + 66 * g1.step / STEPS) + "%"; sock.classList.remove("hop"); void sock.offsetWidth; sock.classList.add("hop");
+    const r = room.getBoundingClientRect(); const sx = (8 + 66 * g1.step / STEPS) + 4;
+    for (let i = 0; i < 3; i++) { const e = document.createElement("i"); e.className = "elec"; e.style.left = (sx - 1 + i * 1.6) + "%"; e.style.bottom = "11%"; e.style.setProperty("--dx", ((i - 1) * 16) + "px"); room.appendChild(e); setTimeout(() => e.remove(), 520); }
+    await sleep(240); meter();
+    const gained = g1.v - before;
+    if (gained < GAIN * 0.5 && g1.step > 2) $("s1").textContent = `Damp air: you added ${fmt(GAIN)} volts and the moisture carried most of it away. You are at ${fmt(g1.v)}.`;
+    else if (g1.v >= FEEL && before < FEEL) { $("s1").textContent = `Step ${g1.step}: past ${fmt(FEEL)} volts. From here, the knob will bite.`; sfx.chime(); }
+    else $("s1").textContent = `Step ${g1.step}: ${fmt(g1.v)} volts on you.`;
+    if (g1.step >= STEPS) { $("touch1").disabled = false; $("touch1").classList.add("wobble"); say($("bubble1"), "Twenty steps. The knob is right there. Touch it?"); }
+    g1.busy = false;
+  }
+  async function touch() {
+    if (g1.busy || g1.done || g1.step < STEPS) return;
+    g1.busy = true; g1.done = true; $("touch1").disabled = true; $("touch1").classList.remove("wobble"); sfx.tap();
+    const rh = +$("rh").value; const shock = g1.v >= FEEL;
+    await sleep(300);
+    if (shock) {
+      $("zap1").classList.add("on"); sfx.zap(); popText(room, `OUCH! ${fmt(g1.v)} volts`, "40%", "20%");
+      g1.dryShock = true; store.set("g1dry", true);
+      const best = store.get("best") || {}; if (!best.volts || g1.v > best.volts) { best.volts = g1.v; store.set("best", best); }
+      await sleep(900); $("zap1").classList.remove("on");
+    } else {
+      popText(room, "nothing.", "46%", "22%", true); sfx.sad();
+      if (rh >= 45) { g1.dampNothing = true; store.set("g1damp", true); }
+      await sleep(900);
+    }
+    const both = store.get("g1dry") && store.get("g1damp");
+    if (both && !(store.get("badges") || {}).battery) { earn("battery"); sfx.win(); confetti($("conf1"), 120); }
+    const c = $("card1"); c.hidden = false;
+    c.innerHTML = `<div><h3>${shock ? `${fmt(g1.v)} volts, and the knob bit you` : `${fmt(g1.v)} volts: no spark`}</h3><p>${shock
+      ? `Twenty steps in ${rhText(rh)}. The air kept nearly every electron you picked up, so they all jumped at once. ${rh < 45 ? "Now slide the water up to summer and walk again." : ""}`
+      : `Twenty steps in ${rhText(rh)}. Every step added the same charge, but the film of water on everything carried most of it off before the next one. You never reached ${fmt(FEEL)} volts. ${rh >= 45 ? "Now slide the water down to a winter room and walk again." : ""}`}</p><p>It was never the doorknob. It was the walk, and the air.</p><p><button class="btn small" id="again1" type="button">↺ Walk again</button> <button class="btn ghost small" id="next1" type="button">Next: the spark gap →</button></p></div><img src="assets/${both ? "badge_battery" : "sock"}.png" alt="">`;
+    $("again1").addEventListener("click", () => { sfx.tap(); reset1(); }); $("next1").addEventListener("click", () => { sfx.tap(); show("g2"); });
+    $("s1").textContent = both ? "You earned the Battery badge: a shock in dry air, nothing in damp air." : (shock ? "Try the same walk with more water in the air." : "Try the same walk in a dry winter room.");
+    g1.busy = false;
+  }
+  function reset1() { g1.step = 0; g1.v = 0; g1.busy = false; g1.done = false; $("card1").hidden = true; $("touch1").disabled = true; $("touch1").classList.remove("wobble"); sock.style.left = "8%"; meter(); setRoom(); say($("bubble1"), "You are the sock. Tap the room (or press space) to take a step. Twenty steps to the door."); $("s1").textContent = ""; }
+  room.addEventListener("pointerdown", e => { if (e.target.closest("button") || e.target.closest(".results")) return; stepOnce(); });
+  $("step1").addEventListener("click", stepOnce);
+  $("touch1").addEventListener("click", touch);
+  $("reset1").addEventListener("click", () => { sfx.tap(); reset1(); });
+  document.addEventListener("keydown", e => { if (screen === "g1" && (e.key === " " || e.key === "ArrowRight")) { e.preventDefault(); stepOnce(); } });
+  reset1();
+
+  /* ═══════════ GAME 2: THE SPARK GAP ═══════════ */
+  // Air breaks down at about KV_PER_MM: a finger at V volts sparks when the gap closes to V / 3000 mm.
+  const KV_PER_MM = 3000, ROUNDS = 5, TOL = 0.4;
+  const VOLTS = [3000, 6000, 9000, 4500, 12000];
+  const g2 = { round: 0, score: 0, busy: false, done: false };
+  const ruler = $("ruler"), RMAX = 4.5;
+  function rulerTicks() {
+    for (const t of [0, 1, 2, 3, 4]) { const el = document.createElement("div"); el.className = "tick"; el.style.left = (t / RMAX * 100) + "%"; el.innerHTML = `<span>${t} mm</span>`; ruler.appendChild(el); }
+  }
+  rulerTicks();
+  function guessUI() { const g = +$("guess").value; $("guessv").textContent = g.toFixed(1) + " mm"; $("guessmark").style.left = (g / RMAX * 100) + "%"; }
+  $("guess").addEventListener("input", guessUI);
+  function roundUI() {
+    const v = VOLTS[g2.round]; $("vbig").innerHTML = `${fmt(v)} volts<small>on your finger</small>`;
+    $("pill2").textContent = `round ${g2.round + 1} of ${ROUNDS} · score ${g2.score}`;
+    $("hand2").style.right = "-8%"; $("actualmark").hidden = true; $("zap2").classList.remove("on");
+  }
+  async function reach() {
+    if (g2.busy || g2.done) return;
+    g2.busy = true; sfx.tap(); $("reach2").disabled = true;
+    const v = VOLTS[g2.round], actual = v / KV_PER_MM, guess = +$("guess").value;
+    say($("bubble2"), `${fmt(v)} volts. Reaching...`);
+    $("hand2").style.right = "6%"; await sleep(950);
+    $("actualmark").style.left = (clamp(actual, 0, RMAX) / RMAX * 100) + "%"; $("actualmark").hidden = false;
+    $("zap2").classList.add("on"); sfx.zap(); await sleep(700); $("zap2").classList.remove("on");
+    const hit = Math.abs(guess - actual) <= TOL;
+    if (hit) { g2.score++; popText($("gap"), "nailed it!", "30%", "18%"); sfx.chime(); } else { popText($("gap"), guess > actual ? "too far: it waited" : "too close: it jumped sooner", "22%", "18%", true); sfx.sad(); }
+    $("s2").textContent = `${fmt(v)} volts jumped at ${actual.toFixed(1)} mm (${fmt(v)} ÷ ${fmt(KV_PER_MM)} per mm). You guessed ${guess.toFixed(1)} mm.`;
+    g2.round++;
+    if (g2.round >= ROUNDS) {
+      g2.done = true;
+      const best = store.get("best") || {}; const record = !best.gap || g2.score > best.gap; if (record) { best.gap = g2.score; store.set("best", best); }
+      if (g2.score >= 4) { earn("spark"); sfx.win(); confetti($("conf2"), 120); }
+      const c = $("card2"); c.hidden = false;
+      c.innerHTML = `<div><h3>${g2.score} of ${ROUNDS} gaps called right</h3><p>${record ? "<b>New best!</b> " : ""}The rule is the whole game: about ${fmt(KV_PER_MM)} volts for every millimeter of air. Twice the volts, twice the gap. A doorknob shock you can feel is 3,000 volts or more, so it always jumps before you touch.</p><p>${g2.score >= 4 ? "You earned the Spark badge." : "Four of five earns the Spark badge. Divide the volts by 3,000."}</p><p><button class="btn small" id="again2" type="button">↺ Five more</button> <button class="btn ghost small" id="home2" type="button">⌂ Title</button></p></div><img src="assets/${g2.score >= 4 ? "badge_spark" : "knob"}.png" alt="">`;
+      $("again2").addEventListener("click", () => { sfx.tap(); reset2(); }); $("home2").addEventListener("click", () => { sfx.tap(); show("title"); });
+    } else {
+      await sleep(900); roundUI(); say($("bubble2"), `Round ${g2.round + 1}: ${fmt(VOLTS[g2.round])} volts. How far away will it jump?`);
+    }
+    $("reach2").disabled = false; g2.busy = false;
+  }
+  function reset2() { g2.round = 0; g2.score = 0; g2.busy = false; g2.done = false; $("card2").hidden = true; $("reach2").disabled = false; roundUI(); guessUI(); say($("bubble2"), "Air gives up at about 3,000 volts for every millimeter. Guess how far away the spark will jump, then reach."); $("s2").textContent = ""; }
+  $("reach2").addEventListener("click", reach);
+  $("reset2").addEventListener("click", () => { sfx.tap(); reset2(); });
+  reset2();
+  show("title");
+})();
+</script>
+</html>
