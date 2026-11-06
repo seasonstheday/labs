@@ -29,8 +29,8 @@ const ANIMS = { dad: ['idle', 'cast', 'cheer', 'ouch', 'wave', 'walking'], kid: 
 const ONCE = new Set(['cast', 'cheer', 'ouch', 'wave']);
 // a magnifying glass for Dad's right hand (the turnaround drew him empty-handed so the model would rig cleanly)
 function lensProp() { const g = new THREE.Group(), toon = c => new THREE.MeshToonMaterial({ color: c, gradientMap: ramp });
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(.055, .012, 8, 24), toon(0xc9952a)), glass = new THREE.Mesh(new THREE.CircleGeometry(.055, 24), new THREE.MeshBasicMaterial({ color: 0xcfe9f5, transparent: true, opacity: .55, side: THREE.DoubleSide }));
-  const handle = new THREE.Mesh(new THREE.CylinderGeometry(.012, .014, .09, 8), toon(0x8a5a2b)); handle.position.y = -.1; ring.add(glass); g.add(ring, handle); ring.position.y = -.01;
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.1, .02, 8, 28), toon(0xc9952a)), glass = new THREE.Mesh(new THREE.CircleGeometry(.1, 28), // big enough to read on a phone new THREE.MeshBasicMaterial({ color: 0xcfe9f5, transparent: true, opacity: .55, side: THREE.DoubleSide }));
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(.02, .024, .16, 8), toon(0x8a5a2b)); handle.position.y = -.18; ring.add(glass); g.add(ring, handle); ring.position.y = -.01;
   g.userData.prop = true; return g; }
 // Dad's sweater colour, like the 2D game's dressed(): mustard-yellow texels in the sweater band of the body take the chosen hue
 // (or a rainbow, or two-hue stripes); everything else, and the lens, stays as painted. u: hue, sat, value, mode (0 off, 1 hue,
@@ -114,7 +114,7 @@ function load(key) {
       if (head && top) { tpl.updateMatrixWorld(true); const hq = head.getWorldQuaternion(new THREE.Quaternion()).invert(), k = 1 / (head.getWorldScale(new THREE.Vector3()).y || 1);
         head = { name: head.name, top: head.worldToLocal(top.getWorldPosition(new THREE.Vector3())), up: new THREE.Vector3(0, 1, 0).applyQuaternion(hq), q: hq, k }; } else head = null; }
     if (key === 'dad') { let hand = null; root.traverse(o => { if (o.isBone && /^RightHand$/i.test(o.name)) hand = o; });
-      if (hand) { tpl.updateMatrixWorld(true); const l = lensProp(), s = 1 / (hand.getWorldScale(new THREE.Vector3()).y || 1); l.scale.setScalar(s); l.position.set(0, .07 * s, 0); hand.add(l); } } // sizes in model units, where Dad is 1 tall
+      if (hand) { tpl.updateMatrixWorld(true); const l = lensProp(), s = 1 / (hand.getWorldScale(new THREE.Vector3()).y || 1); l.scale.setScalar(s); l.position.set(0, .12 * s, 0); hand.add(l); } } // sizes in model units, where Dad is 1 tall
     // a soft round shadow on the ground
     const sh = new THREE.Mesh(new THREE.CircleGeometry(.42, 20), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .2, depthWrite: false }));
     const dx = size.x / size.y, dz = size.z / size.y; sh.scale.setScalar(Math.max(.8, (dx + dz) / 2) * 1.1);
