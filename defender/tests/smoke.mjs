@@ -306,12 +306,15 @@ await test('Trophies and the Wardrobe', async () => {
   await p.click('#pickClose'); await p.evaluate(() => { document.querySelector('#challm').hidden = true; });
   await p.click('[data-tab="shop"]'); await p.waitForTimeout(400); await p.click('#wardGo'); await p.waitForTimeout(300);
   await p.click('[data-w="sweater:sky"]'); await p.click('[data-w="sweater:sky"]'); await p.waitForTimeout(200);
-  expect(await p.evaluate(() => dbg.save.coins === 4400 && dbg.save.look.sweater === 'sky' && dbg.save.wardrobe.includes('sweater:sky')), 'buying a sweater spends coins and puts it on');
+  expect(await p.evaluate(() => dbg.save.coins === 4000 && dbg.save.look.sweater === 'sky' && dbg.save.wardrobe.includes('sweater:sky')), 'buying a sweater spends coins and puts it on');
   await p.click('[data-w="yard:sunflower"]'); await p.click('[data-w="yard:sunflower"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.look.yard.includes('sunflower')), 'a bought decoration goes straight out');
   await p.click('[data-w="yard:sunflower"]'); await p.waitForTimeout(200);
-  expect(await p.evaluate(() => !dbg.save.look.yard.includes('sunflower') && dbg.save.coins === 3600), 'tapping it again puts it away, for free');
-  expect(await p.evaluate(() => document.querySelector('[data-w="hat:crown"]').disabled), 'too dear is greyed out');
+  expect(await p.evaluate(() => !dbg.save.look.yard.includes('sunflower') && dbg.save.coins === 3000), 'tapping it again puts it away, for free');
+  expect(await p.evaluate(() => document.querySelector('[data-w="hat:crown"]').disabled), 'a star look you have not earned is greyed out');
+  expect(await p.evaluate(() => dbg.save.wardrobe.includes('sweater:starry') === dbg.starTotal() >= 15), 'Star Stripes arrive at 15 stars');
+  await p.evaluate(() => { for (let i = 0; i < 40; i++) dbg.save.stars[i + ':hard'] = 3; dbg.starGifts(); });
+  expect(await p.evaluate(() => ['sweater:starry', 'yard:rainbow', 'team:crown', 'sweater:rainbow', 'hat:crown'].every(k => dbg.save.wardrobe.includes(k))), 'enough stars hand over every star look up to 100');
   await close(); return errs;
 });
 
