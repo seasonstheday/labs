@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why, Dad? Lights Lab</title>
+<meta name="description" content="Two small games from the Backyard Library Christmas-lights episode: fix a string of fifty by finding the one loose bulb, then make red, green and blue by choosing the size of the step.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --paper: #f1e4c8; --paper-2: #e3d2ad; --ink: #3a2c20; --muted: #8b6d4b; --card: #fbf3df;
+    --teal: #20525c; --gold: #ecb23c; --red: #cb382e; --green: #4f8a5b; --water: #5c8cbe; --line: #cdb98f;
+    --glow: #ffd266; --off: #6e6660;
+    --shadow: 0 10px 0 -4px rgba(58,44,32,.25), 0 14px 30px rgba(58,44,32,.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  }
+  :root[data-theme="dark"] { color-scheme: dark; --paper: #1b1611; --paper-2: #2a2219; --ink: #f1e6cc; --muted: #a8926e; --card: #272019; --teal: #6fb1be; --red: #e25a4f; --green: #7cc08a; --water: #7fa6e0; --line: #4a3f2e; --shadow: 0 10px 0 -4px rgba(0,0,0,.4), 0 14px 30px rgba(0,0,0,.5); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--paper); color: var(--ink); font: 17px/1.5 Georgia, "Times New Roman", serif; padding-inline: 14px; padding-block: 14px 40px; overflow-x: hidden; margin: 0; }
+  main { max-width: 980px; margin: 0 auto; position: relative; }
+  .display { font-family: "Fredoka", "Arial Rounded MT Bold", Arial, sans-serif; font-weight: 700; }
+  .hand { font-family: "Patrick Hand", "Segoe Print", cursive; }
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .mote { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: twinkle ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0; } 50% { opacity: .55; } }
+  main > * { position: relative; z-index: 1; }
+  [hidden] { display: none !important; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #10162c; box-shadow: var(--shadow); border: 4px solid #3a2c20; user-select: none; -webkit-user-select: none; }
+  .stage > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(10,8,20,.4) 100%); pointer-events: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .topbar .spacer { flex: 1; }
+  .eyebrow { font: 700 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  #title .stage { aspect-ratio: 16 / 8; }
+  .hero-title { position: absolute; left: 4%; top: 7%; color: #fff; font-size: clamp(38px, 8vw, 92px); line-height: .95; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.35); animation: bounceIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  .hero-sub { position: absolute; left: 4.5%; top: 44%; color: #fff; font-size: clamp(16px, 2.6vw, 26px); text-shadow: 0 2px 0 #3a2c20, 0 6px 14px rgba(0,0,0,.4); max-width: 46%; }
+  .hero-btns { position: absolute; left: 4%; bottom: 7%; display: flex; gap: 12px; flex-wrap: wrap; }
+  .stickers { position: absolute; right: 3%; top: 5%; display: flex; gap: 8px; }
+  .stickers img { height: 72px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .stickers img.locked { filter: grayscale(1) opacity(.35); animation: none; }
+  .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); color: var(--ink); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 16px; padding: 8px 12px; }
+  .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
+  .btn:focus-visible { outline: 3px solid var(--water); outline-offset: 3px; }
+  .bubble { position: absolute; background: var(--card); color: var(--ink); border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 14px; font: 400 clamp(14px, 2.2vw, 22px)/1.25 "Patrick Hand", cursive; max-width: 46%; box-shadow: var(--shadow); animation: pop .35s cubic-bezier(.2,1.5,.4,1) both; z-index: 6; pointer-events: none; }
+  .bubble::after { content: ""; position: absolute; right: -14px; bottom: 18px; border: 10px solid transparent; border-left-color: #3a2c20; }
+  .pop-text { position: absolute; font-size: clamp(22px, 4.4vw, 50px); color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; animation: punch .9s cubic-bezier(.2,1.6,.4,1) both; z-index: 7; white-space: nowrap; }
+  .pop-text.bad { color: #ffd0c8; }
+  @keyframes punch { 0% { transform: scale(.2) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.15) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  .wobble { animation: wob .5s ease-in-out infinite; } @keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .status { font: 400 22px/1.3 "Patrick Hand", cursive; margin-top: 10px; min-height: 1.4em; }
+  .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+  .confetti i { position: absolute; width: 10px; height: 14px; animation: fall 1.6s ease-in forwards; }
+  @keyframes fall { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+  .results { position: absolute; inset: 6%; background: var(--card); color: var(--ink); border: 4px solid #3a2c20; border-radius: 18px; padding: 18px 22px; box-shadow: var(--shadow); animation: bounceIn .6s cubic-bezier(.2,1.4,.4,1) both; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; overflow: auto; z-index: 9; }
+  .results h3 { margin: 0 0 6px; font: 700 clamp(20px, 4vw, 34px)/1.1 "Fredoka", Arial, sans-serif; }
+  .results p { margin: 4px 0; font-size: clamp(13px, 2vw, 18px); }
+  .results img { height: clamp(80px, 18vw, 170px); filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); animation: pop .6s .3s cubic-bezier(.2,1.6,.4,1) both; }
+  .pill { position: absolute; font: 700 clamp(12px, 2.2vw, 20px)/1 "Fredoka", Arial, sans-serif; color: #fff; background: rgba(20,16,30,.8); padding: 7px 12px; border-radius: 999px; z-index: 5; pointer-events: none; }
+  .controls { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; }
+  .controls label { font: 400 20px/1.2 "Patrick Hand", cursive; display: block; }
+  input[type=range] { width: 100%; accent-color: #cb6a2e; height: 28px; }
+  footer { margin-top: 22px; font-size: 14px; color: var(--muted); border-top: 2px solid var(--line); padding-top: 10px; }
+
+  /* ───────── game 1: fix the string ───────── */
+  .string { position: absolute; left: 3%; right: 3%; top: 56%; height: 22%; z-index: 3; pointer-events: none; }
+  .string .wire { position: absolute; left: 0; right: 0; top: 30%; border-top: 4px solid #3f6b3f; }
+  .string .wire.b { top: 78%; }
+  .b1 { position: absolute; width: 2.6%; aspect-ratio: 1 / 1.55; border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%; background: var(--off); border: 2px solid #3a2c20; transform-origin: 50% 0; }
+  .b1::before { content: ""; position: absolute; left: 35%; right: 35%; top: -32%; height: 30%; background: #3f6b3f; border-radius: 2px; }
+  .b1.lit { background: var(--glow); box-shadow: 0 0 10px 4px rgba(255,210,100,.75), 0 0 22px 8px rgba(255,180,80,.35); }
+  .b1.lit.c0 { background: #ff6a5a; box-shadow: 0 0 10px 4px rgba(255,106,90,.7), 0 0 22px 8px rgba(255,106,90,.3); }
+  .b1.lit.c1 { background: #ffe24a; box-shadow: 0 0 10px 4px rgba(255,226,74,.7), 0 0 22px 8px rgba(255,226,74,.3); }
+  .b1.lit.c2 { background: #6fd0ff; box-shadow: 0 0 10px 4px rgba(111,208,255,.7), 0 0 22px 8px rgba(111,208,255,.3); }
+  .b1.lit.c3 { background: #8ce09a; box-shadow: 0 0 10px 4px rgba(140,224,154,.7), 0 0 22px 8px rgba(140,224,154,.3); }
+  .b1.burnt::after { content: ""; position: absolute; left: 36%; top: 48%; width: 28%; height: 20%; border-radius: 50%; background: #ff8a3c; box-shadow: 0 0 6px 2px rgba(255,138,60,.6); }
+  .b1.loose { transform: rotate(16deg); }
+  .b1.sel { outline: 3px solid #fff; outline-offset: 2px; }
+  .magnifier { position: absolute; right: 3%; top: 6%; width: 24%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #223257, #0d1226); border: 5px solid #ecb23c; box-shadow: var(--shadow); z-index: 5; overflow: hidden; pointer-events: none; }
+  .magnifier .big { position: absolute; left: 50%; top: 52%; width: 28%; aspect-ratio: 1 / 1.55; transform: translate(-50%, -50%); border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%; background: var(--off); border: 3px solid #3a2c20; transition: transform .25s; }
+  .magnifier .big::before { content: ""; position: absolute; left: 30%; right: 30%; top: -34%; height: 32%; background: #3f6b3f; }
+  .magnifier .big.lit { background: var(--glow); box-shadow: 0 0 20px 10px rgba(255,210,100,.75); }
+  .magnifier .big.burnt::after { content: ""; position: absolute; left: 34%; top: 46%; width: 32%; height: 22%; border-radius: 50%; background: #ff8a3c; box-shadow: 0 0 10px 4px rgba(255,138,60,.6); }
+  .magnifier .big.loose { transform: translate(-50%, -50%) rotate(22deg) translateY(-6%); }
+  .magnifier .socket { position: absolute; left: 50%; top: 20%; width: 18%; height: 16%; transform: translateX(-50%); background: #2f5a2f; border: 3px solid #3a2c20; border-radius: 4px; }
+  .magnifier .lbl { position: absolute; left: 0; right: 0; bottom: 6%; text-align: center; font: 700 clamp(11px, 1.8vw, 16px)/1.1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
+  .plug { position: absolute; left: 3%; top: 8%; z-index: 5; font: 700 clamp(12px, 2vw, 18px)/1.2 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; pointer-events: none; }
+  .plug .dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: #4f8a5b; border: 2px solid #3a2c20; vertical-align: middle; margin-right: 6px; }
+  .plug.out .dot { background: #cb382e; }
+  .meter1 { position: absolute; left: 3%; top: 20%; width: 24%; z-index: 5; pointer-events: none; font: 400 clamp(11px, 1.8vw, 17px)/1.2 "Patrick Hand", cursive; color: #fff; text-shadow: 0 2px 0 #3a2c20; }
+  .meter1 .bar { height: 14px; border: 3px solid #3a2c20; border-radius: 99px; background: rgba(255,255,255,.75); overflow: hidden; margin-top: 2px; position: relative; }
+  .meter1 .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #e8a040, #c44c3c); transition: width .3s; }
+  .meter1 .bar b { position: absolute; top: -3px; bottom: -3px; left: 25%; border-left: 3px dashed #5c8cbe; }
+  .nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* ───────── game 2: make a color ───────── */
+  #stairs { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; }
+  .flash { position: absolute; left: 50%; top: 48%; width: 0; height: 0; border-radius: 50%; transform: translate(-50%, -50%); z-index: 4; pointer-events: none; opacity: 0; }
+  .flash.go { animation: burst .9s ease-out forwards; }
+  @keyframes burst { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 46%; height: 82%; opacity: 0; } }
+  .target { position: absolute; left: 3%; top: 6%; z-index: 5; font: 700 clamp(18px, 4vw, 44px)/1.05 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 8px 16px rgba(0,0,0,.4); pointer-events: none; }
+  .target small { display: block; font-size: .46em; font-weight: 500; margin-top: 4px; }
+  .swatch { position: absolute; right: 3%; top: 6%; width: 16%; aspect-ratio: 1; border-radius: 50%; border: 5px solid #3a2c20; background: #222; z-index: 5; box-shadow: var(--shadow); pointer-events: none; transition: background .3s; }
+  .swatch span { position: absolute; left: 0; right: 0; bottom: -34px; text-align: center; font: 700 clamp(11px, 1.8vw, 16px)/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 2px 0 #3a2c20; white-space: nowrap; }
+  @media (max-width: 560px) { #title .stage { aspect-ratio: 4 / 3; } #title .stage > img.bg { object-position: 60% 50%; } .hero-title { font-size: 36px; top: 5%; } .hero-btns { flex-direction: column; gap: 6px; bottom: 5%; } .stickers img { height: 44px; } .hero-sub { display: none; } .bubble { max-width: 60%; font-size: 13px; padding: 6px 9px; } .btn { font-size: 17px; padding: 10px 13px; } .controls { grid-template-columns: 1fr; } .magnifier { width: 30%; } }
+</style>
+
+<div class="motes" id="motes" aria-hidden="true"></div>
+<main>
+  <div class="topbar">
+    <span class="eyebrow">The Backyard Library · Why, Dad? · Episode 23</span>
+    <span class="spacer"></span>
+    <button class="btn ghost small" id="home" type="button" hidden>⌂ Title</button>
+    <button class="btn ghost small" id="mute" type="button" aria-pressed="false">🔔 sound</button>
+  </div>
+
+  <!-- ═══════════ TITLE ═══════════ -->
+  <section class="screen" id="title">
+    <div class="stage">
+      <img class="bg" src="assets/title_key.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="hero-title display">The<br>Lights Lab</div>
+      <div class="hero-sub hand">Fix the string: fifty bulbs, one loop, one loose one. Then make red, green and blue by choosing the size of the step.</div>
+      <div class="stickers" id="stickers" aria-label="Badges earned"></div>
+      <div class="hero-btns">
+        <button class="btn" id="play1" type="button">💡 Fix the string</button>
+        <button class="btn teal" id="play2" type="button">🌈 Make a color</button>
+      </div>
+    </div>
+    <p class="status">Two games from the episode <a href="https://www.youtube.com/@thebackyardlibrary">How Do Christmas Lights Work?</a> · <a href="https://www.youtube.com/@thebackyardlibrary?sub_confirmation=1">Subscribe for a new mystery every week</a><br><span id="bestline"></span></p>
+  </section>
+
+  <!-- ═══════════ GAME 1: FIX THE STRING ═══════════ -->
+  <section class="screen" id="g1" hidden>
+    <div class="stage" id="porch">
+      <img class="bg" src="assets/bg_porch.jpg" alt="">
+      <div class="vignette"></div>
+      <div class="plug out" id="plug"><span class="dot"></span><span id="plugt">unplugged</span></div>
+      <div class="meter1"><div>volts per bulb: <b id="vpb">2.4</b> (rated 2.5)</div><div class="bar"><i id="vfill"></i><b></b></div><div id="lifet">bulb life: normal</div></div>
+      <div class="magnifier"><div class="socket"></div><div class="big" id="big"></div><div class="lbl" id="biglbl">bulb 1</div></div>
+      <div class="string" id="string"><div class="wire"></div><div class="wire b"></div></div>
+      <div class="pill" style="left:3%;bottom:4%" id="pill1">wiggles: 0</div>
+      <div class="bubble" id="bubble1" style="left:30%;top:6%;max-width:40%">Fifty bulbs in one loop, and the whole string is dark. One of them is loose. Unplug it first, then look closely.</div>
+      <div class="confetti" id="conf1"></div>
+      <div class="results" id="card1" hidden></div>
+    </div>
+    <div class="controls">
+      <div class="nav">
+        <button class="btn ghost small" id="prev1" type="button">◀ bulb</button>
+        <button class="btn ghost small" id="next1" type="button">bulb ▶</button>
+        <button class="btn small" id="wiggle1" type="button">👆 Wiggle this one</button>
+        <button class="btn green small" id="replace1" type="button" disabled>🔄 Replace it</button>
+      </div>
+      <div class="nav"><button class="btn red small" id="plug1" type="button">🔌 Plug in</button><button class="btn ghost small" id="reset1" type="button">↺ New string</button></div>
+    </div>
+    <div class="status" id="s1"></div>
+  </section>
+
+  <!-- ═══════════ GAME 2: MAKE A COLOR ═══════════ -->
+  <section class="screen" id="g2" hidden>
+    <div class="stage" id="lab2">
+      <img class="bg" src="assets/bg_tree.jpg" alt="">
+      <div class="vignette"></div>
+      <svg id="stairs" viewBox="0 0 800 450" aria-hidden="true">
+        <rect x="150" y="150" width="140" height="22" fill="#d6c8aa" stroke="#3a2c20" stroke-width="3"/>
+        <rect id="ledge" x="330" y="330" width="320" height="22" fill="#d6c8aa" stroke="#3a2c20" stroke-width="3"/>
+        <line id="riser" x1="330" y1="172" x2="330" y2="330" stroke="#3a2c20" stroke-width="3"/>
+        <text id="steplbl" x="318" y="260" text-anchor="end" font-family="Patrick Hand, cursive" font-size="22" fill="#fff" stroke="#3a2c20" stroke-width=".6">1.9 eV</text>
+        <circle id="ball" cx="300" cy="136" r="14" fill="#c44c3c" stroke="#3a2c20" stroke-width="2"/>
+        <line x1="292" y1="136" x2="308" y2="136" stroke="#fff" stroke-width="2" id="ballbar"/>
+      </svg>
+      <div class="flash" id="flash"></div>
+      <div class="target display" id="target">Make RED<small>a wavelength of about 650 nanometers</small></div>
+      <div class="swatch" id="swatch"><span id="swlbl">your light</span></div>
+      <div class="pill" style="left:3%;bottom:4%" id="pill2">round 1 of 4</div>
+      <div class="bubble" id="bubble2" style="left:30%;top:6%;max-width:36%">The color is the size of the step. Slide the step, then drop the electron.</div>
+      <div class="confetti" id="conf2"></div>
+      <div class="results" id="card2" hidden></div>
+    </div>
+    <div class="controls">
+      <div>
+        <label for="step">Step size: <b id="stepv">1.9 electron-volts → 653 nm</b></label>
+        <input type="range" id="step" min="1.5" max="3.1" value="1.9" step="0.05">
+      </div>
+      <div class="nav"><button class="btn small" id="drop2" type="button">⬇ Drop the electron</button><button class="btn ghost small" id="coat2" type="button" hidden>🟡 Add the yellow coat</button><button class="btn ghost small" id="reset2" type="button">↺ New game</button></div>
+    </div>
+    <div class="status" id="s2"></div>
+  </section>
+
+  <footer>Game 1 is the series loop from the video: fifty bulbs share the wall's 120 volts, 2.4 each; a burnt bulb's shunt keeps the loop closed (so it is not the problem), while a loose bulb opens the loop and darkens all fifty. Leave burnt bulbs in and the rest run hotter: ten dark ones push the others to 3 volts, about a tenth of the life. Game 2: an LED's color is the size of the step the electron drops, 1240 divided by the step in electron-volts gives the wavelength in nanometers; a white LED is a blue one under a yellow coating. Numbers rounded.</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise(r => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const store = { get: (k) => { try { return JSON.parse(localStorage.getItem("lightslab:" + k)); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem("lightslab:" + k, JSON.stringify(v)); } catch (e) {} } };
+
+  /* ───────── sound ───────── */
+  let ac = null, muted = false, musicTimer = null;
+  function tone(f0, f1, dur, type, gain, when) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || "sine";
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.setValueAtTime(gain || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  const sfx = { tap: () => tone(600, 900, 0.08, "square", 0.035), click: () => tone(900, 600, 0.05, "square", 0.03), pop: () => tone(300, 900, 0.12, "triangle", 0.07),
+                sad: () => tone(380, 200, 0.35, "sine", 0.04), chime: () => tone(880, 1320, 0.25, "triangle", 0.05), on: () => [0, .06, .12].forEach((d, i) => tone(660 + i * 220, 900 + i * 220, 0.18, "triangle", 0.05, d)),
+                win: () => [0, .12, .24, .4].forEach((d, i) => tone([523, 659, 784, 1047][i], [523, 659, 784, 1047][i] * 1.01, 0.3, "triangle", 0.06, d)) };
+  const TUNE = [262, 330, 392, 330, 440, 392, 330, 294, 262, 330, 392, 523, 440, 392, 330, 294];
+  function music(on) {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!on || muted) return;
+    let i = 0; musicTimer = setInterval(() => { tone(TUNE[i % TUNE.length], TUNE[i % TUNE.length], 0.22, "triangle", 0.018); if (i % 4 === 0) tone(TUNE[i % TUNE.length] / 2, TUNE[i % TUNE.length] / 2, 0.4, "sine", 0.012); i++; }, 300);
+  }
+  let screen = "title";
+  $("mute").addEventListener("click", () => { muted = !muted; $("mute").textContent = muted ? "🔕 sound" : "🔔 sound"; $("mute").setAttribute("aria-pressed", String(muted)); music(screen !== "title"); });
+
+  /* ───────── motes (colored lights), confetti, pops ───────── */
+  const motes = $("motes");
+  for (let i = 0; i < 18; i++) { const m = document.createElement("i"); m.className = "mote"; m.style.left = Math.random() * 100 + "%"; m.style.top = Math.random() * 100 + "%"; m.style.background = ["#ff6a5a", "#ffe24a", "#6fd0ff", "#8ce09a"][i % 4]; m.style.animationDuration = 3 + Math.random() * 5 + "s"; m.style.animationDelay = -Math.random() * 8 + "s"; motes.appendChild(m); }
+  function confetti(host, n) { if (reduce) return; const cols = ["#ecb23c", "#20525c", "#cb382e", "#5c8cbe", "#4f8a5b"]; for (let i = 0; i < n; i++) { const p = document.createElement("i"); p.style.left = Math.random() * 100 + "%"; p.style.top = "-5%"; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * .6 + "s"; p.style.animationDuration = 1.2 + Math.random() + "s"; host.appendChild(p); setTimeout(() => p.remove(), 2600); } }
+  function popText(stage, text, x, y, bad) { const el = document.createElement("div"); el.className = "pop-text display" + (bad ? " bad" : ""); el.textContent = text; el.style.left = x; el.style.top = y; stage.appendChild(el); setTimeout(() => el.remove(), 1400); }
+  function say(el, t) { el.textContent = t; el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+
+  /* ───────── screens ───────── */
+  function show(id) {
+    screen = id;
+    for (const s of ["title", "g1", "g2"]) $(s).hidden = (s !== id);
+    $("home").hidden = (id === "title"); music(id !== "title"); window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "title") { renderStickers(); bestLine(); }
+  }
+  $("home").addEventListener("click", () => { sfx.tap(); show("title"); });
+  $("play1").addEventListener("click", () => { sfx.tap(); show("g1"); });
+  $("play2").addEventListener("click", () => { sfx.tap(); show("g2"); });
+  function renderStickers() {
+    const got = store.get("badges") || {}; const host = $("stickers"); host.innerHTML = "";
+    for (const [k, src] of [["fixer", "assets/badge_fixer.svg"], ["color", "assets/badge_color.svg"]]) { const im = document.createElement("img"); im.src = src; im.alt = got[k] ? k + " badge earned" : k + " badge locked"; if (!got[k]) im.className = "locked"; host.appendChild(im); }
+  }
+  function earn(k) { const got = store.get("badges") || {}; got[k] = true; store.set("badges", got); }
+  function bestLine() {
+    const b = store.get("best") || {}; const parts = [];
+    if (b.wiggles) parts.push(`💡 fewest wiggles to find the loose bulb: ${b.wiggles}`); if (b.colors) parts.push(`🌈 best color run: ${b.colors} of 4`);
+    $("bestline").textContent = parts.join("  ·  ");
+  }
+
+  /* ═══════════ GAME 1: FIX THE STRING ═══════════ */
+  // The series loop from the video: N bulbs share V_LINE; a loose bulb opens the loop (all dark); a burnt bulb's
+  // shunt keeps the loop closed but hands its share to the rest: volts per bulb = V_LINE / (N - burnt), and
+  // incandescent life falls with the twelfth power of the overvoltage.
+  const N = 50, V_LINE = 120, V_RATED = 2.5;
+  const g1 = { bulbs: [], sel: 0, plugged: false, loose: -1, wiggles: 0, found: false, done: false };
+  const stringEl = $("string");
+  function build1() {
+    stringEl.querySelectorAll(".b1").forEach(e => e.remove()); g1.bulbs = [];
+    const burnt = new Set(); while (burnt.size < 3) burnt.add(Math.floor(Math.random() * N));
+    g1.loose = Math.floor(Math.random() * N);
+    for (let i = 0; i < N; i++) {
+      const el = document.createElement("div"); el.className = "b1 c" + (i % 4);
+      const row = i < 25 ? 0 : 1, col = i < 25 ? i : i - 25;
+      el.style.left = (1 + col * 3.95) + "%"; el.style.top = (row ? 76 : 28) + "%";
+      stringEl.appendChild(el); g1.bulbs.push({ el, burnt: burnt.has(i) && i !== g1.loose, loose: i === g1.loose, seated: i !== g1.loose });
+    }
+    g1.sel = 0; g1.wiggles = 0; g1.found = false; g1.done = false; g1.plugged = false; render1();
+  }
+  function burntCount() { return g1.bulbs.filter(b => b.burnt).length; }
+  function loopClosed() { return g1.bulbs.every(b => b.seated); }
+  function render1() {
+    const lit = g1.plugged && loopClosed();
+    g1.bulbs.forEach((b, i) => { b.el.classList.toggle("lit", lit && !b.burnt); b.el.classList.toggle("burnt", b.burnt && lit); b.el.classList.toggle("loose", !b.seated); b.el.classList.toggle("sel", i === g1.sel); });
+    const b = g1.bulbs[g1.sel]; const big = $("big");
+    big.className = "big" + (lit && !b.burnt ? " lit" : "") + (b.burnt && lit ? " burnt" : "") + (!b.seated ? " loose" : "");
+    $("biglbl").textContent = `bulb ${g1.sel + 1}` + (!b.seated ? ": sits crooked" : (b.burnt ? ": burnt, shunt closed" : ""));
+    const v = lit ? V_LINE / (N - burntCount()) : 0; $("vpb").textContent = lit ? v.toFixed(2) : "0";
+    $("vfill").style.width = (clamp(v / 4.0, 0, 1) * 100) + "%";
+    const life = lit ? Math.pow(v / V_RATED, -12) : 1;
+    $("lifet").textContent = lit ? (burntCount() ? `${burntCount()} burnt left in: the rest run at ${v.toFixed(2)} V, life x${life.toFixed(2)}` : "no burnt bulbs: normal life") : "unplugged";
+    $("plug").classList.toggle("out", !g1.plugged); $("plugt").textContent = g1.plugged ? (lit ? "plugged in: the loop is closed" : "plugged in: the loop is OPEN, all dark") : "unplugged";
+    $("plug1").textContent = g1.plugged ? "🔌 Unplug" : "🔌 Plug in";
+    $("replace1").disabled = !(b.burnt && !g1.plugged); $("pill1").textContent = `wiggles: ${g1.wiggles}`;
+  }
+  function move1(d) { g1.sel = (g1.sel + d + N) % N; sfx.click(); render1(); }
+  async function wiggle1() {
+    if (g1.done) return;
+    if (g1.plugged) { say($("bubble1"), "Unplug it first. Dad's rule: never wiggle a plugged-in string."); sfx.sad(); return; }
+    const b = g1.bulbs[g1.sel]; g1.wiggles++; sfx.tap();
+    b.el.classList.add("wobble"); await sleep(420); b.el.classList.remove("wobble");
+    if (b.loose && !b.seated) {
+      b.seated = true; g1.found = true; sfx.pop(); popText($("porch"), "that was the loose one!", "28%", "22%");
+      $("s1").textContent = `Bulb ${g1.sel + 1} was sitting crooked in its socket. Pressed back in. Now plug it in.`; $("plug1").classList.add("wobble");
+    } else if (b.burnt) {
+      $("s1").textContent = `Bulb ${g1.sel + 1} is burnt, but its shunt closed the loop: it is not the problem. You can replace it anyway.`;
+    } else {
+      $("s1").textContent = `Bulb ${g1.sel + 1} is seated fine. Look for the one that sits crooked.`;
+    }
+    render1();
+  }
+  function replace1() {
+    const b = g1.bulbs[g1.sel]; if (!b.burnt || g1.plugged) return;
+    b.burnt = false; sfx.chime(); $("s1").textContent = `Bulb ${g1.sel + 1} replaced. ${burntCount()} burnt left.`; render1();
+  }
+  async function plug1() {
+    if (g1.done) return;
+    g1.plugged = !g1.plugged; $("plug1").classList.remove("wobble"); sfx.tap(); render1();
+    if (g1.plugged && loopClosed()) {
+      sfx.on(); await sleep(600); g1.done = true;
+      const v = V_LINE / (N - burntCount()); const clean = burntCount() === 0;
+      const best = store.get("best") || {}; const record = !best.wiggles || g1.wiggles < best.wiggles; if (record) { best.wiggles = g1.wiggles; store.set("best", best); }
+      if (g1.wiggles <= 12 && clean) { earn("fixer"); sfx.win(); confetti($("conf1"), 120); }
+      const c = $("card1"); c.hidden = false;
+      c.innerHTML = `<div><h3>All fifty lit, in ${g1.wiggles} wiggle${g1.wiggles === 1 ? "" : "s"}</h3><p>${record ? "<b>New best!</b> " : ""}It was never the burnt bulbs: their shunts kept the loop closed. One loose bulb opened the loop, and that darkened every door on it.</p><p>${clean ? `You replaced the burnt ones too, so every bulb gets ${v.toFixed(1)} volts: normal life.` : `${burntCount()} burnt bulb${burntCount() === 1 ? "" : "s"} still in: the rest run at ${v.toFixed(2)} volts, life x${Math.pow(v / V_RATED, -12).toFixed(2)}. Replace them next time.`}</p><p>${g1.wiggles <= 12 && clean ? "You earned the Fixer badge." : "The Fixer badge: find it in twelve wiggles or fewer, with the burnt ones replaced."}</p><p><button class="btn small" id="again1" type="button">↺ New string</button> <button class="btn ghost small" id="next1b" type="button">Next: make a color →</button></p></div><img src="assets/${g1.wiggles <= 12 && clean ? "badge_fixer.svg" : "hero_bulb.png"}" alt="">`;
+      $("again1").addEventListener("click", () => { sfx.tap(); reset1(); }); $("next1b").addEventListener("click", () => { sfx.tap(); show("g2"); });
+      $("s1").textContent = "Find the loose one, replace the burnt ones.";
+    } else if (g1.plugged) {
+      sfx.sad(); $("s1").textContent = "Plugged in, and still dark: the loop is open somewhere. Unplug and keep looking.";
+    }
+  }
+  function reset1() { $("card1").hidden = true; build1(); say($("bubble1"), "Fifty bulbs in one loop, and the whole string is dark. One of them is loose. Unplug it first, then look closely."); $("s1").textContent = ""; }
+  $("prev1").addEventListener("click", () => move1(-1)); $("next1").addEventListener("click", () => move1(1));
+  $("wiggle1").addEventListener("click", wiggle1); $("replace1").addEventListener("click", replace1);
+  $("plug1").addEventListener("click", plug1); $("reset1").addEventListener("click", () => { sfx.tap(); reset1(); });
+  document.addEventListener("keydown", e => { if (screen !== "g1") return; if (e.key === "ArrowLeft") move1(-1); else if (e.key === "ArrowRight") move1(1); else if (e.key === " ") { e.preventDefault(); wiggle1(); } });
+  reset1();
+
+  /* ═══════════ GAME 2: MAKE A COLOR ═══════════ */
+  // wavelength (nm) = 1240 / step (eV); a white LED is a blue step under a yellow coating.
+  const HC = 1240;
+  const ROUNDS = [{ name: "RED", nm: 650 }, { name: "GREEN", nm: 540 }, { name: "BLUE", nm: 460 }, { name: "WHITE", nm: 460, white: true }];
+  const g2 = { round: 0, score: 0, busy: false, done: false, coated: false };
+  function nmToRGB(nm) {
+    let r = 0, g = 0, b = 0;
+    if (nm < 440) { r = -(nm - 440) / 60; b = 1; } else if (nm < 490) { g = (nm - 440) / 50; b = 1; } else if (nm < 510) { g = 1; b = -(nm - 510) / 20; }
+    else if (nm < 580) { r = (nm - 510) / 70; g = 1; } else if (nm < 645) { r = 1; g = -(nm - 645) / 65; } else { r = 1; }
+    const f = nm > 700 ? 0.3 + 0.7 * (780 - nm) / 80 : (nm < 420 ? 0.3 + 0.7 * (nm - 380) / 40 : 1);
+    const c = v => Math.round(255 * Math.pow(clamp(v * f, 0, 1), 0.8));
+    return `rgb(${c(r)},${c(g)},${c(b)})`;
+  }
+  function stepUI() {
+    const ev = +$("step").value, nm = HC / ev;
+    $("stepv").textContent = `${ev.toFixed(2)} electron-volts → ${Math.round(nm)} nm`;
+    const h = 60 + (ev - 1.5) * 95;                         // the riser: taller step, bigger drop
+    $("ledge").setAttribute("y", 172 + h); $("riser").setAttribute("y2", 172 + h); $("steplbl").setAttribute("y", 172 + h / 2 + 8); $("steplbl").textContent = `${ev.toFixed(2)} eV`;
+    $("ball").setAttribute("cy", 136); $("ballbar").setAttribute("y1", 136); $("ballbar").setAttribute("y2", 136);
+  }
+  $("step").addEventListener("input", stepUI);
+  function roundUI() {
+    const r = ROUNDS[g2.round]; g2.coated = false;
+    $("target").innerHTML = `Make ${r.name}<small>${r.white ? "the trick: a blue step under a yellow coat" : `a wavelength of about ${r.nm} nanometers`}</small>`;
+    $("pill2").textContent = `round ${g2.round + 1} of ${ROUNDS.length} · score ${g2.score}`;
+    $("coat2").hidden = !r.white; $("coat2").textContent = "🟡 Add the yellow coat";
+    $("swatch").style.background = "#222"; $("swlbl").textContent = "your light"; stepUI();
+  }
+  $("coat2").addEventListener("click", () => { g2.coated = !g2.coated; sfx.click(); $("coat2").textContent = g2.coated ? "🟡 Coat on (tap to remove)" : "🟡 Add the yellow coat"; });
+  async function drop() {
+    if (g2.busy || g2.done) return;
+    g2.busy = true; sfx.tap(); $("drop2").disabled = true;
+    const ev = +$("step").value, nm = HC / ev; const r = ROUNDS[g2.round];
+    const h = 60 + (ev - 1.5) * 95;
+    for (let k = 1; k <= 12; k++) { const y = 136 + h * (k / 12) * (k / 12); $("ball").setAttribute("cy", y); $("ballbar").setAttribute("y1", y); $("ballbar").setAttribute("y2", y); await sleep(36); }
+    let col = nmToRGB(nm), white = false;
+    if (r.white && g2.coated && nm < 480) { col = "rgb(250,245,225)"; white = true; }
+    const fl = $("flash"); fl.style.background = `radial-gradient(circle, ${col} 0%, transparent 70%)`; fl.classList.remove("go"); void fl.offsetWidth; fl.classList.add("go");
+    $("swatch").style.background = col; $("swlbl").textContent = white ? "white" : `${Math.round(nm)} nm`; sfx.chime();
+    const hit = r.white ? white : Math.abs(nm - r.nm) <= 30;
+    await sleep(700);
+    if (hit) { g2.score++; popText($("lab2"), r.white ? "white!" : `${r.name.toLowerCase()}!`, "40%", "22%"); sfx.pop(); }
+    else { popText($("lab2"), r.white ? (nm >= 480 ? "coat needs a BLUE step" : "needs the yellow coat") : (nm > r.nm ? "step too small" : "step too big"), "28%", "22%", true); sfx.sad(); }
+    $("s2").textContent = r.white
+      ? (white ? "A blue step under a yellow coat: the yellow and the leftover blue mix into white." : `That made ${Math.round(nm)} nm light${g2.coated ? " under a yellow coat" : ""}. White needs a blue step (under about 480 nm) AND the coat.`)
+      : `${ev.toFixed(2)} eV gave ${Math.round(nm)} nm (1240 ÷ ${ev.toFixed(2)}). ${r.name} is about ${r.nm}.`;
+    g2.round++;
+    if (g2.round >= ROUNDS.length) {
+      g2.done = true;
+      const best = store.get("best") || {}; const record = !best.colors || g2.score > best.colors; if (record) { best.colors = g2.score; store.set("best", best); }
+      if (g2.score >= 4) { earn("color"); sfx.win(); confetti($("conf2"), 120); }
+      const c = $("card2"); c.hidden = false;
+      c.innerHTML = `<div><h3>${g2.score} of ${ROUNDS.length} colors made</h3><p>${record ? "<b>New best!</b> " : ""}The color is not painted on. It is the size of the step: 1240 divided by the step in electron-volts gives the wavelength. Small step, red. Big step, blue. And white is a blue LED under a yellow coat.</p><p>${g2.score >= 4 ? "You earned the Color badge." : "All four earns the Color badge."}</p><p><button class="btn small" id="again2" type="button">↺ Again</button> <button class="btn ghost small" id="home2" type="button">⌂ Title</button></p></div><img src="assets/${g2.score >= 4 ? "badge_color.svg" : "hero_bulb.png"}" alt="">`;
+      $("again2").addEventListener("click", () => { sfx.tap(); reset2(); }); $("home2").addEventListener("click", () => { sfx.tap(); show("title"); });
+    } else {
+      await sleep(900); roundUI(); say($("bubble2"), `Now make ${ROUNDS[g2.round].name.toLowerCase()}. ${ROUNDS[g2.round].white ? "Blue step, then the coat." : "Slide the step and drop."}`);
+    }
+    $("drop2").disabled = false; g2.busy = false;
+  }
+  function reset2() { g2.round = 0; g2.score = 0; g2.busy = false; g2.done = false; $("card2").hidden = true; $("drop2").disabled = false; $("step").value = 1.9; roundUI(); say($("bubble2"), "The color is the size of the step. Slide the step, then drop the electron."); $("s2").textContent = ""; }
+  $("drop2").addEventListener("click", drop);
+  $("reset2").addEventListener("click", () => { sfx.tap(); reset2(); });
+  reset2();
+  show("title");
+})();
+</script>
+</html>

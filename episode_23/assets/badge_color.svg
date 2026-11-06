@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#2a3b6e"/><stop offset="1" stop-color="#10162c"/></radialGradient></defs>
+  <circle cx="100" cy="100" r="94" fill="url(#g)" stroke="#ecb23c" stroke-width="10"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#3a2c20" stroke-width="3" stroke-dasharray="4 6"/>
+  <g fill="#d6c8aa" stroke="#3a2c20" stroke-width="3">
+    <rect x="34" y="120" width="40" height="34"/><rect x="80" y="104" width="40" height="50"/><rect x="126" y="84" width="40" height="70"/>
+  </g>
+  <g stroke="#3a2c20" stroke-width="2">
+    <circle cx="54" cy="100" r="13" fill="#ff5a4a"/><circle cx="100" cy="84" r="13" fill="#7cc08a"/><circle cx="146" cy="64" r="13" fill="#5f8cff"/>
+  </g>
+  <g opacity=".3"><circle cx="54" cy="100" r="24" fill="#ff5a4a"/><circle cx="100" cy="84" r="24" fill="#7cc08a"/><circle cx="146" cy="64" r="24" fill="#5f8cff"/></g>
+  <text x="100" y="178" text-anchor="middle" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-weight="700" font-size="20" fill="#fff" stroke="#3a2c20" stroke-width="1">COLOR</text>
+</svg>
