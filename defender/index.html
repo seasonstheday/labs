@@ -644,7 +644,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 95</div>
+    <div class="build">build 96</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1075,7 +1075,12 @@ addEventListener('resize', fit); fit();
 // ?r3d: the live 3D prototype. The myths, bosses and any friend with a model are drawn in three.js under this canvas
 // (r3d.js); everything else still draws here. Without the flag nothing loads.
 let R3D = null;
-if (/[?&]r3d\b/.test(location.search)) import('./r3d.js').then(m => { R3D = m.R3D.init(frame, cv); addEventListener('resize', () => R3D.resize()); }).catch(e => console.warn('3D layer off:', e));
+if (/[?&]r3d\b/.test(location.search)) import('./r3d.js').then(m => { R3D = m.R3D.init(frame, cv); addEventListener('resize', () => R3D.resize()); }).catch(e => { console.warn('3D layer off:', e); R3D_ERR = e && e.message || String(e); });
+// ?r3d&info: a readout over the game for phones the 3D layer can't be tested on here (its GPU, each model's state, what was drawn, errors)
+let R3D_ERR = '';
+if (/[?&]r3d\b/.test(location.search) && /[?&]info\b/.test(location.search)) { const d = document.createElement('pre'); d.id = 'r3dinfo';
+  d.style.cssText = 'position:fixed; left:4px; right:4px; top:4px; z-index:99999; margin:0; padding:6px 8px; font:11px/1.35 ui-monospace,Menlo,monospace; white-space:pre-wrap; word-break:break-word; color:#fff; background:rgba(0,0,0,.72); border-radius:8px; pointer-events:none;';
+  document.body.appendChild(d); setInterval(() => { d.textContent = R3D ? R3D.info() : '3D layer not loaded' + (R3D_ERR ? ': ' + R3D_ERR : ' (yet)'); }, 500); }
 const key3d = e => e.kind === 'boss' || e.kind === 'mirage' ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind;
 const in3d = e => !!R3D && e.kind !== 'brick' && R3D.has(key3d(e));
 

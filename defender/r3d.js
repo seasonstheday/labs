@@ -19,7 +19,7 @@ const outlineMat = new THREE.MeshBasicMaterial({ color: 0x3a2c20, side: THREE.Ba
 const MODELS = {}; // key -> { tpl, h, ok } once loaded; false if it failed
 const POOL = {};   // key -> [instances]
 let frameList = [];
-const stats = { calls: 0, tris: 0, shown: 0 };
+const stats = { calls: 0, tris: 0, shown: 0 }, DIAG = { errors: [], drawn: {} }; // DIAG: what ?r3d&info shows, for phones we can't test on
 
 // a paint shader for models that came without a texture: the drawings of the character from the front, side and back
 // are projected onto it (see tools/render_sheet.mjs --paint)
@@ -125,13 +125,13 @@ function load(key) {
     tpl.updateMatrixWorld(true); const top = new THREE.Vector3(0, -1e9, 0), v = new THREE.Vector3(), inv = new THREE.Matrix4().copy(inner.matrixWorld).invert();
     for (const o of meshes) { const pa = o.geometry.attributes.position, mw = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld); for (let i = 0; i < pa.count; i += 3) { v.fromBufferAttribute(pa, i).applyMatrix4(mw); if (v.y > top.y) top.copy(v); } }
     MODELS[key] = { tpl, ok: true, k: 1 / (COS + (dx + dz) / 2 * SIN * .5), skinned, clips, head, dx, wide: Math.max(dx, dz), top };
-  })().catch(e => { console.warn('r3d: no model', key, e && e.message); MODELS[key] = false; });
+  })().catch(e => { console.warn('r3d: no model', key, e && e.message); DIAG.errors.push(`${key}: ${(e && e.message || e + '').slice(0, 90)}`); MODELS[key] = false; });
   return null;
 }
 // on a rigged model the push must use the rest-pose normal, before the skeleton bends it, or the outline tears at the joints
 const outlineSkin = outlineMat.clone(); outlineSkin.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(normal) * .018;'); };
 outlineSkin.customProgramCacheKey = () => 'outline-skin';
-outlineMat.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(objectNormal) * .018;'); };
+outlineMat.onBeforeCompile = s => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(normal) * .018;'); }; // 'normal', not 'objectNormal': a basic material only declares objectNormal with an env map or skinning, so the outline failed to compile
 
 function instance(key, i) {
   const list = POOL[key] || (POOL[key] = []);
@@ -152,6 +152,7 @@ export const R3D = {
     canvas = document.createElement('canvas'); canvas.id = 'c3'; canvas.style.cssText = 'position:absolute; inset:0; width:440px; height:760px; display:block; pointer-events:none;';
     under.parentNode.insertBefore(canvas, under);
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.debug.onShaderError = (gl, prog, vs, fs) => { const log = (gl.getShaderInfoLog(vs) || '') + (gl.getShaderInfoLog(fs) || '') + (gl.getProgramInfoLog(prog) || ''); DIAG.errors.push('shader: ' + log.replace(/\s+/g, ' ').slice(0, 160)); };
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.setClearColor(0x6f9a58);
     scene = new THREE.Scene();
     scene.add(new THREE.HemisphereLight(0xfff6e6, 0xb8c8a8, 1.9));
@@ -170,6 +171,11 @@ export const R3D = {
   // the painted arena (the 2D game's background canvas) becomes the ground texture
   setGround(src) { if (src === groundSrc) return; groundSrc = src; const t = new THREE.CanvasTexture(src); t.colorSpace = THREE.SRGBColorSpace; ground.material.map = t; ground.material.needsUpdate = true; },
   has(key) { const M = load(key); return !!(M && M.ok); },
+  // a readout for ?r3d&info: the phone's GPU, each model's state and what was drawn last frame
+  info() { if (!renderer) return '3D: no renderer'; const gl = renderer.getContext(), ext = gl.getExtension('WEBGL_debug_renderer_info');
+    const gpu = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    const ms = Object.entries(MODELS).map(([k, M]) => `${k.replace('pet_', '')}:${M === false ? 'FAILED' : M ? (M.skinned ? `ok,skin,${Object.keys(M.clips).length}clips` : 'ok') : '…'}`).join(' ');
+    return `WebGL${renderer.capabilities.isWebGL2 ? 2 : 1} · ${gpu} · maxTex ${renderer.capabilities.maxTextureSize} · vtxTex ${renderer.capabilities.maxVertexTextures} · floatTex ${renderer.capabilities.floatVertexTextures ? 'yes' : 'no'} · dpr ${renderer.getPixelRatio().toFixed(2)}\nmodels: ${ms}\ndrawn: ${Object.entries(DIAG.drawn).map(([k, n]) => k.replace('pet_', '') + ' ' + n).join(', ') || 'none'} · calls ${stats.calls} · tris ${stats.tris}\nerrors: ${DIAG.errors.slice(-4).join(' | ') || 'none'}`; },
   begin() { frameList = []; },
   // x, y: where the feet go in game pixels (after the 2D context's transform: shake, a pop's squash); h: height in pixels
   put(key, ctx, x, y, h, o = {}) {
@@ -202,6 +208,7 @@ export const R3D = {
         mt.emissive.set(f.flash ? 0xffffff : 0x000000); mt.emissiveIntensity = f.flash ? .6 : 0; });
     }
     for (const key in POOL) POOL[key].forEach((o, i) => { if (i >= (used[key] || 0)) o.visible = false; });
+    DIAG.drawn = {}; for (const f of frameList) DIAG.drawn[f.key] = (DIAG.drawn[f.key] || 0) + 1;
     renderer.render(scene, cam);
     stats.calls = renderer.info.render.calls; stats.tris = renderer.info.render.triangles;
   },
