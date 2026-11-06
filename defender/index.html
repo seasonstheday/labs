@@ -649,7 +649,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 101</div>
+    <div class="build">build 102</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2278,6 +2278,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
+if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 102: Club badges and Cup points became Medals
 save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
@@ -2411,7 +2412,7 @@ const GLOSS = { '🪙': 'Coins: you get them in every match. Spend them in the S
   '📄': 'Pages fill a friend\'s book. A full book brings that friend to the backyard. After that, pages earn stars, and each star makes the friend stronger. Blank pages fit any friend\'s book.',
   '📃': 'Pages fill a friend\'s book. A full book brings that friend to the backyard. After that, pages earn stars.',
   '🎟️': 'Library Card: pick a page pack and fill a friend\'s book faster.', '🎫': 'Cup Ticket: one Myth Cup match. A free one comes every day, up to three waiting.',
-  '🎖️': 'Club Badges: your Clubhouse earns them. Spend them in the Club Shop. They also level up your club.', '🏅': 'Cup Points: won in Myth Cup matches. Spend them in the Cup Shop.',
+  '🎖️': 'Medals: your Club and the Myth Cup both earn them. Spend them in either shop.', '🏅': 'Medals: your Club and the Myth Cup both earn them. Spend them in the Club Shop or the Cup Shop.',
   '⭐': 'Stars: each one makes a friend stronger. Fill their book with pages to earn the next.', '🌟': 'Stars: each one makes a friend stronger. Fill their book with pages to earn the next.',
   '💪': 'Power: how strong a friend is, with level, stars, upgrades and gear all added up. Team Power is Dad plus the three in the backyard.',
   '📘': 'Skill Books: spend them in a friend\'s Skill Tree to make a move stronger.', '🔒': 'Locked: keep playing and it opens.', '🎁': 'A prize: tap to open it.',
@@ -4657,7 +4658,7 @@ const CLUB_GOAL = 7000, CLUB_STEPS = [[.25, { badges: 20, coins: 300 }], [.5, { 
 const JOB_PAY = 10, CLUB_MAX = 10;
 function clubState() { const C = save.club || (save.club = { name: null, em: '🔍', xp: 0 });
   if (C.week !== weekKey()) { if (C.week && C.name) { // a week that ends unopened loses nothing: the last league place and this week's earned chests are paid on the way out
-      const res = clubSettle(C); if (res) { C.lastRes = res; save.badges = (save.badges || 0) + res.pay; C.xp += res.pay; }
+      const res = clubSettle(C); if (res) { C.lastRes = res; save.medals = (save.medals || 0) + res.pay; C.xp += res.pay; }
       const T = C.pops + mateSum(C.week, s => 40 + rnd01(s) * 110, true), R = Math.min(RAID_HP, (C.raid || 0) + mateSum(C.week, s => 80 + rnd01('r' + s) * 170, true)), got = [];
       CLUB_STEPS.forEach(([f, p], i) => { if (T >= CLUB_GOAL * f && !(C.got || []).includes(i)) got.push(payBadges(p)); });
       RAID_STEPS.forEach(([f, p], i) => { if (R >= RAID_HP * f && !(C.raidGot || []).includes(i)) got.push(payBadges(p)); });
@@ -4677,7 +4678,7 @@ function clubAdd(kind, n) { if (!save || !has('club') || !save.club || !save.clu
   for (const j of C.jobs) if (j.k === kind && j.have < j.n) j.have = Math.min(j.n, j.have + n); }
 const clubReady = () => { if (!has('club') || !save.club || !save.club.name) return false; const C = clubState(), T = clubTotal();
   const R = raidDmg(); return C.jobs.some((j, i) => j.have >= j.n && !C.jobsGot.includes(i)) || CLUB_STEPS.some(([f], i) => T >= CLUB_GOAL * f && !C.got.includes(i)) || RAID_STEPS.some(([f], i) => R >= RAID_HP * f && !(C.raidGot || []).includes(i)) || !!(C.lastWeek && C.lastSettled !== C.lastWeek); };
-function payBadges(pay) { const got = []; if (pay.epic) { pay = { ...pay }; delete pay.epic; const it = makeItem(Math.random() < .5 ? 'armor' : 'book', 2, false); save.items.push(it); got.push(`${it.em} ${it.name}`); } if (pay.badges) { save.badges = (save.badges || 0) + pay.badges; save.club.xp += pay.badges; got.push(`🎖️ ${pay.badges}`); } const rest = { ...pay }; delete rest.badges; const r = payPrize(rest); return [...got, r].filter(Boolean).join(' · '); }
+function payBadges(pay) { const got = []; if (pay.epic) { pay = { ...pay }; delete pay.epic; const it = makeItem(Math.random() < .5 ? 'armor' : 'book', 2, false); save.items.push(it); got.push(`${it.em} ${it.name}`); } if (pay.badges) { save.medals = (save.medals || 0) + pay.badges; save.club.xp += pay.badges; got.push(`🏅 ${pay.badges}`); } const rest = { ...pay }; delete rest.badges; const r = payPrize(rest); return [...got, r].filter(Boolean).join(' · '); }
 
 // the Club Raid: a chapter boss each week with one health bar for the whole club. Bosses, elites, clears and three-star
 // clears all hit it; the clubmates chip in every day.
@@ -4716,7 +4717,7 @@ function startCup() { const C = cupState(); if (C.out || C.champ || (save.cupt |
 function cupEnd(won) { const C = cupState(), R = G.cup, me = cupScore(won), them = Math.round((G.cup.n * 10 + 500) * cupFrac(R.round, R.rival)), win = won && me > them;
   C.log.push({ r: R.round, rival: R.rival.n, me, them, win });
   let note;
-  if (win) { const pts = Math.round(CUP_PTS[R.round] * CUP_MUL[cupTier()]); save.cupp = (save.cupp || 0) + pts; C.round++; if (C.round >= CUP_ROUNDS.length) { C.champ = true; save.cupWins = (save.cupWins || 0) + 1; setWallet({ gems: save.gems + 50 }); const up = cupTier() < CUP_TIERS.length - 1; if (up) save.cupTier = cupTier() + 1; note = `🏆 Myth Cup champions! +🏅 ${pts} and 💎 50${up ? `. Next week: the ${CUP_TIERS[cupTier()]}!` : ''}`; } else note = `On to the ${CUP_ROUNDS[C.round]}! +🏅 ${pts}`; }
+  if (win) { const pts = Math.round(CUP_PTS[R.round] * CUP_MUL[cupTier()]); save.medals = (save.medals || 0) + pts; C.round++; if (C.round >= CUP_ROUNDS.length) { C.champ = true; save.cupWins = (save.cupWins || 0) + 1; setWallet({ gems: save.gems + 50 }); const up = cupTier() < CUP_TIERS.length - 1; if (up) save.cupTier = cupTier() + 1; note = `🏆 Myth Cup champions! +🏅 ${pts} and 💎 50${up ? `. Next week: the ${CUP_TIERS[cupTier()]}!` : ''}`; } else note = `On to the ${CUP_ROUNDS[C.round]}! +🏅 ${pts}`; }
   else note = (save.cupt || 0) > 0 ? 'So close. Try this round again with another ticket.' : 'So close. A new ticket comes tomorrow.';
   persist(); G.cleared = true; G.paused = true; $('#cupHud').hidden = true;
   openSoc('cup', `<div class="cupres ${win ? 'win' : ''}"><b>${win ? 'You win!' : won ? 'They pipped you!' : 'Dad needed a nap.'}</b><div class="vs"><span>🧔 You<br><i>${me}</i></span><em>vs</em><span>${R.rival.em} ${R.rival.n}<br><i>${them}</i></span></div><small>${note}</small></div>`);
@@ -4724,12 +4725,12 @@ function cupEnd(won) { const C = cupState(), R = G.cup, me = cupScore(won), them
 }
 // Cup and Club shops: their own currencies; some looks are only sold here
 const SHOP2 = {
-  club: { cur: 'badges', em: '🎖️', items: [
+  club: { cur: 'medals', em: '🏅', items: [
     { n: '5 Blank pages', em: '📄', c: 40, run: () => { save.blank = (save.blank || 0) + 5; } }, { n: 'A Library Card', em: '🎟️', c: 60, run: () => setWallet({ tix: save.tix + 1 }) },
     { n: 'A Cup Ticket', em: '🎫', c: 50, run: () => { save.cupt = (save.cupt || 0) + 1; } }, { n: 'An Epic item', em: '🎁', c: 180, run: () => { save.items.push(makeItem(Math.random() < .5 ? 'armor' : 'book', 2, false)); } },
     { ward: 'sweater:club', c: 250 }, { ward: 'yard:pennant', c: 200 }, { ward: 'team:clubcap', c: 300 }] },
-  cup: { cur: 'cupp', em: '🏅', items: [
-    { n: '💎 40 gems', em: '💎', c: 30, run: () => setWallet({ gems: save.gems + 40 }) }, { n: '10 Blank pages', em: '📄', c: 40, run: () => { save.blank = (save.blank || 0) + 10; } },
+  cup: { cur: 'medals', em: '🏅', items: [
+    { n: '💎 40 gems', em: '💎', c: 50, run: () => setWallet({ gems: save.gems + 40 }) }, { n: '10 Blank pages', em: '📄', c: 80, run: () => { save.blank = (save.blank || 0) + 10; } },
     { n: 'A Legendary item', em: '🌟', c: 400, run: () => { save.items.push(makeItem(Math.random() < .5 ? 'armor' : 'book', 3, false)); } },
     { ward: 'yard:trophy', c: 200 }, { ward: 'sweater:gold', c: 150, tier: 1 }, { ward: 'hat:laurel', c: 250, tier: 2 }, { ward: 'team:laurel', c: 500, tier: 3 }] },
 };
@@ -4746,11 +4747,11 @@ function buildClub() { const C = clubState(), P = $('#socBody');
     P.querySelectorAll('[data-ce]').forEach(b => b.onclick = () => { C.em = b.dataset.ce; buildClub(); });
     P.querySelectorAll('[data-cn]').forEach(b => b.onclick = () => { C.name = b.dataset.cn; persist(); buildClub(); updateHub(); }); return; }
   const T = clubTotal(), lv = clubLv(), xpIn = C.xp - clubXpFor(lv), xpNeed = clubXpFor(lv + 1) - clubXpFor(lv);
-  $('#socTitle').textContent = `${C.em} ${C.name}`; $('#socSub').textContent = `Level ${lv} · +${(lv - 1) * 2}% coins · 🎖️ ${save.badges || 0} badges`;
-  const res = clubSettle(C); if (res) { C.lastRes = res; save.badges = (save.badges || 0) + res.pay; C.xp += res.pay; persist(); }
+  $('#socTitle').textContent = `${C.em} ${C.name}`; $('#socSub').textContent = `Level ${lv} · +${(lv - 1) * 2}% coins · 🏅 ${save.medals || 0} medals`;
+  const res = clubSettle(C); if (res) { C.lastRes = res; save.medals = (save.medals || 0) + res.pay; C.xp += res.pay; persist(); }
   if (C.carry) { toastMsg('Chests your club earned last week: ' + C.carry); delete C.carry; persist(); }
   let h = socTabs([['club', '🏡 Club'], ['raid', '⚔️ Raid'], ['league', '🏅 League'], ['clubshop', '🛍️ Shop']]);
-  if (C.lastRes && C.lastRes.week !== -1 && socTab === 'club') { const r = C.lastRes; h += `<div class="cupres win"><small>Last week your club came <b>${['1st', '2nd', '3rd', '4th'][r.place]}</b> in the league: +🎖️ ${r.pay}${r.up ? `. Up to the ${LEAGUES[C.tier]}!` : ''}</small></div>`; C.lastRes.week = -1; }
+  if (C.lastRes && C.lastRes.week !== -1 && socTab === 'club') { const r = C.lastRes; h += `<div class="cupres win"><small>Last week your club came <b>${['1st', '2nd', '3rd', '4th'][r.place]}</b> in the league: +🏅 ${r.pay}${r.up ? `. Up to the ${LEAGUES[C.tier]}!` : ''}</small></div>`; C.lastRes.week = -1; }
   if (socTab === 'clubshop') { P.innerHTML = h + shop2H('club'); wireSoc(); wireShop2('club'); return; }
   if (socTab === 'raid') { const id = raidBoss(), M = MYTHS[id], D = raidDmg(), mine = C.raid || 0;
     h += `<div class="raidboss"><span>${M.em}</span><b>${M.name}</b><small>This week's Raid boss. Everyone in the club hits it.</small></div><div class="lvbar raid"><i style="width:${D / RAID_HP * 100}%"></i><span>${D >= RAID_HP ? 'Beaten!' : `${(RAID_HP - D).toLocaleString()} health left`}</span></div>`;
@@ -4759,12 +4760,12 @@ function buildClub() { const C = clubState(), P = $('#socBody');
     P.innerHTML = h; wireSoc(); P.querySelectorAll('[data-raid]').forEach(b => b.onclick = () => { const i = +b.dataset.raid; (C.raidGot = C.raidGot || []).push(i); toastMsg('⚔️ Raid chest: ' + payBadges(RAID_STEPS[i][1])); sfx('coin'); persist(); buildClub(); }); return; }
   if (socTab === 'league') { const rows = leagueTable(C.week);
     h += `<h3 class="rackh">${LEAGUES[C.tier || 0]} · this week</h3><p class="intro">Clubs are ranked by myths popped this week. First place moves up a league. The other clubs are storybook clubs.</p>`;
-    h += `<div class="bracket">${rows.map((r, i) => `<div class="brow ${r.me ? 'cur' : ''}"><small>${['1st', '2nd', '3rd', '4th'][i]} · 🎖️ ${LEAGUE_PAY[i]} on Monday</small><b>${r.em} ${r.n}</b><span>${r.pops.toLocaleString()}</span></div>`).join('')}</div>`;
+    h += `<div class="bracket">${rows.map((r, i) => `<div class="brow ${r.me ? 'cur' : ''}"><small>${['1st', '2nd', '3rd', '4th'][i]} · 🏅 ${LEAGUE_PAY[i]} on Monday</small><b>${r.em} ${r.n}</b><span>${r.pops.toLocaleString()}</span></div>`).join('')}</div>`;
     P.innerHTML = h; wireSoc(); return; }
   h += `<div class="lvbar"><i style="width:${lv >= CLUB_MAX ? 100 : xpIn / xpNeed * 100}%"></i><span>${lv >= CLUB_MAX ? 'Top level!' : `${xpIn} / ${xpNeed} to level ${lv + 1}`}</span></div>`;
   h += `<h3 class="rackh">This week: pop ${CLUB_GOAL.toLocaleString()} myths together</h3><div class="lvbar goal"><i style="width:${Math.min(100, T / CLUB_GOAL * 100)}%"></i><span>${Math.min(T, CLUB_GOAL).toLocaleString()} / ${CLUB_GOAL.toLocaleString()}</span></div>`;
   h += `<div class="steps">${CLUB_STEPS.map(([f, pay], i) => { const ok = T >= CLUB_GOAL * f, got = C.got.includes(i); return `<button class="btn small ${ok && !got ? 'green' : ''}" data-step="${i}" ${ok && !got ? '' : 'disabled'}>${got ? '✔' : '🎁'} ${Math.round(f * 100)}%</button>`; }).join('')}</div>`;
-  h += `<h3 class="rackh">Today's club jobs</h3>` + C.jobs.map((j, i) => { const done = j.have >= j.n, got = C.jobsGot.includes(i); return `<div class="chrow"><div class="cem">${j.em}</div><div class="cmid"><b>${j.t}</b><small>${Math.min(j.have, j.n)} / ${j.n}</small></div><button class="btn small ${done && !got ? 'green' : ''}" data-job="${i}" ${done && !got ? '' : 'disabled'}>${got ? '✔' : `🎖️ ${JOB_PAY}`}</button></div>`; }).join('');
+  h += `<h3 class="rackh">Today's club jobs</h3>` + C.jobs.map((j, i) => { const done = j.have >= j.n, got = C.jobsGot.includes(i); return `<div class="chrow"><div class="cem">${j.em}</div><div class="cmid"><b>${j.t}</b><small>${Math.min(j.have, j.n)} / ${j.n}</small></div><button class="btn small ${done && !got ? 'green' : ''}" data-job="${i}" ${done && !got ? '' : 'disabled'}>${got ? '✔' : `🏅 ${JOB_PAY}`}</button></div>`; }).join('');
   const mates = clubMates().sort((a, b) => b.pops - a.pops);
   h += `<h3 class="rackh">Clubmates this week</h3><p class="intro">Your clubmates are storybook neighbours, not real players.</p><div class="mates"><div class="mate me"><span>🧔</span><b>You</b><i>${C.pops}</i></div>${mates.map(m => `<div class="mate"><span>${m.em}</span><b>${m.n}</b><i>${m.pops}</i></div>`).join('')}</div>`;
   P.innerHTML = h; wireSoc();
@@ -4772,7 +4773,7 @@ function buildClub() { const C = clubState(), P = $('#socBody');
   P.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { const i = +b.dataset.step; C.got.push(i); toastMsg('🎁 Club chest: ' + payBadges(CLUB_STEPS[i][1])); sfx('coin'); persist(); buildClub(); });
 }
 function buildCup() { const C = cupState(), P = $('#socBody'), t = save.cupt || 0;
-  $('#socTitle').textContent = '🥇 Myth Cup'; $('#socSub').textContent = `${CUP_TIERS[cupTier()]} · ${STAGES[C.stage].W.em} ${STAGES[C.stage].name} · 🎫 ${t} · 🏅 ${save.cupp || 0}`;
+  $('#socTitle').textContent = '🥇 Myth Cup'; $('#socSub').textContent = `${CUP_TIERS[cupTier()]} · ${STAGES[C.stage].W.em} ${STAGES[C.stage].name} · 🎫 ${t} · 🏅 ${save.medals || 0}`;
   let h = socTabs([['cup', '🥇 Cup'], ['cupshop', '🛍️ Cup Shop']]);
   if (socTab === 'cupshop') { P.innerHTML = h + shop2H('cup'); wireSoc(); wireShop2('cup'); return; }
   h += `<p class="intro">Four rounds, one a match. Beat each rival's score on the same stage: every myth popped is 10, and Dad's Patience left at the end adds up to 500. The rival teams are storybook teams.</p>`;

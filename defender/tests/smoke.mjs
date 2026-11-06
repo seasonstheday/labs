@@ -355,17 +355,22 @@ await test('the Store: pick 1 of 3, pets and pop styles, sets and a saved-for lo
   expect(await p.evaluate(() => !!dbg.G.pet), 'the pet follows Dad into the arena');
   await close(); return errs;
 });
+await test('old saves: Club badges and Cup points become one pile of Medals', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), badges: 70, cupp: 45 });
+  expect(await p.evaluate(() => dbg.save.medals === 115 && dbg.save.badges === undefined && dbg.save.cupp === undefined), 'badges and Cup points are added together, once');
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.club.name === 'The Why Team' && dbg.clubState().jobs.length === 3 && dbg.clubMates().length === 8), 'joined a club with jobs and clubmates');
   await p.evaluate(() => { const C = dbg.clubState(); C.jobs[0].have = C.jobs[0].n; }); await p.click('[data-st="clubshop"]'); await p.click('[data-st="club"]'); await p.waitForTimeout(200);
   await p.click('[data-job="0"]'); await p.waitForTimeout(200);
-  expect(await p.evaluate(() => dbg.save.badges === 10 && dbg.save.club.xp === 10), 'a club job pays badges and club xp');
+  expect(await p.evaluate(() => dbg.save.medals === 10 && dbg.save.club.xp === 10), 'a club job pays medals and club xp');
   await p.click('#socClose'); await p.click('#hubCup'); await p.waitForTimeout(300); await p.click('#cupGo'); await p.waitForTimeout(800);
   expect(await p.evaluate(() => !!dbg.G.cup && dbg.save.cupt === 0 && !document.querySelector('#cupHud').hidden), 'a Cup match costs a ticket and shows the scores');
   await p.evaluate(() => { dbg.G.busted = 99; dbg.G.cup.n = 40; dbg.stageClear(); }); await p.waitForTimeout(300);
-  expect(await p.evaluate(() => dbg.cupState().round === 1 && dbg.save.cupp === 10 && !document.querySelector('#socm').hidden), 'winning a round moves you on and pays Cup points');
+  expect(await p.evaluate(() => dbg.cupState().round === 1 && dbg.save.medals === 20 && !document.querySelector('#socm').hidden), 'winning a round moves you on and pays medals into the same wallet');
   await p.click('#socClose'); await p.waitForTimeout(300); expect(await p.isVisible('#title'), 'back home');
   await close(); return errs;
 });
