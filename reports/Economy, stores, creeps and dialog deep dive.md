@@ -154,15 +154,39 @@ The shelf follows the benchmarks:
 - Nothing is random after you pay.
 - Nothing costs real money.
 
+## 6. Build 99: Wardrobe re-ladder and star looks
+
+**Coin looks now cost 1,000, 2,500 or 5,000:**
+
+| Price | Sweaters | Hats for Dad | Team hats | Backyard |
+|---|---|---|---|---|
+| 1,000 | Sky Blue, Leaf Green, Berry Red | Ball Cap, Sun Hat | Bows, Daisies | Sunflowers, Mushrooms, Balloons |
+| 2,500 | Grape, Bubblegum, Storm Grey | Thinking Cap | Party Hats | Kite, Lawn Flamingo, Tent |
+| 5,000 | Midnight | Top Hat | Wizard Hats | Fountain |
+
+The coin ladder now totals 50,000 instead of about 73,000. With Dad's Picks at 30% off, a 1,000-coin look costs 700 on the day it is picked.
+
+**Star looks are earned, never bought.** Every star on every difficulty counts. A look arrives the moment the total reaches its mark:
+
+| Stars | Look |
+|---|---|
+| 15 | Star Stripes sweater (new) |
+| 30 | Rainbow over the backyard |
+| 50 | Little Crowns for the team |
+| 75 | Rainbow sweater |
+| 100 | Crown of Why |
+
+- The stage-clear screen announces a new look, and otherwise says how many stars are left to the next one.
+- In the Wardrobe, a star look's tile shows progress (e.g. "⭐ 36/50"), and the header names the next one.
+- Players who already have the stars get their looks on load. Anyone who bought a crown or rainbow with coins keeps it.
+
 **Recommended next for the stores, in order:**
-1. **Re-ladder the Wardrobe** to about 1,000 / 2,500 / 5,000.
-2. **Make the Crown of Why, the Little Crowns and the Rainbow milestone rewards** (every 15 chapter stars, Myth Master) rather than 8,000–10,000-coin purchases. This lets stars pay out looks, which the "stars yes" rule allows.
-3. **Add moving cosmetics:** pop confetti, a victory dance, a pet that follows Dad. They give late-game coins somewhere exciting to go.
-4. **Turn the Lunchbox and Bookmark into "pick 1 of 3 face-up"** like the Library Card shelf, so the coin store has no blind boxes.
-5. **Collection sets with a counter**, e.g. "Harvest looks 4/6" with a bonus prop for finishing.
-6. **A "Save for this!" pin:** pick a look, and the Play screen shows a fill bar toward it.
-7. **Price event shops** so everything can be bought in about 60–70% of the event, and say "Back next year!" so missing days never means missing a look.
-8. **Merge badges and cup points into one "medals" currency.** Nine currencies is a lot for early readers.
+1. **Add moving cosmetics:** pop confetti, a victory dance, a pet that follows Dad. They give late-game coins somewhere exciting to go.
+2. **Turn the Lunchbox and Bookmark into "pick 1 of 3 face-up"** like the Library Card shelf, so the coin store has no blind boxes.
+3. **Collection sets with a counter**, e.g. "Harvest looks 4/6" with a bonus prop for finishing.
+4. **A "Save for this!" pin:** pick a look, and the Play screen shows a fill bar toward it.
+5. **Price event shops** so everything can be bought in about 60–70% of the event, and say "Back next year!" so missing days never means missing a look.
+6. **Merge badges and cup points into one "medals" currency.** Nine currencies is a lot for early readers.
 
 ## Sources
 
