@@ -192,7 +192,10 @@ The coin ladder now totals 50,000 instead of about 73,000. With Dad's Picks at 3
 - **Sets.** The Wardrobe counts five sets (🍂 Harvest, ❄️ Winter, 🏡 Club, 🥇 Cup, ⭐ Star). Finishing one pays 💎50 once. The event shop shows its set count and says "Back next year, so there's no rush!"
 - **Save for this.** Tapping a look you can't afford yet pins it (📌). The Play screen then shows a pill that fills toward the price and glows when you can buy it.
 - **Event pricing is already kind.** Event myths join every stage's pool, so a stage pays roughly 60–80 tokens plus 10 a day. A whole event set (about 850 tokens) takes about 10–12 stages, well inside the 13–23 days of an event. Prices are unchanged.
-- **Not done: merging badges and cup points.** They belong to the separate Club and Cup systems, with their own shops and saves. Merging them needs a save migration and a redesign of both shops, so it is better as its own change.
+- **Medals (build 102).** Club badges and Cup points are now one currency, 🏅 Medals, earned by the Club (jobs, steps, Raid, league) and the Myth Cup, and spent in either shop.
+  - Old saves add the two together once, when the game loads.
+  - Cup points used to buy about twice as much as badges. To stop badges buying gems at the Cup's cheaper rate, the Cup shop moved to the Club's scale: 40 gems now cost 50 (was 30) and 10 Blank pages cost 80 (was 40). Cup looks and the Legendary item are unchanged.
+  - Club levels still count only what the Club earns.
 
 **Creeps (build 101)**
 - **Damage shown on the body.** Tanks, hardcovers, healers and elites lost their small health bars. They get a folded corner and a crack at two-thirds health, then a second crack and a loose scrap flapping off at one-third. Only bosses keep a bar.
