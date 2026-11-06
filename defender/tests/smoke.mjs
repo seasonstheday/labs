@@ -64,7 +64,7 @@ await test('a brand-new player: home, then the prologue', async () => {
   await p.click('#quickPlay'); await p.waitForTimeout(800);
   expect(await p.isVisible('#comicm'), 'the prologue to open');
   expect(await p.evaluate(() => document.querySelector('#storyImg').src.includes('story_p1')), 'the first storyboard frame');
-  for (let i = 0; i < 8 && await p.isVisible('#comicTap'); i++) { await p.mouse.click(200, 300); await p.waitForTimeout(250); }
+  for (let i = 0; i < 16 && await p.isVisible('#comicTap'); i++) /* a tap finishes a typing line, the next turns it */ { await p.mouse.click(200, 300); await p.waitForTimeout(250); }
   expect(await p.isVisible('#comicGo'), "the prologue to end on Let's go");
   await close(); return errs;
 });

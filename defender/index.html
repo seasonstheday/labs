@@ -26,7 +26,7 @@
   #frame.calm .starrow span, #frame.calm .lootc, #frame.calm .panel { animation: none !important; }
   /* grown-ups only: the gate and the real-money shelf (native builds only) */
   #gatem .panel { text-align: center; }
-  #gatem input { width: 120px; font: 700 28px/1 "Fredoka", Arial, sans-serif; text-align: center; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px; margin: 8px 0; background: #fff; }
+  #gatem input { width: 120px; font: 700 28px/1 "Fredoka", Arial, sans-serif; text-align: center; border: 3px solid #3a2c20; border-radius: 14px; padding: 8px; margin: 8px 0; background: #fff; }
   #gatem .q { font: 700 26px/1.2 "Fredoka", Arial, sans-serif; margin: 6px 0; }
   .iaphead { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 16px 0 4px; display: flex; align-items: center; gap: 8px; }
   .iaphead small { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -66,7 +66,7 @@
   .newsem { font-size: 72px; line-height: 1; margin: 8px 0; animation: hopin .7s cubic-bezier(.3,1.6,.5,1) both; } .newst { font: 600 21px/1.3 "Nunito", system-ui, sans-serif; margin: 0 0 6px; }
   .itile .rpips { position: absolute; top: 3px; left: 5px; font-size: 11px; letter-spacing: -1px; color: #3a2c20; opacity: .7; }
   .swaprow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; margin-top: 8px; padding: 6px 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; font: 700 16px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; text-align: left; } .swaprow .fc { font-size: 30px; width: 40px; text-align: center; } .swaprow .fc .fim { width: 38px; } .swaprow b { flex: 1; }
-  .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 16px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
+  .puton { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } .puton button { appearance: none; width: 64px; height: 64px; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; font-size: 30px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 #3a2c20; } .puton button.on { background: #8fd38a; } .puton button .fim { width: 46px; } .puton small { position: absolute; bottom: -16px; left: 0; right: 0; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; }
   .btn:disabled { opacity: .45; cursor: default; box-shadow: none; transform: none; }
   .btn.icon { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 22px; }
   /* the frame is drawn at about 89% on a phone, so 50px here is Apple's 44pt minimum */
@@ -123,7 +123,7 @@
   /* friend cards: the tier's colour behind the friend (Common green, Rare blue, Epic purple, Legendary gold), level top-left, element top-right */
   .ico { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -.2em; background: center / contain no-repeat; font-style: normal; flex: none; }
   img.ico.hd { width: 1.3em; height: 1.3em; vertical-align: -.3em; } img.ico.hd, img.fim.hd { border-radius: 50%; background: #fff8e8; box-shadow: 0 0 0 1.5px #3a2c20; object-fit: cover; }
-  .tippop { position: absolute; z-index: 9999; max-width: 270px; background: #3a2c20; color: #fff8e8; font: 600 15px/1.3 "Nunito", system-ui, sans-serif; padding: 9px 12px; border-radius: 12px; box-shadow: 0 4px 0 rgba(0,0,0,.25); pointer-events: none; animation: tipin .15s ease-out; }
+  .tippop { position: absolute; z-index: 9999; max-width: 270px; background: #3a2c20; color: #fff8e8; font: 600 15px/1.3 "Nunito", system-ui, sans-serif; padding: 9px 12px; border-radius: 14px; box-shadow: 0 4px 0 rgba(0,0,0,.25); pointer-events: none; animation: tipin .15s ease-out; }
   .tippop::after { content: ''; position: absolute; left: var(--ax, 50%); bottom: -7px; margin-left: -7px; border: 7px solid transparent; border-bottom: 0; border-top-color: #3a2c20; } .tippop.below::after { bottom: auto; top: -7px; border-top: 0; border-bottom: 7px solid #3a2c20; }
   @keyframes tipin { from { opacity: 0; transform: translateY(4px); } }
   img, .ico { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
@@ -163,7 +163,7 @@
   .skring button > span { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; } .skring .aic { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); }
   .skring button.off { background: rgba(58,44,32,.12); box-shadow: none; } .skring button > i:not(.ico) { position: absolute; bottom: -5px; right: -5px; min-width: 20px; height: 20px; border-radius: 999px; background: #3a2c20; color: #ffd76a; font: 700 12px/20px "Fredoka", Arial, sans-serif; font-style: normal; }
   .ftabs { display: flex; gap: 4px; margin: 2px 0 8px; border-bottom: 3px solid #3a2c20; }
-  .ftabs button { position: relative; flex: 1; height: 40px; border: 3px solid #3a2c20; border-bottom: 0; border-radius: 12px 12px 0 0; background: rgba(58,44,32,.1); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); cursor: pointer; }
+  .ftabs button { position: relative; flex: 1; height: 40px; border: 3px solid #3a2c20; border-bottom: 0; border-radius: 14px 12px 0 0; background: rgba(58,44,32,.1); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); cursor: pointer; }
   .ftabs button.on { background: var(--ink, #3a2c20); color: #fff; } .ftabs .dot { top: -5px; right: -3px; }
   .skill.flash { animation: skflash 1s ease; } @keyframes skflash { 30% { box-shadow: 0 0 0 4px #ecb23c; } }
   .fcard .dot { position: absolute; top: -6px; right: -6px; }
@@ -187,7 +187,7 @@
   .mapcard h3 { cursor: pointer; } .mapcard h3::after { content: ' ▾'; font-size: 16px; color: var(--muted); } .mapcard.more h3::after { content: ' ▴'; }
   .mapcard:not(.more) .d, .mapcard:not(.more) .ptip { display: none; }
   .mprow { display: flex; gap: 8px; } .mprow #mapPlay { flex: 1; } .mprow #mapChests { position: relative; flex: none; width: 58px; font-size: 24px; padding: 0; }
-  .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 10px; pointer-events: none; }
+  .wlab { position: absolute; left: 12px; font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: rgba(251,243,223,.8); border: 3px solid #3a2c20; border-radius: 14px; padding: 6px 10px; pointer-events: none; }
   .wlab small { display: block; font: 600 15px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
   .wlab.locked { opacity: .6; } .wlab .wst { font-size: 14px; color: #b07a1a; margin-left: 4px; } .wlab .wmast { display: inline-block; background: var(--gold); border: 2px solid #3a2c20; border-radius: 999px; padding: 0 6px; font-size: 14px; margin-left: 2px; }
   .pin { position: absolute; width: 50px; height: 50px; margin: -25px 0 0 -25px; border-radius: 50%; border: 4px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; font: 700 18px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 5px 0 #3a2c20; cursor: pointer; transition: transform .1s; }
@@ -204,7 +204,7 @@
   .mapcard .d { font: 600 17px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 2px 0 8px; }
   .diffs { display: flex; gap: 5px; margin-bottom: 8px; } .diffs button[data-d="master"] { background: linear-gradient(#ffe2c4, #ffc08a); } .diffs button[data-d="master"].on { background: linear-gradient(#ffb36a, #f0803a); } .pin .crown { position: absolute; top: -10px; right: -10px; font-style: normal; font-size: 16px; }
   
-  .diffs button { flex: 1; min-width: 0; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .diffs button { flex: 1; min-width: 0; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px 4px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .diffs button.on { background: var(--gold); }
   .diffs button:disabled { background: #d7c9a7; color: #9d8a66; box-shadow: none; cursor: default; }
   .diffs .st { font-size: 13px; letter-spacing: -1px; color: var(--gold); text-shadow: 0 1px 0 #3a2c20; }
@@ -214,14 +214,14 @@
   .cpanel { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; animation: pop .4s cubic-bezier(.2,1.4,.4,1) both; }
   .cpanel.kid { flex-direction: row-reverse; }
   .cpanel canvas { width: 78px; height: 96px; flex: none; }
-  .cpanel .bub { flex: 1; background: #fff; border: 3px solid #3a2c20; border-radius: 16px; padding: 10px 12px; font: 600 18px/1.25 "Nunito", system-ui, sans-serif; position: relative; }
+  .cpanel .bub { flex: 1; background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; font: 600 18px/1.25 "Nunito", system-ui, sans-serif; position: relative; }
   .cpanel .bub::before { content: ''; position: absolute; bottom: 14px; left: -12px; border: 7px solid transparent; border-right-color: #3a2c20; border-left: 0; }
   .cpanel.kid .bub::before { left: auto; right: -12px; border-right: 0; border-left: 7px solid #3a2c20; }
   .cpanel .bub b { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--muted); margin-bottom: 4px; letter-spacing: .5px; }
   #comicm .tap { text-align: center; color: var(--muted); font: 600 16px/1 "Nunito", system-ui, sans-serif; margin: 2px 0 6px; }
   /* ───────── diary ───────── */
   .dtabs { display: flex; gap: 6px; padding: 0 14px 8px; }
-  .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
+  .dtabs button { flex: 1; font: 700 15px/1 "Fredoka", Arial, sans-serif; border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; box-shadow: 0 3px 0 #3a2c20; cursor: pointer; }
   .dtabs button.on { background: var(--gold); }
   .cat.gold { border-color: #d9971c; box-shadow: 0 0 0 3px #ffd76a; background: linear-gradient(#fff8dc, #ffe08a); }
   .catgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px 14px 10px; }
@@ -255,7 +255,7 @@
   .xpbar .bar { flex: 1; height: 10px; border: 2px solid #3a2c20; border-radius: 6px; background: #fff; overflow: hidden; }
   .xpbar .bar div { height: 100%; background: var(--water); }
   .skills { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
-  .skill { display: flex; align-items: center; gap: 8px; border: 2px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 8px; }
+  .skill { display: flex; align-items: center; gap: 8px; border: 2px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 8px; }
   .skill.locked { opacity: .55; background: #f1e9d6; }
   .skill .em { font-size: 24px; width: 34px; text-align: center; }
   .aic { width: 1.3em; height: 1.3em; vertical-align: middle; object-fit: contain; border-radius: 18%; } .tcard .ic .aic { width: 50px; height: 50px; } .snote .e .aic { width: 52px; height: 52px; }
@@ -328,7 +328,7 @@
   #hud { position: absolute; inset: 0; pointer-events: none; }
   #hud .top { position: absolute; left: 10px; right: 10px; top: 10px; display: flex; align-items: center; gap: 8px; pointer-events: auto; }
   #hud .pill.name { flex: 1; text-align: center; font-size: 18px; }
-  #hud .btn.icon { background: var(--card); }
+  #hud .btn.icon { background: var(--card); width: 58px; height: 58px; } /* arena controls: about 51 pt on a phone, comfortably above the 44 pt floor */
   #speed.x2 { background: var(--gold); }
   #prog { position: absolute; left: 10px; right: 10px; top: 60px; height: 14px; border: 3px solid #3a2c20; border-radius: 10px; background: rgba(58,44,32,.5); overflow: hidden; }
   #prog div { height: 100%; width: 0; background: var(--water); transition: width .3s; }
@@ -347,12 +347,12 @@
   #bossbar .bar { height: 12px; border: 3px solid #3a2c20; border-radius: 8px; background: rgba(0,0,0,.4); overflow: hidden; }
   #bossbar .bar div { height: 100%; background: var(--red); width: 100%; }
   #hud .bottom { position: absolute; left: 10px; right: 10px; bottom: 12px; pointer-events: none; }
-  #patience { height: 22px; border: 3px solid #3a2c20; border-radius: 12px; background: rgba(58,44,32,.6); overflow: hidden; position: relative; }
+  #patience { height: 22px; border: 3px solid #3a2c20; border-radius: 14px; background: rgba(58,44,32,.6); overflow: hidden; position: relative; }
   #patience div { height: 100%; width: 100%; background: linear-gradient(#8fd38a, #4f8a5b); transition: width .2s; }
   #patience.low div { background: linear-gradient(#f3a08f, #cb382e); }
   #patience span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 14px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 1px 0 #3a2c20; }
   #party { display: flex; gap: 8px; margin-top: 8px; pointer-events: auto; }
-  #party .slot { flex: 1; height: 58px; border-radius: 12px; border: 3px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
+  #party .slot { flex: 1; height: 58px; border-radius: 14px; border: 3px solid #3a2c20; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; position: relative; }
   #party .slot .face { font-size: 24px; line-height: 1; }
   #party .slot.empty { background: rgba(251,243,223,.35); border-style: dashed; cursor: default; }
   #party .slot .ap { display: flex; gap: 3px; }
@@ -365,7 +365,7 @@
 
 
   /* ───────── fact toast ───────── */
-  #toast { position: absolute; left: 14px; right: 14px; top: 118px; background: var(--card); border: 4px solid #3a2c20; border-radius: 16px; padding: 10px 14px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; pointer-events: none; z-index: 5; }
+  #toast { position: absolute; left: 14px; right: 14px; top: 118px; background: var(--card); border: 4px solid #3a2c20; border-radius: 14px; padding: 10px 14px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; pointer-events: none; z-index: 5; }
   #toast b { display: block; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; color: var(--red); }
   #toast p { margin: 3px 0 0; font: 600 18px/1.2 "Nunito", system-ui, sans-serif; }
   #toast.out { animation: fadeout .4s forwards; }
@@ -392,7 +392,7 @@
   .card b em.new { color: var(--red); }
   .card span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .cards.tall { flex-direction: row; gap: 8px; align-items: stretch; margin-top: 14px; }
-  .tcard { flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; background: linear-gradient(#fff 60%, color-mix(in srgb, var(--ec) 16%, #fff)); border: 3px solid #3a2c20; border-top: 9px solid var(--ec); border-radius: 16px; padding: 12px 5px 10px; cursor: pointer; overflow: visible; box-shadow: 0 5px 0 #3a2c20; font: inherit; color: inherit; animation: cardIn .4s cubic-bezier(.2,1.4,.4,1) backwards; }
+  .tcard { flex: 1 1 0; min-width: 0; position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; background: linear-gradient(#fff 60%, color-mix(in srgb, var(--ec) 16%, #fff)); border: 3px solid #3a2c20; border-top: 9px solid var(--ec); border-radius: 14px; padding: 12px 5px 10px; cursor: pointer; overflow: visible; box-shadow: 0 5px 0 #3a2c20; font: inherit; color: inherit; animation: cardIn .4s cubic-bezier(.2,1.4,.4,1) backwards; }
   .tcard:nth-child(2) { animation-delay: .08s; } .tcard:nth-child(3) { animation-delay: .16s; }
   .tcard:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
   @keyframes cardIn { from { transform: translateY(30px) scale(.85); opacity: 0; } }
@@ -417,7 +417,7 @@
   .book .pg { flex: 1; background: repeating-linear-gradient(#fffdf5 0 15px, #cfe3f2 15px 16px); border: 4px solid #3a2c20; }
   .book .pg.l { border-radius: 14px 4px 4px 14px; border-right-width: 2px; box-shadow: inset -10px 0 14px -10px rgba(0,0,0,.35); }
   .book .pg.r { border-radius: 4px 14px 14px 4px; border-left-width: 2px; transform-origin: left center; animation: flipOpen .7s .1s cubic-bezier(.3,1.3,.5,1) backwards; box-shadow: inset 10px 0 14px -10px rgba(0,0,0,.35); }
-  .book::before { content: ''; position: absolute; inset: 8px -10px -12px; background: #c0533f; border: 4px solid #3a2c20; border-radius: 16px; z-index: -1; }
+  .book::before { content: ''; position: absolute; inset: 8px -10px -12px; background: #c0533f; border: 4px solid #3a2c20; border-radius: 14px; z-index: -1; }
   @keyframes flipOpen { from { transform: rotateY(-170deg); } }
   .notes { display: flex; justify-content: center; gap: 10px; margin: -112px auto 0; min-height: 132px; position: relative; flex-wrap: wrap; }
   .snote { width: 118px; min-height: 150px; background: var(--nc); border: 3px solid #3a2c20; border-radius: 4px; box-shadow: 0 5px 0 rgba(58,44,32,.55); padding: 8px 4px 6px; color: #3a2c20; display: flex; flex-direction: column; align-items: center; gap: 3px; transform: rotate(var(--rot)); animation: noteUp .55s cubic-bezier(.2,1.5,.4,1) backwards; }
@@ -439,7 +439,7 @@
   .monthpill { appearance: none; display: block; margin: 0 auto 8px; border: 2.5px solid #3a2c20; border-radius: 999px; background: rgba(255,250,235,.92); padding: 5px 12px; font: 600 16px/1.1 "Nunito", system-ui, sans-serif; color: #3a2c20; cursor: pointer; box-shadow: 0 3px 0 rgba(58,44,32,.35); }
   .monthpill b { font: 700 14px/1 "Fredoka", Arial, sans-serif; }
   .hmodes { display: flex; gap: 8px; justify-content: center; margin-top: 8px; } .hmodes .btn { position: relative; }
-  .sframe { position: relative; aspect-ratio: 4 / 3; border: 4px solid #3a2c20; border-radius: 16px; overflow: hidden; background: #e9dcc0; box-shadow: 0 5px 0 rgba(58,44,32,.35); }
+  .sframe { position: relative; aspect-ratio: 4 / 3; border: 4px solid #3a2c20; border-radius: 14px; overflow: hidden; background: #e9dcc0; box-shadow: 0 5px 0 rgba(58,44,32,.35); }
   .sframe img { width: 100%; height: 100%; object-fit: cover; display: block; animation: kenburns 9s ease-out both; }
   .sframe img.fade { animation: sfade .45s ease-out both, kenburns 9s ease-out both; }
   @keyframes kenburns { from { transform: scale(1.0); } to { transform: scale(1.07) translate(-1%, -1%); } }
@@ -462,11 +462,11 @@
   .chead { display: flex; align-items: center; gap: 8px; } .cflag { flex: 1; text-align: center; background: linear-gradient(#7b5bc8, #5a3fa0); color: #fff; border: 3px solid #e6b84a; border-radius: 10px 10px 40% 40% / 10px 10px 22% 22%; padding: 10px 6px 18px; box-shadow: 0 4px 0 #3a2c20; }
   .cflag small { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; opacity: .85; margin-bottom: 4px; } .cflag b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; } .cflag i { display: block; font-style: normal; font-size: 26px; margin-bottom: 2px; }
   #treem .panel { overflow-y: auto; padding: 14px 12px; } .thead { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; } .thead .fc { font-size: 34px; width: 46px; text-align: center; } .thead .fc .fim { width: 44px; }
-  .thead .tm { flex: 1; } .thead b { display: block; font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .thead small { font: 600 16px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); } .tpts { background: #8fd38a; border: 2.5px solid #3a2c20; border-radius: 12px; padding: 4px 10px; font: 700 16px/1 "Fredoka", Arial, sans-serif; text-align: center; } .tpts small { display: block; font: 700 12px/1.2 "Fredoka", Arial, sans-serif; color: #2f4a26; }
-  .tbook { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; padding: 6px 8px; background: #eef4ff; border: 2px dashed #6f8fc0; border-radius: 12px; font: 600 16px/1.15 "Nunito", system-ui, sans-serif; } .tbook span { flex: 1; }
+  .thead .tm { flex: 1; } .thead b { display: block; font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .thead small { font: 600 16px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); } .tpts { background: #8fd38a; border: 2.5px solid #3a2c20; border-radius: 14px; padding: 4px 10px; font: 700 16px/1 "Fredoka", Arial, sans-serif; text-align: center; } .tpts small { display: block; font: 700 12px/1.2 "Fredoka", Arial, sans-serif; color: #2f4a26; }
+  .tbook { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; padding: 6px 8px; background: #eef4ff; border: 2px dashed #6f8fc0; border-radius: 14px; font: 600 16px/1.15 "Nunito", system-ui, sans-serif; } .tbook span { flex: 1; }
   .tbr { margin-top: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; } .tbr.locked { opacity: .55; } .tbr h3 { margin: 0 0 6px; font: 700 15px/1.1 "Fredoka", Arial, sans-serif; display: flex; gap: 6px; align-items: center; } .tbr h3 small { margin-left: auto; font: 600 15px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .ttier { display: flex; gap: 6px; } .ttier + .ttier { margin-top: 6px; } .tlab { font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 3px; }
-  .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 12px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 600 14px/1.1 "Nunito", system-ui, sans-serif; color: #5a4a3a; flex: 1; }
+  .tn { flex: 1; min-width: 0; border: 2px solid #3a2c20; border-radius: 14px; padding: 6px 5px 5px; background: #fbf6ea; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; } .tn .te { font-size: 22px; line-height: 1; } .tn b { font: 700 13px/1.05 "Fredoka", Arial, sans-serif; } .tn p { margin: 0; font: 600 14px/1.1 "Nunito", system-ui, sans-serif; color: #5a4a3a; flex: 1; }
   .tn .pips { flex: none; width: 72%; } .tn .pips i { height: 10px; } .tn button { width: 100%; padding: 4px 2px; font-size: 13px; } .tn.on { background: linear-gradient(#fff8dc, #ffeaa8); box-shadow: 0 0 0 2px #ffd76a; } .tn.off { opacity: .5; } .tn.fin.on { background: linear-gradient(#ffe6f6, #f7c4ea); box-shadow: 0 0 0 2px #e58fd0; }
   .backup { margin-top: 12px; padding: 10px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; } .backup > b { display: block; font: 700 15px/1.2 "Fredoka", Arial, sans-serif; } .backup > span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .backup textarea { width: 100%; margin-top: 8px; font: 12px/1.3 monospace; border: 2px solid #3a2c20; border-radius: 10px; padding: 6px; box-sizing: border-box; }
@@ -481,32 +481,32 @@
   .crtiles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 0 12px; } .crtiles .rt { min-width: 64px; height: 64px; font-size: 32px; border-width: 3px; border-radius: 14px; animation: noteUp .45s cubic-bezier(.2,1.5,.4,1) backwards; } .crtiles .rt small { font-size: 13px; bottom: -6px; }
   .crtiles .rt:nth-child(2) { animation-delay: .12s; } .crtiles .rt:nth-child(3) { animation-delay: .24s; } .crtiles .rt:nth-child(4) { animation-delay: .36s; } .crtiles .rt:nth-child(5) { animation-delay: .48s; }
   .famrow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 8px; }
-  .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 12px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
+  .fam { appearance: none; text-align: left; border: 2.5px solid #3a2c20; border-radius: 14px; background: rgba(255,255,255,.5); padding: 6px 8px; cursor: pointer; color: var(--muted); opacity: .75; }
   .fam b { display: block; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: #3a2c20; } .fam span { font: 600 15px/1.1 "Nunito", system-ui, sans-serif; }
   .fam.on { background: #fff; opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: var(--teal); } .fam.full { background: linear-gradient(#fff3c4, #ffd76a); opacity: 1; box-shadow: 0 3px 0 #3a2c20; color: #3a2c20; }
   .teampow { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #3a2c20; color: #fbf3df; border-radius: 14px; padding: 8px 12px; margin: 4px 0 8px; font: 600 17px/1.1 "Nunito", system-ui, sans-serif; }
   .teampow b { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #ffd76a; }
   .row { display: flex; gap: 10px; margin-top: 14px; }
   .row .btn { flex: 1; }
-  .remlist { display: flex; flex-direction: column; gap: 6px; width: 100%; } .rem { display: grid; grid-template-columns: 40px 1fr; align-items: center; column-gap: 8px; background: #fff; border: 3px solid var(--line); border-radius: 12px; padding: 6px 10px; text-align: left; }
+  .remlist { display: flex; flex-direction: column; gap: 6px; width: 100%; } .rem { display: grid; grid-template-columns: 40px 1fr; align-items: center; column-gap: 8px; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 6px 10px; text-align: left; }
   .rem .ic { grid-row: span 2; font-size: 28px; text-align: center; } .rem b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; } .rem i { font: 700 14px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; color: var(--muted); }
-  .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px; } .wt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 12px; font: inherit; color: var(--ink); cursor: pointer; }
+  .ward { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 4px; } .wt { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 14px; font: inherit; color: var(--ink); cursor: pointer; }
   .wt.on { border-color: var(--green); background: #eef7e6; } .wt.buy { background: #f7efe0; } .wt:disabled { opacity: .5; } .wt b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; } .wt small { font: 700 13px/1.1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .wt .wem { font-size: 28px; line-height: 34px; } .wt .what { width: 44px; height: 44px; object-fit: contain; } .wt .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); }
   #socBody .intro { font: 600 15px/1.35 "Nunito", system-ui, sans-serif; color: var(--muted); margin: 6px 2px; text-align: left; }
   #title .goalpill { position: absolute; top: 272px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 7px 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: linear-gradient(90deg, #f5c95a var(--f, 0%), #fff6dc var(--f, 0%)); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); white-space: nowrap; box-shadow: 0 3px 0 rgba(58,44,32,.35); cursor: pointer; } #title .goalpill.can { animation: goalglow 1s ease-in-out infinite alternate; } @keyframes goalglow { to { box-shadow: 0 3px 0 rgba(58,44,32,.35), 0 0 0 5px rgba(245,201,90,.55); } } .wt { position: relative; } .wt .pin { position: absolute; top: 2px; right: 4px; font-style: normal; }
   #title .evpill { position: absolute; top: 232px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 7px 14px; border: 2.5px solid var(--ink); border-radius: 999px; background: #fff6dc; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); box-shadow: 0 3px 0 rgba(58,44,32,.3); white-space: nowrap; }
   .raidboss { text-align: center; margin: 4px 0; } .raidboss span { font-size: 52px; display: block; } .raidboss b { font: 700 20px/1.1 "Fredoka", Arial, sans-serif; display: block; } .raidboss small { font: 600 14px/1.3 "Nunito", system-ui, sans-serif; color: var(--muted); } .lvbar.raid i { background: var(--red); }
-  .soctabs { display: flex; gap: 6px; margin: 2px 0 8px; } .soctabs button { flex: 1; padding: 8px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); } .soctabs button.on { background: var(--gold); }
-  .lvbar { position: relative; height: 24px; border: 2.5px solid var(--ink); border-radius: 12px; background: #fff; overflow: hidden; margin: 6px 0; } .lvbar i { position: absolute; inset: 0 auto 0 0; background: var(--purple); } .lvbar.goal i { background: var(--green); }
+  .soctabs { display: flex; gap: 6px; margin: 2px 0 8px; } .soctabs button { flex: 1; padding: 8px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--ink); } .soctabs button.on { background: var(--gold); }
+  .lvbar { position: relative; height: 24px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; overflow: hidden; margin: 6px 0; } .lvbar i { position: absolute; inset: 0 auto 0 0; background: var(--purple); } .lvbar.goal i { background: var(--green); }
   .lvbar span { position: relative; display: block; text-align: center; font: 700 14px/19px "Nunito", system-ui, sans-serif; } .steps { display: flex; gap: 6px; } .steps .btn { flex: 1; padding: 6px 2px; }
   .mates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .mate { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: #fff; border: 2px solid var(--line); border-radius: 10px; } .mate.me { border-color: var(--gold); background: #fff6dc; }
   .mate span { font-size: 22px; } .mate b { flex: 1; font: 700 14px/1.1 "Nunito", system-ui, sans-serif; } .mate i { font: 700 15px/1 "Fredoka", Arial, sans-serif; font-style: normal; }
-  .bracket { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; } .brow { display: grid; grid-template-columns: 1fr auto; padding: 8px 10px; background: #fff; border: 2.5px solid var(--line); border-radius: 12px; } .brow small { grid-column: 1 / -1; font: 700 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
+  .bracket { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; } .brow { display: grid; grid-template-columns: 1fr auto; padding: 8px 10px; background: #fff; border: 2.5px solid var(--line); border-radius: 14px; } .brow small { grid-column: 1 / -1; font: 700 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .brow b { font: 700 16px/1.2 "Fredoka", Arial, sans-serif; } .brow span { font: 700 14px/1.4 "Nunito", system-ui, sans-serif; color: var(--green); } .brow.cur { border-color: var(--gold); background: #fff6dc; } .brow.won { border-color: var(--green); }
   .cupres { text-align: center; padding: 8px; } .cupres > b { font: 700 28px/1.1 "Fredoka", Arial, sans-serif; display: block; } .cupres.win > b { color: var(--green); } .cupres .vs { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 14px 0; } .cupres .vs span { flex: 1; font: 700 15px/1.2 "Nunito", system-ui, sans-serif; }
   .cupres .vs i { font: 700 30px/1.2 "Fredoka", Arial, sans-serif; font-style: normal; } .cupres .vs em { font: 700 18px/1 "Fredoka", Arial, sans-serif; } .cupres small { font: 600 16px/1.3 "Nunito", system-ui, sans-serif; }
-  .trophy { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; background: #fff; border: 3px solid var(--line); border-radius: 12px; opacity: .7; } .trophy.got { opacity: 1; border-color: var(--gold); }
+  .trophy { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; background: #fff; border: 3px solid var(--line); border-radius: 14px; opacity: .7; } .trophy.got { opacity: 1; border-color: var(--gold); }
   .trophy .em { font-size: 26px; text-align: center; } .trophy b { display: block; font: 700 17px/1.1 "Fredoka", Arial, sans-serif; } .trophy small { font: 600 15px/1.25 "Nunito", system-ui, sans-serif; color: var(--muted); } .trophy i { font-style: normal; color: var(--green); font-size: 20px; }
   .bigstats { display: flex; gap: 8px; margin: 10px 0 4px; } .bigstats > div { flex: 1; background: #fff; border: 3px solid var(--line); border-radius: 14px; padding: 8px 4px 6px; text-align: center; }
   .bigstats b { display: block; font: 700 30px/1 "Fredoka", Arial, sans-serif; } .bigstats .know b { color: var(--teal); } .bigstats span { font: 700 15px/1.2 "Fredoka", Arial, sans-serif; color: var(--muted); }
@@ -518,7 +518,7 @@
   .stat.know { color: var(--teal); font-weight: 700; }
   .panel canvas.m { width: 100px; height: 125px; display: block; margin: -46px auto 0; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
   .runs { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
-  .runs i { width: 46px; height: 46px; border-radius: 12px; border: 3px solid #3a2c20; background: #d7c9a7; display: grid; place-items: center; font-size: 22px; font-style: normal; }
+  .runs i { width: 46px; height: 46px; border-radius: 14px; border: 3px solid #3a2c20; background: #d7c9a7; display: grid; place-items: center; font-size: 22px; font-style: normal; }
   .runs i.on { background: var(--gold); }
   .timer { font: 600 17px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 0 0 8px; }
   .quizcard { background: #fff; border: 4px solid #3a2c20; border-radius: 14px; padding: 14px 16px; font: 600 22px/1.25 "Nunito", system-ui, sans-serif; text-align: center; margin: 6px 0 12px; box-shadow: var(--shadow); transform: rotate(-1.5deg); }
@@ -527,7 +527,7 @@
   .colors { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
   .colors button { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; font-size: 24px; cursor: pointer; box-shadow: 0 3px 0 #3a2c20; }
   .colors button.on { background: var(--gold); transform: scale(1.1); }
-  .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 12px; font: 600 18px/1.2 "Nunito", system-ui, sans-serif; text-align: center; }
+  .joined { margin: 8px 0 0; padding: 8px 12px; background: #fff; border: 3px solid var(--green); border-radius: 14px; font: 600 18px/1.2 "Nunito", system-ui, sans-serif; text-align: center; }
   .howcards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .hc { border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px; font: 600 17px/1.2 "Nunito", system-ui, sans-serif; text-align: center; } .hc i { display: block; font-style: normal; font-size: 34px; margin-bottom: 4px; } .hc b { font-family: "Fredoka", Arial, sans-serif; }
   .howto li { margin-bottom: 6px; }
 
@@ -546,14 +546,14 @@
   .otile small { font: 700 12px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
   .otile .ie { font-size: 30px; line-height: 1.1; position: relative; } .otile .ie > i:not(.ico), .vt span > i:not(.ico) { position: absolute; right: -10px; bottom: -4px; font-size: 13px; font-style: normal; } /* the theme badge only: a swapped-in icon is an <i> too, and it was being shrunk into the corner over the words */
   .otile b { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .otile em { font: 600 14px/1.1 "Nunito", system-ui, sans-serif; font-style: normal; color: var(--muted); }
-  .albumh { appearance: none; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border: 2.5px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 10px; cursor: pointer; color: #3a2c20; }
+  .albumh { appearance: none; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border: 2.5px solid #3a2c20; border-radius: 14px; background: #fff; padding: 8px 10px; cursor: pointer; color: #3a2c20; }
   .albumh b { font: 700 15px/1 "Fredoka", Arial, sans-serif; } .albumh span { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .vtier { margin-top: 6px; } .vtier > small { font: 700 13px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
   .vgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 4px; }
   .vt { border: 2.5px solid #3a2c20; border-radius: 10px; background: #fff; padding: 4px 2px; text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 0; }
   .vt span { font-size: 22px; line-height: 1.1; position: relative; } .vt b { font: 700 12px/1.05 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .vt small { font: 600 13px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
   .vt.unk { background: rgba(58,44,32,.08); border-style: dashed; color: var(--muted); } .vt.unk span { opacity: .6; }
-  .slotb { flex: 1; height: 54px; border-radius: 12px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .slotb { flex: 1; height: 54px; border-radius: 14px; border: 3px solid var(--rc, #3a2c20); background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: 700 12px/1 "Fredoka", Arial, sans-serif; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
   .slotb .ie { font-size: 22px; line-height: 1; }
   .slotb.empty { border-style: dashed; background: rgba(58,44,32,.05); }
   .itm { display: flex; gap: 10px; align-items: center; background: #fff; border: 3px solid var(--rc); border-radius: 14px; padding: 8px 10px; }
@@ -572,10 +572,10 @@
   .sheetbtns { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } .sheethint { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); text-align: center; margin: 8px 0 0; }
   .rackh { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; margin: 12px 2px 6px; }
   .variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
-  .var { background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 6px; text-align: center; font: 600 14px/1.15 "Nunito", system-ui, sans-serif; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
+  .var { background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 6px; text-align: center; font: 600 14px/1.15 "Nunito", system-ui, sans-serif; } .var .ie { font-size: 24px; display: block; } .var b { display: block; font: 700 13px/1.1 "Fredoka", Arial, sans-serif; } .var small { display: block; color: var(--muted); } .var .fx { color: var(--teal); } .var.none { opacity: .45; } .var.on { border-color: #4f8a5b; background: #eef7e8; }
   .itm .ibtns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; } .itm .ibtns .btn { min-width: 96px; font-size: 13px; padding: 5px 8px; }
   .lootrow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
-  .lootc { width: 84px; border: 3px solid var(--rc); border-radius: 12px; background: #fff; padding: 6px 2px; text-align: center; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  .lootc { width: 84px; border: 3px solid var(--rc); border-radius: 14px; background: #fff; padding: 6px 2px; text-align: center; font: 700 14px/1.1 "Fredoka", Arial, sans-serif; color: var(--rc); animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .lootc .ie { font-size: 26px; display: block; margin-bottom: 3px; } .lootc small { display: block; font-size: 13px; margin-top: 2px; color: var(--ink); opacity: .85; }
   .lootc.big { width: 96px; font-size: 14px; } .lootc.big .ie { font-size: 36px; }
   .offer { display: flex; gap: 12px; align-items: center; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 10px 12px; }
@@ -589,10 +589,10 @@
   #picksBox { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; } #picksBox .rackh { margin: 2px 2px 0; display: flex; justify-content: space-between; align-items: baseline; } #picksBox .rackh small { font: 600 13px/1 Nunito, Arial, sans-serif; color: #6b5a48; }
   .offer.pick { background: #fff6dc; } .offer.pick.done { opacity: .6; } .swatch.big { display: inline-block; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a2c20; vertical-align: middle; }
   .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
-  .day { border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 4px; text-align: center; font: 700 13px/1.2 "Fredoka", Arial, sans-serif; }
+  .day { border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; font: 700 13px/1.2 "Fredoka", Arial, sans-serif; }
   .day .ie { font-size: 22px; display: block; } .day.got { background: var(--green); color: #fff; opacity: .75; } .day.now { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-  .cardback { width: 150px; height: 200px; margin: 0 auto 12px; border: 4px solid #3a2c20; border-radius: 16px; background: repeating-linear-gradient(45deg, #20525c 0 12px, #2a6a76 12px 24px); display: grid; place-items: center; font-size: 60px; box-shadow: var(--shadow); transition: transform .4s; }
+  .cardback { width: 150px; height: 200px; margin: 0 auto 12px; border: 4px solid #3a2c20; border-radius: 14px; background: repeating-linear-gradient(45deg, #20525c 0 12px, #2a6a76 12px 24px); display: grid; place-items: center; font-size: 60px; box-shadow: var(--shadow); transition: transform .4s; }
   .cardback.flip { transform: rotateY(180deg); }
   .reveal { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-height: 70px; }
   .lootc.shelf { cursor: pointer; font-family: inherit; } .lootc.shelf:disabled { opacity: .55; cursor: default; } .lootc.shelf:not(:disabled):active { transform: scale(.96); }
@@ -621,7 +621,7 @@
   .syn span { font: 600 16px/1 "Nunito", system-ui, sans-serif; background: #fff; border: 2px solid var(--green); color: var(--green); border-radius: 999px; padding: 5px 9px; }
   .syn span.off { border-color: var(--line); color: var(--muted); background: transparent; }
   .toggles { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 4px; text-align: left; }
-  .tog { display: flex; align-items: center; gap: 10px; background: #fff; border: 3px solid #3a2c20; border-radius: 12px; padding: 8px 12px; cursor: pointer; }
+  .tog { display: flex; align-items: center; gap: 10px; background: #fff; border: 3px solid #3a2c20; border-radius: 14px; padding: 8px 12px; cursor: pointer; }
   .tog .em { font-size: 24px; width: 32px; text-align: center; }
   .tog b { font: 700 16px/1.1 "Fredoka", Arial, sans-serif; display: block; }
   .tog span { font: 600 16px/1.15 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
@@ -631,7 +631,7 @@
   .tog.on .sw { background: var(--green); } .tog.on .sw::after { left: 20px; }
   .evo { position: absolute; left: 0; right: 0; top: 38%; text-align: center; pointer-events: none; z-index: 8; animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
   .evo b { display: block; font: 700 44px/1 "Fredoka", Arial, sans-serif; color: #fff; text-shadow: 0 4px 0 #3a2c20, 0 10px 24px rgba(0,0,0,.4); }
-  .evo span { display: inline-block; margin-top: 6px; font: 600 20px/1.2 "Nunito", system-ui, sans-serif; background: var(--card); border: 3px solid #3a2c20; border-radius: 12px; padding: 6px 14px; }
+  .evo span { display: inline-block; margin-top: 6px; font: 600 20px/1.2 "Nunito", system-ui, sans-serif; background: var(--card); border: 3px solid #3a2c20; border-radius: 14px; padding: 6px 14px; }
   @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes bounceIn { from { transform: translateY(-40px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
 </style>
@@ -649,7 +649,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 100</div>
+    <div class="build">build 101</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2685,7 +2685,7 @@ const SFX = {
   crit:  () => { tone(1320, .16, { type: 'square', vol: .06 }); tone(1980, .22, { vol: .12, at: .03 }); },
   bonk:  () => { tone(140, .25, { vol: .5, slide: .6 }); noise(.12, { vol: .22, f: 400, type: 'lowpass' }); },
   level: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .26, { type: 'triangle', vol: .2, at: i * .08 })),
-  coin:  () => { tone(1568, .07, { type: 'square', vol: .05 }); tone(2093, .12, { type: 'square', vol: .05, at: .06 }); },
+  coin:  () => { const n = performance.now(), st = SND.cst = n - (SND.cat || 0) < 600 ? Math.min(8, (SND.cst || 0) + 1) : 0, k = Math.pow(2, st / 12); SND.cat = n; tone(1568 * k, .07, { type: 'square', vol: .05 }); tone(2093 * k, .12, { type: 'square', vol: .05, at: .06 }); }, // quick pickups climb the scale
   xp:    () => tone(880 + Math.random() * 220, .06, { vol: .045 }),
   book:  () => { noise(.18, { vol: .18, f: 1800, q: .7 }); [784, 988, 1175, 1568].forEach((f, i) => tone(f, .4, { vol: .13, at: .15 + i * .07 })); },
   forge: () => { noise(.08, { vol: .32, f: 3500, q: 3 }); [1200, 1810, 2650].forEach(f => tone(f, .7, { vol: .06, at: .01 })); },
@@ -2976,7 +2976,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 16, .6); }
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
-  e.hp -= d; if (!(e.flashAt > G.t - .3)) { e.hit = .12; e.flashAt = G.t; } e.sq = .14; /* white flash at most ~3 times a second (WCAG 2.3.1), a squash on every hit in between */
+  e.hp -= d; if (crit || knock >= 60) e.freeze = .07; if (!(e.flashAt > G.t - .3)) { e.hit = .12; e.flashAt = G.t; } e.sq = .14; /* white flash at most ~3 times a second (WCAG 2.3.1), a squash on every hit in between */
   if (e === G.boss) { e.taken = (e.taken || 0) + d; if (e.minSec && !G.endless && (e.hit1 == null || e.age - e.hit1 < 1)) e.hp = Math.max(e.hp, e.maxhp * .5); } // a boss can't be deleted in its first second: the health floor (update) sizes it from these hits
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   sfx(crit ? 'crit' : 'hit');
@@ -3324,7 +3324,7 @@ function update(dt) {
   G.radius = ringSoft(G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
-    e.hit -= dt; e.sq -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
+    e.hit -= dt; e.sq -= dt; e.bonk -= dt; if (e.freeze > 0) { e.freeze -= dt; continue; } // hit-stop: a beat's pause on a big hit e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
     if (e.V && e.V.hurry && !e.hurried && ringD(e) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
@@ -3406,7 +3406,7 @@ function update(dt) {
     const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
-    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v * (1 + diaryStat('xp') / 100); if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
+    if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v * (1 + diaryStat('xp') / 100); if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.fx.push({ k: 'cfly', x: o.x, y: o.y, t: 0, life: .45 }); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   G.dtLast = dt;
@@ -3993,6 +3993,23 @@ function bossFront(id, r, col) {
   else if (id === 'hot') { ctx.fillStyle = '#ffe36b'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(r * .12, -r * .45, r * .3, 0, 7); ctx.fill(); ctx.stroke(); }
   ctx.restore();
 }
+// damage on the body instead of a bar: a creased corner at two-thirds, a torn cover at one-third
+function bodyDamage(e, x, y, r) { const f = e.hp / e.maxhp; if (f > .66) return; ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+  ctx.fillStyle = '#fbf3df'; ctx.beginPath(); ctx.moveTo(x + r * .55, y - r * .7); ctx.lineTo(x + r * .85, y - r * .7); ctx.lineTo(x + r * .85, y - r * .4); ctx.closePath(); ctx.fill(); ctx.stroke(); // the dog-ear
+  ctx.beginPath(); ctx.moveTo(x - r * .5, y - r * .55); ctx.lineTo(x - r * .3, y - r * .25); ctx.lineTo(x - r * .48, y - r * .05); ctx.lineTo(x - r * .28, y + r * .2); ctx.stroke(); // a crack
+  if (f < .33) { ctx.beginPath(); ctx.moveTo(x + r * .2, y + r * .1); ctx.lineTo(x + r * .45, y + r * .3); ctx.lineTo(x + r * .25, y + r * .5); ctx.lineTo(x + r * .5, y + r * .7); ctx.stroke();
+    const t = G.t * 3 + e.id.length, fx = x + r * .9 + Math.sin(t) * 3, fy = y - r * .2 + (t % 2) * 4; ctx.fillStyle = '#fbf3df'; ctx.save(); ctx.translate(fx, fy); ctx.rotate(Math.sin(t) * .5); ctx.fillRect(-4, -5, 8, 10); ctx.strokeRect(-4, -5, 8, 10); ctx.restore(); } // a loose scrap flapping off
+  ctx.restore(); }
+// slow as a coating: frost on the edges and a snow cap, not a disc
+function frostCoat(e, x, y, r) { ctx.save(); ctx.globalAlpha = .28; ctx.fillStyle = '#9fd0ff'; ctx.beginPath(); ctx.arc(x, y, r * .95, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = '#5c8cbe'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y - r * .95, r * .5, r * .16, 0, Math.PI, 0); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = '#e8f6ff'; ctx.lineWidth = 2; for (let k = 0; k < 4; k++) { const a = k * 1.7 + .4, px = x + Math.cos(a) * r * .95, py = y + Math.sin(a) * r * .95, s2 = r * .14; ctx.beginPath(); for (let i = 0; i < 3; i++) { const b = i * Math.PI / 3; ctx.moveTo(px - Math.cos(b) * s2, py - Math.sin(b) * s2); ctx.lineTo(px + Math.cos(b) * s2, py + Math.sin(b) * s2); } ctx.stroke(); }
+  ctx.restore(); }
+// every kind its own walk: [hop height, lean]
+function gait(e, step) { const s = Math.sin(e.walk || 0), a = Math.abs(s); switch (e.kind) {
+  case 'tank': return [0, s * .09]; case 'dasher': return [a * 5, s * .03]; case 'healer': return [0, Math.sin((e.walk || 0) * .5) * .1];
+  case 'swarm': case 'mini': return [a * 2, Math.sin((e.walk || 0) * 3) * .08]; case 'rumour': return [0, .12 * (e.vx > 0 ? 1 : -1)]; case 'gossip': return [a * 10, 0];
+  default: return [0, step * .05]; } }
 function drawEnemy(e) {
   if (isVil(e) && ready(art(vilOf(e) + '_idle'))) return drawSses(e);
   const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
@@ -4004,13 +4021,13 @@ function drawEnemy(e) {
   const big = e.kind === 'boss' || e.kind === 'mirage', S3 = e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind);
   if (S3 || e3) { // the 3D myth: faces the way it walks, tinted its own colour, with the code's bob, crouch and lean on top
     const mv = Math.hypot(e.vx || 0, e.vy || 0), toDad = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), phi = big || e.kind === 'gossip' || mv < 6 ? toDad : Math.atan2(e.vy, e.vx), dir = Math.cos(toDad) >= 0 ? 1 : -1;
-    const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : 0, crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
-    const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : .18), hitSq = e.sq > 0 ? (e.sq / .14) ** 2 * (big ? .35 : .9) : 0; // the cartoon 'oof': wide and short, springing back
+    const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : e.stun > 0 ? 0 : gait(e, step)[0], crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
+    const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : e.kind === 'tank' ? .32 : e.kind === 'rumour' ? 0 : .18), hitSq = e.sq > 0 ? (e.sq / .14) ** 2 * (big ? .35 : .9) : 0; // the cartoon 'oof': wide and short, springing back
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
-    const lean3 = flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05);
-    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const lean3 = flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : gait(e, step)[1]);
+    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : gait(e, step)[1]) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (e.kind === 'pelter' || e.kind === 'caster') rangedGear(e, x, y + r * .95 + hover - h * .92, dir);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
@@ -4115,9 +4132,11 @@ function drawEnemy(e) {
   if (e.weak > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 5; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.arc(x, y, r * 1.25 + Math.sin(G.t * 8) * 4, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.font = '700 16px Fredoka, Arial'; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('WEAK SPOT', x, y + r + 28); }
   if (e.tag && G.t - e.tag.t < 2.5 && e.hp > 0) { ctx.save(); ctx.globalAlpha = 1 - (G.t - e.tag.t) / 2.5 * .6; ctx.font = `14px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(ELEM[e.tag.el].em, x - r * .9, y - r - 6); ctx.restore(); }
   if (e.elite) { ctx.font = `${Math.round(r * .5)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('👑', x, y - r - 6); ctx.textBaseline = 'alphabetic'; ctx.strokeStyle = 'rgba(236,178,60,.8)'; ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(x, y, r * 1.15, G.t * 2, G.t * 2 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
-  if (e.slow > 0) { ctx.fillStyle = 'rgba(120,190,255,.4)'; ctx.beginPath(); ctx.arc(x, y, r * 1.1, 0, 7); ctx.fill(); }
-  if (e.stun > 0) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.textAlign = 'center'; const sx = x + Math.cos(G.t * 6) * r * .5, sy = y - r - 8 + Math.sin(G.t * 6) * 3; ctx.strokeText('?', sx, sy); ctx.fillText('?', sx, sy); }
-  if (e.kind === 'tank' || e.kind === 'boss' || e.kind === 'hardcover' || e.kind === 'healer' || e.elite) { const w = r * 1.6, by = y - r - (e.kind === 'boss' ? 40 : e.elite ? 24 : 16); ctx.fillStyle = '#3a2c20'; ctx.fillRect(x - w / 2 - 1, by, w + 2, 7); ctx.fillStyle = '#cb382e'; ctx.fillRect(x - w / 2, by + 1, w * clamp(e.hp / e.maxhp, 0, 1), 5); }
+  if (e.slow > 0) frostCoat(e, x, y, r);
+  { const tell = e.aim > 0 ? 1 - e.aim / e.aimDur : e.kind === 'healer' && e.healT < .8 && e.healT > 0 ? 1 - e.healT / .8 : 0; if (tell > 0) { ctx.save(); ctx.globalAlpha = .35 + tell * .5; ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.ellipse(x, y + r * .9, r * (1.4 - tell * .4), r * (.45 - tell * .12), 0, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = tell * .35; ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.arc(x, y, r * 1.05, 0, 7); ctx.fill(); ctx.restore(); } } // the same 'get ready' tell for every special move: gold, never red
+  if (e.stun > 0) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.textAlign = 'center'; const sx = x + Math.cos(G.t * 6) * r * .5, sy = y - r - 8 + Math.sin(G.t * 6) * 3; ctx.strokeText('?', sx, sy); ctx.fillText('?', sx, sy); for (let k = 0; k < 2; k++) { const a = G.t * 5 + k * Math.PI; ctx.save(); ctx.translate(x + Math.cos(a) * r * .8, y - r * .9 + Math.sin(a) * r * .22); ctx.rotate(G.t * 4); ctx.fillStyle = '#ecb23c'; ctx.lineWidth = 2; ctx.beginPath(); for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * .1 : r * .22, aa = i / 10 * Math.PI * 2 - Math.PI / 2; ctx.lineTo(Math.cos(aa) * rr, Math.sin(aa) * rr); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); } }
+  if (e.kind !== 'boss' && (e.kind === 'tank' || e.kind === 'hardcover' || e.kind === 'healer' || e.elite)) bodyDamage(e, x, y, r);
+  if (e.kind === 'boss') { const w = r * 1.6, by = y - r - 40; ctx.fillStyle = '#3a2c20'; ctx.fillRect(x - w / 2 - 1, by, w + 2, 7); ctx.fillStyle = '#cb382e'; ctx.fillRect(x - w / 2, by + 1, w * clamp(e.hp / e.maxhp, 0, 1), 5); }
 }
 
 /* ───────── draw: world ───────── */
@@ -4161,6 +4180,7 @@ function draw() {
     if (f.k === 'die') { const e = f.e; ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(e.x, e.y); ctx.scale(1 + p * .55, 1 - p * .45); ctx.translate(-e.x, -e.y); e.hit = 1; drawEnemy(e); ctx.restore(); ctx.globalAlpha = 1; }
     else if (f.k === 'spark') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#ffd76a' : '#fff'; ctx.lineWidth = f.big ? 4 : 3; ctx.lineCap = 'round'; const L = (f.big ? 22 : 14) * (.5 + p); for (let i = -2; i <= 2; i++) { const a = f.a + i * .45; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a) * L * .35, f.y + Math.sin(a) * L * .35); ctx.lineTo(f.x + Math.cos(a) * L, f.y + Math.sin(a) * L); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
+    else if (f.k === 'cfly') { const q = 1 - Math.pow(1 - p, 3), cx = f.x + (36 - f.x) * q, cy = f.y + (100 - f.y) * q - Math.sin(p * Math.PI) * 40; ctx.save(); ctx.globalAlpha = 1; ctx.fillStyle = '#f5c95a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 7 * (1 - p * .4), 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); } // a coin flying to the counter
     else if (f.k === 'glyph') { ctx.save(); ctx.globalAlpha = 1 - p * p; ctx.translate(f.x, f.y); if (!f.g) { ctx.rotate(f.rot); ctx.fillStyle = f.col; ctx.fillRect(-f.s * .3, -f.s * .18, f.s * .6, f.s * .36); } else if (f.g === 'bubble') { ctx.strokeStyle = 'rgba(92,140,190,.9)'; ctx.lineWidth = 2; ctx.fillStyle = 'rgba(220,240,255,.35)'; ctx.beginPath(); ctx.arc(0, 0, f.s * .6 * (1 + p * .4), 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-f.s * .2, -f.s * .2, f.s * .14, 0, 7); ctx.fill(); } else { ctx.rotate(Math.sin(f.rot) * .3); ctx.fillStyle = '#000'; ctx.font = `${Math.round(f.s * 1.3)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(f.g, 0, 0); } ctx.restore(); }
     else if (f.k === 'star') { ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(f.x, f.y - p * 18); ctx.rotate(p * 3); const R = f.s * (p < .3 ? p / .3 : 1); ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i < 8; i++) { const r2 = i % 2 ? R * .4 : R, a = i / 8 * Math.PI * 2; ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
     else if (f.k === 'buzz') { ctx.globalAlpha = p < .8 ? 1 : (1 - p) * 5; ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 10; ctx.beginPath(); ctx.ellipse(f.x, f.y, f.R * (.3 + p * .75), f.R * (.3 + p * .75) * .8, 0, 0, 7); ctx.stroke(); ctx.font = `24px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2 + p * 7, R = f.R * (.3 + p * .75) + Math.sin(i * 3 + p * 20) * 12; ctx.fillText('🐝', f.x + Math.cos(a) * R, f.y + Math.sin(a) * R * .8); } ctx.textBaseline = 'alphabetic'; ctx.globalAlpha = 1; }
@@ -4820,17 +4840,21 @@ function chapterFrames(W, which, recap = true) {
 function showComic(W, which, done) { const n = WORLDS.indexOf(W) + 1, b2 = W.book === 2, c = chNum(n - 1), end = STAGES[(n - 1) * 5 + 4].last;
   showFrames(chapterFrames(W, which), c === 1 && which === 'in' ? (b2 ? '📗 The Little Book of Everybody Says' : '📖 The Big Book of Wrong') : which === 'showdown' ? (b2 ? '🗣️ The last page' : '🧐 The last page') : end && which === 'out' ? (b2 ? '📗 The Little Book of How' : '📖 The Big Book of Why') : `${W.em} ${chName(n - 1)}: ${W.name}${which === 'out' ? ', the end' : ''}`, done); }
 function showFrames(list, title, done) {
-  comicDone = done; frames = list; fi = 0; li = 0; $('#comicTitle').textContent = title;
+  typeDone(); comicDone = done; frames = list; fi = 0; li = 0; $('#comicTitle').textContent = title;
   for (const f of list) { const im = new Image(); im.src = `assets/${f.img}.jpg`; } // warm the next pictures
   $('#comicGo').hidden = true; $('#comicTap').hidden = false; $('#comicm').hidden = false; showFrame(); comicNext();
 }
 function showFrame() { const f = frames[fi], im = $('#storyImg'); im.classList.remove('fade'); void im.offsetWidth; im.onerror = () => { im.onerror = null; im.src = 'assets/story_end3.jpg'; }; im.src = `assets/${f.img}.jpg`; im.classList.add('fade'); $('#storyBig').hidden = !f.big; if (f.big) $('#storyBig').innerHTML = f.big; $('#strip').innerHTML = ''; }
+let typing = null; // the line being typed out: { el, text, i, id }
+function typeDone() { if (!typing) return; clearInterval(typing.id); typing.el.textContent = typing.text; typing = null; }
 function comicNext() {
+  if (typing) { typeDone(); return; } // the first tap finishes the line, the next one turns the page
   if (li >= frames[fi].lines.length) { if (fi + 1 >= frames.length) return; fi++; li = 0; showFrame(); sfx("book"); }
   const [who, line] = frames[fi].lines[li++], d = document.createElement('div');
   d.className = 'sline ' + (who === 'd' ? 'dad' : who === 'k' ? 'kid' : who === 'v' || who === 'h' ? 'vil' : 'narr');
   d.innerHTML = (who === 'n' ? '' : `<div class="face"><img src="${FACE[who]}" alt=""></div>`) + `<div class="bub">${who === 'n' ? '' : `<b>${WHO[who]}</b>`}${line}</div>`;
   $('#strip').appendChild(d); say(line, who);
+  if (!/[<&]/.test(line)) { const el = document.createElement('span'), bub = d.querySelector('.bub'); bub.lastChild.remove(); bub.appendChild(el); typing = { el, text: line, i: 0 }; typing.id = setInterval(() => { if (!typing) return; typing.i += 1; el.textContent = typing.text.slice(0, typing.i); if (typing.i >= typing.text.length) typeDone(); }, 35); } // lines type on, about 30 letters a second
   const end = fi + 1 >= frames.length && li >= frames[fi].lines.length; $('#comicGo').hidden = !end; $('#comicTap').hidden = end;
 }
 // the Diary can play everything seen so far, from the prologue on

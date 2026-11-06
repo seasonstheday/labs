@@ -180,13 +180,43 @@ The coin ladder now totals 50,000 instead of about 73,000. With Dad's Picks at 3
 - In the Wardrobe, a star look's tile shows progress (e.g. "⭐ 36/50"), and the header names the next one.
 - Players who already have the stars get their looks on load. Anyone who bought a crown or rainbow with coins keeps it.
 
-**Recommended next for the stores, in order:**
-1. **Add moving cosmetics:** pop confetti, a victory dance, a pet that follows Dad. They give late-game coins somewhere exciting to go.
-2. **Turn the Lunchbox and Bookmark into "pick 1 of 3 face-up"** like the Library Card shelf, so the coin store has no blind boxes.
-3. **Collection sets with a counter**, e.g. "Harvest looks 4/6" with a bonus prop for finishing.
-4. **A "Save for this!" pin:** pick a look, and the Play screen shows a fill bar toward it.
-5. **Price event shops** so everything can be bought in about 60–70% of the event, and say "Back next year!" so missing days never means missing a look.
-6. **Merge badges and cup points into one "medals" currency.** Nine currencies is a lot for early readers.
+## 7. Builds 100–101: the rest of the list
+
+**Store (build 100)**
+- **Moving looks.** Two new Wardrobe rows:
+  - **Pop style** changes every myth burst: Confetti 1,000, Bubbles 2,500, Hearts 2,500, Twinkle Stars 5,000.
+  - **Pets** follow Dad around the arena and stand beside him in the home photo: Butterfly and Ladybug 1,000, Chick and Puppy 2,500, Wise Owl 5,000.
+  - A Tiny Dragon arrives at 150 stars.
+  - Moving looks give late-game coins somewhere fun to go and, like everything in the Wardrobe, add no Power.
+- **Pick 1 of 3.** The Lunchbox and Bookmark show three face-up choices after you pay; you keep one. The choices are saved, so leaving the Shop never loses them. The coin store has no blind boxes left.
+- **Sets.** The Wardrobe counts five sets (🍂 Harvest, ❄️ Winter, 🏡 Club, 🥇 Cup, ⭐ Star). Finishing one pays 💎50 once. The event shop shows its set count and says "Back next year, so there's no rush!"
+- **Save for this.** Tapping a look you can't afford yet pins it (📌). The Play screen then shows a pill that fills toward the price and glows when you can buy it.
+- **Event pricing is already kind.** Event myths join every stage's pool, so a stage pays roughly 60–80 tokens plus 10 a day. A whole event set (about 850 tokens) takes about 10–12 stages, well inside the 13–23 days of an event. Prices are unchanged.
+- **Not done: merging badges and cup points.** They belong to the separate Club and Cup systems, with their own shops and saves. Merging them needs a save migration and a redesign of both shops, so it is better as its own change.
+
+**Creeps (build 101)**
+- **Damage shown on the body.** Tanks, hardcovers, healers and elites lost their small health bars. They get a folded corner and a crack at two-thirds health, then a second crack and a loose scrap flapping off at one-third. Only bosses keep a bar.
+- **A walk for each kind:**
+
+  | Kind | Walk |
+  |---|---|
+  | Tank | stomp (deeper squash, heavy sway) |
+  | Dasher | tiptoe hops |
+  | Healer | slow shuffle |
+  | Swarm and minis | skitter |
+  | Rumour | flat slide |
+  | Gossip | big hops |
+
+- **One warning style.** Pelters and spellbooks while aiming, and healers just before healing, glow and show a shrinking gold dashed ring at their feet, the same "get ready" tell the dasher uses. Gold, never red.
+- **Coatings instead of discs.** Slow is now a frosty tint with a snow cap and frost marks around the edge. Stun keeps its "?" and adds two orbiting gold stars.
+- **Hit-stop.** A crit or a big knockback freezes the target for 0.07 s. The rest of the game keeps moving, so a swarm never stutters.
+- **Coins fly to the counter.** Picked-up coins arc to the coin counter, and the chime climbs the scale when pickups come quickly (up to 8 steps).
+
+**Dialog and buttons (build 101)**
+- **Comic lines type on** at about 30 letters a second. The first tap finishes the line, the next one moves on. The comics already had portraits and name tabs.
+- **Arena pause and speed buttons** went from 52 to 58 px, about 51 pt on a phone.
+- **One corner style.** Every card corner is now 14 px; there were 35 at 12 or 16 px. Pop-up panels stay at 20 px and pills fully round.
+- **One gold button per pop-up:** checked, and no pop-up has more than one.
 
 ## Sources
 
