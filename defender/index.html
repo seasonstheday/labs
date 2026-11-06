@@ -48,7 +48,7 @@
   /* ───────── buttons ───────── */
   .btn { font: 700 20px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: var(--gold); border: 3px solid #3a2c20; border-radius: 14px; padding: 12px 18px; cursor: pointer; box-shadow: 0 5px 0 #3a2c20; transition: transform .08s, box-shadow .08s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
   .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a2c20; }
-  .btn.ghost { background: var(--card); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: var(--green); color: #fff; } .btn.small { font-size: 15px; padding: 8px 12px; border-radius: 11px; box-shadow: 0 4px 0 #3a2c20; }
+  .btn.ghost { background: var(--card); } .btn.teal { background: var(--teal); color: #fff; } .btn.red { background: var(--red); color: #fff; } .btn.green { background: #467f52; color: #fff; } /* a shade darker than --green: white text passes 4.5:1 at small sizes too */ .btn.small { font-size: 15px; padding: 8px 12px; border-radius: 11px; box-shadow: 0 4px 0 #3a2c20; }
   .btn.sure { background: #fff3c4; box-shadow: 0 0 0 3px #ecb23c, 0 4px 0 #3a2c20; animation: wobble .3s; } @keyframes wobble { 30% { transform: rotate(-2deg); } 70% { transform: rotate(2deg); } }
   .sayb { display: block; margin: 6px auto 0; width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid #3a2c20; background: #fff; font-size: 20px; box-shadow: 0 3px 0 #3a2c20; }
   .fcard canvas.pc, .thead .fc { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 90%; } .fcard:nth-child(2n) canvas.pc { animation-delay: -1.1s; } .fcard:nth-child(3n) canvas.pc { animation-delay: -2.2s; }
@@ -161,7 +161,7 @@
   .skring { display: flex; justify-content: center; gap: 10px; margin: 6px 0 8px; }
   .skring button { position: relative; width: 56px; height: 56px; border-radius: 50%; border: 3px solid #3a2c20; background: #fff; padding: 0; cursor: pointer; box-shadow: 0 2px 0 #3a2c20; overflow: visible; display: grid; place-items: center; font-size: 24px; }
   .skring button > span { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; } .skring .aic { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); }
-  .skring button.off { background: rgba(58,44,32,.12); box-shadow: none; } .skring i { position: absolute; bottom: -5px; right: -5px; min-width: 20px; height: 20px; border-radius: 999px; background: #3a2c20; color: #ffd76a; font: 700 12px/20px "Fredoka", Arial, sans-serif; font-style: normal; }
+  .skring button.off { background: rgba(58,44,32,.12); box-shadow: none; } .skring button > i:not(.ico) { position: absolute; bottom: -5px; right: -5px; min-width: 20px; height: 20px; border-radius: 999px; background: #3a2c20; color: #ffd76a; font: 700 12px/20px "Fredoka", Arial, sans-serif; font-style: normal; }
   .ftabs { display: flex; gap: 4px; margin: 2px 0 8px; border-bottom: 3px solid #3a2c20; }
   .ftabs button { position: relative; flex: 1; height: 40px; border: 3px solid #3a2c20; border-bottom: 0; border-radius: 12px 12px 0 0; background: rgba(58,44,32,.1); font: 700 15px/1 "Fredoka", Arial, sans-serif; color: var(--muted); cursor: pointer; }
   .ftabs button.on { background: var(--ink, #3a2c20); color: #fff; } .ftabs .dot { top: -5px; right: -3px; }
@@ -274,7 +274,7 @@
   #party .slot .ab.up { animation: abUp .9s ease-out; } @keyframes abUp { 0% { transform: scale(1.9); box-shadow: 0 0 0 4px var(--gold); } 100% { transform: none; } }
   #party .slot.slot { border-top: 5px solid var(--ec, #3a2c20); }
   #party .slot .ab { position: relative; width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid #3a2c20; background: #fff; font-size: 14px; line-height: 17px; text-align: center; overflow: hidden; }
-  #party .slot .ab i { position: absolute; left: 0; right: 0; bottom: 0; top: auto; width: auto; margin: 0; border: 0; border-radius: 0; background: rgba(58,44,32,.35); height: 0; }
+  #party .slot .ab > i:not(.ico) { position: absolute; left: 0; right: 0; bottom: 0; top: auto; width: auto; margin: 0; border: 0; border-radius: 0; background: rgba(58,44,32,.35); height: 0; }
   #party .slot .ab.off { opacity: .35; } #party .slot .ab.r5 { border-color: var(--red); box-shadow: 0 0 0 1.5px var(--red); } #party .slot .ab.r3 { border-color: var(--gold); }
   .wh { font: 700 20px/1 "Fredoka", Arial, sans-serif; margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; }
   .wh small { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -543,7 +543,7 @@
   .otile { appearance: none; position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; border: 3px solid var(--rc, #3a2c20); border-radius: 14px; background: linear-gradient(#fff, color-mix(in srgb, var(--rc, #fff) 14%, #fff)); padding: 6px 4px 7px; box-shadow: 0 3px 0 rgba(58,44,32,.3); cursor: pointer; color: #3a2c20; min-width: 0; }
   .otile.empty { border-style: dashed; background: rgba(255,255,255,.4); box-shadow: none; }
   .otile small { font: 700 12px/1 "Fredoka", Arial, sans-serif; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
-  .otile .ie { font-size: 30px; line-height: 1.1; position: relative; } .otile .ie i, .vt span i { position: absolute; right: -10px; bottom: -4px; font-size: 13px; font-style: normal; }
+  .otile .ie { font-size: 30px; line-height: 1.1; position: relative; } .otile .ie > i:not(.ico), .vt span > i:not(.ico) { position: absolute; right: -10px; bottom: -4px; font-size: 13px; font-style: normal; } /* the theme badge only: a swapped-in icon is an <i> too, and it was being shrunk into the corner over the words */
   .otile b { font: 700 13px/1.1 "Fredoka", Arial, sans-serif; overflow-wrap: anywhere; } .otile em { font: 600 14px/1.1 "Nunito", system-ui, sans-serif; font-style: normal; color: var(--muted); }
   .albumh { appearance: none; width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border: 2.5px solid #3a2c20; border-radius: 12px; background: #fff; padding: 8px 10px; cursor: pointer; color: #3a2c20; }
   .albumh b { font: 700 15px/1 "Fredoka", Arial, sans-serif; } .albumh span { font: 600 16px/1 "Nunito", system-ui, sans-serif; color: var(--muted); }
@@ -583,6 +583,8 @@
   .offer b { font: 700 18px/1.1 "Fredoka", Arial, sans-serif; display: block; }
   .offer span { font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: var(--muted); display: block; }
   .offer .btn { min-width: 96px; }
+  #picksBox { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; } #picksBox .rackh { margin: 2px 2px 0; display: flex; justify-content: space-between; align-items: baseline; } #picksBox .rackh small { font: 600 13px/1 Nunito, Arial, sans-serif; color: #6b5a48; }
+  .offer.pick { background: #fff6dc; } .offer.pick.done { opacity: .6; } .swatch.big { display: inline-block; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a2c20; vertical-align: middle; }
   .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
   .day { border: 3px solid #3a2c20; border-radius: 12px; background: #fff; padding: 6px 4px; text-align: center; font: 700 13px/1.2 "Fredoka", Arial, sans-serif; }
   .day .ie { font-size: 22px; display: block; } .day.got { background: var(--green); color: #fff; opacity: .75; } .day.now { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
@@ -644,7 +646,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 97</div>
+    <div class="build">build 98</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1382,12 +1384,12 @@ Object.assign(BOSSMOVE, {
   birddino:    { every: 10, tell: '"FLAP!"', note: 'The Last Dinosaur hops over traps and lands inside the ring. Stun it before it jumps.',
                  go: b => { const a = Math.atan2(b.y - G.dad.y, b.x - G.dad.x) + rnd(-.6, .6), R = G.radius * .55; b.hop = { t: 0, dur: .8, fx: b.x, fy: b.y, tx: G.dad.x + Math.cos(a) * R, ty: G.dad.y + Math.sin(a) * R }; } },
   skyscraper:  { every: 11, tell: '"I never wobble!"', note: 'The Skyscraper sways and knocks nearby friends dizzy. Stun it mid-boast.',
-                 go: b => { G.shake = Math.max(G.shake, .35); text(b.x, b.y - b.r - 50, 'WOBBLE!', '#fff', 22, 1.2); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 300) { m.muted = Math.max(m.muted || 0, 2); text(m.x, m.y - 50, 'Dizzy!', '#c9ccd3', 15, 1); } G.fx.push({ k: 'ring', x: b.x, y: b.y, R: 300, t: 0, life: .6, col: '#c9ccd3' }); } },
+                 go: b => { G.shake = Math.max(G.shake, .35); text(b.x, b.y - b.r - 50, 'WOBBLE!', '#fff', 22, 1.2); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 300) { m.muted = Math.max(m.muted || 0, 2); text(m.x, m.y - 50, 'Dizzy!', '#c9ccd3', 16, 1); } G.fx.push({ k: 'ring', x: b.x, y: b.y, R: 300, t: 0, life: .6, col: '#c9ccd3' }); } },
   heartleft:   { every: 10, tell: '"Ba-DUM."', note: 'The Heart\'s beat speeds up the myths around it and rattles friends. Stun it between beats.',
                  go: b => { for (const e of nearMyths(b, 280)) if (!e.pumped) { e.pumped = true; e.spd *= 1.35; } for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 220) m.muted = Math.max(m.muted || 0, 1.2); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: 280, t: 0, life: .6, col: '#e8707a' }); text(b.x, b.y - b.r - 50, 'Ba-DUM!', '#f3a0a8', 22, 1.2); } },
   cloudweight: { every: 11, tell: '"Foggy!"', note: 'The Cloud fogs your ring smaller for a while. Stun it mid-sentence to stop it.', go: b => { G.fog = 3.5; text(G.dad.x, G.dad.y - 90, 'FOG', '#c9dbe6', 22, 1.2); } },
   everest:     { every: 10, tell: '"Still GROWING!"', note: 'Everest gets bigger and tougher each time. Stun it during the tell to stop it growing.',
-                 go: b => { if ((b.grown || 0) >= 3) { text(b.x, b.y - b.r - 50, '"…that\'s as tall as I get."', '#fff', 15, 1.2); return; } b.grown = (b.grown || 0) + 1; b.r *= 1.1; const add = b.maxhp * .12; b.hp += add; b.maxhp += add; text(b.x, b.y - b.r - 50, 'TALLER!', '#fff', 22, 1.2); } },
+                 go: b => { if ((b.grown || 0) >= 3) { text(b.x, b.y - b.r - 50, '"…that\'s as tall as I get."', '#fff', 16, 1.2); return; } b.grown = (b.grown || 0) + 1; b.r *= 1.1; const add = b.maxhp * .12; b.hp += add; b.maxhp += add; text(b.x, b.y - b.r - 50, 'TALLER!', '#fff', 22, 1.2); } },
   sunfire:     { every: 12, tell: '"Toasty!"', note: 'The Sun warms your ring. Stun it to cool things off.', go: b => { G.heat = { t: 0, dur: 5, by: b }; text(G.dad.x, G.dad.y - 90, 'Getting toasty…', '#f0a35a', 17, 1.2); } },
 });
 // Lady Hearsay borrows Book 2's moves the way Sir Ever-So-Sure borrows Book 1's
@@ -1729,7 +1731,7 @@ function react(e, key) { sfx('zap');
   if (key === 'water+spark') { for (const o of near(130).slice(0, 3)) { G.fx.push({ k: 'bolt', x1: e.x, y1: e.y, x2: o.x, y2: o.y, t: 0, life: .3 }); hurt(o, base, 0, { x: e.x, y: e.y, id: 'react' }); } }
   else if (key === 'spark+wind') { G.fx.push({ k: 'bolt', x1: e.x + rnd(-30, 30), y1: e.y - 260, x2: e.x, y2: e.y, t: 0, life: .35, big: true }); hurt(e, base * 2, 0, { x: e.x, y: e.y, id: 'react' }); G.shake = Math.max(G.shake, .12); }
   else if (key === 'wind+earth') { G.fx.push({ k: 'ring', x: e.x, y: e.y, R: 110, t: 0, life: .6, col: '#d9c49a' }); for (const o of [e, ...near(110)]) { const a = Math.atan2(e.y - o.y, e.x - o.x); o.kx += Math.cos(a) * 90; o.ky += Math.sin(a) * 90; o.slow = Math.max(o.slow, 1.5); } hurt(e, base, 0, { x: e.x, y: e.y, id: 'react' }); }
-  else if (key === 'earth+moon') { e.stun = Math.max(e.stun, 1.4); text(e.x + 14, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.2); hurt(e, base * .6, 0, { x: e.x, y: e.y, id: 'react' }); }
+  else if (key === 'earth+moon') { e.stun = Math.max(e.stun, 1.4); text(e.x + 14, e.y - e.r - 14, 'z z z', '#c9c2ff', 16, 1.2); hurt(e, base * .6, 0, { x: e.x, y: e.y, id: 'react' }); }
   else if (key === 'water+moon') { G.fx.push({ k: 'splash', x: e.x, y: e.y + 6, R: 70, t: 0, life: .45, col: '#8fc7f0' }); for (const o of [e, ...near(80)]) { o.slow = Math.max(o.slow, 1.2); hurt(o, base * .5, 120, { x: G.dad.x, y: G.dad.y, id: 'react' }); } }
 }
 const HOME = { shelly: 6, goldie: 8, prickles: 14, jelly: 18, echo: 30 }; // the stage after which first clears start filling their book
@@ -1888,7 +1890,7 @@ function treeHit(e, d, T, from) { G.treeHits = (G.treeHits || 0) + 1; const id =
   if (fx.includes('burn')) { const tick = Math.max(1, d * .06); for (let i = 1; i <= 3; i++) G.pending.push({ at: G.t + i * .6, fn: () => { if (e.hp > 0) plain(e, tick); } }); }
   if (fx.includes('splash') && G.fx.length < 240) { near(50, o => plain(o, d * .25)); G.fx.push({ k: 'splash', x: e.x, y: e.y, R: 50, t: 0, life: .3, col: '#8fd0f0' }); }
   if (fx.includes('chain') && Math.random() < .33) { const o = G.enemies.filter(o => o !== e && o.hp > 0 && dist(o, e) < 130).sort((x, y) => dist(x, e) - dist(y, e))[0]; if (o) { G.fx.push({ k: 'bolt', x1: e.x, y1: e.y, x2: o.x, y2: o.y, t: 0, life: .2 }); plain(o, d * .6); } }
-  if (fx.includes('echo') && Math.random() < .25) G.pending.push({ at: G.t + .3, fn: () => { if (e.hp > 0) { plain(e, d * .6); text(e.x, e.y - e.r - 30, 'again!', '#fff', 13, .6); } } });
+  if (fx.includes('echo') && Math.random() < .25) G.pending.push({ at: G.t + .3, fn: () => { if (e.hp > 0) { plain(e, d * .6); text(e.x, e.y - e.r - 30, 'again!', '#fff', 16, .6); } } });
   if (!fin) return;
   if (a === 'web' && fin === 'bespoke') { e.stun = Math.max(e.stun, e.kind === 'boss' ? .2 : .6); near(60, o => { o.slow = Math.max(o.slow, 1.5); }); }
   if (a === 'zap' && fin === 'bespoke' && !T.storm && Math.random() < .35) { T.storm = 1; G.fx.push({ k: 'bolt', x1: e.x + rnd(-20, 20), y1: e.y - 260, x2: e.x, y2: e.y, t: 0, life: .3, big: true }); plain(e, d * .6); near(55, o => plain(o, d * .6)); G.shake = .08; }
@@ -1902,7 +1904,7 @@ function treeHit(e, d, T, from) { G.treeHits = (G.treeHits || 0) + 1; const id =
 function treeKill(e, T) { const fx = tFx(T.id, T.a), fin = tHasFin(T.id, T.a) && tFinKey(T.id, T.a);
   if (fx.includes('lucky') && Math.random() < .35) G.orbs.push({ k: 'coin', x: e.x, y: e.y, v: 1 });
   if (fin === 'nova') { G.fx.push({ k: 'ring', x: e.x, y: e.y, R: 60, t: 0, life: .3, col: '#ffd76a' }); for (const o of G.enemies) if (o.hp > 0 && dist(o, e) < 60 + o.r) { const s = G.src; G.src = null; hurt(o, Math.max(6, e.maxhp * .25), 30, { x: e.x, y: e.y, id: T.id }); G.src = s; } }
-  if (T.a === 'tongue' && fin === 'bespoke') { G.hp = Math.min(G.maxhp, G.hp + 1); text(e.x, e.y - 30, '+1 💗', '#f6a0b8', 14, .8); }
+  if (T.a === 'tongue' && fin === 'bespoke') { G.hp = Math.min(G.maxhp, G.hp + 1); text(e.x, e.y - 30, '+1 💗', '#f6a0b8', 16, .8); }
 }
 // what rank 5 of a primary turns into
 const EVO = {
@@ -2272,7 +2274,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
@@ -2585,7 +2587,7 @@ function famMoves(dt) {
     else if (k === 'pond') { G.fx.push({ k: 'splash', x: dad.x, y: dad.y + 10, R: 150, t: 0, life: .6, col: '#8fc7f0' }); G.fx.push({ k: 'ring', x: dad.x, y: dad.y, R: 190, t: 0, life: .5, col: '#bfe6f5' }); for (const e of G.enemies) if (e.hp > 0 && dist(e, dad) < 190) hurt(e, base * .6, 160, src); G.hp = Math.min(G.maxhp, G.hp + 5); }
     else if (k === 'sky') { for (const e of inR.sort(() => Math.random() - .5).slice(0, 8)) { hurt(e, base * .8, 0, src); for (let q = 0; q < fxN(3); q++) G.fx.push({ k: 'paper', x: e.x + rnd(-10, 10), y: e.y - 60, vx: rnd(-40, 40), vy: rnd(40, 120), rot: rnd(0, 6), vr: rnd(-6, 6), t: 0, life: .7 }); } }
     else if (k === 'fur') { const t = inR.sort((x, y) => y.hp - x.hp)[0]; if (t) { hurt(t, base * 4, 80, src); t.stun = Math.max(t.stun, t.kind === 'boss' ? .5 : 1.2); G.fx.push({ k: 'ring', x: t.x, y: t.y, R: t.r * 3, t: 0, life: .4, col: '#ffd76a' }); text(t.x, t.y - t.r - 30, 'DOGPILE!', '#ffd76a', 22, 1); } }
-    else if (k === 'night') { G.fx.push({ k: 'dim', t: 0, life: 1.1 }); for (const e of inR) { if (e.kind !== 'boss') e.stun = Math.max(e.stun, 1); else e.stun = Math.max(e.stun, .4); } for (const e of inR.slice(0, 4)) text(e.x, e.y - e.r - 14, 'z z z', '#c9c2ff', 15, 1.1); }
+    else if (k === 'night') { G.fx.push({ k: 'dim', t: 0, life: 1.1 }); for (const e of inR) { if (e.kind !== 'boss') e.stun = Math.max(e.stun, 1); else e.stun = Math.max(e.stun, .4); } for (const e of inR.slice(0, 4)) text(e.x, e.y - e.r - 14, 'z z z', '#c9c2ff', 16, 1.1); }
   }
 }
 // a friend's pair-up is live once they have the level for it and both halves are coming
@@ -2635,6 +2637,7 @@ const OPTS = [
   ['voice', '🔊', 'Read facts aloud', 'Dad reads every new fact out loud.'],
   ['shake', '📳', 'Screen shake', 'Turn off if the wobble is too much.'],
   ['calm', '🫧', 'Calm screen', 'No flashing, no blinking, fewer sparkles. Good for sensitive eyes.'],
+  ['nums', '🔢', 'Hit numbers', 'Show how much every hit does. Off: only big hits say POW!'],
   ['big', '🔠', 'Bigger text', 'Larger words on every screen for early readers.'],
   ['labels', '🗣️', 'Read buttons aloud', 'Every button says its name when you press it.'],
   ['music', '🎵', 'Music', 'A gentle tune for every chapter.'],
@@ -2812,7 +2815,7 @@ function spawn(id, at = null, q = {}) {
 function rangedMyth(e, d, dt) {
   const cast = e.kind === 'caster', stand = G.radius * (cast ? .84 : .7);
   const rd = ringD(e); if (e.lured > 0) e.hold = false; else if (rd < stand) e.hold = true; else if (rd > stand + 40) e.hold = false;
-  if (e.aim > 0 && e.stun > 0) { e.aim = 0; e.atkT = 1.4; G.fx.push({ k: 'puff', x: e.x, y: e.y - e.r * 1.4, vx: 0, vy: -30, t: 0, life: .45, col: cast ? '#c9a6f2' : '#fbf3df', r: e.r * .5 }); text(e.x, e.y - e.r - 18, cast ? 'fizzle' : 'oops', '#fff', 13, .7); return; }
+  if (e.aim > 0 && e.stun > 0) { e.aim = 0; e.atkT = 1.4; G.fx.push({ k: 'puff', x: e.x, y: e.y - e.r * 1.4, vx: 0, vy: -30, t: 0, life: .45, col: cast ? '#c9a6f2' : '#fbf3df', r: e.r * .5 }); text(e.x, e.y - e.r - 18, cast ? 'fizzle' : 'oops', '#fff', 16, .7); return; }
   if (!e.hold || e.stun > 0) return;
   if (e.aim > 0) { e.aim -= dt; if (e.aim <= 0) throwAt(e); return; }
   e.atkT -= dt; if (e.atkT > 0) return;
@@ -2835,7 +2838,7 @@ function moveEshots(dt) {
     if (!s.hit) continue;
     G.fx.push({ k: 'splash', x: s.x, y: s.y, R: s.k === 'orb' ? 16 : 12, t: 0, life: .35, col: s.k === 'orb' ? '#b48be6' : '#fbf3df' });
     if (T === G.dad) { G.hp -= patHit(s.dmg); G.dropped = true; G.flash = .2; G.shake = .1; sfx('bonk'); text(T.x + rnd(-14, 14), T.y - 86, s.k === 'orb' ? 'Zap!' : 'Splat!', s.k === 'orb' ? '#c9a6f2' : '#fff', 16, .7); }
-    else { T.muted = Math.max(T.muted || 0, s.k === 'orb' ? 1.6 : .8); T.daze = G.t + T.muted; T.dazeIc = s.k === 'orb' ? '✨' : '💫'; T.land = .12; text(T.x, T.y - 46, s.k === 'orb' ? '✨ hexed' : 'Bonk!', s.k === 'orb' ? '#c9a6f2' : '#fff', 14, .8); }
+    else { T.muted = Math.max(T.muted || 0, s.k === 'orb' ? 1.6 : .8); T.daze = G.t + T.muted; T.dazeIc = s.k === 'orb' ? '✨' : '💫'; T.land = .12; text(T.x, T.y - 46, s.k === 'orb' ? '✨ hexed' : 'Bonk!', s.k === 'orb' ? '#c9a6f2' : '#fff', 16, .8); }
   }
   G.eshots = G.eshots.filter(s => !s.hit);
 }
@@ -2901,6 +2904,19 @@ function spawnMini(parent) {
 }
 
 /* ───────── helpers ───────── */
+// a spoken line in the arena: a cream bubble with ink words, a tail, and a name tab (the Kid in teal, a villain in purple)
+function speechBubble(t) {
+  const p = t.t / t.life, kid = /^The Kid: /.test(t.s), vil = t.col === '#e6d6fa', who = kid ? 'The Kid' : vil ? (G.S.finale === 'hearsay' ? 'Lady Hearsay' : 'Sir Ever-So-Sure') : '', line = kid ? t.s.replace(/^The Kid: /, '') : t.s;
+  const fs = Math.max(16, Math.min(22, t.size)), pop = 1 + Math.max(0, 1 - t.t / .12) * .2;
+  ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 4); ctx.font = `700 ${fs}px Fredoka, Arial`; const w = ctx.measureText(line).width + 22, h = fs + 16;
+  const cx = Math.min(440 - w / 2 - 6, Math.max(w / 2 + 6, t.x)), top = t.y - h; ctx.translate(cx, t.y); ctx.scale(pop, pop); ctx.translate(-cx, -t.y);
+  ctx.fillStyle = '#fbf3df'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.roundRect(cx - w / 2, top, w, h, 12); ctx.moveTo(cx - 8, t.y); ctx.lineTo(cx, t.y + 10); ctx.lineTo(cx + 8, t.y); ctx.fill(); ctx.stroke();
+  ctx.fillRect(cx - 7, t.y - 3, 14, 4); // hide the box edge where the tail joins
+  ctx.fillStyle = '#3a2c20'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(line, cx, top + h / 2 + 1);
+  if (who) { ctx.font = '700 13px Fredoka, Arial'; const tw = ctx.measureText(who).width + 14, tx = cx - w / 2 + 8; ctx.fillStyle = vil ? '#6b4fa0' : '#20525c'; ctx.beginPath(); ctx.roundRect(tx, top - 11, tw, 20, 10); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(who, tx + 7, top - 1); }
+  ctx.restore();
+}
 function text(x, y, s, col = '#fff', size = 18, life = 1) { G.texts.push({ x, y, s, col, size, t: 0, life }); }
 // distance as the ring sees it: past RING_W the ring stops getting wider and becomes an upright oval
 // past the pond's width, more Ring still helps but less and less, up to RING_MAX: the oval stays clear of the Patience bar
@@ -2926,7 +2942,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.weak > 0) d *= 2;
   if (e.guard > 0) d *= .25;
   if (G.checked && G.checked.has(e.id)) d *= 1.5;
-  if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 15, 1.4); } }
+  if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 16, 1.4); } }
   if (e.marked > 0) d *= 1 + rankOf('dusty', 'footnote') * .05 + (from === G.dad && synOn(SYNERGY[4]) ? .1 : 0);
   // class match-up: strong hits harder and gets a counter effect; weak hits softer. Shown once per pairing per match.
   const who = from && from.id ? from.id : 'dad', cm = clsMul(who, e.kind), T = G.src && G.src.id === who ? G.src : null; d *= teamBonus(who);
@@ -2944,14 +2960,14 @@ function hurt(e, d, knock = 0, from = G.dad) {
   const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who && save.chars[who] ? rEff(save.chars[who].crit) * .01 : 0) + (T ? treeCrit(T) : 0) + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
   const glow = rankOf('sparky', 'glow'); const sp = glow && G.party.find(m => m.id === 'sparky');
   if (sp && dist(e, sp) < 100 + glow * 10 + sk('sparky', 'glow') * 10) d *= 1 + glow * .06;
-  if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 13, .6); }
+  if (e.kind === 'hardcover' && e.flipped <= 0) { d *= .45; if (Math.random() < .4) text(e.x, e.y - e.r - 20, 'clunk', '#fff', 16, .6); }
   if (e.kind === 'hardcover' && (knock >= 60 || e.stun > 0)) { e.flipped = 3.5; text(e.x, e.y - e.r - 24, 'FLIPPED!', '#ecb23c', 18, .9); }
   d = Math.round(d * rnd(.9, 1.1) * (crit ? 2 : 1));
-  e.hp -= d; e.hit = .12;
+  e.hp -= d; if (!(e.flashAt > G.t - .3)) { e.hit = .12; e.flashAt = G.t; } e.sq = .14; /* white flash at most ~3 times a second (WCAG 2.3.1), a squash on every hit in between */
   if (e === G.boss) { e.taken = (e.taken || 0) + d; if (e.minSec && !G.endless && (e.hit1 == null || e.age - e.hit1 < 1)) e.hp = Math.max(e.hp, e.maxhp * .5); } // a boss can't be deleted in its first second: the health floor (update) sizes it from these hits
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   sfx(crit ? 'crit' : 'hit');
-  text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7);
+  if (save.opt.nums) text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7); else if (crit) text(e.x + rnd(-8, 8), e.y - e.r - 6, 'POW!', '#ecb23c', 22, .7); /* numbers are for older kids: off by default, a crit still says so */
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
   if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
@@ -2961,7 +2977,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
 function kill(e) {
   { const mm = G.party.find(x => x.id === e.lastBy && x.id !== 'dad'); if (mm && !mm.jump && !(mm.cheer > 0)) mm.cheer = .4; }
   G.busted++; save.busted++; missionAdd('pop'); if (EVENT_IDS.has(e.id) && activeEvent()) { evTok(1); text(e.x, e.y - 30, '+' + EVENTS[activeEvent()].tok[0], '#fff', 16, .9); } if (e.elite) missionAdd('elite');
-  if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 15, 1); break; }
+  if (e.V && e.V.chill) for (const m of G.party) if (m.id !== 'dad' && dist(m, e) < 70) { m.muted = Math.max(m.muted || 0, .9); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 16, 1); break; }
   if (e.elite) { G.elites = (G.elites || 0) + 1; text(e.x, e.y - e.r - 30, 'ELITE DOWN!', '#ecb23c', 22, 1.1); if (!G.room && G.elites % 3 === 0) dropNote(e); }
   if (e.host) { e.host.muted = 0; e.host = null; }
   // the pop: the myth swells white and bursts, a ring, a handful of torn pages and a couple of stars
@@ -3033,7 +3049,7 @@ function useAbility(m, a) {
     case 'weapon': return fireWeapon(m, tgt);
     case 'joke': {
       if (!tgt) return false;
-      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, (e.slow > 0 && rankOf('webster', 'web') && synOn(SYNERGY[2]) ? 2.0 : 1.2) - .3 * jokeLate() + sk('dad', 'joke') * .2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 15, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 13, 1.6); });
+      windup(m, 'joke', tgt, () => { for (const e of G.enemies) if (e.hp > 0 && e.host) { e.hp = 0; kill(e); } for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { e.stun = Math.max(e.stun, (e.slow > 0 && rankOf('webster', 'web') && synOn(SYNERGY[2]) ? 2.0 : 1.2) - .3 * jokeLate() + sk('dad', 'joke') * .2); hurt(e, D.dmg[L] * mul); } G.fx.push({ k: 'ring', x: m.x, y: m.y - 20, R: G.radius, t: 0, life: .6, col: '#ecb23c' }); text(m.x, m.y - 100, pick(['"Why did the myth cross the road?"', '"I\'m not a myth, I\'m Dad!"', '"Hi Hungry, I\'m Dad."', '"That\'s a tall tale!"']), '#fff', 16, 1.6); text(m.x, m.y - 80, 'ba-dum tss', '#ecb23c', 16, 1.6); });
       return true; }
     case 'web': {
       if (!tgt) return false;
@@ -3104,7 +3120,7 @@ function useAbility(m, a) {
     case 'quack': {
       if (!tgt) return false;
       const wave = () => { const t = tgt.hp > 0 ? tgt : nearest(m); if (!t) return; const a2 = Math.atan2(t.y - m.y, t.x - m.x); for (const e of G.enemies) { if (e.hp <= 0 || dist(e, m) > 170) continue; let da = Math.atan2(e.y - m.y, e.x - m.x) - a2; da = Math.atan2(Math.sin(da), Math.cos(da)); const V = cweapOf('puddles') || {}; if (evolved(m, 'quack') || Math.abs(da) < .6 * (1 + sk('puddles', 'quack') * .15)) hurt(e, D.dmg[L] * mul, (evolved(m, 'quack') ? 200 : 150) * (V.fx === 'No shove' ? .2 : V.fx === 'Big shove' ? 1.5 : 1), m); } G.fx.push({ k: 'quack', ...mouth(m), a: a2, t: 0, life: .4 }); };
-      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15 + sk('puddles', 'echo') * .05) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 14, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap && synOn(SYNERGY[3])) { sp.cds.zap = 0; } } }); });
+      windup(m, 'quack', tgt, () => { wave(); if (Math.random() < rankOf('puddles', 'echo') * .15 + sk('puddles', 'echo') * .05) G.pending.push({ at: G.t + .3, fn: () => { wave(); text(m.x, m.y - 50, 'echo!', '#fff', 16, .8); const sp = G.party.find(x => x.id === 'sparky'); if (sp && sp.ranks.zap && synOn(SYNERGY[3])) { sp.cds.zap = 0; } } }); });
       return true; }
     case 'spin': {
       const R = 75 + sk('shelly', 'spin') * 10, near = G.enemies.filter(e => e.hp > 0 && dist(e, m) < R + e.r); if (!near.length) return false;
@@ -3137,7 +3153,7 @@ function useAbility(m, a) {
     case 'sonar': {
       if (!G.enemies.some(e => e.hp > 0 && inRing(e))) return false;
       const ping = (k) => { G.fx.push({ k: 'ring', x: m.x, y: m.y, R: G.radius + 20, t: 0, life: .5, col: '#c9c2ff' }); for (const e of G.enemies) if (e.hp > 0 && inRing(e)) { hurt(e, D.dmg[L] * mul * k * (1 + sk('echo', 'sonar') * .1), 0, m); if (e.kind === 'rumour') e.revealed = 2; } };
-      windup(m, 'sonar', tgt, () => { ping(1); if (Math.random() < rankOf('echo', 'echoes') * .15 + sk('echo', 'echoes') * .05) G.pending.push({ at: G.t + .35, fn: () => { ping(.6); text(m.x, m.y - 50, 'squeak...', '#c9c2ff', 14, .7); } }); });
+      windup(m, 'sonar', tgt, () => { ping(1); if (Math.random() < rankOf('echo', 'echoes') * .15 + sk('echo', 'echoes') * .05) G.pending.push({ at: G.t + .35, fn: () => { ping(.6); text(m.x, m.y - 50, 'squeak...', '#c9c2ff', 16, .7); } }); });
       return true; }
     case 'dive': {
       if (!tgt) return false;
@@ -3261,13 +3277,13 @@ function update(dt) {
     if (b.guard > 0) { b.guard -= dt; if (b.stun > 0) b.guard = 0; }
     if (b.hop) { const H = b.hop; H.t += dt; const k = Math.min(1, H.t / H.dur); b.x = H.fx + (H.tx - H.fx) * k; b.y = H.fy + (H.ty - H.fy) * k; b.z = Math.sin(Math.PI * k) * 140;
       if (k >= 1) { b.hop = null; b.z = 0; G.shake = Math.max(G.shake, .3); text(b.x, b.y - b.r - 40, 'THUD', '#fff', 22, .9); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 160) m.muted = Math.max(m.muted || 0, 1); } }
-    if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 15, 1.3); } }
+    if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 16, 1.3); } }
     else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
     if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.lv ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
     // its own move: a tell, then the move; a stun during the tell is a 'Nope!'
     const MV = BOSSMOVE[b.id]; if (MV && !b.hop) { const slow = (b.rough ? 1.4 : 1) * (b.mvFast || 1); // a rough draft knows its move too, just slower
       if (b.moveT == null) b.moveT = (G.S.w === 0 ? 10 : 7) * (G.D.bossMv || 1) * slow;
-      if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 15, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
+      if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 16, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
       else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7 * slow; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1) * slow; MV.go(b); } }
     }
     if (b.sliding > 0) { b.sliding -= dt; b.x += b.sx * dt; b.y += b.sy * dt; b.walk += dt * 10; G.fx.push({ k: 'puff', x: b.x - b.sx * .05, y: b.y + b.r * .8, vx: rnd(-20, 20), vy: -20, t: 0, life: .4, col: '#eef6ff', r: 7 });
@@ -3288,13 +3304,13 @@ function update(dt) {
   if (G.boss && isVil(G.boss) && G.boss.hp > 0 && !G.boss.rage && G.boss.hp < G.boss.maxhp * .3) { const b = G.boss; b.rage = true; b.moveT = 1; G.shake = .4; G.slowmo = .6; text(b.x, b.y - b.r - 70, b.id === 'hearsay' ? '"EVERYBODY SAYS SO!"' : '"I\'m right because I\'m RIGHT!"', '#ff9a9a', 19, 2.2);
     const old = WORLDS.filter(W => (W.book || 1) === 1).slice(0, -1).flatMap(W => W.pool); for (let j = 0; j < 5; j++) G.toSpawn.unshift({ id: pick(old), at: 0, ang: rnd(0, 7) }); }
   if (G.boss && G.boss.hp > 0 && !G.boss.phase2 && !G.boss.rough && G.boss.hp < G.boss.maxhp * .5) { const b = G.boss; b.phase2 = true; b.chargeT = Math.min(b.chargeT, 3); b.minionT = 1; G.slowmo = .6; G.shake = .3; text(b.x, b.y - b.r - 60, pick(['"Oh, it is ON."', '"You haven\'t heard the half of it!"', '"Let me tell you a story..."']), '#fff', 17, 1.8); for (let j = 0; j < (G.lv ? 3 : 2) + Math.min(5, Math.floor(G.lvge / 4)); j++) G.toSpawn.unshift({ id: pick(G.S.pool), at: 0, ang: rnd(0, 7) }); }
-  if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.lv, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 14, 1.2); } }
+  if (G.boss && G.boss.hp > 0) { G.boss.minionT -= dt; if (G.boss.minionT <= 0) { G.boss.minionT = (G.boss.phase2 ? 5 : 6.5) - Math.min(G.lv, 6) * .4; for (let i = 0; i < 2; i++) spawn(pick(S.pool), { x: G.boss.x + rnd(-30, 30), y: G.boss.y + rnd(-30, 30) }); text(G.boss.x, G.boss.y - 60, '"Tell your friends!"', '#fff', 16, 1.2); } }
   // enemies
   const story = rankOf('dad', 'story'), storyR = (110 + story * 15) * (1 + rankOf('luna', 'moonlight') * (.15 + sk('luna', 'moonlight') * .05) + sk('dad', 'story') * .12);
   G.radius = ringSoft(G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
-    e.hit -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
+    e.hit -= dt; e.sq -= dt; e.bonk -= dt; e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
     if (e.V && e.V.hurry && !e.hurried && ringD(e) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
@@ -3311,11 +3327,11 @@ function update(dt) {
     if (e.kind !== 'boss' && e.winding > 0) { e.winding -= dt; if (e.stun > 0) { e.winding = null; e.dashed = true; } else if (e.winding <= 0) { e.winding = null; e.dashed = true; e.charging = .5; } }
     if (e.charging > 0 && e.kind !== 'boss') { e.charging -= dt; sp = e.spd * 5; }
     // healer: patches up everyone nearby every few seconds
-    if (e.kind === 'healer' && inRing(e)) { e.healT -= dt; if (e.healT <= 0) { e.healT = 3.2; let n = 0; for (const o of G.enemies) if (o !== e && o.hp > 0 && o.hp < o.maxhp && dist(o, e) < 80) { o.hp = Math.min(o.maxhp, o.hp + o.maxhp * .08); n++; G.fx.push({ k: 'puff', x: o.x, y: o.y - o.r, vx: 0, vy: -30, t: 0, life: .5, col: '#b48be6', r: 6 }); } if (n) text(e.x, e.y - e.r - 20, '"…in other words…"', '#b48be6', 13, 1); } }
+    if (e.kind === 'healer' && inRing(e)) { e.healT -= dt; if (e.healT <= 0) { e.healT = 3.2; let n = 0; for (const o of G.enemies) if (o !== e && o.hp > 0 && o.hp < o.maxhp && dist(o, e) < 80) { o.hp = Math.min(o.maxhp, o.hp + o.maxhp * .08); n++; G.fx.push({ k: 'puff', x: o.x, y: o.y - o.r, vx: 0, vy: -30, t: 0, life: .5, col: '#b48be6', r: 6 }); } if (n) text(e.x, e.y - e.r - 20, '"…in other words…"', '#b48be6', 16, 1); } }
     // gossip: jumps onto the nearest companion and mutes it; pops itself when it's done talking
     if (e.kind === 'gossip') {
       if (e.host) { e.x = e.host.x + 14; e.y = e.host.y - 30; e.talk -= dt; e.host.muted = e.talk; if (e.talk <= 0) { e.host.muted = 0; e.host = null; e.hp = 0; kill(e); } continue; }
-      for (const m of G.party) if (m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0) && dist(e, m) < 40) { e.host = m; e.talk = 2; m.muted = 2; text(m.x, m.y - 50, '"Did you hear…"', '#fff', 14, 1.2); break; }
+      for (const m of G.party) if (m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0) && dist(e, m) < 40) { e.host = m; e.talk = 2; m.muted = 2; text(m.x, m.y - 50, '"Did you hear…"', '#fff', 16, 1.2); break; }
       if (e.host) continue;
       const tgtM = G.party.filter(m => m.id !== 'dad' && m.id !== 'chroma' && !(m.muted > 0)).sort((p1, p2) => dist(p1, e) - dist(p2, e))[0];
       if (tgtM) { const a2 = Math.atan2(tgtM.y - e.y, tgtM.x - e.x); if (e.stun <= 0) { e.x += Math.cos(a2) * sp * dt; e.y += Math.sin(a2) * sp * dt; e.walk += dt * 14; } e.x += e.kx * dt; e.y += e.ky * dt; const kd2 = Math.exp(-dt * 9); e.kx *= kd2; e.ky *= kd2; continue; }
@@ -3329,7 +3345,7 @@ function update(dt) {
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
-    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.lv * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 15, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
+    if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.lv * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 16, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); e.kx -= Math.cos(a) * 90; e.ky -= Math.sin(a) * 90; }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (KIND_NOTE[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); hint(KIND_NOTE[e.kind], 4); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
@@ -3354,7 +3370,7 @@ function update(dt) {
       m.cds[a] -= dt;
       if (m.cds[a] <= 0 && !m.anim && !(a === 'weapon' && CHARS[m.id].abil.some(b => b !== a && m.ranks[b] && !ABIL[b].passive && m.cds[b] <= .42))) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a], src = { id: m.id, a, cast: G.casts = (G.casts || 0) + 1 };
         if (withSrc(src, () => useAbility(m, a))) { if (m.id !== 'dad') missionAdd('abil'); if (m.jump && !m.jump.src) m.jump.src = src; m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m) * (a === 'joke' ? 1 + .6 * jokeLate() : 1) * (1 - .05 * tRank(m.id, a, 'cd'));
-          if (tHasFin(m.id, a) && tFinKey(m.id, a) === 'twice' && (m.uses = m.uses || {}, m.uses[a] = (m.uses[a] || 0) + 1) % 3 === 0) G.pending.push({ at: G.t + .5, src: { id: m.id, a, cast: ++G.casts }, fn: () => { if (!m.anim && !m.jump) { useAbility(m, a); text(m.x, m.y - 60, 'encore!', '#ffd76a', 14, .8); } } }); }
+          if (tHasFin(m.id, a) && tFinKey(m.id, a) === 'twice' && (m.uses = m.uses || {}, m.uses[a] = (m.uses[a] || 0) + 1) % 3 === 0) G.pending.push({ at: G.t + .5, src: { id: m.id, a, cast: ++G.casts }, fn: () => { if (!m.anim && !m.jump) { useAbility(m, a); text(m.x, m.y - 60, 'encore!', '#ffd76a', 16, .8); } } }); }
         else m.cds[a] = .15; }
     }
   }
@@ -3974,12 +3990,12 @@ function drawEnemy(e) {
   if (S3 || e3) { // the 3D myth: faces the way it walks, tinted its own colour, with the code's bob, crouch and lean on top
     const mv = Math.hypot(e.vx || 0, e.vy || 0), toDad = Math.atan2(G.dad.y - e.y, G.dad.x - e.x), phi = big || e.kind === 'gossip' || mv < 6 ? toDad : Math.atan2(e.vy, e.vx), dir = Math.cos(toDad) >= 0 ? 1 : -1;
     const h = r * (big ? 2.6 : e.kind === 'mini' ? 2.6 : e.kind === 'swarm' ? 2.7 : 2.5), hover = big ? Math.sin(G.t * 3) * 5 : 0, crouch = e.kind === 'dasher' && e.winding > 0 ? 1 - e.winding / .7 : 0;
-    const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : .18);
+    const walkSq = e.stun > 0 || big ? 0 : Math.abs(step) * (e.kind === 'fast' || e.kind === 'swarm' ? .3 : .18), hitSq = e.sq > 0 ? (e.sq / .14) ** 2 * (big ? .35 : .9) : 0; // the cartoon 'oof': wide and short, springing back
     if (e.kind === 'mirage') ctx.globalAlpha *= .55 + Math.sin(G.t * 6) * .1; if (e.fade > 0) ctx.globalAlpha *= Math.max(0, e.fade / .7); if (e.appear > 0) ctx.globalAlpha *= 1 - e.appear / .6;
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
     const lean3 = flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05);
-    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
+    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: lean3 }) : drawSheet(ctx, S3, 'idle', phi, G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : step * .05) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (e.kind === 'pelter' || e.kind === 'caster') rangedGear(e, x, y + r * .95 + hover - h * .92, dir);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
@@ -4175,7 +4191,7 @@ function draw() {
     else if (f.k === 'quack') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(f.x, f.y, 30 + k * 25 + p * 90, f.a - .6, f.a + .6); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'webhit') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(a) * 22, f.y + Math.sin(a) * 22); ctx.stroke(); } ctx.globalAlpha = 1; }
   }
-  for (const t of G.texts) { const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${Math.round(t.size * (1 + Math.max(0, 1 - t.t / .12) * .5))}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
+  for (const t of G.texts) { if (t.s[0] === '"' || /^The Kid: "/.test(t.s)) { speechBubble(t); continue; } const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${Math.round(t.size * (1 + Math.max(0, 1 - t.t / .12) * .5))}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
   if (R3D) R3D.render();
   if (G.focus && G.focus.hp > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(G.focus.x, G.focus.y, G.focus.r + 10, G.t * 3, G.t * 3 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
   ctx.restore();
@@ -5412,11 +5428,42 @@ const OFFERS = [
 ];
 function buildStore() {
   const box = $('#storeList');
-  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">${itemImg('s_library_card', '🎟️')}</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div><div class="offer" id="wardRow"><div class="em">${itemImg('s_wardrobe', '👕')}</div><div class="txt"><b>Dad's Wardrobe</b><span>Sweaters, hats and things for the backyard. Just for looks.</span></div><button class="btn small" id="wardGo">Look</button></div>`); const g = $('#shelfGo'); if (g) g.onclick = openDraw; const wg = $('#wardGo'); if (wg) wg.onclick = openWardrobe; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${itemImg('s_' + slugOf(o.name), o.em)}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
+  setTimeout(() => { if (!$('#cardShelfRow')) box.insertAdjacentHTML('afterbegin', `<div class="offer" id="cardShelfRow"><div class="em">${itemImg('s_library_card', '🎟️')}</div><div class="txt"><b>Your Library Cards: ${save.tix}</b><span>Three things on the shelf. Spend a card on the one you want.</span></div><button class="btn small ${save.tix ? 'green' : ''}" id="shelfGo">Open</button></div><div class="offer" id="wardRow"><div class="em">${itemImg('s_wardrobe', '👕')}</div><div class="txt"><b>Dad's Wardrobe</b><span>Sweaters, hats and things for the backyard. Just for looks.</span></div><button class="btn small" id="wardGo">Look</button></div>`); box.insertAdjacentHTML('afterbegin', picksH()); wirePicks(box); const g = $('#shelfGo'); if (g) g.onclick = openDraw; const wg = $('#wardGo'); if (wg) wg.onclick = openWardrobe; }, 0); box.innerHTML = OFFERS.filter(o => o.cost[0] !== 'ad' || adsOn() && (window.rewardedAd && !hasPass() && !adToday())).map((o, i) => `<div class="offer"><div class="em">${itemImg('s_' + slugOf(o.name), o.em)}</div><div class="txt"><b>${o.name}</b><span>${o.desc}</span></div>${o.cost[0] === 'ad' ? `<button class="btn small" data-ad="${i}">Watch</button>` : o.cost[0] === 'soon' ? '<button class="btn small" disabled>Soon</button>' : `<button class="btn small" data-offer="${i}" ${save[o.cost[0]] >= o.cost[1] ? '' : 'disabled'}>${o.cost[0] === 'gems' ? '💎' : '🪙'} ${o.cost[1]}</button>`}</div>`).join('') + '<div class="lootrow" id="storeLoot"></div>';
   box.querySelectorAll('[data-ad]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.ad]; watchAd('Videos are for grown-ups to say yes to.').then(ok => { if (ok) { o.run(); save.adDay = today(); persist(); buildStore(); } }); });
   if (!$('#iapList')) { const d = document.createElement('div'); d.id = 'iapList'; box.parentElement.appendChild(d); } buildIap();
   $('#store .intro').textContent = window.iap ? 'Coins come from matches, gems from first clears and daily gifts. Only the grown-ups shelf at the bottom costs real money.' : 'Nothing here costs real money.';
   box.querySelectorAll('[data-offer]').forEach(b => b.onclick = () => { const o = OFFERS[b.dataset.offer]; if (save[o.cost[0]] < o.cost[1] || !sure(b, 'Buy it?')) return; setWallet({ [o.cost[0]]: save[o.cost[0]] - o.cost[1] }); const got = o.run(); for (const it of got) save.items.push(it); persist(); buildStore(); $('#storeLoot').innerHTML = got.map((it, i) => `<div class="lootc r${it.rar}" style="animation-delay:${i * .15}s"><span class="ie">${icon(it)}</span>${it.name}<br><small>${itemDesc(it)}</small></div>`).join(''); });
+}
+
+/* ───────── Dad's Picks: three face-up offers that change once a day; the first is free. No countdown, nothing to miss. ───────── */
+function dayPicks() {
+  if (save.picks && save.picks.day === today()) return save.picks;
+  const n = save.cleared.length, gifts = [{ k: 'coins', v: 100 + Math.min(60, n) * 10 }, { k: 'gems', v: 10 }, { k: 'blank', v: 2 }, { k: 'mark', it: makeMark(1) }];
+  const looks = Object.entries(WARD).flatMap(([cat, C]) => C.items.filter(i => i.c && !i.only && !wardOwns(cat, i.id)).map(i => cat + ':' + i.id)).sort((a, b) => wardOf(a).c - wardOf(b).c);
+  const ward = looks.length ? looks[Math.floor(Math.random() * Math.min(looks.length, 6))] : null; // one of the six cheapest looks you don't have yet
+  const it = itemOf(Math.random() < .2 ? 2 : 1);
+  return save.picks = { day: today(), got: [0, 0, 0], gift: pick(gifts), ward, item: it, itemC: it.rar >= 2 ? 1100 : 450 };
+}
+const wardOf = key => { const [cat, id] = key.split(':'); return WARD[cat].items.find(i => i.id === id); };
+const pickWardC = P => Math.round(wardOf(P.ward).c * .7 / 10) * 10;
+function wardEm(key) { const [cat, id] = key.split(':'), it = wardOf(key); return cat === 'sweater' ? `<span class="swatch big" style="background:${swatchCss(it)}"></span>` : cat !== 'yard' && HATFIT[id] ? `<img class="iic" src="assets/hat_${id}.webp" alt="">` : it.em; }
+function picksH() {
+  const P = dayPicks(), G0 = P.gift, gName = { coins: `🪙 ${G0.v} coins`, gems: `💎 ${G0.v} gems`, blank: `📄 ${G0.v} Blank pages`, mark: G0.it && G0.it.name }[G0.k];
+  const btn = (i, cost) => P.got[i] ? '<button class="btn small" disabled>Got it ✓</button>' : cost ? `<button class="btn small" data-pk="${i}" ${save.coins >= cost ? '' : 'disabled'}>🪙 ${cost}</button>` : `<button class="btn small" data-pk="${i}">Free!</button>`;
+  const row = (i, em, b, d, cost) => `<div class="offer pick${P.got[i] ? ' done' : ''}"><div class="em">${em}</div><div class="txt"><b>${b}</b><span>${d}</span></div>${btn(i, cost)}</div>`;
+  return `<div id="picksBox"><h3 class="rackh"><span>⭐ Dad's Picks</span><small>New picks tomorrow</small></h3>`
+    + row(0, G0.k === 'mark' ? icon(G0.it) : { coins: '🪙', gems: '💎', blank: '📄' }[G0.k], 'A present from Dad', gName, 0)
+    + (P.ward ? row(1, wardEm(P.ward), wardOf(P.ward).n, `A look for Dad · <s>🪙${wardOf(P.ward).c}</s>`, pickWardC(P)) : '')
+    + row(2, icon(P.item), P.item.name, `${RAR[P.item.rar].n} · ${itemDesc(P.item)}`, P.itemC) + '</div>';
+}
+function wirePicks(box) {
+  box.querySelectorAll('[data-pk]').forEach(b => b.onclick = () => { const P = dayPicks(), i = +b.dataset.pk; if (P.got[i]) return;
+    const cost = i === 1 ? pickWardC(P) : i === 2 ? P.itemC : 0; if (cost && (save.coins < cost || !sure(b, `Buy · 🪙 ${cost}?`))) return;
+    if (cost) setWallet({ coins: save.coins - cost });
+    if (i === 0) { const g = P.gift; if (g.k === 'coins') setWallet({ coins: save.coins + g.v }); else if (g.k === 'gems') setWallet({ gems: save.gems + g.v }); else if (g.k === 'blank') save.blank = (save.blank || 0) + g.v; else save.items.push(g.it); sfx('coin'); toastMsg('🎁 Thanks, Dad!'); }
+    else if (i === 1) { (save.wardrobe = save.wardrobe || []).push(P.ward); const [c, id] = P.ward.split(':'); if (WARD[c].many) look().yard.push(id); else look()[c] = id; drawStatics(); sfx('coin'); toastMsg('👕 Wearing it now. Change it in the Wardrobe.'); }
+    else { save.items.push(P.item); sfx('coin'); toastMsg(`${P.item.name} is in your Bag.`); }
+    P.got[i] = 1; persist(); buildStore(); });
 }
 
 /* ───────── library card draws ───────── */
@@ -5658,11 +5705,11 @@ cv.addEventListener('pointerdown', ev => {
   const r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * W, y = (ev.clientY - r.top) / r.height * H;
   let best = null, bd = 48;
   for (const e of G.enemies) { const d = Math.hypot(e.x - x, e.y - y) - e.r; if (d < bd) { bd = d; best = e; } }
-  if (best) { G.focus = best; if (!inRing(best)) { best.hurry = 3; G.dad.face = best.x < G.dad.x ? -1 : 1; text(G.dad.x, G.dad.y - 100, '"Hey, you!"', '#fff', 20, .9); text(best.x, best.y - best.r - 18, '!', '#ecb23c', 24, .8); } else text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 15, .8); }
+  if (best) { G.focus = best; if (!inRing(best)) { best.hurry = 3; G.dad.face = best.x < G.dad.x ? -1 : 1; text(G.dad.x, G.dad.y - 100, '"Hey, you!"', '#fff', 20, .9); text(best.x, best.y - best.r - 18, '!', '#ecb23c', 24, .8); } else text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 16, .8); }
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hurt, ftext: text, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });

@@ -315,6 +315,21 @@ await test('Trophies and the Wardrobe', async () => {
   await close(); return errs;
 });
 
+await test("Dad's Picks: a free present, a look on sale and a named item, the same all day", async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), coins: 5000 });
+  await p.click('[data-tab="shop"]'); await p.waitForTimeout(400);
+  expect(await p.evaluate(() => document.querySelectorAll('#picksBox .offer').length === 3), 'three picks on the shelf');
+  const before = await p.evaluate(() => JSON.stringify(dbg.picks()));
+  await p.click('[data-tab="play"]'); await p.click('[data-tab="shop"]'); await p.waitForTimeout(300);
+  expect(await p.evaluate(b => JSON.stringify(dbg.picks()) === b, before), 'reopening the Shop keeps the same picks');
+  await p.click('[data-pk="0"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.picks().got[0] === 1 && document.querySelector('[data-pk="0"]') === null), 'the present is taken once');
+  const c = await p.evaluate(() => { const P = dbg.picks(), [cat, id] = P.ward.split(':'); return Math.round(dbg.WARD[cat].items.find(i => i.id === id).c * .7 / 10) * 10; });
+  const coins = await p.evaluate(() => dbg.save.coins);
+  await p.click('[data-pk="1"]'); await p.click('[data-pk="1"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(([c, coins]) => dbg.save.coins === coins - c && dbg.save.wardrobe.includes(dbg.picks().ward), [c, coins]), 'the look costs 30% less and goes in the Wardrobe');
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
