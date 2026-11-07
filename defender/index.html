@@ -587,7 +587,7 @@
   .sets { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 2px; } .setc { font: 700 14px/1 Fredoka, Arial, sans-serif; padding: 7px 10px; border: 2px solid var(--line); border-radius: 999px; background: #fff; } .setc.done { border-color: #3a2c20; background: #dff0c8; } .setnote { font-size: 14px; color: var(--muted); margin: 6px 2px; }
   #pick3Box { margin-bottom: 8px; padding: 8px; border: 3px dashed #ecb23c; border-radius: 14px; background: #fff6dc; } #pick3Box .lootrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; } #pick3Box .lootc { width: auto; cursor: pointer; }
   #picksBox { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; } #picksBox .rackh { margin: 2px 2px 0; display: flex; justify-content: space-between; align-items: baseline; } #picksBox .rackh small { font: 600 13px/1 Nunito, Arial, sans-serif; color: #6b5a48; }
-  .offer.pick { background: #fff6dc; } .offer.pick.done { opacity: .6; } .swatch.big { display: inline-block; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a2c20; vertical-align: middle; }
+  .offer.pick { background: #fff6dc; } .offer .em .bmk { display: inline-block; transform: scale(1.8); } /* a bookmark is drawn small for the Bag grid */ .offer.pick.done { opacity: .6; } .swatch.big { display: inline-block; width: 44px; height: 44px; border-radius: 50%; border: 3px solid #3a2c20; vertical-align: middle; }
   .days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
   .day { border: 3px solid #3a2c20; border-radius: 14px; background: #fff; padding: 6px 4px; text-align: center; font: 700 13px/1.2 "Fredoka", Arial, sans-serif; }
   .day .ie { font-size: 22px; display: block; } .day.got { background: var(--green); color: #fff; opacity: .75; } .day.now { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
@@ -649,7 +649,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 102</div>
+    <div class="build">build 103</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2278,7 +2278,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 102: Club badges and Cup points became Medals
+if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 103: Club badges and Cup points became Medals
 save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
@@ -4255,6 +4255,21 @@ function drawShot(s) {
 }
 
 /* ───────── static portraits (title, party screen, modals) ───────── */
+// the stage-clear Dad does his victory dance (the Wardrobe sets which), with the pet joining in, while the screen is open
+let danceQ = 0;
+function danceDad() { cancelAnimationFrame(danceQ); const c = $('#clearDad'); if (!c) return; const x = c.getContext('2d'), D = wardItem('dance').id, P = wardItem('pet'), pet = P.c || P.only ? P.em : null, t0 = performance.now();
+  const frame = () => { if ($('#clearm').hidden) { if (mode === 'game' && G && G.cleared) danceQ = requestAnimationFrame(frame); return; } /* the screen opens a beat after the win, or after the chapter's comic */ const t = save.opt.calm ? 0 : (performance.now() - t0) / 1000, W = c.width, H = c.height, h = H - 50;
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, W, H); x.save(); x.translate(W / 2, H - 8);
+    let pose = 'amazed';
+    if (D === 'wave') { pose = 'wave'; x.rotate(Math.sin(t * 3) * .04); }
+    else if (D === 'hop') { const k = Math.abs(Math.sin(t * 5)); x.translate(0, -k * 30); x.scale(1 + (1 - k) * .06, 1 - (1 - k) * .06); }
+    else if (D === 'wiggle') { x.rotate(Math.sin(t * 9) * .12); x.translate(Math.sin(t * 9) * 6, -Math.abs(Math.sin(t * 9)) * 6); }
+    else if (D === 'twirl') { x.scale(Math.cos(t * 5), 1); x.translate(0, -Math.abs(Math.sin(t * 2.5)) * 8); }
+    else if (D === 'cartwheel') { const ph = (t % 2.2) / 1.2; x.scale(.8, .8); if (ph < 1) { x.translate(0, -h / 2); x.rotate(ph * Math.PI * 2); x.translate(0, h / 2); } }
+    drawDadAt(x, 0, 0, h, 1, pose); x.restore();
+    if (pet) { x.save(); x.font = `34px ${EMOJI_FONT}`; x.fillStyle = '#000'; x.textAlign = 'center'; x.textBaseline = 'bottom'; x.fillText(pet, W - 26, H - 6 - Math.abs(Math.sin(t * 6 + 1)) * 14); x.restore(); }
+    if (!save.opt.calm) danceQ = requestAnimationFrame(frame); };
+  frame(); }
 function portrait(id, pose) {
   const c = $(id); if (!c) return; const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height);
   drawDadAt(x, c.width / 2, c.height - 6, c.height - 12, 1, pose);
@@ -4285,6 +4300,9 @@ const WARD = {
   pop: { name: 'Pop style', items: [ // how a myth bursts: moving looks, still no Power
     { id: 'classic', n: 'Pages and stars', c: 0, em: '📄' }, { id: 'confetti', n: 'Confetti', c: 1000, em: '🎊' }, { id: 'bubbles', n: 'Bubbles', c: 2500, em: '🫧' },
     { id: 'hearts', n: 'Hearts', c: 2500, em: '💖' }, { id: 'twinkle', n: 'Twinkle Stars', c: 5000, em: '🌟' }] },
+  dance: { name: 'Victory dance', items: [ // what Dad does on the stage-clear screen
+    { id: 'wave', n: 'Big Wave', c: 0, em: '👋' }, { id: 'hop', n: 'Happy Hop', c: 1000, em: '🐰' }, { id: 'wiggle', n: 'Wiggle Jig', c: 2500, em: '🕺' },
+    { id: 'twirl', n: 'Twirl', c: 2500, em: '🌀' }, { id: 'cartwheel', n: 'Cartwheel', c: 5000, em: '🤸' }] },
   pet: { name: 'Pets', items: [ // a little friend who follows Dad around the arena
     { id: 'none', n: 'No pet', c: 0, em: '🙂' }, { id: 'butterfly', n: 'Butterfly', c: 1000, em: '🦋' }, { id: 'ladybug', n: 'Ladybug', c: 1000, em: '🐞' },
     { id: 'chick', n: 'Chick', c: 2500, em: '🐥' }, { id: 'puppy', n: 'Puppy', c: 2500, em: '🐶' }, { id: 'owl', n: 'Wise Owl', c: 5000, em: '🦉' }, { id: 'dragon', n: 'Tiny Dragon', c: 0, st: 150, only: 'stars', em: '🐉' }] },
@@ -4925,7 +4943,7 @@ function stageClear() { if (G.cup) { sfx('win'); collectAll(); return cupEnd(tru
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').innerHTML = nl(notes); if (joined) $('#joined').innerHTML = nl([CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full: ${CHARS[joined].name} joined the party!`, ...(dailyWin ? [] : notes)]); else if (pageNote && !dailyWin) $('#joined').innerHTML = nl(notes);
   const last = !!G.S.last;
   $('#clearSub').textContent = last ? (G.S.book === 2 ? 'You checked every page of the Little Book of Everybody Says.' : 'You popped every page of the Big Book of Wrong.') : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${chNum(G.S.w)} of 8, closed.` : ''; $('#clearSub').hidden = !$('#clearSub').textContent;
-  $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); portrait('#clearDad', 'amazed');
+  $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); danceDad();
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
@@ -5620,7 +5638,7 @@ function navDots() { const tb = $('#tabbar'); if (!tb) return; const set = (t, o
   if ((save.tixSeen || 0) > save.tix) save.tixSeen = save.tix;
   // a dot means "something to collect over there": never on the tab you're on, the Shop only for a card you haven't seen
   const here = (tb.querySelector('[data-tab].on') || {}).dataset?.tab, mis = (() => { try { return misReady(); } catch (e) { return false; } })();
-  set('shop', save.tix > (save.tixSeen || 0)); set('friends', Object.keys(CHARS).some(canGrow)); set('play', mis || anyChest()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
+  set('shop', save.tix > (save.tixSeen || 0) || has('shop') && !(save.picks && save.picks.day === today() && save.picks.got[0])); /* a card to spend, or today's free present from Dad still waiting */ set('friends', Object.keys(CHARS).some(canGrow)); set('play', mis || anyChest()); set('bag', false); set('diary', false); applyUnlocks(); for (const t of save.newTabs || []) set(t, true);
   if (here) set(here, false); const md = $('#mapDot'); if (md) md.hidden = !anyChest();
   const d2 = $('#misDot2'); if (d2) d2.hidden = !(() => { try { return misReady(); } catch (e) { return false; } })(); }
 $$('#tabbar [data-tab]').forEach(b => b.onclick = () => { const t = b.dataset.tab;
