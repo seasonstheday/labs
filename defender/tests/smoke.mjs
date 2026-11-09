@@ -372,6 +372,20 @@ await test('the victory dance plays on the stage-clear screen', async () => {
   expect(a.length > 3000 && a !== b, 'Dad is drawn and moving');
   await close(); return errs;
 });
+await test('the Library uses its tilted arena with moving details, and ?flat goes back', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1200);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(600);
+  expect(await p.evaluate(() => dbg.G.bg && dbg.G.bg.persp === true), 'the Library draws the tilted picture');
+  await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(900);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(400);
+  expect(await p.evaluate(() => dbg.G.bg && !dbg.G.bg.persp), 'other worlds keep their flat arenas');
+  await p.goto(URL + '&flat'); await p.waitForTimeout(700);
+  await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1200);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(600);
+  expect(await p.evaluate(() => dbg.G.bg && !dbg.G.bg.persp), '?flat shows the old Library');
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
