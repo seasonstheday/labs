@@ -5,7 +5,7 @@ A scheduled task runs this review every Monday and reports out. Each run writes 
 ## What each run does
 
 1. **Health**
-   - Run the smoke tests (`cd defender/tests && npm ci && CHROME_PATH=/opt/pw-browsers/chromium node smoke.mjs`, with the repo served on port 8765). Record passed / total and any failure.
+   - Run the smoke tests (`cd defender/tests && npm install && CHROME_PATH=/opt/pw-browsers/chromium node smoke.mjs`, with the repo served on port 8765). Record passed / total and any failure.
    - Note the build number (`defender/index.html`) and what merged to `main` in the last 7 days (`git log --since="7 days ago" --no-merges`).
 2. **Art check**
    - Run `python3 defender/tools/art_check.py --out <scratch folder>`.
