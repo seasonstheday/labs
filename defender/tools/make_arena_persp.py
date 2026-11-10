@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Build a tilted-camera arena without an image model: assets/arena_3p.webp (the Library).
+"""Draw the plain layout sketch for a tilted-camera arena (the Library), for gen_arena_persp.py to paint over.
 
-  python3 defender/tools/make_arena_persp.py
+  python3 defender/tools/make_arena_persp.py [out.png]          (default: arena_3_layout.png in the current folder)
+  python3 defender/tools/gen_arena_persp.py 3 --layout arena_3_layout.png --tries 3 --out DIR
 
-A floor drawn flat (boards and a round rug) is tilted into perspective (the far edge narrower and shorter), in one
-colour family, and given a drawn back wall (bookshelves, a fireplace, two lamps), side walls, a pool of light and dark
-edges. The game adds the moving parts (flames, glow, dust) on top: see AMBIENT in index.html.
-A painted version from gen_arena_persp.py can replace the file later; keep the fireplace and lamps where
-AMBIENT expects them, or move the numbers there.
+The image model holds a camera only when it is given a layout to repaint: asked in words alone, or shown a style
+picture, it turned the room to a corner view. So the layout is drawn here in code: a floor drawn flat (boards and a
+round rug) tilted into perspective, a back wall straight across the top with a fireplace, lamps and bookshelves, thin
+side walls, a pool of light and dark edges. Pick a painted result, crop it to 3:5, and save it as
+assets/arena_3p.webp (960 x 1600). The game adds the moving parts on top: see AMBIENT in index.html, whose numbers
+say where the painted fire and lamps are.
 """
 import os, random
 import numpy as np
@@ -100,6 +102,7 @@ def light(img):
     return Image.fromarray(np.clip(a, 0, 255).astype('uint8'))
 
 
-img = light(wall(floor()))
-img.save(os.path.join(A, 'arena_3p.webp'), quality=86, method=6)
-print('wrote assets/arena_3p.webp', img.size)
+import sys
+out = sys.argv[1] if len(sys.argv) > 1 else 'arena_3_layout.png'
+light(wall(floor())).resize((768, 1280), Image.LANCZOS).save(out)
+print('wrote', out)
