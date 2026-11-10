@@ -649,7 +649,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 105</div>
+    <div class="build">build 106</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2278,7 +2278,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 105: Club badges and Cup points became Medals
+if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 106: Club badges and Cup points became Medals
 save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
@@ -3551,14 +3551,14 @@ const AMBIENT = {
   0: { motes: [['float', '255,244,180', 14, 0, 240, 440, 740, 1.8]] },
   1: { motes: [['twinkle', '255,255,255', 16, 20, 250, 420, 740, 2.2]] },
   2: { fire: [226, 244, 15], lamps: [[170, 126], [285, 126], [170, 182], [280, 182]], shaft: [[-20, 280], [60, 280], [330, 700], [150, 700]] },
-  3: { motes: [['twinkle', '255,255,255', 14, 0, 90, 440, 250, 2.2]] },
+  3: { motes: [['twinkle', '255,255,255', 14, 0, 60, 440, 130, 2.2]] },
   4: { motes: [['side', '236,214,170', 12, 0, 260, 440, 740, 1.6]] },
-  5: { motes: [['down', '255,255,255', 26, 0, 60, 440, 760, 2]] },
+  5: { lamps: [[215, 140]], motes: [['down', '255,255,255', 26, 0, 60, 440, 760, 2]] },
   6: { motes: [['float', '220,240,150', 14, 0, 220, 440, 740, 1.8]] },
-  7: { motes: [['twinkle', '255,250,220', 18, 0, 60, 440, 230, 1.6]] },
-  8: { motes: [['up', '255,255,255', 6, 190, 150, 250, 250, 5]] },
+  7: { lamps: [[177, 148]], motes: [['twinkle', '255,250,220', 18, 0, 60, 440, 110, 1.6]] },
+  8: { motes: [['up', '255,255,255', 6, 218, 50, 248, 105, 4]] },
   9: { motes: [['float', '250,226,160', 12, 0, 260, 440, 740, 1.6]] },
-  10: { shaft: [[150, 150], [290, 150], [330, 700], [110, 700]] },
+  10: { shaft: [[180, 200], [260, 200], [340, 560], [100, 560]] },
   11: { motes: [['float', '240,200,140', 8, 0, 260, 440, 740, 2.2]] },
   12: { motes: [['float', '255,255,255', 10, 0, 240, 440, 740, 1.6]] },
   13: { motes: [['side', '255,255,255', 8, 0, 60, 440, 230, 6]] },
