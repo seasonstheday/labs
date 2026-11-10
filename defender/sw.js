@@ -1,6 +1,6 @@
 // Why, Dad? Defender: offline first. Everything the game needs is cached on first visit,
 // so it opens with no signal. Bump CACHE when the build changes.
-const CACHE = 'whydad-defender-b103';
+const CACHE = 'whydad-defender-b104';
 const CORE = [
   './',
   './index.html',
@@ -70,6 +70,7 @@ const LATER = [
   './assets/arena_16.webp',
   './assets/arena_2.webp',
   './assets/arena_3.webp',
+  './assets/arena_3p.webp',
   './assets/arena_4.webp',
   './assets/arena_5.webp',
   './assets/arena_6.webp',
