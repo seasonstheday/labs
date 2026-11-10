@@ -649,7 +649,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 104</div>
+    <div class="build">build 105</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -2278,7 +2278,7 @@ try {
   if (!s) { const v1 = JSON.parse(localStorage.getItem('whydad.defender.v1') || 'null'); if (v1) s = { unlocked: v1.unlocked, cleared: v1.cleared, facts: v1.facts, busted: v1.busted, coins: (v1.know || 0) + 100, wep: v1.wep, gems: 30, tix: 1 }; }
   if (s) Object.assign(save, s);
 } catch (e) {}
-if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 104: Club badges and Cup points became Medals
+if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 105: Club badges and Cup points became Medals
 save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
