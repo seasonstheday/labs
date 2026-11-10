@@ -3540,15 +3540,42 @@ function refreshHud(force) {
 }
 
 /* ───────── the arena scene, one per chapter, drawn once to an offscreen canvas ───────── */
-// Tilted arenas (a prototype: the Library). A world listed here uses assets/arena_<n>p.webp, a tilted-camera picture, and gets
-// moving details from AMBIENT on top. ?flat goes back to the straight-down paintings, to compare on a phone.
-const PERSP = location.search.includes('flat') ? {} : { 2: true };
+// Tilted arenas. Every world uses assets/arena_<n>p.webp, a tilted-camera painting, when that file exists (a world without one keeps
+// its straight-down painting), and gets moving details from AMBIENT on top. ?flat goes back to the straight-down paintings, to compare.
+const PERSP = location.search.includes('flat') ? {} : Object.fromEntries(Array.from({ length: 16 }, (_, i) => [i, true]));
 const arenaKey = w => 'arena_' + (w + 1) + (PERSP[w] ? 'p' : '');
-// what moves, in arena coordinates: the fireplace mouth, the wall lamps, and a shaft of evening light from the left
-const AMBIENT = { 2: { fire: [226, 244, 15], lamps: [[170, 126], [285, 126], [170, 182], [280, 182]], shaft: [[-20, 280], [60, 280], [330, 700], [150, 700]] } };
+// What moves in each world, in arena coordinates. fire: [x, y, half-width] of a painted fire; lamps and glows: points of warm light;
+// shaft: a slanted beam with dust in it; motes: drifting specks [kind, colour, how many, box x0 y0 x1 y1, size] where kind is
+// float (pollen, leaves), down (snow), up (steam, bubbles), side (blown sand, clouds' wisps) or twinkle (stars, glints, little lights).
+const AMBIENT = {
+  0: { motes: [['float', '255,244,180', 14, 0, 240, 440, 740, 1.8]] },
+  1: { motes: [['twinkle', '255,255,255', 16, 20, 250, 420, 740, 2.2]] },
+  2: { fire: [226, 244, 15], lamps: [[170, 126], [285, 126], [170, 182], [280, 182]], shaft: [[-20, 280], [60, 280], [330, 700], [150, 700]] },
+  3: { motes: [['twinkle', '255,255,255', 14, 0, 90, 440, 250, 2.2]] },
+  4: { motes: [['side', '236,214,170', 12, 0, 260, 440, 740, 1.6]] },
+  5: { motes: [['down', '255,255,255', 26, 0, 60, 440, 760, 2]] },
+  6: { motes: [['float', '220,240,150', 14, 0, 220, 440, 740, 1.8]] },
+  7: { motes: [['twinkle', '255,250,220', 18, 0, 60, 440, 230, 1.6]] },
+  8: { motes: [['up', '255,255,255', 6, 190, 150, 250, 250, 5]] },
+  9: { motes: [['float', '250,226,160', 12, 0, 260, 440, 740, 1.6]] },
+  10: { shaft: [[150, 150], [290, 150], [330, 700], [110, 700]] },
+  11: { motes: [['float', '240,200,140', 8, 0, 260, 440, 740, 2.2]] },
+  12: { motes: [['float', '255,255,255', 10, 0, 240, 440, 740, 1.6]] },
+  13: { motes: [['side', '255,255,255', 8, 0, 60, 440, 230, 6]] },
+  14: { motes: [['down', '255,255,255', 12, 0, 60, 440, 760, 1.8]] },
+  15: { motes: [['twinkle', '255,236,170', 14, 0, 70, 440, 260, 1.8]] },
+};
 let DUST = null;
 function drawAmbient(w) { const A = AMBIENT[w]; if (!A || !PERSP[w] || R3D) return; const t = save.opt.calm ? 0 : G.t, fl = save.opt.calm ? .5 : .5 + Math.sin(t * 9) * .12 + Math.sin(t * 23.7) * .08 + Math.sin(t * 4.3) * .1;
   ctx.save();
+  if (A.motes && !save.opt.calm) for (const [kind, col, n0, x0, y0, x1, y1, sz] of A.motes) { const n = lowFx ? Math.ceil(n0 / 2) : n0, bw = x1 - x0, bh = y1 - y0;
+    for (let i = 0; i < n; i++) { const a = (i * .618034) % 1, b = (i * .381966 + .13) % 1, ph = i * 2.4; let x, y, al = .7, r = sz;
+      if (kind === 'twinkle') { x = x0 + a * bw; y = y0 + b * bh; al = Math.max(0, Math.sin(t * (1.2 + a) + ph)) ** 3 * .9; r = sz * (.6 + al * .6); }
+      else if (kind === 'down') { x = x0 + ((a + Math.sin(t * .6 + ph) * .03 + 1) % 1) * bw; y = y0 + ((b + t * (.035 + a * .03)) % 1) * bh; al = .75; }
+      else if (kind === 'up') { const q = (b + t * (.12 + a * .08)) % 1; x = x0 + a * bw + Math.sin(t + ph) * 6; y = y1 - q * bh; al = (1 - q) * .45; r = sz * (.6 + q); }
+      else if (kind === 'side') { const q = (a + t * (.03 + b * .03)) % 1; x = x0 + q * bw; y = y0 + b * bh + Math.sin(t * .8 + ph) * 8; al = Math.sin(q * Math.PI) * .5; }
+      else { x = x0 + ((a + Math.sin(t * .23 + ph) * .08 + t * .006 + 1) % 1) * bw; y = y0 + ((b + Math.cos(t * .19 + ph) * .06 + 1) % 1) * bh; al = .35 + Math.sin(t * 1.4 + ph) * .3; }
+      ctx.fillStyle = `rgba(${col},${Math.max(0, al).toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); } }
   if (A.shaft) { const g = ctx.createLinearGradient(A.shaft[0][0], A.shaft[0][1], A.shaft[2][0], A.shaft[2][1]); g.addColorStop(0, 'rgba(255,236,190,.10)'); g.addColorStop(1, 'rgba(255,236,190,0)'); ctx.fillStyle = g; ctx.beginPath(); A.shaft.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.fill();
     if (!save.opt.calm) { DUST = DUST || Array.from({ length: lowFx ? 10 : 22 }, (_, i) => ({ u: (i * .618) % 1, v: (i * .381) % 1, s: 1 + (i % 3) * .5, p: i * 1.7 })); // motes drifting down the shaft
       for (const m of DUST) { const v = (m.v + t * .012 * m.s) % 1, u = m.u + Math.sin(t * .5 + m.p) * .06, x0 = A.shaft[0][0] + (A.shaft[1][0] - A.shaft[0][0]) * u, x1 = A.shaft[3][0] + (A.shaft[2][0] - A.shaft[3][0]) * u, x = x0 + (x1 - x0) * v, y = A.shaft[0][1] + (A.shaft[2][1] - A.shaft[0][1]) * v;
