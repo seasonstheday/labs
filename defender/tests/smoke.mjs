@@ -372,14 +372,15 @@ await test('the victory dance plays on the stage-clear screen', async () => {
   expect(a.length > 3000 && a !== b, 'Dad is drawn and moving');
   await close(); return errs;
 });
-await test('the Library uses its tilted arena with moving details, and ?flat goes back', async () => {
+await test('every world uses its tilted arena with moving details, and ?flat goes back', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1200);
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(600);
   expect(await p.evaluate(() => dbg.G.bg && dbg.G.bg.persp === true), 'the Library draws the tilted picture');
   await p.evaluate(() => dbg.startGame(1)); await p.waitForTimeout(900);
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(400);
-  expect(await p.evaluate(() => dbg.G.bg && !dbg.G.bg.persp), 'other worlds keep their flat arenas');
+  expect(await p.evaluate(() => dbg.G.bg && dbg.G.bg.persp === true), 'the Backyard draws its tilted picture too');
+  expect(await p.evaluate(async () => (await Promise.all(Array.from({ length: 16 }, (_, i) => fetch(`assets/arena_${i + 1}p.webp`).then(r => r.ok)))).every(Boolean)), 'all 16 tilted pictures are there');
   await p.goto(URL + '&flat'); await p.waitForTimeout(700);
   await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1200);
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.G.paused = false; dbg.step(30); }); await p.waitForTimeout(600);

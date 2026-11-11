@@ -48,7 +48,9 @@ def main():
         if '_' not in name:
             cast[name] = stats(Image.open(f))
     arenas, tiles = [], []
-    files = sorted(glob.glob(os.path.join(ASSETS, 'arena_*.webp')), key=lambda f: int(os.path.basename(f)[6:-5]))
+    nums = sorted({int(''.join(c for c in os.path.basename(f)[6:-5] if c.isdigit())) for f in glob.glob(os.path.join(ASSETS, 'arena_*.webp'))})
+    # the tilted painting (arena_Np) is what the game shows when it exists
+    files = [next(f for f in (os.path.join(ASSETS, f'arena_{n}p.webp'), os.path.join(ASSETS, f'arena_{n}.webp')) if os.path.exists(f)) for n in nums]
     for f in files:
         im = Image.open(f)
         w, h = im.size
