@@ -20,6 +20,7 @@ import { chromium } from 'playwright';
 const args = process.argv.slice(2), dir = resolve(args.find(a => !a.startsWith('--')) || '.');
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const NAME = opt('name', basename(dir)), OUT = resolve(opt('out', join(dir, 'sheets'))), DIRS = +opt('dirs', 8), FRAMES = +opt('frames', 8), SIZE = +opt('size', 192);
+const RAMP = opt('ramp', '90,90,90;170,170,170;255,255,255').split(';').map(c => c.split(',').map(Number)); // --ramp "168,176,200;255,255,255" = picture-book two-tone
 const OUTLINE = +opt('outline', .012), ELEV = +opt('elev', 25) * Math.PI / 180, FACE = +opt('face', 0); // face: extra yaw so direction 0 is the model's front
 const animArg = opt('anims', '');
 // --paint <dir>: colour an untextured model by projecting <dir>/front.png (seen from the front) and <dir>/side.png (seen from its
@@ -44,13 +45,15 @@ const PAGE = `<!doctype html><meta charset=utf-8><style>body{margin:0;background
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'; // the game's packed models (assets/models) are meshopt-compressed
 const canvas = document.getElementById('c'), renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.setClearColor(0x000000, 0); renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
 scene.add(new THREE.HemisphereLight(0xfff4e0, 0x7a9a6a, 1.2)); const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(2, 4, 3); scene.add(key);
 const rim = new THREE.DirectionalLight(0xbfe0ff, .5); rim.position.set(-3, 2, -2); scene.add(rim);
 // a three-step toon ramp so shading reads as flat bands like the drawings
-const ramp = new THREE.DataTexture(new Uint8Array([90, 90, 90, 255, 170, 170, 170, 255, 255, 255, 255, 255]), 3, 1); ramp.minFilter = ramp.magFilter = THREE.NearestFilter; ramp.needsUpdate = true;
+const RAMP = ${JSON.stringify(RAMP)}; // the toon bands, dark to light, as r,g,b each (--ramp); two bands with a cool shadow reads as ink-and-flat-colour
+const ramp = new THREE.DataTexture(new Uint8Array(RAMP.flatMap(c => [...c, 255])), RAMP.length, 1); ramp.minFilter = ramp.magFilter = THREE.NearestFilter; ramp.needsUpdate = true;
 let root, mixer, clips = [], bones = [], cam, R = 1, groundY = 0, PAINTS = null, base = null, proc = null, tongue = null;
 // the two drawings as textures, with the box their opaque pixels fill (0..1, y down) so the model's box maps onto it
 async function paintTex(url) { const im = new Image(); im.src = url; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
@@ -83,8 +86,8 @@ function toonify(obj) {
 }
 window.load = async (url, animUrls, paint) => {
   if (paint) PAINTS = { front: await paintTex('/paint/front.png'), side: await paintTex('/paint/side.png'), back: await paintTex('/paint/back.png') };
-  const g = await new GLTFLoader().loadAsync(url); root = g.scene; clips = animUrls.length ? [] : (g.animations || []).map(c => ({ name: c.name || 'clip', clip: c })); // a rigged GLB carries a tiny bind-pose clip; ignore it when real clips are given
-  for (const [name, u] of animUrls) { const a = await new GLTFLoader().loadAsync(u); if (a.animations && a.animations.length) { if (!clips.length && !animUrls.length) root = a.scene; clips.push({ name, clip: a.animations[0] }); } }
+  const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url); root = g.scene; clips = animUrls.length ? [] : (g.animations || []).map(c => ({ name: c.name || 'clip', clip: c })); // a rigged GLB carries a tiny bind-pose clip; ignore it when real clips are given
+  for (const [name, u] of animUrls) { const a = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(u); if (a.animations && a.animations.length) { if (!clips.length && !animUrls.length) root = a.scene; clips.push({ name, clip: a.animations[0] }); } }
   // size from the bind pose, before any animation moves it
   const box = new THREE.Box3().setFromObject(root), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
   R = Math.max(size.x, size.y, size.z); root.position.x -= c.x; root.position.z -= c.z; root.position.y -= box.min.y; groundY = 0;
