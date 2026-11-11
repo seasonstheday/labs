@@ -398,6 +398,23 @@ await test('on a tilted arena no myth walks in over the far scenery; some step o
   const farm = await run(9); expect(farm.top === 0 && farm.door > 10, `the Farm: none over the barn, some out of its doors (${JSON.stringify(farm)})`);
   await close(); return errs;
 });
+await test('Myth Spotter: a card on first sight, a gallery on the home screen, gems for a new card', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), gems: 10, seenKinds: ['normal'], foeGot: [] });
+  expect(await p.isVisible('#homeFoes') && await p.evaluate(() => !document.querySelector('#foeDot').hidden), 'the Spotter button shows a dot for a new card');
+  await p.click('#homeFoes'); await p.waitForTimeout(300);
+  expect(await p.evaluate(() => document.querySelectorAll('#pickList .foec').length === Object.keys(dbg.FOES).length && document.querySelectorAll('#pickList [data-foe]').length === 1), 'every kind has a tile; only met ones open');
+  await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.gems === 15 && dbg.save.foeGot.includes('normal') && !!document.querySelector('#foeDetail .foecard')), 'opening a new card pays 5 gems and shows it');
+  await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.gems === 15), 'opening it again pays nothing');
+  await p.click('#pickClose');
+  await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1000);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; dbg.step(30); G.toSpawn = []; G.breakT = 9999;
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'hardcover' && !dbg.EVENT_IDS.has(m)), e = dbg.spawn(id); e.x = 300; e.y = 400; dbg.step(3);
+    return { shown: !document.querySelector('#foe').hidden, name: document.querySelector('#foe').textContent.includes('Hardcover'), vs: !!document.querySelector('#foe .vs'), seen: dbg.save.seenKinds.includes('hardcover') }; });
+  expect(r.shown && r.name && r.vs && r.seen, `a new kind in the ring shows its card with match-ups (${JSON.stringify(r)})`);
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
