@@ -1,6 +1,6 @@
 // Why, Dad? Defender: offline first. Everything the game needs is cached on first visit,
 // so it opens with no signal. Bump CACHE when the build changes.
-const CACHE = 'whydad-defender-b111';
+const CACHE = 'whydad-defender-b112';
 const CORE = [
   './',
   './index.html',
@@ -331,6 +331,7 @@ const LATER = [
   './assets/3d/creep_rumour_idle.webp',
   './assets/3d/creep_splitter_idle.webp',
   './assets/3d/creep_swarm_idle.webp',
+  './assets/3d/creep_tank_bump.webp',
   './assets/3d/creep_tank_idle.webp',
   './assets/3d/dad_idle.webp',
   './assets/3d/dad_throw.webp',

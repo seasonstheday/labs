@@ -469,6 +469,19 @@ await test('Book 2 stays closed until Book 1 is finished', async () => {
   await p.goto(URL + '&nobook2'); await p.waitForTimeout(800);
   expect(await p.evaluate(() => dbg.STAGES.length === 40), '?nobook2 leaves Book 2 out'); await close(); return errs;
 });
+await test('attack pilot: a tank winds up before its shove lands, and a stun stops it', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(1); }); await p.waitForTimeout(1200);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; dbg.step(40); G.toSpawn = []; G.breakT = 9999; for (const m of G.party) { m.muted = 99; for (const k in m.cds) m.cds[k] = 99; }
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'tank' && !dbg.EVENT_IDS.has(m)), e = dbg.spawn(id); e.x = G.dad.x + 60; e.y = G.dad.y; e.hp = e.maxhp = 1e6; e.spd = 0; e.bonk = 99; window.__e = e; dbg.hasBump(e); G.paused = true; }); await p.waitForTimeout(900); /* its sheet loads */
+  const r = await p.evaluate(() => { const G = dbg.G, e = window.__e; G.paused = false; e.bonk = 0; e.x = G.dad.x + 60; e.y = G.dad.y;
+    const hp0 = G.hp; let wind = false, n = 0; while (!(e.atkA > 0) && n++ < 60) dbg.step(1); wind = e.atkA > 0 && G.hp === hp0 && dbg.hasBump(e); dbg.step(12); const hit = G.hp < hp0;
+    const hp1 = G.hp; e.bonk = 0; e.atkA = 0; e.x = G.dad.x + 60; e.y = G.dad.y; e.kx = e.ky = 0; n = 0; while (!(e.atkA > 0) && n++ < 60) dbg.step(1); const again = e.atkA > 0 && G.hp === hp1; e.stun = 1; dbg.step(15);
+    const b = dbg.atkBeat; return { wind, hit, again, stunned: G.hp === hp1, beat: b(.15, 20).d < 0 && b(.42, 20).d > 19 && Math.abs(b(1, 20).d) < .01 }; });
+  expect(r.wind && r.hit, 'the shove plays first and the hit lands on the lunge: ' + JSON.stringify(r));
+  expect(r.again && r.stunned, 'a stun during the wind-up stops the hit: ' + JSON.stringify(r));
+  expect(r.beat, 'an attack pulls back, strikes past its reach and returns'); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);

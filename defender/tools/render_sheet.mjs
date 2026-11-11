@@ -65,6 +65,9 @@ function poseAt(name, t) { const P = PROCS.find(q => q.name === name); root.posi
   const u = (t % P.dur) / P.dur, e = x => x * x * (3 - 2 * x);
   if (name === 'hop') { const crouch = u < .2 ? e(u / .2) : u > .8 ? e(1 - (u - .8) / .2) * .7 : 0, air = u > .2 && u < .8 ? Math.sin((u - .2) / .6 * Math.PI) : 0;
     root.scale.set(1 + crouch * .12 - air * .05, 1 - crouch * .18 + air * .14, 1 + crouch * .12 - air * .05); root.position.y = base.y + air * R * .35; root.rotation.x = -air * .15 + crouch * .05; }
+  if (name === 'bump') { // a myth's shove: lean back and squash, lunge forward and stretch, hold, settle. The model faces +z.
+    const back = u < .34 ? e(u / .34) : u < .46 ? 1 - e((u - .34) / .12) : 0, fwd = u < .34 ? 0 : u < .46 ? e((u - .34) / .12) : u < .62 ? 1 : 1 - e((u - .62) / .38);
+    root.position.z = base.z - back * R * .1 + fwd * R * .2; root.rotation.x = -back * .2 + fwd * .26; root.scale.set(1 + back * .12 - fwd * .05, 1 - back * .16 + fwd * .1, 1 + back * .1 + fwd * .08); }
   if (name === 'attack') { const lean = u < .25 ? e(u / .25) : u < .7 ? 1 : e(1 - (u - .7) / .3); root.rotation.x = lean * .22; root.scale.set(1, 1 - lean * .06, 1 + lean * .08);
     const out = u > .25 && u < .7 ? Math.sin((u - .25) / .45 * Math.PI) : 0; if (tongue && out > 0) { tongue.visible = true; tongue.scale.set(1, 1, .05 + out); } } }
 function toonify(obj) {
