@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gen_art as G
 from gen_arena_persp import PLACES
 
-RULES = ('No characters, no people, no animals, no creatures, no faces: every object is ordinary and has no eyes or mouth. No text, no letters, no numbers. '
+RULES = ('No characters, no people, no animals, no creatures, no faces: every object is ordinary and has no eyes or mouth. No text, no letters, no numbers: every sign, banner and board is blank. '
          'One calm colour family, muted rather than loud, with soft shading and gentle light.')
 
 
