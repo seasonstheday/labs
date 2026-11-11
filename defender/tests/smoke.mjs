@@ -387,6 +387,17 @@ await test('every world uses its tilted arena with moving details, and ?flat goe
   expect(await p.evaluate(() => dbg.G.bg && !dbg.G.bg.persp), '?flat shows the old Library');
   await close(); return errs;
 });
+await test('on a tilted arena no myth walks in over the far scenery; some step out of the landmark', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  const run = w => p.evaluate(async w => { dbg.startGame(w * 5 + 1); await new Promise(r => setTimeout(r, 1200)); document.querySelectorAll('.modal').forEach(m => m.hidden = true);
+    const G = dbg.G; G.paused = false; dbg.step(20); G.toSpawn = []; G.breakT = 9999; G.paused = true;
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'normal' && !dbg.EVENT_IDS.has(m)), D = dbg.ENTRY[w]; let top = 0, door = 0;
+    for (let i = 0; i < 200; i++) { const e = dbg.spawn(id); if (D && Math.abs(e.x - D[0]) < 14 && Math.abs(e.y - D[1]) < 12) door++; else if (e.y < 250) top++; }
+    return { top, door, persp: !!(G.bg && G.bg.persp) }; }, w);
+  const lib = await run(2); expect(lib.persp && lib.top === 0 && lib.door === 0, `the Library: all from the sides and below (${JSON.stringify(lib)})`);
+  const farm = await run(9); expect(farm.top === 0 && farm.door > 10, `the Farm: none over the barn, some out of its doors (${JSON.stringify(farm)})`);
+  await close(); return errs;
+});
 await test('the Clubhouse and the Myth Cup', async () => {
   const { p, errs, close } = await open({ ...PROGRESSED(), cupt: 0 }); // the day's free ticket makes it 1
   await p.click('#hubClub'); await p.waitForTimeout(300); await p.click('[data-cn="The Why Team"]'); await p.waitForTimeout(200);
