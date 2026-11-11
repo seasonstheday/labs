@@ -1,6 +1,6 @@
 // Why, Dad? Defender: offline first. Everything the game needs is cached on first visit,
 // so it opens with no signal. Bump CACHE when the build changes.
-const CACHE = 'whydad-defender-b112';
+const CACHE = 'whydad-defender-b113';
 const CORE = [
   './',
   './index.html',
@@ -321,15 +321,25 @@ const LATER = [
   './assets/3d/boss_triangle_idle.webp',
   './assets/3d/boss_wall_idle.webp',
   './assets/3d/chroma_idle.webp',
+  './assets/3d/creep_dasher_bump.webp',
   './assets/3d/creep_dasher_idle.webp',
+  './assets/3d/creep_fast_bump.webp',
   './assets/3d/creep_fast_idle.webp',
+  './assets/3d/creep_flyer_bump.webp',
   './assets/3d/creep_flyer_idle.webp',
+  './assets/3d/creep_gossip_bump.webp',
   './assets/3d/creep_gossip_idle.webp',
+  './assets/3d/creep_hardcover_bump.webp',
   './assets/3d/creep_hardcover_idle.webp',
+  './assets/3d/creep_healer_bump.webp',
   './assets/3d/creep_healer_idle.webp',
+  './assets/3d/creep_normal_bump.webp',
   './assets/3d/creep_normal_idle.webp',
+  './assets/3d/creep_rumour_bump.webp',
   './assets/3d/creep_rumour_idle.webp',
+  './assets/3d/creep_splitter_bump.webp',
   './assets/3d/creep_splitter_idle.webp',
+  './assets/3d/creep_swarm_bump.webp',
   './assets/3d/creep_swarm_idle.webp',
   './assets/3d/creep_tank_bump.webp',
   './assets/3d/creep_tank_idle.webp',

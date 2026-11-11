@@ -469,7 +469,7 @@ await test('Book 2 stays closed until Book 1 is finished', async () => {
   await p.goto(URL + '&nobook2'); await p.waitForTimeout(800);
   expect(await p.evaluate(() => dbg.STAGES.length === 40), '?nobook2 leaves Book 2 out'); await close(); return errs;
 });
-await test('attack pilot: a tank winds up before its shove lands, and a stun stops it', async () => {
+await test('attacks: a tank winds up before its shove lands, and a stun stops it', async () => {
   const { p, errs, close } = await open(PROGRESSED());
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(1); }); await p.waitForTimeout(1200);
   await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; dbg.step(40); G.toSpawn = []; G.breakT = 9999; for (const m of G.party) { m.muted = 99; for (const k in m.cds) m.cds[k] = 99; }
