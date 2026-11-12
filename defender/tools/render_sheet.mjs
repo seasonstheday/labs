@@ -25,7 +25,7 @@ const OUTLINE = +opt('outline', .012), ELEV = +opt('elev', 25) * Math.PI / 180, 
 const animArg = opt('anims', '');
 // --paint <dir>: colour an untextured model by projecting <dir>/front.png (seen from the front) and <dir>/side.png (seen from its
 // right, facing right) onto it. --proc "hop:0.6,attack:0.5": whole-body animations for a model with no rig (squash, jump, lunge, tongue).
-const PAINT = opt('paint', ''), PROC = opt('proc', '') ? opt('proc').split(',').map(s => { const [n, d, fr] = s.split(':'); return { name: n, dur: +(d || .6), frames: fr ? +fr : 0 }; }) : []; // "file.glb:name,..." ; empty = clips inside the main model, or a static idle
+const PAINT = opt('paint', ''), PROC = opt('proc', '') ? opt('proc').split(',').map(s => { const [n, d, fr, st] = s.split(':'); return { name: n, dur: +(d || .6), frames: fr ? +fr : 0, style: st || '' }; }) : []; // "file.glb:name,..." ; empty = clips inside the main model, or a static idle
 const MODEL = existsSync(join(dir, 'rigged.glb')) && animArg ? 'rigged.glb' : 'model.glb';
 if (!existsSync(join(dir, MODEL))) { console.error('no', MODEL, 'in', dir); process.exit(1); }
 const ANIMS = animArg ? animArg.split(',').map(s => { const [f, n, fr] = s.split(':'); return { file: f, name: n || f.replace(/\.glb$/, ''), frames: fr ? +fr : 0 }; }) : []; // "file:name:frames" overrides --frames for one clip
@@ -61,13 +61,38 @@ async function paintTex(url) { const im = new Image(); im.src = url; await im.de
   const tex = new THREE.CanvasTexture(c); tex.flipY = false; return { tex, rect: new THREE.Vector4(x0 / c.width, y0 / c.height, x1 / c.width, y1 / c.height) }; }
 const PROCS = ${JSON.stringify(PROC)};
 // whole-body motion for a model without a rig, t in seconds; the tongue is a pink capsule that flicks out of the mouth
-function poseAt(name, t) { const P = PROCS.find(q => q.name === name); root.position.copy(base); root.scale.set(1, 1, 1); root.rotation.set(0, 0, 0); if (tongue) tongue.visible = false; if (!P) return;
+// parts that move on a model with no rig: the vertices are reshaped in place. bend: the top leads or trails (a page whipping over);
+// flap: the outer thirds lift and sweep back (wings, covers, straps); twist: the top turns about the upright axis. The outline shares the geometry.
+let DEF = [], defOn = false;
+function deformInit() { root.updateMatrixWorld(true); const v = new THREE.Vector3(); root.traverse(o => { if (!o.isMesh || o.isSkinnedMesh || !o.geometry || DEF.some(d => d.geo === o.geometry)) return; const src = o.geometry.attributes.position, n = src.count, W = new Float32Array(n * 3), L = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { v.fromBufferAttribute(src, i); L.set([v.x, v.y, v.z], i * 3); v.applyMatrix4(o.matrixWorld); W.set([v.x, v.y, v.z], i * 3); }
+  const attr = new THREE.BufferAttribute(L.slice(), 3); o.geometry.setAttribute('position', attr); let H = 0, X = 0; for (let i = 0; i < n; i++) { H = Math.max(H, W[i * 3 + 1]); X = Math.max(X, Math.abs(W[i * 3])); }
+  DEF.push({ geo: o.geometry, attr, W, L, inv: o.matrixWorld.clone().invert(), H: H || 1, X: X || 1 }); }); }
+function deform(bend, flap, twist) { const on = !!(bend || flap || twist); if (!on && !defOn) return; defOn = on; const v = new THREE.Vector3();
+  for (const d of DEF) { const a = d.attr.array; if (!on) { a.set(d.L); d.attr.needsUpdate = true; continue; }
+    for (let i = 0; i < d.W.length; i += 3) { let x = d.W[i], y = d.W[i + 1], z = d.W[i + 2]; const h = Math.max(0, y / d.H), side = Math.abs(x) / d.X;
+      if (twist) { const t = twist * h, c = Math.cos(t), s = Math.sin(t), x2 = x * c + z * s; z = z * c - x * s; x = x2; }
+      if (flap && side > .3) { const k = (side - .3) / .7; y += flap * R * k * k * .3; z -= Math.abs(flap) * R * k * .12; }
+      if (bend) { z += bend * R * h * h; y -= Math.abs(bend) * R * h * h * .25; }
+      v.set(x, y, z).applyMatrix4(d.inv); a[i] = v.x; a[i + 1] = v.y; a[i + 2] = v.z; }
+    d.attr.needsUpdate = true; } }
+function poseAt(name, t) { const P = PROCS.find(q => q.name === name); root.position.copy(base); root.scale.set(1, 1, 1); root.rotation.set(0, 0, 0); if (tongue) tongue.visible = false; if (!P || name !== 'bump') deform(0, 0, 0); if (!P) return;
   const u = (t % P.dur) / P.dur, e = x => x * x * (3 - 2 * x);
   if (name === 'hop') { const crouch = u < .2 ? e(u / .2) : u > .8 ? e(1 - (u - .8) / .2) * .7 : 0, air = u > .2 && u < .8 ? Math.sin((u - .2) / .6 * Math.PI) : 0;
     root.scale.set(1 + crouch * .12 - air * .05, 1 - crouch * .18 + air * .14, 1 + crouch * .12 - air * .05); root.position.y = base.y + air * R * .35; root.rotation.x = -air * .15 + crouch * .05; }
-  if (name === 'bump') { // a myth's shove: lean back and squash, lunge forward and stretch, hold, settle. The model faces +z.
-    const back = u < .34 ? e(u / .34) : u < .46 ? 1 - e((u - .34) / .12) : 0, fwd = u < .34 ? 0 : u < .46 ? e((u - .34) / .12) : u < .62 ? 1 : 1 - e((u - .62) / .38);
-    root.position.z = base.z - back * R * .1 + fwd * R * .2; root.rotation.x = -back * .2 + fwd * .26; root.scale.set(1 + back * .12 - fwd * .05, 1 - back * .16 + fwd * .1, 1 + back * .1 + fwd * .08); }
+  if (name === 'bump') { // a myth's own attack, by style (--proc "bump:0.5:10:slam"). The model faces +z and the hit lands at u = .4 in every style.
+    const c = x => Math.max(0, Math.min(1, x)), seg = (a, b) => e(c((u - a) / (b - a))), back = seg(0, .3) * (1 - seg(.34, .4)), hit = seg(.34, .4) * (1 - seg(.58, 1)), after = Math.max(0, u - .4), over = u > .4 ? Math.sin(after * Math.PI * 5) * Math.exp(-after * 7) : 0, S = P.style || 'slap';
+    let z = 0, y = 0, rx = 0, rz = 0, sx = 1, sy = 1, sz = 1, bend = 0, flap = 0, twist = 0;
+    if (S === 'slap' || S === 'twist') { z = -back * .1 + hit * .22; rx = -back * .3 + hit * .34; bend = -back * .26 + hit * .3 + over * .16; sy = 1 - back * .1 + hit * .08; sx = 1 + back * .08; if (S === 'twist') { twist = -back * .7 + hit * .5 + over * .4; bend *= .45; rx = -back * .22 + hit * .2; } }
+    else if (S === 'nip') { const pulse = (a, m, b) => u < a || u > b ? 0 : u < m ? e((u - a) / (m - a)) : 1 - e((u - m) / (b - m)), j = pulse(.3, .4, .52) + pulse(.56, .66, .8), pre = pulse(.08, .26, .36) + pulse(.48, .54, .6) * .6;
+      z = j * .4 - pre * .12; y = j * .08; rx = j * .38 - pre * .2; sz = 1 + j * .22; sy = 1 - pre * .12 + j * .04; flap = Math.sin(u * Math.PI * 12) * .14; bend = j * .12; }
+    else if (S === 'slam') { const crouch = seg(0, .14) * (1 - seg(.14, .22)), air = u > .14 && u < .4 ? Math.sin((u - .14) / .26 * Math.PI) : 0, land = u > .4 ? Math.exp(-after * 6) : 0;
+      y = air * .34; z = seg(.14, .4) * .22 * (1 - seg(.62, 1)); rx = -air * .18 + land * .22; sy = 1 - crouch * .2 + air * .12 - land * .26 * Math.cos(after * Math.PI * 4); sx = sz = 1 + crouch * .12 - air * .05 + land * .2 * Math.cos(after * Math.PI * 4); flap = air * .5 - land * .35 + over * .3; }
+    else if (S === 'ram') { z = -back * .2 + hit * .34; rx = -back * .1 + hit * .16; sz = 1 - back * .12 + hit * .2; sy = 1 + back * .08 - hit * .06; flap = hit * .5 + over * .5; bend = -back * .1 + over * .12; }
+    else if (S === 'swoop') { const up = seg(0, .28) * (1 - seg(.3, .4)), dive = seg(.3, .4) * (1 - seg(.5, 1)); y = up * .3 - dive * .04; z = -up * .12 + dive * .32; rx = -up * .4 + dive * .55; flap = Math.sin(u * Math.PI * 8) * (.5 + up * .3) * (1 - dive * .7) + dive * .5; sz = 1 + dive * .14; }
+    else if (S === 'chatter') { const env = Math.sin(c(u / .9) * Math.PI); rz = Math.sin(u * Math.PI * 10) * .2 * env; z = hit * .2 - back * .06; rx = hit * .22; sy = 1 + Math.sin(u * Math.PI * 10) * .06 * env; twist = Math.sin(u * Math.PI * 10 + 1) * .25 * env; bend = hit * .14; }
+    else if (S === 'loom') { sy = 1 + back * .3 - hit * .12; sx = sz = 1 - back * .1 + hit * .1; bend = -back * .16 + hit * .26 + over * .12; rx = hit * .12; z = hit * .16; }
+    root.position.set(base.x, base.y + y * R, base.z + z * R); root.rotation.set(rx, 0, rz); root.scale.set(sx, sy, sz); deform(bend, flap, twist); }
   if (name === 'attack') { const lean = u < .25 ? e(u / .25) : u < .7 ? 1 : e(1 - (u - .7) / .3); root.rotation.x = lean * .22; root.scale.set(1, 1 - lean * .06, 1 + lean * .08);
     const out = u > .25 && u < .7 ? Math.sin((u - .25) / .45 * Math.PI) : 0; if (tongue && out > 0) { tongue.visible = true; tongue.scale.set(1, 1, .05 + out); } } }
 function toonify(obj) {
@@ -94,7 +119,7 @@ window.load = async (url, animUrls, paint) => {
   // size from the bind pose, before any animation moves it
   const box = new THREE.Box3().setFromObject(root), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
   R = Math.max(size.x, size.y, size.z); root.position.x -= c.x; root.position.z -= c.z; root.position.y -= box.min.y; groundY = 0;
-  toonify(root); scene.add(root); base = root.position.clone();
+  toonify(root); scene.add(root); base = root.position.clone(); if (PROCS.some(q => q.name === 'bump')) deformInit();
   if (PROCS.some(q => q.name === 'attack')) { // a tongue from the front of the mouth (the model faces +z), drawn in toon pink with its own outline
     const g = new THREE.CapsuleGeometry(R * .05, R * .4, 4, 8); g.rotateX(Math.PI / 2); g.translate(0, 0, R * .24);
     tongue = new THREE.Mesh(g, new THREE.MeshToonMaterial({ color: 0xe86a7a, gradientMap: ramp })); tongue.position.set(0, size.y * .5, size.z * .42); tongue.visible = false; root.add(tongue); }
@@ -149,7 +174,7 @@ console.log('loaded', MODEL, 'R', info.R.toFixed(3), 'clips', info.clips.map(c =
 const plan = info.clips.length ? (PROC.length && !ANIMS.length ? [{ name: 'idle', dur: 0 }, ...info.clips] : info.clips) : [{ name: 'idle', dur: 0 }];
 { const d0 = plan[0].dur ? await p.evaluate(n => window.play(n), plan[0].name) : (await p.evaluate(() => window.play('idle')), 0); const angs = Array.from({ length: DIRS }, (_, i) => FACE + i / DIRS * Math.PI * 2), ts = d0 ? [0, d0 * .25, d0 * .5, d0 * .75] : [null];
   if (PROC.length) await p.evaluate(() => window.fitAll = true);
-  const fit = await p.evaluate(([a, t, procs]) => { if (!procs.length) return window.fit(a, t); let best = null; for (const q of [{ name: 'idle', dur: 0 }, ...procs.filter(q => q.name !== 'attack')]) { window.play(q.name); const r = window.fit2(a, q.dur ? [0, q.dur * .25, q.dur * .5, q.dur * .75] : [null]); if (r && (!best || r.span > best.span)) best = r; } window.applyFit(best); return best; }, [angs, ts, PROC]); console.log('fit', fit && fit.span.toFixed(3), fit && fit.px.join(',')); }
+  const fit = await p.evaluate(([a, t, procs]) => { if (!procs.length) return window.fit(a, t); let best = null; for (const q of [{ name: 'idle', dur: 0 }, ...procs.filter(q => q.name !== 'attack')]) { window.play(q.name); const r = window.fit2(a, q.dur ? [0, .15, .3, .4, .5, .6, .75, .9].map(k => q.dur * k) : [null]); if (r && (!best || r.span > best.span)) best = r; } window.applyFit(best); return best; }, [angs, ts, PROC]); console.log('fit', fit && fit.span.toFixed(3), fit && fit.px.join(',')); }
 const meta = { name: NAME, size: SIZE, dirs: DIRS, anims: {}, anchors: {}, bones: info.bones };
 // compose sheets in the page itself (an offscreen canvas) so no image library is needed here
 await p.evaluate(() => { window.sheet = document.createElement('canvas'); });
