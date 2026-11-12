@@ -656,7 +656,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 113</div>
+    <div class="build">build 114</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeFoes" aria-label="Myth Spotter" hidden>🔎<i class="dot" id="foeDot" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -3038,6 +3038,8 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e === G.boss) { e.taken = (e.taken || 0) + d; if (e.minSec && !G.endless && (e.hit1 == null || e.age - e.hit1 < 1)) e.hp = Math.max(e.hp, e.maxhp * .5); } // a boss can't be deleted in its first second: the health floor (update) sizes it from these hits
   if (G.fx.length < (lowFx ? 120 : 260)) { const a = Math.atan2(e.y - (from.y || e.y), e.x - (from.x || e.x)) + Math.PI; G.fx.push({ k: 'spark', x: e.x + Math.cos(a) * e.r * .7, y: e.y + Math.sin(a) * e.r * .7, a, t: 0, life: crit ? .28 : .16, big: crit }); } if (gfx === 'slow') e.slow = Math.max(e.slow, .8); else if (gfx === 'stun' && Math.random() < .2) e.stun = Math.max(e.stun, .35);
   sfx(crit ? 'crit' : 'hit');
+  { const ha = Math.atan2(e.y - (from.y != null ? from.y : e.y), e.x - (from.x != null ? from.x : e.x)); e.flA = ha; e.fl = .16; /* flinches away from the blow */
+    if (ATK_STYLE[who] && !(e.hfxAt > G.t - .15) && G.fx.length < (lowFx ? 120 : 260)) { e.hfxAt = G.t; G.fx.push({ k: 'atkfx', s: HIT_FX[ATK_STYLE[who]], x: e.x - Math.cos(ha) * e.r * .5, y: e.y - Math.sin(ha) * e.r * .5, a: ha, t: 0, life: crit ? .3 : .2, r: e.r * (crit ? 1.1 : .8), col: atkCol(who) }); } }
   if (save.opt.nums) text(e.x + rnd(-8, 8), e.y - e.r - 6, crit ? d + '!' : d, crit ? '#ecb23c' : '#fff', crit ? 24 : 17, .7); else if (crit) text(e.x + rnd(-8, 8), e.y - e.r - 6, 'POW!', '#ecb23c', 22, .7); /* numbers are for older kids: off by default, a crit still says so */
   if (knock) { const a = Math.atan2(e.y - from.y, e.x - from.x); e.kx += Math.cos(a) * knock; e.ky += Math.sin(a) * knock; }
   const el = who === 'react' ? null : elemOf(who);
@@ -3382,7 +3384,7 @@ function update(dt) {
   G.radius = ringSoft(G.baseRadius + rankOf('scuttle', 'antennae') * (8 + sk('scuttle', 'antennae') * 4)) * (G.fog > 0 ? .6 : 1);
   for (const t of G.traps) t.t += dt; G.traps = G.traps.filter(t => t.t < t.life);
   for (const e of G.enemies) {
-    e.hit -= dt; e.sq -= dt; e.bonk -= dt; if (e.atkA > 0) e.atkA -= dt; if (e.appear > 0 && e !== G.boss) e.appear -= dt; if (e.freeze > 0) { e.freeze -= dt; continue; } // hit-stop: a beat's pause on a big hit e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
+    e.hit -= dt; e.sq -= dt; e.bonk -= dt; if (e.fl > 0) e.fl -= dt; if (e.atkA > 0) e.atkA -= dt; if (e.appear > 0 && e !== G.boss) e.appear -= dt; if (e.freeze > 0) { e.freeze -= dt; continue; } // hit-stop: a beat's pause on a big hit e.slow = Math.max(0, e.slow - dt * (mastered(1) ? .83 : 1) * (e.V && e.V.slow || 1));
     if (e.V && e.V.hurry && !e.hurried && ringD(e) < G.radius * 1.2) { e.hurried = true; e.hurry = .55; text(e.x, e.y - e.r - 14, '!', '#fff', 18, .5); } e.stun = Math.max(0, e.stun - dt);
     if (e.life != null) { e.life -= dt; if (e.life <= 0) { e.hp = 0; G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#fbf3df', r: e.r * .6 }); continue; } }
     let sp = e.spd * (e.slow > 0 ? .45 : 1) * (save.opt.little ? .65 : 1) * (G.heatwave > 0 && e.kind !== 'boss' ? 1.3 : 1);
@@ -3418,7 +3420,7 @@ function update(dt) {
     e.vx = (e.vx || 0) + (Math.cos(a) * want - (e.vx || 0)) * k; e.vy = (e.vy || 0) + (Math.sin(a) * want - (e.vy || 0)) * k;
     e.x += e.vx * dt; e.y += e.vy * dt;
     if (d <= e.r + 34 && e.bonk <= 0 && e.stun <= 0 && e.dmg > 0) { e.bonk = 1.4;
-      const land = () => { if (e.hp <= 0 || G.over || G.cleared) return; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.lv * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 16, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); const b = Math.atan2(dad.y - e.y, dad.x - e.x); e.kx -= Math.cos(b) * 90; e.ky -= Math.sin(b) * 90; };
+      const land = () => { if (e.hp <= 0 || G.over || G.cleared) return; G.hp -= patHit(e.dmg); sfx('bonk'); buzz('MEDIUM'); if (G.famSpiky) { hurt(e, 10 + G.lv * 2, 130, dad); if (Math.random() < .5) text(e.x, e.y - e.r - 20, '🦔 Ouch!', '#ffd76a', 16, .8); } G.dropped = true; G.flash = .25; G.shake = .15; text(dad.x + rnd(-20, 20), dad.y - 70, pick(['Why?!', 'But why?', 'Are you sure?', 'Nuh-uh!', 'WHY??']), '#cb382e', 17, .9); const b = Math.atan2(dad.y - e.y, dad.x - e.x); dad.rec = { a: b, t: .32 }; G.fx.push({ k: 'atkfx', s: 'star', x: dad.x - Math.cos(b) * 22, y: dad.y - 8 - Math.sin(b) * 14, a: b, t: 0, life: .25, r: 20, col: '#ffd76a' }); e.kx -= Math.cos(b) * 90; e.ky -= Math.sin(b) * 90; };
       if (hasBump(e)) { e.atkA = BUMP_DUR; G.pending.push({ at: G.t + BUMP_HIT, fn: () => { if (e.stun > 0) return; land(); for (let i = 0; i < fxN(4); i++) G.fx.push({ k: 'puff', x: (e.x + dad.x) / 2 + rnd(-8, 8), y: (e.y + dad.y) / 2 + rnd(-8, 8), vx: rnd(-70, 70), vy: rnd(-90, -10), t: 0, life: rnd(.25, .45), col: '#fbf3df', r: rnd(3, 6) }); } }); } // wind-up first: a stun in that beat stops the shove
       else land(); }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
@@ -4018,14 +4020,31 @@ function drawPetGear(c, id, held) {
 // pull back (0-.30) -> strike (.30-.42) -> follow through (.42-.60) -> recover (.60-1). Returns how far along the aim
 // to stand (px, negative = back), how hard to squash or stretch, and the lean.
 const atkReach = id => id === 'webster' ? 22 : 18;
-function atkBeat(p, reach) { const e = x => x * x * (3 - 2 * x), o = x => 1 - (1 - x) * (1 - x);
+// each friend's own way of attacking: the motion, and the mark it leaves, in the colour of their element
+const ATK_STYLE = { dad: 'lunge', webster: 'flick', sparky: 'zig', hopper: 'hop', puddles: 'puff', dusty: 'flick', pip: 'spin', scuttle: 'hop', nilla: 'puff', shelly: 'spin', goldie: 'puff', prickles: 'spin', jelly: 'zig', echo: 'zig', inky: 'flick', chroma: 'flick', luna: 'zig',
+  bumble: 'zig', wiggles: 'flick', coco: 'hop', dot: 'zig', rosie: 'flick', gizmo: 'lunge', bramble: 'lunge', pinch: 'flick', sol: 'spin', frost: 'lunge', bluey: 'puff', uni: 'lunge' };
+const atkCol = id => { const el = elemOf(id); return el && ELEM[el] ? ELEM[el].col : '#fff'; };
+const HIT_FX = { lunge: 'star', flick: 'star', zig: 'zag', spin: 'swirl', hop: 'ring', puff: 'cone' };
+function atkBeat(p, reach, style) { const B = atkBase(p, reach), c = x => Math.max(0, Math.min(1, x)), e = x => x * x * (3 - 2 * x); B.up = 0; B.side = 0; B.rot = 0;
+  if (style === 'hop') { B.d *= .8; B.up = Math.sin(c((p - .22) / .38) * Math.PI) * 14; if (p > .6 && p < .75) B.sq = Math.sin((p - .6) / .15 * Math.PI) * .9; } /* up and over, and a squash on landing */
+  else if (style === 'zig') { B.d *= 1.2; B.side = Math.sin(p * Math.PI * 7) * 8 * Math.sin(c(p / .7) * Math.PI); } /* darts side to side on the way in */
+  else if (style === 'spin') { B.d *= .5; B.rot = e(c((p - .22) / .4)) * Math.PI * 2; B.lean = 0; } /* one full turn on the spot */
+  else if (style === 'puff') { B.d *= .4; if (p < .3) { B.st = e(p / .3) * 1.1; B.sq = 0; } else if (p < .6) { B.sq = (1 - (p - .3) / .3) * 1.3; B.st = 0; } } /* a deep breath in, then all of it out */
+  else if (style === 'flick') { B.d *= .45; B.lean *= 1.7; } /* stays put and snaps */
+  return B; }
+function atkBase(p, reach) { const e = x => x * x * (3 - 2 * x), o = x => 1 - (1 - x) * (1 - x);
   if (p < .30) { const u = e(p / .30); return { d: -reach * .45 * u, sq: u * .9, st: 0, lean: -.26 * u }; }
   if (p < .42) { const u = o((p - .30) / .12); return { d: -reach * .45 + reach * 1.45 * u, sq: 0, st: u * 1.1, lean: -.26 + .5 * u }; }
   if (p < .60) { const u = (p - .42) / .18; return { d: reach * (1 - .12 * Math.sin(u * Math.PI)), sq: Math.sin(u * Math.PI) * .35, st: (1 - u) * .5, lean: .24 - .06 * u }; }
   const u = e((p - .60) / .40); return { d: reach * (1 - u), sq: 0, st: 0, lean: .18 * (1 - u) }; }
 // the swoosh the strike leaves behind it
-function atkSmear(m, ang, reach) { if (m.smearAt === m.anim) return; m.smearAt = m.anim; if (G.fx.length < (lowFx ? 120 : 260)) G.fx.push({ k: 'smear', x: m.x + Math.cos(ang) * reach * .6, y: m.y - (m.id === 'dad' ? 40 : 14) + Math.sin(ang) * reach * .6, a: ang, t: 0, life: .2, r: m.id === 'dad' ? 34 : 26 });
-  for (let i = 0; i < fxN(3); i++) G.fx.push({ k: 'puff', x: m.x - Math.cos(ang) * 10, y: m.y + (m.id === 'dad' ? 26 : 4), vx: -Math.cos(ang) * rnd(30, 80), vy: rnd(-40, -10), t: 0, life: rnd(.25, .4), col: '#fbf3df', r: rnd(3, 5) }); }
+function atkSmear(m, ang, reach) { if (m.smearAt === m.anim) return; m.smearAt = m.anim; const st = ATK_STYLE[m.id] || 'lunge', col = atkCol(m.id), dad = m.id === 'dad', y0 = m.y - (dad ? 40 : 14), room = G.fx.length < (lowFx ? 120 : 260);
+  const at = (k, q = {}) => room && G.fx.push({ k, x: m.x + Math.cos(ang) * reach * .6, y: y0 + Math.sin(ang) * reach * .6, a: ang, t: 0, life: .22, r: dad ? 34 : 26, col, ...q });
+  if (st === 'lunge') at('smear'); else if (st === 'flick') at('atkfx', { s: 'lines' }); else if (st === 'zig') at('atkfx', { s: 'zag', life: .26 }); else if (st === 'spin') at('atkfx', { s: 'swirl', x: m.x, y: y0, life: .3 }); else if (st === 'puff') at('atkfx', { s: 'cone', life: .3 });
+  else if (st === 'hop') G.pending.push({ at: G.t + .12, fn: () => { if (G.fx.length < 260) G.fx.push({ k: 'atkfx', s: 'ring', x: m.x + Math.cos(ang) * reach * .8, y: m.y + 4 + Math.sin(ang) * reach * .5, a: 0, t: 0, life: .3, r: 24, col }); } });
+  for (let i = 0; i < fxN(3); i++) G.fx.push({ k: 'puff', x: m.x - Math.cos(ang) * 10, y: m.y + (dad ? 26 : 4), vx: -Math.cos(ang) * rnd(30, 80), vy: rnd(-40, -10), t: 0, life: rnd(.25, .4), col: '#fbf3df', r: rnd(3, 5) }); }
+// Dad rocks back the way he was shoved, then rights himself
+function dadRecoil(m) { const R = m.rec; if (!R || R.t <= 0) return { x: 0, y: 0, lean: 0 }; R.t -= 1 / 60; const u = 1 - Math.max(0, R.t) / .32, k = u < .2 ? u / .2 : 1 - (u - .2) / .8; return { x: Math.cos(R.a) * 10 * k, y: Math.sin(R.a) * 6 * k, lean: k * .16 * (Math.cos(R.a) >= 0 ? 1 : -1) }; }
 function drawMember(m) {
   const a = m.anim, p = a ? a.t / a.dur : 0;
   if (m.id === 'dad') {
@@ -4033,7 +4052,7 @@ function drawMember(m) {
     const lean = a ? (p < .33 ? -.14 * (p / .33) : .12 * (1 - Math.min(1, (p - .33) / .67)) - .02) * m.face : 0;
     // a step back on the wind-up, a step into the throw, then back to the spot
     const step = a ? (p < .33 ? -6 * (p / .33) : 10 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 6 : 0;
-    const B = a ? atkBeat(p, 16) : null, ang = m.aim != null ? m.aim : (m.face > 0 ? 0 : Math.PI); if (B && p >= .30) atkSmear(m, ang, 16);
+    const B = a ? atkBeat(p, 16) : null, ang = m.aim != null ? m.aim : (m.face > 0 ? 0 : Math.PI), RC = dadRecoil(m); if (B && p >= .30) atkSmear(m, ang, 16);
     const pose = dadPose(m), P = DPOSE[pose], img = art('bdad_' + pose), alpha = G.flash > 0 && !save.opt.calm && Math.floor(G.flash * 20) % 2 ? .5 : 1;
     if (R3D && R3D.has('dad')) { // the live 3D Dad (?r3d): idle, a spell-cast point on a cast, ouch when bumped, a cheer once the stage is won
       const anim = pose === 'ouch' ? 'ouch' : G.cleared ? 'cheer' : a ? 'cast' : 'idle', fx = m.x + step * .6, fy = m.y + 30 - hop * .5, h = DAD_DRAW;
@@ -4045,7 +4064,7 @@ function drawMember(m) {
       const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
       const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up
       const fx = B ? m.x + Math.cos(ang) * B.d : m.x + step * .6, fy = B ? m.y + 30 + Math.sin(ang) * B.d * .6 : m.y + 30 - hop * .5;
-      ctx.save(); ctx.translate(fx, fy); ctx.rotate(B ? B.lean * m.face * .7 : lean * .6); ctx.scale(m.face * (B ? 1 + B.sq * .1 - B.st * .05 : 1 + pop * .07 + wind * .03), B ? 1 + br - B.sq * .12 + B.st * .07 : 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
+      ctx.save(); ctx.translate(fx + RC.x, fy + RC.y); ctx.rotate(RC.lean + (B ? B.lean * m.face * .7 : lean * .6)); ctx.scale(m.face * (B ? 1 + B.sq * .1 - B.st * .05 : 1 + pop * .07 + wind * .03), B ? 1 + br - B.sq * .12 + B.st * .07 : 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
       ctx.drawImage(dressed(img, P), -P.feet * w, -h, w, h); hatOn(ctx, img, -P.feet * w, -h, w, h, dadHat());
       const T = lensTint(); if (T) { ctx.fillStyle = T; ctx.globalAlpha = alpha * .45; ctx.beginPath(); ctx.arc((P.lens[0] - P.feet) * w, -h + P.lens[1] * h, P.r * h, 0, 7); ctx.fill(); }
       ctx.restore(); m.lensAt = { x: fx + m.face * (P.lens[0] - P.feet) * w, y: fy - h + P.lens[1] * h }; return;
@@ -4065,11 +4084,11 @@ function drawMember(m) {
   if (m.land > 0) m.land -= 1 / 60;
   const cheer = m.cheer > 0 ? Math.sin((1 - m.cheer / .5) * Math.PI) * 9 : 0; if (m.cheer > 0) m.cheer -= 1 / 60;
   const step = a ? (p < .33 ? -5 * (p / .33) : 12 * (1 - Math.min(1, (p - .33) / .67))) * m.face : 0, hop = a && p > .33 ? Math.sin(Math.min(1, (p - .33) / .4) * Math.PI) * 8 : 0;
-  const B = a ? atkBeat(p, atkReach(m.id)) : null, ang = m.aim != null ? m.aim : (m.face > 0 ? 0 : Math.PI); if (B && p >= .30) atkSmear(m, ang, atkReach(m.id));
-  const px = B ? m.x + Math.cos(ang) * B.d : m.x + step, py = B ? m.y + 4 - z - cheer + Math.sin(ang) * B.d * .6 : m.y + 4 - z - hop - cheer;
+  const B = a ? atkBeat(p, atkReach(m.id), ATK_STYLE[m.id]) : null, ang = m.aim != null ? m.aim : (m.face > 0 ? 0 : Math.PI); if (B && p >= .30) atkSmear(m, ang, atkReach(m.id));
+  const px = B ? m.x + Math.cos(ang) * B.d - Math.sin(ang) * B.side : m.x + step, py = B ? m.y + 4 - z - cheer + Math.sin(ang) * B.d * .6 + Math.cos(ang) * B.side * .6 - B.up : m.y + 4 - z - hop - cheer;
   m.drawn = { x: px, y: py };
   const atk = atkPose(m), pop = atk && a && p > .2 ? Math.max(0, 1 - (p - .2) / .12) : 0; // a little squash the moment it snaps into the attack drawing
-  drawCompanionAt(ctx, m.id, px, py, 1, m.face, G.t, { lean: B ? B.lean * m.face : lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : B ? B.sq : pop ? pop * .8 : a && p < .2 ? p / .2 : 0, stretch: B ? B.st : (hop + cheer) / 8, gear: true, atk, held: a ? p : null, aim: m.aim });
+  drawCompanionAt(ctx, m.id, px, py, 1, m.face, G.t, { lean: B ? (B.lean + B.rot) * m.face : lean, bob: m.bob, squash: m.land > 0 ? m.land * 3 : B ? B.sq : pop ? pop * .8 : a && p < .2 ? p / .2 : 0, stretch: B ? B.st : (hop + cheer) / 8, gear: true, atk, held: a ? p : null, aim: m.aim });
   if (m.muted > 0) { ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(m.daze > G.t ? m.dazeIc : '💬', m.x - 26, m.y - 44 + Math.sin(G.t * 8) * 3); ctx.textBaseline = 'alphabetic'; }
   if (m.id === 'sparky' && rankOf('sparky', 'glow')) { ctx.fillStyle = 'rgba(255,230,120,.12)'; ctx.beginPath(); ctx.arc(m.x, m.y - 10, 100 + rankOf('sparky', 'glow') * 10 + sk('sparky', 'glow') * 10, 0, 7); ctx.fill(); }
 }
@@ -4142,7 +4161,7 @@ const sheetOf = e => { const big = e.kind === 'boss' || e.kind === 'mirage'; ret
 const hasBump = e => { const S = sheetOf(e); return !!(S && S.meta.anims.bump); };
 function drawEnemy(e) {
   if (isVil(e) && ready(art(vilOf(e) + '_idle'))) return drawSses(e);
-  const r = e.r, x = e.x, y = e.y - (e.z || 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
+  const flk = e.fl > 0 ? (e.fl / .16) ** 2 * (e.kind === 'boss' ? 3 : 7) : 0, r = e.r, x = e.x + (flk ? Math.cos(e.flA) * flk : 0), y = e.y - (e.z || 0) + (flk ? Math.sin(e.flA) * flk : 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   const e3 = in3d(e); if (!e3) { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill(); } // the 3D layer has its own shadow
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
@@ -4311,7 +4330,15 @@ function draw() {
     if (f.k === 'die') { const e = f.e; ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(e.x, e.y); ctx.scale(1 + p * .55, 1 - p * .45); ctx.translate(-e.x, -e.y); e.hit = 1; drawEnemy(e); ctx.restore(); ctx.globalAlpha = 1; }
     else if (f.k === 'spark') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#ffd76a' : '#fff'; ctx.lineWidth = f.big ? 4 : 3; ctx.lineCap = 'round'; const L = (f.big ? 22 : 14) * (.5 + p); for (let i = -2; i <= 2; i++) { const a = f.a + i * .45; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a) * L * .35, f.y + Math.sin(a) * L * .35); ctx.lineTo(f.x + Math.cos(a) * L, f.y + Math.sin(a) * L); ctx.stroke(); } ctx.globalAlpha = 1; }
     else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
-    else if (f.k === 'smear') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .85; ctx.strokeStyle = '#fff'; ctx.lineCap = 'round'; ctx.lineWidth = 7 * (1 - p) + 1; ctx.beginPath(); ctx.arc(-f.r * .4, 0, f.r, -.9, .9); ctx.stroke(); ctx.globalAlpha = (1 - p) * .5; ctx.strokeStyle = '#ffe9a8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(-f.r * .7, 0, f.r, -.7, .7); ctx.stroke(); ctx.restore(); } // the crescent a strike leaves
+    else if (f.k === 'smear') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .85; ctx.strokeStyle = f.col || '#fff'; ctx.lineCap = 'round'; ctx.lineWidth = 7 * (1 - p) + 1; ctx.beginPath(); ctx.arc(-f.r * .4, 0, f.r, -.9, .9); ctx.stroke(); ctx.globalAlpha = (1 - p) * .5; ctx.strokeStyle = '#ffe9a8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(-f.r * .7, 0, f.r, -.7, .7); ctx.stroke(); ctx.restore(); } // the crescent a strike leaves
+    else if (f.k === 'atkfx') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .9; ctx.strokeStyle = f.col || '#fff'; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; /* the mark an attack or a hit leaves, by style */
+      if (f.s === 'lines') { ctx.lineWidth = 3; for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(-f.r * .6 + p * f.r * .8, i * 7); ctx.lineTo(f.r * (.2 + .9 * p) - Math.abs(i) * 6, i * 7); ctx.stroke(); } }
+      else if (f.s === 'zag') { ctx.lineWidth = 4 * (1 - p) + 1; ctx.beginPath(); for (let i = 0; i <= 5; i++) { const X = -f.r + i * f.r * .45, Y = i > 0 && i < 5 ? (i % 2 ? 7 : -7) : 0; if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); } ctx.stroke(); }
+      else if (f.s === 'swirl') { ctx.rotate(p * 5); ctx.lineWidth = 5 * (1 - p) + 1; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(0, 0, f.r * (.6 + p * .6), i * 2.1, i * 2.1 + 1.3); ctx.stroke(); } }
+      else if (f.s === 'cone') { ctx.lineWidth = 4; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(-f.r * .3, 0, f.r * (.5 + i * .35 + p * .9), -.5, .5); ctx.stroke(); } }
+      else if (f.s === 'ring') { ctx.rotate(-f.a); ctx.lineWidth = 4 * (1 - p) + 1; ctx.beginPath(); ctx.ellipse(0, 0, f.r * (.4 + p), f.r * (.4 + p) * .4, 0, 0, 7); ctx.stroke(); }
+      else if (f.s === 'star') { ctx.lineWidth = 4 * (1 - p) + 1; for (let i = 0; i < 6; i++) { const q = i * Math.PI / 3 + .3; ctx.beginPath(); ctx.moveTo(Math.cos(q) * f.r * (.3 + p * .5), Math.sin(q) * f.r * (.3 + p * .5)); ctx.lineTo(Math.cos(q) * f.r * (.7 + p * .6), Math.sin(q) * f.r * (.7 + p * .6)); ctx.stroke(); } }
+      ctx.restore(); }
     else if (f.k === 'cfly') { const q = 1 - Math.pow(1 - p, 3), cx = f.x + (36 - f.x) * q, cy = f.y + (100 - f.y) * q - Math.sin(p * Math.PI) * 40; ctx.save(); ctx.globalAlpha = 1; ctx.fillStyle = '#f5c95a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 7 * (1 - p * .4), 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); } // a coin flying to the counter
     else if (f.k === 'glyph') { ctx.save(); ctx.globalAlpha = 1 - p * p; ctx.translate(f.x, f.y); if (!f.g) { ctx.rotate(f.rot); ctx.fillStyle = f.col; ctx.fillRect(-f.s * .3, -f.s * .18, f.s * .6, f.s * .36); } else if (f.g === 'bubble') { ctx.strokeStyle = 'rgba(92,140,190,.9)'; ctx.lineWidth = 2; ctx.fillStyle = 'rgba(220,240,255,.35)'; ctx.beginPath(); ctx.arc(0, 0, f.s * .6 * (1 + p * .4), 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-f.s * .2, -f.s * .2, f.s * .14, 0, 7); ctx.fill(); } else { ctx.rotate(Math.sin(f.rot) * .3); ctx.fillStyle = '#000'; ctx.font = `${Math.round(f.s * 1.3)}px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(f.g, 0, 0); } ctx.restore(); }
     else if (f.k === 'star') { ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(f.x, f.y - p * 18); ctx.rotate(p * 3); const R = f.s * (p < .3 ? p / .3 : 1); ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i < 8; i++) { const r2 = i % 2 ? R * .4 : R, a = i / 8 * Math.PI * 2; ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
@@ -5927,7 +5954,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hasBump, atkBeat, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hasBump, atkBeat, ATK_STYLE, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const k in FOES) add('d', `${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`);
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
