@@ -485,6 +485,19 @@ await test('attacks: a tank winds up before its shove lands, and a stun stops it
   expect(r.styles, 'every friend has a signature attack, and the styles move differently');
   expect(r.rec && r.flinch && r.mark, 'Dad rocks back from a shove; a struck myth flinches and shows the hit mark: ' + JSON.stringify(r)); await close(); return errs;
 });
+await test('boss moves are staged: a tell that can be stunned, the move, then a tired moment', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(4); }); await p.waitForTimeout(1200);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; for (const m of G.party) { m.muted = 999; for (const k in m.cds) m.cds[k] = 999; }
+    const b = G.boss || dbg.spawn('wall', { x: 220, y: 150 }); b.hp = b.maxhp = 1e7; b.x = 220; b.y = 150; b.spd = 0; b.chargeT = 99; b.moveT = .05; let n = 0;
+    while (!(b.tellT > 0) && n++ < 90) dbg.step(1); const tell = b.tellT > 0; dbg.step(15); const pose = dbg.bossPose(b).sq > 0; b.stun = .5; dbg.step(3); const nope = b.tellT == null && !(b.tired > 0); b.stun = 0;
+    b.moveT = .05; b.chargeT = 99; n = 0; while (!(b.tellT > 0) && n++ < 90) dbg.step(1); n = 0; while (b.tellT > 0 && n++ < 90) dbg.step(1); const tired = b.tired > 0, x0 = b.x, y0 = b.y, hp0 = b.hp;
+    dbg.hurt(b, 100, 0, G.dad); const d1 = hp0 - b.hp; dbg.step(10); const still = b.x === x0 && b.y === y0; b.tired = 0; const hp1 = b.hp; dbg.hurt(b, 100, 0, G.dad); const d2 = hp1 - b.hp;
+    return { tell, pose, nope, tired, still, d1, d2 }; });
+  expect(r.tell && r.pose && r.nope, 'the boss hunkers down through its tell, and a stun cancels the move: ' + JSON.stringify(r));
+  expect(r.tired && r.still, 'after its move the boss is out of breath and stands still: ' + JSON.stringify(r));
+  expect(r.d1 > r.d2 * 0.9 && r.d1 > 100, 'a tired boss takes more: ' + JSON.stringify(r)); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);

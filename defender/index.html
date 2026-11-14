@@ -656,7 +656,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 114</div>
+    <div class="build">build 115</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeFoes" aria-label="Myth Spotter" hidden>🔎<i class="dot" id="foeDot" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1386,6 +1386,19 @@ const BOSSMOVE = {
               note: 'Sir Ever-So-Sure borrows every boss\'s move. Stun him during the tell to stop it.', go: b => BOSSMOVE[sses.cur].go(b) },
   flat:     { every: 12, tell: '"The world is FLAT. See?"', note: 'The Flat Earth flips the whole backyard over for a moment. Dad never moves, so neither should you.', go: b => { G.flip = 3; text(CX, CY - 120, 'FLIP!', '#fff', 24, 1.2); } },
 };
+// Staging a boss move: it hunkers down and shakes through the tell while a gold arc counts the stun window down, springs up as the
+// move goes off, then is out of breath for a moment: it stands still and takes TIRED_DMG more. The charge gets the same three beats.
+const TIRED_DMG = 1.25, NO_TIRE = new Set(['triangle', 'penguin', 'birddino']); /* these moves carry the boss off; it tires when it lands instead */
+function bossTire(b, t) { if (b.hp <= 0 || b.tired > 0) return; b.tired = t; b.chargeT = Math.max(b.chargeT || 0, t + 1.5); if (b.moveT != null) b.moveT = Math.max(b.moveT, t + .8); text(b.x, b.y - b.r - 40, 'Phew…', '#bfe6f5', 18, 1); if (!G.tiredNoted) { G.tiredNoted = true; hint('The boss is out of breath after its move. Hit it now!', 4); } }
+function bossPose(e) { const dir = e.x < G.dad.x ? 1 : -1, P = { sq: 0, st: 0, lean: 0, dx: 0 }; if (e.kind !== 'boss') return P;
+  if (e.tellT > 0) { const u = 1 - e.tellT / 1.3; P.sq = .55 * u; P.dx = save.opt.calm ? 0 : Math.sin(G.t * 42) * 2.5 * u; }
+  else if (e.winding > 0) { const u = 1 - e.winding / 1.2; P.sq = .3 * u; P.lean = -dir * .22 * u; }
+  else if (e.charging > 0) { P.st = .4; P.lean = dir * .3; }
+  else if (e.tired > 0) { P.sq = .22 + Math.sin(G.t * 9) * .08; P.lean = dir * .1; }
+  if (e.pop > 0) P.st = Math.max(P.st, e.pop / .3 * .9); return P; }
+function bossTells(e) { const T = e.tellT > 0 ? e.tellT / 1.3 : e.winding > 0 ? e.winding / 1.2 : 0, y = e.y - (e.z || 0);
+  if (T > 0) { ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(58,44,32,.55)'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(e.x, y, e.r * 1.5, 0, 7); ctx.stroke(); ctx.strokeStyle = T < .3 ? '#f08a4b' : '#ecb23c'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(e.x, y, e.r * 1.5, -Math.PI / 2, -Math.PI / 2 + T * Math.PI * 2); ctx.stroke(); ctx.restore(); } /* how long is left to stun it */
+  if (e.tired > 0) { ctx.save(); ctx.fillStyle = '#000'; ctx.font = `20px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.fillText('💦', e.x + e.r * .7, y - e.r - 6 + Math.sin(G.t * 8) * 3); ctx.restore(); } }
 const SSES_MOVES = ['wall', 'boil', 'brain', 'triangle', 'hot', 'penguin', 'bolt'], sses = { n: -1, cur: 'wall' };
 // Book 2's chapter bosses, one move each (reports/Book 2 plan.md, "Boss moves")
 const nearMyths = (b, R) => G.enemies.filter(e => e !== b && e.hp > 0 && e.kind !== 'boss' && e.kind !== 'brick' && dist(e, b) < R);
@@ -3011,6 +3024,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.hp <= 0 || e.fade > 0) return;
   if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
+  if (e.tired > 0) d *= TIRED_DMG;
   if (e.guard > 0) d *= .25;
   if (G.checked && G.checked.has(e.id)) d *= 1.5;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 16, 1.4); } }
@@ -3350,20 +3364,21 @@ function update(dt) {
     if (b.minSec && !G.endless && b.hit1 != null && b.age - b.hit1 >= .5 && b.age < b.minSec && b.age - (b.floorAt || 0) >= .5) { b.floorAt = b.age; const want = b.taken / (b.age - b.hit1) * (b.minSec - b.age); if (want > b.hp) { b.maxhp *= want / b.hp; b.hp = want; } } // average damage since its first hit: steadier than a window, which ratchets on bursts
     if (b.guard > 0) { b.guard -= dt; if (b.stun > 0) b.guard = 0; }
     if (b.hop) { const H = b.hop; H.t += dt; const k = Math.min(1, H.t / H.dur); b.x = H.fx + (H.tx - H.fx) * k; b.y = H.fy + (H.ty - H.fy) * k; b.z = Math.sin(Math.PI * k) * 140;
-      if (k >= 1) { b.hop = null; b.z = 0; G.shake = Math.max(G.shake, .3); text(b.x, b.y - b.r - 40, 'THUD', '#fff', 22, .9); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 160) m.muted = Math.max(m.muted || 0, 1); } }
+      if (k >= 1) { b.hop = null; b.z = 0; bossTire(b, 1.4); G.shake = Math.max(G.shake, .3); text(b.x, b.y - b.r - 40, 'THUD', '#fff', 22, .9); for (const m of G.party) if (m.id !== 'dad' && dist(b, m) < 160) m.muted = Math.max(m.muted || 0, 1); } }
+    if (b.tired > 0) b.tired -= dt; if (b.pop > 0) b.pop -= dt;
     if (b.winding == null) { b.chargeT -= dt; if (b.chargeT <= 0 && dist(b, G.dad) > 120) { b.winding = 1.2; text(b.x, b.y - b.r - 50, pick(['"Listen HERE."', '"I\'m RIGHT, you know."', '"Wait till I tell you..."']), '#fff', 16, 1.3); } }
-    else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
-    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.lv ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } }
+    else if (b.winding > 0) { b.winding -= dt; if (b.stun > 0) { b.winding = null; b.chargeT = 8; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.winding <= 0) { b.charging = .55; b.pop = .3; b.winding = null; b.chargeT = 11; G.shake = Math.max(G.shake, .1); } }
+    if (b.charging > 0) { b.charging -= dt; const a = Math.atan2(G.dad.y - b.y, G.dad.x - b.x); if (dist(b, G.dad) > b.r + 36) { b.x += Math.cos(a) * 440 * dt; b.y += Math.sin(a) * 440 * dt; } else if (b.bonk <= 0) { b.bonk = 1.6; b.charging = 0; G.hp -= patHit(b.dmg * (G.lv ? 1.2 : .8)); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'OOF', '#cb382e', 26, .9); b.kx -= Math.cos(a) * 260; b.ky -= Math.sin(a) * 260; } if (b.charging <= 0) bossTire(b, 1.2); }
     // its own move: a tell, then the move; a stun during the tell is a 'Nope!'
     const MV = BOSSMOVE[b.id]; if (MV && !b.hop) { const slow = (b.rough ? 1.4 : 1) * (b.mvFast || 1); // a rough draft knows its move too, just slower
       if (b.moveT == null) b.moveT = (G.S.w === 0 ? 10 : 7) * (G.D.bossMv || 1) * slow;
       if (b.tellT == null && b.winding == null && b.charging <= 0 && !(b.sliding > 0) && !(b.fade > 0)) { b.moveT -= dt; if (b.moveT <= 0) { b.tellT = 1.3; b.chargeT = Math.max(b.chargeT, 3); text(b.x, b.y - b.r - 50, MV.tell, '#fff', 16, 1.5); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.2, t: 0, life: 1.3, col: '#ecb23c' }); if (!G.bossNoted) { G.bossNoted = true; hint(MV.note, 4.5); } } }
-      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7 * slow; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1) * slow; MV.go(b); } }
+      else if (b.tellT > 0) { b.tellT -= dt; if (b.stun > 0) { b.tellT = null; b.moveT = MV.every * .7 * slow; text(b.x, b.y - b.r - 40, 'Nope!', '#ecb23c', 20, .9); } else if (b.tellT <= 0) { b.tellT = null; b.moveT = (b.phase2 ? .75 : 1) * MV.every * (G.S.w === 0 ? 1.35 : 1) * (G.D.bossMv || 1) * slow; MV.go(b); b.pop = .3; G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2.6, t: 0, life: .35, col: '#fff' }); if (!NO_TIRE.has(isVil(b) ? (b.id === 'sses' ? sses.cur : hsMv.cur) : b.id)) bossTire(b, 1.4); } }
     }
     if (b.sliding > 0) { b.sliding -= dt; b.x += b.sx * dt; b.y += b.sy * dt; b.walk += dt * 10; G.fx.push({ k: 'puff', x: b.x - b.sx * .05, y: b.y + b.r * .8, vx: rnd(-20, 20), vy: -20, t: 0, life: .4, col: '#eef6ff', r: 7 });
       if (dist(b, G.dad) < b.r + 40 && !b.slid.has('dad')) { b.slid.add('dad'); b.bonk = 1.6; G.hp -= patHit(b.dmg); G.dropped = true; G.flash = .3; G.shake = .3; text(G.dad.x, G.dad.y - 80, 'WHOOSH', '#cb382e', 24, .9); }
       for (const m of G.party) if (m.id !== 'dad' && !b.slid.has(m.id) && dist(b, m) < b.r + 30) { b.slid.add(m.id); m.muted = Math.max(m.muted || 0, 2); text(m.x, m.y - 50, '❄️ Brr!', '#bfe6f5', 16, 1.2); }
-      if (b.sliding <= 0 || b.x < -60 || b.x > 500 || b.y < -60 || b.y > 820) { b.sliding = 0; const a = Math.atan2(b.y - CY, b.x - CX); b.x = Math.min(Math.max(b.x, 30), 410); b.y = Math.min(Math.max(b.y, 60), 760); b.kx = -Math.cos(a) * 60; b.ky = -Math.sin(a) * 60; } }
+      if (b.sliding <= 0 || b.x < -60 || b.x > 500 || b.y < -60 || b.y > 820) { b.sliding = 0; bossTire(b, 1.4); const a = Math.atan2(b.y - CY, b.x - CX); b.x = Math.min(Math.max(b.x, 30), 410); b.y = Math.min(Math.max(b.y, 60), 760); b.kx = -Math.cos(a) * 60; b.ky = -Math.sin(a) * 60; } }
     if (b.fade > 0) { b.fade -= dt; if (b.fade <= 0) { const a = sideAng(rnd(0, 7)); b.x = CX + Math.cos(a) * 320; b.y = CY + Math.sin(a) * 320; b.fade = 0; b.appear = .6; for (let i = 0; i < (b.phase2 ? 3 : 2); i++) spawn(pick(G.S.pool), { x: b.x + rnd(-30, 30), y: b.y + rnd(-30, 30) }); G.fx.push({ k: 'ring', x: b.x, y: b.y, R: b.r * 2, t: 0, life: .6, col: '#5c8cbe' }); text(b.x, b.y - b.r - 40, '"Boo."', '#fff', 18, 1.2); } }
     if (b.appear > 0) b.appear -= dt;
   }
@@ -3413,7 +3428,7 @@ function update(dt) {
     // pelter and spellbook: stop inside the ring, wind up (a stun breaks it), then throw at Dad or a friend
     if (e.kind === 'pelter' || e.kind === 'caster') rangedMyth(e, d, dt);
     if (e.hold) sp = 0;
-    if (e.stun > 0 || e.winding > 0 || e.hold || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
+    if (e.stun > 0 || e.winding > 0 || e.hold || e.tired > 0 || (e.charging > 0 && e.kind === 'boss')) sp = 0; else e.walk += dt * (e.kind === 'fast' || e.kind === 'swarm' ? 14 : 8);
     if (flies) e.z = 26 + Math.sin(e.walk * .7) * 10;
     // steer toward Dad with a little inertia so turns and recoveries from knockback read as motion, not teleports
     const want = d > e.r + 34 ? sp : 0, k = 1 - Math.exp(-dt * (e.charging > 0 ? 30 : 7));
@@ -4160,8 +4175,9 @@ const BUMP_DUR = .5, BUMP_HIT = .2;
 const sheetOf = e => { const big = e.kind === 'boss' || e.kind === 'mirage'; return e.kind === 'brick' ? null : sheet(big ? 'boss_' + e.id : e.kind === 'mini' ? 'creep_splitter' : e.kind === 'pelter' ? 'creep_normal' : e.kind === 'caster' ? 'creep_dasher' : 'creep_' + e.kind); };
 const hasBump = e => { const S = sheetOf(e); return !!(S && S.meta.anims.bump); };
 function drawEnemy(e) {
+  if (e.kind === 'boss') bossTells(e);
   if (isVil(e) && ready(art(vilOf(e) + '_idle'))) return drawSses(e);
-  const flk = e.fl > 0 ? (e.fl / .16) ** 2 * (e.kind === 'boss' ? 3 : 7) : 0, r = e.r, x = e.x + (flk ? Math.cos(e.flA) * flk : 0), y = e.y - (e.z || 0) + (flk ? Math.sin(e.flA) * flk : 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
+  const BP = bossPose(e), flk = e.fl > 0 ? (e.fl / .16) ** 2 * (e.kind === 'boss' ? 3 : 7) : 0, r = e.r, x = e.x + BP.dx + (flk ? Math.cos(e.flA) * flk : 0), y = e.y - (e.z || 0) + (flk ? Math.sin(e.flA) * flk : 0), col = e.hit > 0 ? '#fff' : (e.col || e.M.col), step = Math.sin(e.walk);
   const e3 = in3d(e); if (!e3) { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(e.x, e.y + r * .95, r * .85 - (e.z || 0) * .2, r * .3, 0, 0, 7); ctx.fill(); } // the 3D layer has its own shadow
   ctx.save(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 3; ctx.lineJoin = 'round';
   if (e.kind === 'rumour') ctx.globalAlpha = seen(e) ? 1 : .18 + Math.sin(G.t * 3) * .05;
@@ -4176,7 +4192,7 @@ function drawEnemy(e) {
     const flipped = e.kind === 'hardcover' && e.flipped > 0;
     if (e.V && e.V.fade && !inRing(e)) ctx.globalAlpha *= .4;
     const lean3 = flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : gait(e, step)[1]);
-    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: lean3 }) : drawSheet(ctx, S3, e.atkA > 0 && S3.meta.anims.bump ? 'bump' : 'idle', e.atkA > 0 ? toDad : phi, e.atkA > 0 ? Math.min(BUMP_DUR - .001, BUMP_DUR - e.atkA) : G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq, lean: flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : gait(e, step)[1]) });
+    const R = e3 ? R3D.put(key3d(e), ctx, x, y + r * .95, h, { phi, hover: -hover, tint: e.col || e.M.col, flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq + BP.sq, stretch: BP.st, lean: lean3 + BP.lean }) : drawSheet(ctx, S3, e.atkA > 0 && S3.meta.anims.bump ? 'bump' : 'idle', e.atkA > 0 ? toDad : phi, e.atkA > 0 ? Math.min(BUMP_DUR - .001, BUMP_DUR - e.atkA) : G.t, x, y + r * .95 + hover, h, { outline: true, cheat: true, tint: big ? e.col || null : e.col || e.M.col, /* bosses are textured models: only a status colour, not the myth colour meant for the grey creeps */ flash: e.hit > 0, squash: walkSq + crouch * .6 + hitSq + BP.sq, stretch: BP.st, lean: BP.lean + (flipped ? dir * 1.35 : e.aim > 0 ? -dir * .3 * (1 - e.aim / e.aimDur) : e.thrown > 0 ? dir * .25 : e.charging > 0 && !big ? dir * .45 : (e.host ? Math.sin(G.t * 10) * .12 : gait(e, step)[1])) });
     const q = R.at('chest'); if (q && !flipped) sticker(q.x, q.y + r * .35, r * .5, e);
     if (e.kind === 'pelter' || e.kind === 'caster') rangedGear(e, x, y + r * .95 + hover - h * .92, dir);
     if (flipped) { ctx.font = `700 ${Math.round(r * .6)}px Fredoka, Arial`; ctx.fillStyle = '#ecb23c'; ctx.textAlign = 'center'; ctx.fillText('OPEN!', x, y - r * 1.3); }
@@ -5954,7 +5970,7 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hasBump, atkBeat, ATK_STYLE, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hasBump, atkBeat, ATK_STYLE, BOSSMOVE, bossPose, TIRED_DMG, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const k in FOES) add('d', `${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`);
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
