@@ -364,7 +364,7 @@
   #foe { position: absolute; left: 12px; right: 12px; bottom: 150px; display: flex; gap: 10px; align-items: center; background: var(--card); border: 4px solid #3a2c20; border-radius: 14px; padding: 10px 12px; box-shadow: var(--shadow); animation: pop .4s cubic-bezier(.2,1.5,.4,1) both; z-index: 5; cursor: pointer; }
   #foe small { display: block; font: 700 13px/1 "Fredoka", Arial, sans-serif; color: var(--red); text-transform: uppercase; letter-spacing: .04em; } #foe > div > b, .foecard > div > b { display: block; font: 700 20px/1.1 "Fredoka", Arial, sans-serif; margin: 2px 0 3px; }
   #foe p, .foecard p { margin: 2px 0; font: 600 15px/1.25 "Nunito", system-ui, sans-serif; } #foe .vs, .foecard .vs { font-size: 14px; } .vs.good b { color: #2f6b3c; display: inline; font: inherit; font-weight: 800; } .vs.bad b { color: #a3342b; display: inline; font: inherit; font-weight: 800; }
-  .foepic { flex: none; width: 76px; height: 76px; background-size: 100% 800%; background-position: 0 0; background-repeat: no-repeat; } .foepic.unmet { filter: brightness(0); opacity: .28; }
+  .foepic { flex: none; width: 76px; height: 76px; background-size: 100% 800%; background-position: 0 0; background-repeat: no-repeat; } .foepic.unmet { filter: brightness(0); opacity: .28; } .foepic.vil { background-size: contain; background-position: center; } .foeh { margin: 14px 0 8px; font: 700 17px/1 "Fredoka", Arial, sans-serif; }
   .foes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; } .foec { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 14px; font: inherit; color: var(--ink); cursor: pointer; } .foec b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; }
   .foec.fresh { border-color: #3a2c20; background: #fff6dc; } .foec.unmet { cursor: default; } .foec .gemtag { position: absolute; top: -8px; right: -6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; background: var(--teal); color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 4px 7px; }
   .foecard { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 10px; border: 3px solid #3a2c20; border-radius: 14px; background: var(--card); }
@@ -656,7 +656,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 115</div>
+    <div class="build">build 116</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeFoes" aria-label="Myth Spotter" hidden>🔎<i class="dot" id="foeDot" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1456,7 +1456,13 @@ const FOES = {
   caster:    { n: 'Spellbook',      art: 'creep_dasher',    say: 'A book that thinks it can do magic.', how: 'Casts slow spells from far away. A stun breaks the spell.' },
 };
 const foeMet = k => (save.seenKinds || []).includes(k), foeGot = k => (save.foeGot || []).includes(k);
-const foeNew = () => Object.keys(FOES).filter(k => foeMet(k) && !foeGot(k));
+const foeNew = () => [...Object.keys(FOES).filter(k => foeMet(k) && !foeGot(k)), ...bossIds().filter(id => bossMet(id) && !bossGot(id))];
+// bosses have cards too: the myth each one shouts, its move and how to stop it. Met when it first steps into the ring.
+const bossIds = () => [...new Set(STAGES.flatMap(S => [S.boss, S.finale]))].filter(id => id && MYTHS[id] && BOSSMOVE[id]);
+const bossMet = id => (save.seenBoss || []).includes(id), bossGot = id => (save.bossGot || []).includes(id);
+const bossPic = (id, met = true) => isVil({ id }) ? `<span class="foepic vil${met ? '' : ' unmet'}" style="background-image:url(assets/${vilOf({ id })}_idle.webp)"></span>` : `<span class="foepic${met ? '' : ' unmet'}" style="background-image:url(assets/3d/boss_${id}_idle.webp)"></span>`;
+const bossSay = id => `${MYTHS[id].name}. ${BOSSMOVE[id].note}`;
+const bossLines = id => `<p>It shouts: “${MYTHS[id].myth}”</p><p>🌀 ${BOSSMOVE[id].note}</p><p class="vs good">👍 <b>Stun it during its tell</b>, or hit it while it is out of breath.</p><p class="vs">✅ The truth: ${MYTHS[id].fact}</p>`;
 // the classes that hit this kind harder, and the ones it shrugs off
 const foeVs = k => ({ weak: Object.keys(CLASS).filter(id => CLASS[id].strong.includes(k)), tough: Object.keys(CLASS).filter(id => CLASS[id].weak.includes(k)) });
 // name the friends you have first (Dad always counts), three at most, so the card stays short
@@ -1469,12 +1475,13 @@ function foeNext() { const el = $('#foe'), k = (G.foeQ || []).shift(); if (!k) {
   el.innerHTML = `${foePic(k)}<div><small>New myth!</small><b>${FOES[k].n}</b>${foeLines(k)}</div>`; el.hidden = false; G.foeT = 6.5; G.slowmo = Math.max(G.slowmo || 0, 2.2);
   el.onclick = foeNext; say(`${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`); }
 // the gallery, from the home screen
-function openFoes() { const ks = Object.keys(FOES), met = ks.filter(foeMet).length;
-  pickFor = null; $('#pickTitle').textContent = `🔎 Myth Spotter · ${met}/${ks.length}`; $('#pickSub').textContent = foeNew().length ? `Open a new card for 💎 ${FOE_GEMS}.` : 'Every kind of myth you have met.'; $('#pickUnequip').hidden = true;
-  $('#pickList').innerHTML = `<div class="foes">${ks.map(k => foeMet(k) ? `<button class="foec${foeGot(k) ? '' : ' fresh'}" data-foe="${k}">${foePic(k)}<b>${FOES[k].n}</b>${foeGot(k) ? '' : `<i class="gemtag">💎 ${FOE_GEMS}</i>`}</button>` : `<div class="foec unmet">${foePic(k, false)}<b>???</b></div>`).join('')}</div><div id="foeDetail"></div>`;
-  $('#pickList').querySelectorAll('[data-foe]').forEach(b => b.onclick = () => { const k = b.dataset.foe, fresh = !foeGot(k);
-    if (fresh) { (save.foeGot = save.foeGot || []).push(k); setWallet({ gems: save.gems + FOE_GEMS }); sfx('coin'); toastMsg(`💎 +${FOE_GEMS} for spotting the ${FOES[k].n}!`); b.classList.remove('fresh'); const g = b.querySelector('.gemtag'); if (g) g.remove(); foeDot(); }
-    $('#foeDetail').innerHTML = `<div class="foecard">${foePic(k)}<div><b>${FOES[k].n}</b>${foeLines(k)}</div></div>`; $('#foeDetail').scrollIntoView({ block: 'nearest' }); say(`${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`); });
+function openFoes() { const ks = Object.keys(FOES), bs = bossIds(), met = ks.filter(foeMet).length + bs.filter(bossMet).length;
+  pickFor = null; $('#pickTitle').textContent = `🔎 Myth Spotter · ${met}/${ks.length + bs.length}`; $('#pickSub').textContent = foeNew().length ? `Open a new card for 💎 ${FOE_GEMS}.` : 'Every myth and boss you have met.'; $('#pickUnequip').hidden = true;
+  const cell = (key, attr, isMet, got, pic, name) => isMet ? `<button class="foec${got ? '' : ' fresh'}" data-${attr}="${key}">${pic(key)}<b>${name}</b>${got ? '' : `<i class="gemtag">💎 ${FOE_GEMS}</i>`}</button>` : `<div class="foec unmet">${pic(key, false)}<b>???</b></div>`;
+  $('#pickList').innerHTML = `<div class="foes">${ks.map(k => cell(k, 'foe', foeMet(k), foeGot(k), foePic, FOES[k].n)).join('')}</div><h4 class="foeh">Bosses</h4><div class="foes">${bs.map(id => cell(id, 'boss', bossMet(id), bossGot(id), bossPic, MYTHS[id].name)).join('')}</div><div id="foeDetail"></div>`;
+  $('#pickList').querySelectorAll('[data-foe], [data-boss]').forEach(b => b.onclick = () => { const boss = b.dataset.boss, k = boss || b.dataset.foe, name = boss ? MYTHS[k].name : FOES[k].n, fresh = boss ? !bossGot(k) : !foeGot(k);
+    if (fresh) { if (boss) (save.bossGot = save.bossGot || []).push(k); else (save.foeGot = save.foeGot || []).push(k); setWallet({ gems: save.gems + FOE_GEMS }); sfx('coin'); toastMsg(`💎 +${FOE_GEMS} for spotting ${boss ? '' : 'the '}${name}!`); b.classList.remove('fresh'); const g = b.querySelector('.gemtag'); if (g) g.remove(); foeDot(); }
+    $('#foeDetail').innerHTML = `<div class="foecard">${boss ? bossPic(k) : foePic(k)}<div><b>${name}</b>${boss ? bossLines(k) : foeLines(k)}</div></div>`; $('#foeDetail').scrollIntoView({ block: 'nearest' }); say(boss ? bossSay(k) : `${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`); });
   $('#pickm').hidden = false; }
 function foeDot() { const d = $('#foeDot'); if (d) d.hidden = !foeNew().length; const b = $('#homeFoes'); if (b) b.hidden = !(save.seenKinds || []).length; }
 const DIFF = {
@@ -2341,7 +2348,7 @@ try {
   if (s) Object.assign(save, s);
 } catch (e) {}
 if (save.medals == null) { save.medals = (save.badges || 0) + (save.cupp || 0); delete save.badges; delete save.cupp; } // one currency since build 111: Club badges and Cup points became Medals
-save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || [];
+save.opt = Object.assign({ little: false, voice: true, shake: true, calm: false, nums: false, big: false, labels: true, autopick: false, music: true, sfx: true, buzz: true }, save.opt || {}); save.seenKinds = save.seenKinds || []; /* seenBoss is filled in once STAGES exists (bossSeed) */
 if (!save.dadNotes) { save.dadNotes = 1; save.pages = save.pages || {}; save.pages.dad = (save.pages.dad || 0) + (save.facts || []).length; } // older saves: Dad's notebook starts with every fact already busted
 save.wep = save.wep || {}; save.chars = save.chars || {}; save.party = save.party || []; save.items = save.items || []; save.equip = save.equip || {}; save.daily = save.daily || { last: '', streak: 0 };
 // a character's face for menus: Dad's drawn face (the emoji is a stranger with a blond beard on iPhone), friends' emoji
@@ -3440,6 +3447,7 @@ function update(dt) {
       else land(); }
     e.x += e.kx * dt; e.y += e.ky * dt; const kd = Math.exp(-dt * 9); e.kx *= kd; e.ky *= kd;
     if (FOES[e.kind] && !save.seenKinds.includes(e.kind) && inRing(e)) { save.seenKinds.push(e.kind); persist(); foeIntro(e.kind); }
+    if (e.kind === 'boss' && BOSSMOVE[e.id] && !save.seenBoss.includes(e.id) && inRing(e)) { save.seenBoss.push(e.id); persist(); }
     for (const o of G.enemies) if (o !== e) { const dd = dist(e, o), min = (e.r + o.r) * .8; if (dd < min && dd > 0) { const push = Math.min(min - dd, (min - dd) * 12 * dt); e.x += (e.x - o.x) / dd * push; e.y += (e.y - o.y) / dd * push; } }
   }
   G.enemies = G.enemies.filter(e => e.hp > 0);
@@ -4583,7 +4591,8 @@ let homeOdd = false;
 requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if ((homeOdd = !homeOdd) && mode === 'title' && !$('#title').hidden && !document.hidden && !save.opt.calm) drawTitleParty(); });
 let staticsQ = 0;
 function drawStatics() { if (!staticsQ) staticsQ = requestAnimationFrame(() => { staticsQ = 0; drawStaticsNow(); }); }
-function drawStaticsNow() { try { misDot(); goalUpd(); foeDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
+function bossSeed() { if (save.seenBoss) return; save.seenBoss = [...new Set((save.cleared || []).flatMap(i => STAGES[i] ? [STAGES[i].boss, STAGES[i].finale] : []))].filter(id => id && BOSSMOVE[id]); } /* an older save has met the bosses of the stages it cleared */
+function drawStaticsNow() { try { bossSeed(); misDot(); goalUpd(); foeDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -5970,9 +5979,10 @@ cv.addEventListener('pointerdown', ev => {
   else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
 });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, hasBump, atkBeat, ATK_STYLE, BOSSMOVE, bossPose, TIRED_DMG, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, bossIds, hasBump, atkBeat, ATK_STYLE, BOSSMOVE, bossPose, TIRED_DMG, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const k in FOES) add('d', `${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`);
+    for (const id of bossIds()) add('d', bossSay(id));
     for (const t of VO_LEAD) add('d', t); for (const t of ['Snack break!', 'Welcome to the Reading Room.', 'Hi! I\'m Dad. I\'ll read the facts to you.']) add('d', t);
     WORLDS.forEach(W => { for (const w of ['in', 'out', 'showdown']) for (const f of chapterFrames(W, w)) for (const [who, line] of f.lines || []) add(who, line); });
     for (const u of UNLOCKS) { const m = u.t.match(/^(\S+)\s+(.*)$/); add('n', m ? m[2] : u.t); }
