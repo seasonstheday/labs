@@ -402,11 +402,14 @@ await test('Myth Spotter: a card on first sight, a gallery on the home screen, g
   const { p, errs, close } = await open({ ...PROGRESSED(), gems: 10, seenKinds: ['normal'], foeGot: [] });
   expect(await p.isVisible('#homeFoes') && await p.evaluate(() => !document.querySelector('#foeDot').hidden), 'the Spotter button shows a dot for a new card');
   await p.click('#homeFoes'); await p.waitForTimeout(300);
-  expect(await p.evaluate(() => document.querySelectorAll('#pickList .foec').length === Object.keys(dbg.FOES).length && document.querySelectorAll('#pickList [data-foe]').length === 1), 'every kind has a tile; only met ones open');
+  expect(await p.evaluate(() => document.querySelectorAll('#pickList .foec').length === Object.keys(dbg.FOES).length + dbg.bossIds().length && document.querySelectorAll('#pickList [data-foe]').length === 1), 'every kind has a tile; only met ones open');
   await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.gems === 15 && dbg.save.foeGot.includes('normal') && !!document.querySelector('#foeDetail .foecard')), 'opening a new card pays 5 gems and shows it');
   await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.gems === 15), 'opening it again pays nothing');
+  expect(await p.evaluate(() => dbg.bossIds().length >= 10 && dbg.save.seenBoss.length > 0 && document.querySelectorAll('#pickList [data-boss]').length === dbg.save.seenBoss.length), 'bosses have tiles too; the ones from cleared stages are met');
+  await p.click('#pickList [data-boss]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.gems === 20 && dbg.save.bossGot.length === 1 && /Stun it/.test(document.querySelector('#foeDetail').textContent)), 'a boss card pays once and says how to stop its move');
   await p.click('#pickClose');
   await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1000);
   const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; dbg.step(30); G.toSpawn = []; G.breakT = 9999;
