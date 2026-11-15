@@ -501,6 +501,17 @@ await test('boss moves are staged: a tell that can be stunned, the move, then a 
   expect(r.tired && r.still, 'after its move the boss is out of breath and stands still: ' + JSON.stringify(r));
   expect(r.d1 > r.d2 * 0.9 && r.d1 > 100, 'a tired boss takes more: ' + JSON.stringify(r)); await close(); return errs;
 });
+await test('element weak spots: every kind has one, the right element hits harder, the card says so', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), seenKinds: ['normal'], foeGot: ['normal'] });
+  expect(await p.evaluate(() => Object.keys(dbg.FOES).every(k => dbg.KWEAK[k]) && dbg.weakTo('normal', 'water') && !dbg.weakTo('normal', 'spark') && dbg.weakTo('tank', 'rainbow')), 'every kind has a weak element; rainbow counts as any');
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(1); }); await p.waitForTimeout(1000);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; for (const m of G.party) { m.muted = 999; for (const k in m.cds) m.cds[k] = 999; }
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'normal' && !dbg.EVENT_IDS.has(m)), avg = el => { let t = 0; for (let i = 0; i < 40; i++) { const e = dbg.spawn(id); e.x = 60; e.y = 700; e.hp = e.maxhp = 1e6; e.known = false; dbg.hurt(e, 100, 0, { id: el, x: 0, y: 0 }); t += 1e6 - e.hp; e.hp = 0; } G.enemies.length = 0; return t / 40; };
+    return { water: avg('hopper'), spark: avg('sparky') }; });
+  expect(r.water > r.spark * 1.1, 'water hits a Loose Page harder than spark does: ' + JSON.stringify(r));
+  await p.evaluate(() => { dbg.G.paused = true; dbg.openFoes(); }); await p.waitForTimeout(300); await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
+  expect(/Can't stand\s*Water/.test(await p.textContent('#foeDetail')), 'the card names the weak element'); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);
