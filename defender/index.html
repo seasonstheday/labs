@@ -1075,7 +1075,7 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 /* ───────── scale the 440x760 frame to the window ───────── */
 // myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
 const tuneIn = () => Math.min(1, Math.max(0, G.lv - 4) / 5);
-const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01, b2k: .03, b2boss: .6, b2d: 1.5, b2dk: .05, b2v: 1, b2next: 14 }; /* b2*: Book 2 only. b2k: health growth a stage; b2boss: boss health; b2d and b2dk: myth damage, flat and per stage; b2v: speed; b2next: the next wave comes once this few myths are left */ // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
+const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01, b2k: .03, b2boss: .6, b2d: 3, b2dk: .05, b2v: 1, b2next: 14 }; /* b2*: Book 2 only. b2k: health growth a stage; b2boss: boss health; b2d and b2dk: myth damage, flat and per stage; b2v: speed; b2next: the next wave comes once this few myths are left */ // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
