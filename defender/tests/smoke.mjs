@@ -402,11 +402,14 @@ await test('Myth Spotter: a card on first sight, a gallery on the home screen, g
   const { p, errs, close } = await open({ ...PROGRESSED(), gems: 10, seenKinds: ['normal'], foeGot: [] });
   expect(await p.isVisible('#homeFoes') && await p.evaluate(() => !document.querySelector('#foeDot').hidden), 'the Spotter button shows a dot for a new card');
   await p.click('#homeFoes'); await p.waitForTimeout(300);
-  expect(await p.evaluate(() => document.querySelectorAll('#pickList .foec').length === Object.keys(dbg.FOES).length && document.querySelectorAll('#pickList [data-foe]').length === 1), 'every kind has a tile; only met ones open');
+  expect(await p.evaluate(() => document.querySelectorAll('#pickList .foec').length === Object.keys(dbg.FOES).length + dbg.bossIds().length && document.querySelectorAll('#pickList [data-foe]').length === 1), 'every kind has a tile; only met ones open');
   await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.gems === 15 && dbg.save.foeGot.includes('normal') && !!document.querySelector('#foeDetail .foecard')), 'opening a new card pays 5 gems and shows it');
   await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
   expect(await p.evaluate(() => dbg.save.gems === 15), 'opening it again pays nothing');
+  expect(await p.evaluate(() => dbg.bossIds().length >= 10 && dbg.save.seenBoss.length > 0 && document.querySelectorAll('#pickList [data-boss]').length === dbg.save.seenBoss.length), 'bosses have tiles too; the ones from cleared stages are met');
+  await p.click('#pickList [data-boss]'); await p.waitForTimeout(200);
+  expect(await p.evaluate(() => dbg.save.gems === 20 && dbg.save.bossGot.length === 1 && /Stun it/.test(document.querySelector('#foeDetail').textContent)), 'a boss card pays once and says how to stop its move');
   await p.click('#pickClose');
   await p.evaluate(() => dbg.startGame(11)); await p.waitForTimeout(1000);
   const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; dbg.step(30); G.toSpawn = []; G.breakT = 9999;
@@ -497,6 +500,17 @@ await test('boss moves are staged: a tell that can be stunned, the move, then a 
   expect(r.tell && r.pose && r.nope, 'the boss hunkers down through its tell, and a stun cancels the move: ' + JSON.stringify(r));
   expect(r.tired && r.still, 'after its move the boss is out of breath and stands still: ' + JSON.stringify(r));
   expect(r.d1 > r.d2 * 0.9 && r.d1 > 100, 'a tired boss takes more: ' + JSON.stringify(r)); await close(); return errs;
+});
+await test('element weak spots: every kind has one, the right element hits harder, the card says so', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), seenKinds: ['normal'], foeGot: ['normal'] });
+  expect(await p.evaluate(() => Object.keys(dbg.FOES).every(k => dbg.KWEAK[k]) && dbg.weakTo('normal', 'water') && !dbg.weakTo('normal', 'spark') && dbg.weakTo('tank', 'rainbow')), 'every kind has a weak element; rainbow counts as any');
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(1); }); await p.waitForTimeout(1000);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; for (const m of G.party) { m.muted = 999; for (const k in m.cds) m.cds[k] = 999; }
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'normal' && !dbg.EVENT_IDS.has(m)), avg = el => { let t = 0; for (let i = 0; i < 40; i++) { const e = dbg.spawn(id); e.x = 60; e.y = 700; e.hp = e.maxhp = 1e6; e.known = false; dbg.hurt(e, 100, 0, { id: el, x: 0, y: 0 }); t += 1e6 - e.hp; e.hp = 0; } G.enemies.length = 0; return t / 40; };
+    return { water: avg('hopper'), spark: avg('sparky') }; });
+  expect(r.water > r.spark * 1.1, 'water hits a Loose Page harder than spark does: ' + JSON.stringify(r));
+  await p.evaluate(() => { dbg.G.paused = true; dbg.openFoes(); }); await p.waitForTimeout(300); await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
+  expect(/Can't stand\s*Water/.test(await p.textContent('#foeDetail')), 'the card names the weak element'); await close(); return errs;
 });
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
