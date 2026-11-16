@@ -656,7 +656,7 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 117</div>
+    <div class="build">build 118</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeFoes" aria-label="Myth Spotter" hidden>🔎<i class="dot" id="foeDot" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
@@ -1075,7 +1075,7 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 /* ───────── scale the 440x760 frame to the window ───────── */
 // myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
 const tuneIn = () => Math.min(1, Math.max(0, G.lv - 4) / 5);
-const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01 }; // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
+const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01, b2k: .03, b2boss: .6, b2d: 3, b2dk: .05, b2v: 1, b2next: 14 }; /* b2*: Book 2 only. b2k: health growth a stage; b2boss: boss health; b2d and b2dk: myth damage, flat and per stage; b2v: speed; b2next: the next wave comes once this few myths are left */ // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
@@ -2837,7 +2837,7 @@ function newRun(stage) {
   for (const m of party) { m.face = 1; m.anim = null; m.ranks = {}; m.cds = {}; m.home = { x: m.x, y: m.y }; for (const a of CHARS[m.id].abil) { m.ranks[a] = 0; m.cds[a] = rnd(0, 1); } m.ranks[CHARS[m.id].abil[0]] = 1; m.zaps = 0; m.bob = rnd(0, 6); }
   const known = new Set(save.facts);
   G = {
-    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + .095 * STAGES[stage].k) : 1, /* Book 2 steepened from .075 once the Gold Star, fourth skill rank and second pair-ups landed */ wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
+    stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + TUNE.b2k * STAGES[stage].k) : 1, /* Book 2 steepened from .075 once the Gold Star, fourth skill rank and second pair-ups landed */ wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
     enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
@@ -2889,7 +2889,8 @@ function spawn(id, at = null, q = {}) {
   let x, y, door = false;
   if (at) { x = at.x; y = at.y; } else { let a = q.ang != null ? q.ang : rnd(0, Math.PI * 2); const R = 470, D = overTop(a) && ENTRY[G.S.w];
     if (D && Math.random() < .5) { x = D[0] + rnd(-12, 12); y = D[1] + rnd(0, 10); door = true; } else { a = sideAng(a); x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; } }
-  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul, maxhp: K.hp * hpMul, spd: K.spd * (1 + Math.min(G.lv, 25) * .02) * G.D.spd, dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.lv - 4) * TUNE.ds), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0, atkT: rnd(.6, 1.6) };
+  const b2 = G.S.book === 2, bH = b2 && (q.kindOf || M.kind) === 'boss' ? TUNE.b2boss : 1;
+  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul * bH, maxhp: K.hp * hpMul * bH, spd: K.spd * (1 + Math.min(G.lv, 25) * .02) * G.D.spd * (b2 ? TUNE.b2v : 1), dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.lv - 4) * TUNE.ds) * (b2 ? TUNE.b2d * (1 + TUNE.b2dk * G.S.k) : 1), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0, atkT: rnd(.6, 1.6) };
   if (door) e.appear = .6; // fades in as it steps out
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
@@ -3369,7 +3370,7 @@ function update(dt) {
   else {
     G.waveT += dt;
     while (G.toSpawn.length && G.toSpawn[0].at <= G.waveT && G.enemies.length < 70) { const q = G.toSpawn.shift(); spawn(q.id, null, q); }
-    if (!G.toSpawn.length && G.sses !== 'coming' && (!G.enemies.length || G.wave < S.waves - 1 && G.enemies.length <= 3 && G.waveT > 5)) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = G.enemies.length ? .4 : 1; collectAll(); }
+    if (!G.toSpawn.length && G.sses !== 'coming' && (!G.enemies.length || G.wave < S.waves - 1 && G.enemies.length <= (S.book === 2 ? TUNE.b2next : 3) && G.waveT > 5)) { if (G.wave === S.waves - 1) { stageClear(); return; } G.wave++; G.breakT = G.enemies.length ? .4 : 1; collectAll(); }
   }
   // boss: every few seconds it winds up (telegraphed) and charges Dad; a stun during the wind-up cancels it
   if (G.boss && G.boss.hp > 0) {
