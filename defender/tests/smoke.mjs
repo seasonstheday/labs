@@ -512,6 +512,20 @@ await test('element weak spots: every kind has one, the right element hits harde
   await p.evaluate(() => { dbg.G.paused = true; dbg.openFoes(); }); await p.waitForTimeout(300); await p.click('[data-foe="normal"]'); await p.waitForTimeout(200);
   expect(/Can't stand\s*Water/.test(await p.textContent('#foeDetail')), 'the card names the weak element'); await close(); return errs;
 });
+await test('pop-ups close on a tap, and speech bubbles do not pile up', async () => {
+  const { p, errs, close } = await open({ ...PROGRESSED(), seenKinds: [] });
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(1); }); await p.waitForTimeout(1000);
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; dbg.foeIntro('normal'); dbg.foeIntro('tank'); });
+  expect(await p.isVisible('#foe') && /Loose Page/.test(await p.textContent('#foe')), 'the new-myth card shows');
+  await p.click('#foe'); await p.waitForTimeout(150);
+  expect(await p.isVisible('#foe') && /Heavy Backpack/.test(await p.textContent('#foe')), 'a tap on the card moves to the next one');
+  await p.click('#c', { position: { x: 60, y: 300 } }); await p.waitForTimeout(150);
+  expect(!(await p.isVisible('#foe')), 'a tap on the field closes the card');
+  for (let i = 0; i < 8; i++) await p.click('#c', { position: { x: 40 + i * 30, y: 300 } });
+  expect(await p.evaluate(() => dbg.G.texts.filter(t => t.s[0] === '"').length <= 3), 'tapping many times leaves at most three speech bubbles');
+  await p.evaluate(() => dbg.toast(dbg.MYTHS[Object.keys(dbg.MYTHS)[0]])); await p.waitForTimeout(100); await p.click('#toast'); await p.waitForTimeout(100);
+  expect(!(await p.isVisible('#toast')), 'the fact card closes on a tap'); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);
