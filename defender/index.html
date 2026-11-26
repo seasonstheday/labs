@@ -369,6 +369,13 @@
   .foes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; } .foec { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; background: #fff; border: 3px solid var(--line); border-radius: 14px; font: inherit; color: var(--ink); cursor: pointer; } .foec b { font: 700 14px/1.1 "Fredoka", Arial, sans-serif; text-align: center; }
   .foec.fresh { border-color: #3a2c20; background: #fff6dc; } .foec.unmet { cursor: default; } .foec .gemtag { position: absolute; top: -8px; right: -6px; font: 700 13px/1 "Fredoka", Arial, sans-serif; font-style: normal; background: var(--teal); color: #fff; border: 2px solid #3a2c20; border-radius: 999px; padding: 4px 7px; }
   .foecard { display: flex; gap: 10px; align-items: center; margin-top: 10px; padding: 10px; border: 3px solid #3a2c20; border-radius: 14px; background: var(--card); }
+  #title .goalpill.uppill { top: 306px; font-size: 14px; max-width: 86%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upnext .uph, .bonush { margin: 10px 0 6px; text-align: center; font: 700 16px/1 "Fredoka", Arial, sans-serif; } .upc { display: flex; gap: 10px; align-items: center; margin: 6px 0; padding: 8px 10px; border: 3px solid var(--line); border-radius: 14px; background: linear-gradient(90deg, #fff0c2 var(--f, 0%), #fff var(--f, 0%)); }
+  .upc .ue { font-size: 28px; flex: none; width: 36px; text-align: center; } .upc b { display: block; font: 700 16px/1.1 "Fredoka", Arial, sans-serif; } .upc small { display: block; font: 700 13px/1.2 "Nunito", system-ui, sans-serif; color: #7a5a1e; } .upc i { display: block; font: 600 13px/1.25 "Nunito", system-ui, sans-serif; font-style: normal; color: #5b4a3a; }
+  .bonus { display: flex; gap: 10px; justify-content: center; } .bcard { width: 84px; height: 96px; border: 4px solid #3a2c20; border-radius: 14px; background: repeating-linear-gradient(45deg, #6fb1be 0 10px, #5ea3b0 10px 20px); color: #fff; font: 700 30px/1 "Fredoka", Arial, sans-serif; box-shadow: 0 4px 0 rgba(0,0,0,.25); animation: pop .4s both; }
+  .bcard.won { background: #fff6dc; color: #3a2c20; font-size: 18px; transform: scale(1.08); border-color: #ecb23c; } .bcard.lost { background: #efe7d4; color: #9a8c78; font-size: 16px; box-shadow: none; } .bigstats b.landed { animation: pop .3s both; }
+  #bigwhy { position: absolute; right: 10px; bottom: 150px; width: 74px; height: 74px; border-radius: 50%; border: 4px solid #3a2c20; pointer-events: auto; font: 700 17px/1 "Fredoka", Arial, sans-serif; color: #3a2c20; background: conic-gradient(#ecb23c var(--f, 0%), #e9dfc6 0); box-shadow: 0 4px 0 rgba(0,0,0,.25); opacity: .8; }
+  #bigwhy.full { opacity: 1; background: #ecb23c; animation: whyp .6s ease-in-out infinite alternate; } @keyframes whyp { to { transform: scale(1.12); box-shadow: 0 0 0 8px rgba(236,178,60,.35), 0 4px 0 rgba(0,0,0,.25); } }
   #hint { position: absolute; left: 7%; right: 7%; bottom: 124px; text-align: center; font: 600 16px/1.2 "Nunito", system-ui, sans-serif; color: #fff; background: rgba(58,44,32,.8); padding: 6px 12px; border-radius: 10px; animation: pop .4s both; }
 
 
@@ -657,11 +664,12 @@
     <div class="wallet"><span class="pill coins">🪙 <span class="coinsN">0</span></span><span class="pill gems">💎 <span class="gemsN">0</span></span><span class="pill tix">🎟️ <span class="tixN">0</span></span></div>
     <h1 class="display"><small>Why, Dad?</small>Defender</h1>
     <p class="tag hand">No dodging. Only wondering.</p>
-    <div class="build">build 119</div>
+    <div class="build">build 120</div>
     <canvas id="titleParty" width="880" height="660"></canvas>
     <div class="corner-r"><button class="btn icon ghost" id="homeMissions" aria-label="Missions">📋<i class="dot" id="misDot2" hidden></i></button><button class="btn icon ghost" id="homeFoes" aria-label="Myth Spotter" hidden>🔎<i class="dot" id="foeDot" hidden></i></button><button class="btn icon ghost" id="homeHow" aria-label="How to play">❓</button><button class="btn icon ghost" id="homeSettings" aria-label="Settings">⚙️</button></div>
     <button class="evpill" id="evBtn" hidden></button>
     <button class="goalpill" id="goalBtn" hidden></button>
+    <button class="goalpill uppill" id="upBtn" hidden></button>
     <div class="hub hub-l"><button class="btn big-icon ghost" id="hubPatrol" data-lock="patrol">🏕️<small>Patrol</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubWheel" data-lock="wheel">🎡<small>Prize Wheel</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubClub" data-lock="club">🏡<small>Club</small><i class="dot" hidden></i></button></div>
     <div class="hub hub-r"><button class="btn big-icon ghost" id="hubChall" data-lock="daily">🏆<small>Challenges</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubChests" data-lock="chests">🎁<small>Chapter Rewards</small><i class="dot" hidden></i></button><button class="btn big-icon ghost" id="hubCup" data-lock="cup">🥇<small>Myth Cup</small><i class="dot" hidden></i></button></div>
     <div class="side" hidden>
@@ -802,6 +810,7 @@
       <div id="patience"><div></div><span>Patience</span></div>
       <div id="party"></div>
     </div>
+    <button id="bigwhy" hidden aria-label="Big Why">WHY?!</button>
   </div>
   <div id="toast" hidden><b></b><p></p></div>
   <div id="fps"></div>
@@ -861,6 +870,8 @@
       <p class="sub hand" style="text-align:center" id="clearSub">Every myth in the backyard went pop.</p>
       <div id="clearStats"></div>
       <div class="lootrow" id="clearLoot"></div>
+      <div id="bonusRow"></div>
+      <div id="upClear" class="upnext"></div>
       <div class="joined" id="joined" hidden></div>
       <div class="joined breaknote" id="breakNote" hidden></div>
       <div class="joined" id="grew" hidden></div>
@@ -1076,7 +1087,8 @@ const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans
 /* ───────── scale the 440x760 frame to the window ───────── */
 // myth toughness on top of the stage curve: hp and dmg scale everything, hs and ds add per stage (the campaign sim tunes these)
 const tuneIn = () => Math.min(1, Math.max(0, G.lv - 4) / 5);
-const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01, b2k: .03, b2boss: .6, b2d: 3, b2dk: .05, b2v: 1, b2next: 14 }; /* b2*: Book 2 only. b2k: health growth a stage; b2boss: boss health; b2d and b2dk: myth damage, flat and per stage; b2v: speed; b2next: the next wave comes once this few myths are left */ // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
+const TUNE = { hp: 2.2, hs: .05, dmg: 1.1, ds: .01, b2k: .03, b2boss: .6, b2d: 3, b2dk: .05, b2v: 1, b2next: 14, b1dk: .057 }; /* b1dk: Book 1 myth damage a stage, from stage 6 (3x by stage 40, where Book 2 starts) */
+/* b2*: Book 2 only. b2k: health growth a stage; b2boss: boss health; b2d and b2dk: myth damage, flat and per stage; b2v: speed; b2next: the next wave comes once this few myths are left */ // tuned in the campaign sim (Skill Trees, Dad's stars and the Diary made every stage a walkover)
 let lowFx = false; // set when frames stay slow: fewer effects, a lighter canvas
 function fit() {
   const cs = getComputedStyle(document.documentElement), inset = (parseFloat(cs.getPropertyValue('--sat')) || 0) + (parseFloat(cs.getPropertyValue('--sab')) || 0);
@@ -2760,7 +2772,7 @@ function noise(d, { vol = .3, at = 0, f = 2000, q = 1, type = 'bandpass' } = {})
   g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0008, t + d); src.connect(fl); fl.connect(g); g.connect(SND.sfx); src.start(t, Math.random() * .5); src.stop(t + d + .03);
 }
 const SFX = {
-  pop:   big => { const p = rnd(.9, 1.15); tone(520 * p, .12, { type: 'triangle', vol: .3, slide: .45 }); noise(.06, { vol: .16, f: 3000 }); if (big) { tone(170, .4, { vol: .45, slide: .5 }); noise(.3, { vol: .22, f: 900 }); } },
+  pop:   big => { const p = rnd(.9, 1.15) * (1 + Math.min(14, (G && G.combo) || 0) * .035); /* the pop climbs with the combo */ tone(520 * p, .12, { type: 'triangle', vol: .3, slide: .45 }); noise(.06, { vol: .16, f: 3000 }); if (big) { tone(170, .4, { vol: .45, slide: .5 }); noise(.3, { vol: .22, f: 900 }); } },
   hit:   () => noise(.035, { vol: .07, f: 2500 + Math.random() * 1500 }),
   crit:  () => { tone(1320, .16, { type: 'square', vol: .06 }); tone(1980, .22, { vol: .12, at: .03 }); },
   bonk:  () => { tone(140, .25, { vol: .5, slide: .6 }); noise(.12, { vol: .22, f: 400, type: 'lowpass' }); },
@@ -2839,7 +2851,7 @@ function newRun(stage) {
   const known = new Set(save.facts);
   G = {
     stage, S: STAGES[stage], lv: lvOf(stage), hlv: STAGES[stage].book === 2 ? 36 : stage, hk: STAGES[stage].book === 2 ? 1.3 * (1 + TUNE.b2k * STAGES[stage].k) : 1, /* Book 2 steepened from .075 once the Gold Star, fourth skill rank and second pair-ups landed */ wave: 0, waveT: 0, toSpawn: [], breakT: 2, t: 0,
-    enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [],
+    enemies: [], shots: [], eshots: [], orbs: [], fx: [], texts: [], pending: [], traps: [], combo: 0, comboT: 0, comboBest: 0, joy: 0, beamCd: 0, swipeCd: 0, props: [], power: null,
     dad: party[0], party, hp: maxhp, maxhp, xp: 0, lvl: 1, next: 3, flash: 0, radius: radiusFor(),
     coins: 0, busted: 0, bossDown: false, newFacts: [], speed: 1, paused: false, over: false, baseRadius: radiusFor(), lure: null,
     boss: null, focus: null, shake: 0, cleared: false, freePicks: Math.min(6, Math.floor(stage / 2)) + (mastered(7) ? 1 : 0), hintT: 0, nopes: 2 + (mastered(2) ? 1 : 0) + (mastered(10) ? 1 : 0), known, knownSaid: new Set(), slowmo: 0, seenCls: new Set(), D: DIFF[save.diff], minHp: maxhp, dropped: false,
@@ -2891,7 +2903,7 @@ function spawn(id, at = null, q = {}) {
   if (at) { x = at.x; y = at.y; } else { let a = q.ang != null ? q.ang : rnd(0, Math.PI * 2); const R = 470, D = overTop(a) && ENTRY[G.S.w];
     if (D && Math.random() < .5) { x = D[0] + rnd(-12, 12); y = D[1] + rnd(0, 10); door = true; } else { a = sideAng(a); x = CX + Math.cos(a) * R; y = CY + Math.sin(a) * R; } }
   const b2 = G.S.book === 2, bH = b2 && (q.kindOf || M.kind) === 'boss' ? TUNE.b2boss : 1;
-  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul * bH, maxhp: K.hp * hpMul * bH, spd: K.spd * (1 + Math.min(G.lv, 25) * .02) * G.D.spd * (b2 ? TUNE.b2v : 1), dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.lv - 4) * TUNE.ds) * (b2 ? TUNE.b2d * (1 + TUNE.b2dk * G.S.k) : 1), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0, atkT: rnd(.6, 1.6) };
+  const e = { id, M, kind: q.kindOf || M.kind, x, y, r: K.r, hp: K.hp * hpMul * bH, maxhp: K.hp * hpMul * bH, spd: K.spd * (1 + Math.min(G.lv, 25) * .02) * G.D.spd * (b2 ? TUNE.b2v : 1), dmg: K.dmg * G.D.dmg * (1 + (TUNE.dmg - 1) * tuneIn()) * (1 + Math.max(0, G.lv - 4) * TUNE.ds) * (b2 ? TUNE.b2d * (1 + TUNE.b2dk * G.S.k) : G.S.book === 1 ? 1 + TUNE.b1dk * Math.max(0, G.S.k - 4) : 1), xp: K.xp, coin: K.coin, bonk: 0, slow: 0, stun: 0, hit: 0, kx: 0, ky: 0, minionT: 4, walk: rnd(0, 6), healT: 3, flipped: 0, atkT: rnd(.6, 1.6) };
   if (door) e.appear = .6; // fades in as it steps out
   if (G.known.has(id) && e.kind !== 'boss') e.known = true;
   if (!G.room && e.kind !== 'boss' && (G.checks || 0) < 2 && G.t > 8 && !G.pendingCheck && !(G.asked || []).includes(id) && G.known.has(id) && reviewDue(id)) G.pendingCheck = id;
@@ -3044,6 +3056,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if (e.V && e.V.knock) knock *= e.V.knock;
   if (e.weak > 0) d *= 2;
   if (e.tired > 0) d *= TIRED_DMG;
+  if (from === G.dad && powerOn('giant')) d *= 2;
   if (e.guard > 0) d *= .25;
   if (G.checked && G.checked.has(e.id)) d *= 1.5;
   if (e.known) { d *= 1.25; if (!G.knownSaid.has(e.id)) { G.knownSaid.add(e.id); text(e.x, e.y - e.r - 36, 'You know this one!', '#8fd38a', 16, 1.4); } }
@@ -3059,7 +3072,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   if ((e.kind === 'boss' || e.elite) && who && save.chars[who] && save.chars[who].focus) d *= 1 + rEff(save.chars[who].focus) * .04; // Focus training (Book 2, level 32)
   if (e.inked > G.t) d *= 1.2;
   if (cm !== 1) { d *= cm; const key = who + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); text(e.x, e.y - e.r - 34, cm > 1 ? `✓ ${CLASS[who].name}` : `✗ ${CLASS[who].name}`, cm > 1 ? '#8fd38a' : '#f3a08f', 16, 1.4); } }
-  { const hel = who === 'react' ? null : elemOf(who); if (weakTo(e.kind, hel)) { d *= ELEM_WEAK; const key = 'el:' + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); const W = ELEM[KWEAK[e.kind][0]]; text(e.x, e.y - e.r - 52, `${W.em} ${W.n} weak spot!`, W.col, 16, 1.4); } } }
+  { const hel = who === 'react' ? null : elemOf(who); if (weakTo(e.kind, hel)) { d *= ELEM_WEAK; if (!(e.spotCd > G.t)) { e.spot = 1.6; e.spotCd = G.t + 5; } const key = 'el:' + e.kind; if (!G.seenCls.has(key)) { G.seenCls.add(key); const W = ELEM[KWEAK[e.kind][0]]; text(e.x, e.y - e.r - 52, `${W.em} ${W.n} weak spot!`, W.col, 16, 1.4); } } }
   if (who === 'dad' && e.kind === 'hardcover' && e.flipped <= 0 && cm > 1) e.flipped = 2.5;
   if (who === 'webster' && e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; }
   const crit = Math.random() < (gfx === 'crit' ? .15 : 0) + rankOf('webster', 'eyes') * .06 + rankOf('nilla', 'nighteyes') * .04 + sk('nilla', 'nighteyes') * .01 + sk('webster', 'eyes') * .02 + partyGear().crit / 100 + (who && save.chars[who] ? rEff(save.chars[who].crit) * .01 : 0) + (T ? treeCrit(T) : 0) + (famStat('crit') + aura('crit') + synStat('crit', who)) / 100 + (who === 'webster' && (cweapOf('webster') || {}).fx === 'No slow, +crit' ? .15 : 0) + (who === 'dusty' && (cweapOf('dusty') || {}).fx === 'Big crit' ? .15 : 0);
@@ -3079,6 +3092,7 @@ function hurt(e, d, knock = 0, from = G.dad) {
   const el = who === 'react' ? null : elemOf(who);
   if (el === 'rainbow' && e.hp > 0) { const tg = e.tag && G.t - e.tag.t < (e.tag.long || 2.5) ? e.tag : null; if (tg && !(e.reactCd > G.t)) { const o = WHEEL.find(x => reactKey(tg.el, x)); e.tag = null; e.reactCd = G.t + 1; react(e, reactKey(tg.el, o)); } else e.tag = { el: pick(WHEEL), t: G.t }; }
   else if (el && e.hp > 0) { const tg = e.tag, key = tg && G.t - tg.t < (tg.long || 2.5) ? reactKey(tg.el, el) : null; if (key && !(e.reactCd > G.t)) { e.tag = null; e.reactCd = G.t + 1; react(e, key); } else e.tag = { el, t: G.t }; }
+  if (from === G.dad && T && !G.echoing && gearRar('dad') >= 3) { const o = G.enemies.filter(x => x !== e && x.hp > 0 && dist(x, e) < 150).sort((p, q) => dist(p, e) - dist(q, e))[0]; if (o) { G.echoing = true; G.fx.push({ k: 'atkfx', s: 'zag', x: (e.x + o.x) / 2, y: (e.y + o.y) / 2, a: Math.atan2(o.y - e.y, o.x - e.x), t: 0, life: .22, r: dist(o, e) / 2, col: GEAR_COL[3] }); try { hurt(o, d * .4, 0, { id: 'react', x: e.x, y: e.y }); } finally { G.echoing = false; } } }
   e.lastBy = who; if (e.hp <= 0) { if (T) treeKill(e, T); kill(e); } else if (T) treeHit(e, d, T, from);
 }
 function kill(e) {
@@ -3091,14 +3105,16 @@ function kill(e) {
   const big = e.elite || e.kind === 'boss' ? 2 : 1;
   G.fx.push({ k: 'die', e, t: 0, life: .2 }); G.fx.push({ k: 'ring', x: e.x, y: e.y, R: e.r * 2.6 * big, t: 0, life: .3, col: '#fff' });
   for (let i = 0; i < fxN(5 * big); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-90, 90), vy: rnd(-120, 30), t: 0, life: rnd(.35, .7), col: pick([e.col || e.M.col, '#fff', '#fbf3df']), r: rnd(4, 9) });
-  for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(.6, 1) });
+  for (let i = 0; i < fxN(6 * big); i++) G.fx.push({ k: 'paper', x: e.x + rnd(-6, 6), y: e.y - e.r * .4, vx: rnd(-150, 150), vy: rnd(-260, -90), rot: rnd(0, 6), vr: rnd(-12, 12), t: 0, life: rnd(1, 1.5), gy: e.y + e.r * .9 + rnd(-6, 10), col: i % 2 ? e.col || e.M.col : null }); /* the pieces land, bounce and settle */
   for (let i = 0; i < fxN(2 * big); i++) G.fx.push({ k: 'star', x: e.x + rnd(-e.r, e.r), y: e.y - e.r + rnd(-8, 8), t: 0, life: rnd(.35, .55), s: rnd(8, 13) });
   popStyle(e, big);
   if (e.kind === 'mirage') { text(e.x, e.y - 10, 'Mirage!', '#f08a4b', 18, .9); G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: 0, vy: -20, t: 0, life: .4, col: '#ffe9b0', r: e.r * .7 }); return; }
   sfx('pop', e.elite || e.kind === 'boss'); if (e.kind === 'boss') buzz('HEAVY');
   text(e.x, e.y - 10, e.kind === 'brick' ? 'CRUMBLE' : 'POP!', '#cb382e', 22, .8);
-  for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1 });
-  if (Math.random() < e.coin) G.orbs.push({ k: 'coin', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1 });
+  if (e.kind !== 'brick') { G.combo++; G.comboT = 2.2; G.comboBest = Math.max(G.comboBest, G.combo); G.joy = Math.min(1, G.joy + (e.elite ? .08 : .028)); if (G.combo % 5 === 0) { G.orbs.push(coinOrb(e, Math.min(5, Math.ceil(G.combo / 10)))); text(e.x, e.y - e.r - 34, `×${G.combo}!`, '#ecb23c', 20, .8); } } /* every fifth pop in a row pays a bonus coin */
+  if (e.elite && !G.chestDone && !G.room) dropChest(e);
+  for (let i = 0; i < e.xp; i++) G.orbs.push({ k: 'xp', x: e.x + rnd(-14, 14), y: e.y + rnd(-14, 14), v: 1, z: 1, vz: rnd(120, 220), vx: rnd(-60, 60), vy: rnd(-30, 30), b: 0 });
+  if (Math.random() < e.coin) G.orbs.push(coinOrb(e, (e.kind === 'boss' ? 40 : e.kind === 'tank' ? 3 : Math.random() < .3 ? 2 : 1) * (powerOn('magnet') ? 2 : 1)));
   if (e.kind === 'splitter') spawnMini(e);
   if (e.kind === 'boss') { G.boss = null; G.bossDown = true; $('#bossbar').hidden = true; G.shake = .5; G.slowmo = 1.1; text(e.x, e.y - 60, 'BUSTED!', '#ecb23c', 40, 1.6); for (let i = 0; i < fxN(30); i++) G.fx.push({ k: 'puff', x: e.x, y: e.y, vx: rnd(-220, 220), vy: rnd(-220, 220), t: 0, life: rnd(.6, 1.2), col: pick(['#ecb23c', '#cb382e', '#6fb1be', '#fff']), r: rnd(5, 12) }); }
   if (e.kind === 'boss' && e.id === G.S.boss && G.S.finale && !G.endless && !G.twist && !G.room && !G.sses) { // the Flat Earth was only his shield
@@ -3481,7 +3497,7 @@ function update(dt) {
     if (m.muted > 0) { m.muted -= dt; continue; }
     for (const a of CHARS[m.id].abil) {
       if (!m.ranks[a] || ABIL[a].passive) continue;
-      m.cds[a] -= dt;
+      m.cds[a] -= dt * (powerOn('speed') ? 2 : 1);
       if (m.cds[a] <= 0 && !m.anim && !(a === 'weapon' && CHARS[m.id].abil.some(b => b !== a && m.ranks[b] && !ABIL[b].passive && m.cds[b] <= .42))) { const D = a === 'weapon' ? WEAPONS[save.weapon] : ABIL[a], src = { id: m.id, a, cast: G.casts = (G.casts || 0) + 1 };
         if (withSrc(src, () => useAbility(m, a))) { if (m.id !== 'dad') missionAdd('abil'); if (m.jump && !m.jump.src) m.jump.src = src; m.cds[a] = D.cd[m.ranks[a] - 1] * cdMul(m) * (a === 'joke' ? 1 + .6 * jokeLate() : 1) * (1 - .05 * tRank(m.id, a, 'cd'));
           if (tHasFin(m.id, a) && tFinKey(m.id, a) === 'twice' && (m.uses = m.uses || {}, m.uses[a] = (m.uses[a] || 0) + 1) % 3 === 0) G.pending.push({ at: G.t + .5, src: { id: m.id, a, cast: ++G.casts }, fn: () => { if (!m.anim && !m.jump) { useAbility(m, a); text(m.x, m.y - 60, 'encore!', '#ffd76a', 16, .8); } } }); }
@@ -3503,19 +3519,21 @@ function update(dt) {
   // orbs
   const mag = 70, coinMul = 1 + (aura('coin') + synStat('coin')) / 100 + rankOf('puddles', 'pond') * .1 + sk('puddles', 'pond') * .05 + partyGear().coin / 100;
   for (const o of G.orbs) {
-    const d = dist(o, dad); if (d < mag || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
+    const d = dist(o, dad); if (d < (powerOn('magnet') ? 999 : mag) || (o.k === 'note' && (o.t += dt) > .8)) o.pull = true;
+    if (o.z > 0 && !o.pull) { o.x += o.vx * dt; o.y += o.vy * dt; o.z += o.vz * dt; o.vz -= 900 * dt; if (o.z <= 0) { o.b++; if (o.b < 3) { o.z = .01; o.vz = 230 / (o.b + .6); o.vx *= .55; o.vy *= .55; } else o.z = 0; } continue; }
     const a = Math.atan2(dad.y - o.y, dad.x - o.x), sp = o.pull ? 260 + (o.spd = (o.spd || 0) + 600 * dt) : 70;
     o.x += Math.cos(a) * sp * dt; o.y += Math.sin(a) * sp * dt;
     if (d < 24) { o.dead = true; if (o.k === 'note') { openNotebook(); break; } if (o.k === 'xp') { sfx('xp'); G.xp += o.v * (1 + diaryStat('xp') / 100); if (G.xp >= G.next) levelUp(); } else { sfx('coin'); G.fx.push({ k: 'cfly', x: o.x, y: o.y, t: 0, life: .45 }); G.coins += Math.round(o.v * coinMul); $('#coinN').textContent = G.coins; } }
   }
   G.orbs = G.orbs.filter(o => !o.dead);
   G.dtLast = dt;
-  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'glyph') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += f.grav * dt; f.vx *= 1 - dt * 1.5; f.rot += f.vr * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; } }
+  for (const f of G.fx) { f.t += dt; if (f.k === 'puff') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 160 * dt; } else if (f.k === 'glyph') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += f.grav * dt; f.vx *= 1 - dt * 1.5; f.rot += f.vr * dt; } else if (f.k === 'paper') { f.x += f.vx * dt; f.y += f.vy * dt; f.vy += 520 * dt; f.vx *= 1 - 2 * dt; f.rot += f.vr * dt; if (f.gy != null && f.y > f.gy && f.vy > 0) { f.y = f.gy; f.vy *= -.42; f.vx *= .6; f.vr *= .4; if (f.vy > -40) { f.vy = 0; f.vr = 0; f.gy = f.y; } } } }
   G.fx = G.fx.filter(f => f.t < f.life);
   for (const t of G.texts) { t.t += dt; t.y -= 28 * dt; }
   G.texts = G.texts.filter(t => t.t < t.life);
   G.shake = Math.max(0, G.shake - dt);
   if (G.foeT > 0) { G.foeT -= dt; if (G.foeT <= 0) foeNext(); }
+  playTick(dt);
   if (G.hintT > 0) { G.hintT -= dt; if (G.hintT <= 0) $('#hint').hidden = true; }
   refreshHud();
 }
@@ -4079,7 +4097,8 @@ function atkSmear(m, ang, reach) { if (m.smearAt === m.anim) return; m.smearAt =
   const at = (k, q = {}) => room && G.fx.push({ k, x: m.x + Math.cos(ang) * reach * .6, y: y0 + Math.sin(ang) * reach * .6, a: ang, t: 0, life: .22, r: dad ? 34 : 26, col, ...q });
   if (st === 'lunge') at('smear'); else if (st === 'flick') at('atkfx', { s: 'lines' }); else if (st === 'zig') at('atkfx', { s: 'zag', life: .26 }); else if (st === 'spin') at('atkfx', { s: 'swirl', x: m.x, y: y0, life: .3 }); else if (st === 'puff') at('atkfx', { s: 'cone', life: .3 });
   else if (st === 'hop') G.pending.push({ at: G.t + .12, fn: () => { if (G.fx.length < 260) G.fx.push({ k: 'atkfx', s: 'ring', x: m.x + Math.cos(ang) * reach * .8, y: m.y + 4 + Math.sin(ang) * reach * .5, a: 0, t: 0, life: .3, r: 24, col }); } });
-  for (let i = 0; i < fxN(3); i++) G.fx.push({ k: 'puff', x: m.x - Math.cos(ang) * 10, y: m.y + (dad ? 26 : 4), vx: -Math.cos(ang) * rnd(30, 80), vy: rnd(-40, -10), t: 0, life: rnd(.25, .4), col: '#fbf3df', r: rnd(3, 5) }); }
+  for (let i = 0; i < fxN(3); i++) G.fx.push({ k: 'puff', x: m.x - Math.cos(ang) * 10, y: m.y + (dad ? 26 : 4), vx: -Math.cos(ang) * rnd(30, 80), vy: rnd(-40, -10), t: 0, life: rnd(.25, .4), col: '#fbf3df', r: rnd(3, 5) });
+  const gr = gearRar(m.id); if (gr > 0 && room) { at('atkfx', { s: 'star', col: GEAR_COL[gr], r: 12 + gr * 5, life: .3 }); for (let i = 0; i < fxN(gr); i++) G.fx.push({ k: 'star', x: m.x + Math.cos(ang) * reach + rnd(-14, 14), y: y0 + Math.sin(ang) * reach + rnd(-14, 14), t: 0, life: rnd(.3, .5), s: rnd(6, 10) }); } }
 // Dad rocks back the way he was shoved, then rights himself
 function dadRecoil(m) { const R = m.rec; if (!R || R.t <= 0) return { x: 0, y: 0, lean: 0 }; R.t -= 1 / 60; const u = 1 - Math.max(0, R.t) / .32, k = u < .2 ? u / .2 : 1 - (u - .2) / .8; return { x: Math.cos(R.a) * 10 * k, y: Math.sin(R.a) * 6 * k, lean: k * .16 * (Math.cos(R.a) >= 0 ? 1 : -1) }; }
 function drawMember(m) {
@@ -4098,7 +4117,7 @@ function drawMember(m) {
       R3D.put('dad', ctx, fx, fy, h, { hat: hat && HATFIT[hat] ? hat : null, hatFit: HATFIT3D[hat] || HATFIT[hat], sweater: sw.c ? sw : null, phi: m.aim != null ? m.aim : Math.PI / 2 - m.face * .45, anim, animSpeed: anim === 'cast' ? 1.5 : 1, restart: anim === 'cast' && p < .06, lean: lean * .6, alpha });
       m.lensAt = { x: fx + m.face * h * .2, y: fy - h * .62 }; return; }
     if (ready(img)) { // the drawn Dad: ready stance, lunges out with the lens on a cast, winces when bumped
-      const h = DAD_DRAW * P.k, w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
+      const h = DAD_DRAW * P.k * (powerOn('giant') ? 1.3 : 1), w = h * img.naturalWidth / img.naturalHeight, br = save.opt.calm ? 0 : Math.sin(G.t * 2.4) * .012;
       const pop = a && p > .28 ? Math.max(0, 1 - (p - .28) / .14) : 0, wind = a && p < .28 ? p / .28 : 0; // a squash on the switch into the lunge, a crouch on the wind-up
       const fx = B ? m.x + Math.cos(ang) * B.d : m.x + step * .6, fy = B ? m.y + 30 + Math.sin(ang) * B.d * .6 : m.y + 30 - hop * .5;
       ctx.save(); ctx.translate(fx + RC.x, fy + RC.y); ctx.rotate(RC.lean + (B ? B.lean * m.face * .7 : lean * .6)); ctx.scale(m.face * (B ? 1 + B.sq * .1 - B.st * .05 : 1 + pop * .07 + wind * .03), B ? 1 + br - B.sq * .12 + B.st * .07 : 1 + br - pop * .06 - wind * .04); ctx.globalAlpha = alpha;
@@ -4354,7 +4373,8 @@ function draw() {
   // orbs
   for (const o of G.orbs) {
     if (o.k === 'note') { const bob = Math.sin(G.t * 6) * 4; ctx.save(); ctx.globalAlpha = .45; ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.arc(o.x, o.y + bob, 22 + Math.sin(G.t * 9) * 3, 0, 7); ctx.fill(); ctx.restore(); ctx.font = `28px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📒', o.x, o.y + bob); ctx.textBaseline = 'alphabetic'; continue; }
-    ctx.beginPath(); ctx.arc(o.x, o.y, o.k === 'xp' ? 6 : 8, 0, 7);
+    if (o.z > 0) { ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(o.x, o.y + 6, 7, 3, 0, 0, 7); ctx.fill(); }
+    ctx.beginPath(); ctx.arc(o.x, o.y - (o.z > 0 ? o.z * .12 : 0), o.k === 'xp' ? 6 : 8, 0, 7);
     ctx.fillStyle = o.k === 'xp' ? '#b48be6' : '#ecb23c'; ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = o.k === 'xp' ? '#fff' : '#3a2c20'; ctx.font = '700 9px Fredoka, Arial'; ctx.textAlign = 'center'; ctx.fillText(o.k === 'xp' ? '?' : '!', o.x, o.y + 3);
   }
@@ -4368,8 +4388,10 @@ function draw() {
     const p = f.t / f.life;
     if (f.k === 'die') { const e = f.e; ctx.save(); ctx.globalAlpha = 1 - p; ctx.translate(e.x, e.y); ctx.scale(1 + p * .55, 1 - p * .45); ctx.translate(-e.x, -e.y); e.hit = 1; drawEnemy(e); ctx.restore(); ctx.globalAlpha = 1; }
     else if (f.k === 'spark') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = f.big ? '#ffd76a' : '#fff'; ctx.lineWidth = f.big ? 4 : 3; ctx.lineCap = 'round'; const L = (f.big ? 22 : 14) * (.5 + p); for (let i = -2; i <= 2; i++) { const a = f.a + i * .45; ctx.beginPath(); ctx.moveTo(f.x + Math.cos(a) * L * .35, f.y + Math.sin(a) * L * .35); ctx.lineTo(f.x + Math.cos(a) * L, f.y + Math.sin(a) * L); ctx.stroke(); } ctx.globalAlpha = 1; }
-    else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
+    else if (f.k === 'paper') { ctx.save(); ctx.globalAlpha = Math.min(1, (1 - p) * 2); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.scale(1, Math.abs(Math.cos(f.rot * 1.7)) * .8 + .2); ctx.fillStyle = f.col || '#fffaf0'; ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.fillRect(-6, -4.5, 12, 9); ctx.strokeRect(-6, -4.5, 12, 9); ctx.strokeStyle = '#9fc4e0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-4, -1); ctx.lineTo(4, -1); ctx.moveTo(-4, 2); ctx.lineTo(3, 2); ctx.stroke(); ctx.restore(); }
     else if (f.k === 'smear') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .85; ctx.strokeStyle = f.col || '#fff'; ctx.lineCap = 'round'; ctx.lineWidth = 7 * (1 - p) + 1; ctx.beginPath(); ctx.arc(-f.r * .4, 0, f.r, -.9, .9); ctx.stroke(); ctx.globalAlpha = (1 - p) * .5; ctx.strokeStyle = '#ffe9a8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(-f.r * .7, 0, f.r, -.7, .7); ctx.stroke(); ctx.restore(); } // the crescent a strike leaves
+    else if (f.k === 'beam') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .9; const w = f.w * (1 - p * .5); ctx.fillStyle = '#ffe9a8'; ctx.fillRect(0, -w / 2, 620, w); ctx.fillStyle = '#fff'; ctx.fillRect(0, -w / 5, 620, w / 2.5); ctx.restore(); }
+    else if (f.k === 'swipe') { ctx.save(); ctx.globalAlpha = (1 - p) * .85; ctx.strokeStyle = '#fff'; ctx.lineCap = 'round'; ctx.lineWidth = 12 * (1 - p) + 2; ctx.beginPath(); ctx.moveTo(f.x + (f.x2 - f.x) * p * .5, f.y + (f.y2 - f.y) * p * .5); ctx.lineTo(f.x2, f.y2); ctx.stroke(); ctx.restore(); }
     else if (f.k === 'atkfx') { ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.a); ctx.globalAlpha = (1 - p) * .9; ctx.strokeStyle = f.col || '#fff'; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; /* the mark an attack or a hit leaves, by style */
       if (f.s === 'lines') { ctx.lineWidth = 3; for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(-f.r * .6 + p * f.r * .8, i * 7); ctx.lineTo(f.r * (.2 + .9 * p) - Math.abs(i) * 6, i * 7); ctx.stroke(); } }
       else if (f.s === 'zag') { ctx.lineWidth = 4 * (1 - p) + 1; ctx.beginPath(); for (let i = 0; i <= 5; i++) { const X = -f.r + i * f.r * .45, Y = i > 0 && i < 5 ? (i % 2 ? 7 : -7) : 0; if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); } ctx.stroke(); }
@@ -4426,6 +4448,7 @@ function draw() {
     else if (f.k === 'webhit') { ctx.globalAlpha = 1 - p; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x + Math.cos(a) * 22, f.y + Math.sin(a) * 22); ctx.stroke(); } ctx.globalAlpha = 1; }
   }
   drawPet();
+  drawPlay();
   for (const t of G.texts) { if (t.s[0] === '"' || /^The Kid: "/.test(t.s)) { speechBubble(t); continue; } const p = t.t / t.life; ctx.globalAlpha = 1 - p * p; ctx.font = `700 ${Math.round(t.size * (1 + Math.max(0, 1 - t.t / .12) * .5))}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = '#3a2c20'; ctx.strokeText(t.s, t.x, t.y); ctx.fillStyle = t.col; ctx.fillText(t.s, t.x, t.y); ctx.globalAlpha = 1; }
   if (R3D) R3D.render();
   if (G.focus && G.focus.hp > 0) { ctx.strokeStyle = '#ecb23c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.beginPath(); ctx.arc(G.focus.x, G.focus.y, G.focus.r + 10, G.t * 3, G.t * 3 + 6.28); ctx.stroke(); ctx.setLineDash([]); }
@@ -4607,7 +4630,7 @@ requestAnimationFrame(function homeLoop() { requestAnimationFrame(homeLoop); if 
 let staticsQ = 0;
 function drawStatics() { if (!staticsQ) staticsQ = requestAnimationFrame(() => { staticsQ = 0; drawStaticsNow(); }); }
 function bossSeed() { if (save.seenBoss) return; save.seenBoss = [...new Set((save.cleared || []).flatMap(i => STAGES[i] ? [STAGES[i].boss, STAGES[i].finale] : []))].filter(id => id && BOSSMOVE[id]); } /* an older save has met the bosses of the stages it cleared */
-function drawStaticsNow() { try { bossSeed(); misDot(); goalUpd(); foeDot(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
+function drawStaticsNow() { try { bossSeed(); misDot(); goalUpd(); foeDot(); upNextBtn(); } catch (e) {} drawTitleParty(); $$('canvas.pc').forEach(c => { const x = c.getContext('2d'); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, c.width, c.height); if (c.dataset.c === 'dad') { if (ready(IMG.wave)) drawDadAt(x, c.width / 2, c.height - 4, c.height - 8, 1, 'wave'); else if (IMG.wave.failed) { const S3 = sheet('dad'); if (S3) drawSheet(x, S3, 'idle', Math.PI / 2 + .3, 0, c.width / 2, c.height - 4, c.height - 10); } } else { const png = art('pet_' + c.dataset.c); if (ready(png)) { const im = unplate(png), k = Math.min((c.width - 8) / png.naturalWidth, (c.height - 8) / png.naturalHeight); x.drawImage(im, (c.width - png.naturalWidth * k) / 2, c.height - 4 - png.naturalHeight * k, png.naturalWidth * k, png.naturalHeight * k); } else drawCompanionAt(x, c.dataset.c, c.width / 2, c.height - 8, 1.9, 1, 0); } }); }
 
 /* ───────── the Kid: a placeholder in the mascot's line style, until real art exists ───────── */
 // where the blank card sits on kid.png, in units of the Kid's height from the feet, and the size of the "?" drawn on it
@@ -4839,6 +4862,8 @@ $('#hubChests').onclick = function () { if (!lockedHub(this)) openChests(anyChes
 $('#challClose').onclick = () => { $('#challm').hidden = true; };
 $('#challRoom').onclick = () => { $('#challm').hidden = true; openRoom(); };
 $('#homeFoes').onclick = openFoes;
+$('#bigwhy').onclick = bigWhy;
+$('#upBtn').onclick = openUpNext;
 $('#challTrophy').onclick = () => { $('#challm').hidden = true; showTrophies(); };
 function startDaily() { const D = dailyToday(); if (!D) return; startGame(D.stage, { twist: D.tw }); }
 function startEndless() { startGame(Math.min(save.unlocked, STAGES.length - 1), { endless: true }); }
@@ -5091,6 +5116,26 @@ function payout(cleared) { return Math.round((G.busted + G.coins + (G.bossDown ?
 // Patience lost when a myth gets through, after Pip's shell
 const patHit = d => d * (1 - (G && G.pep ? G.pep * .1 : 0)) * (1 - rankOf('pip', 'thickshell') * .06 - sk('pip', 'thickshell') * .02 - ((G.famGuard || 0) + aura('guard') + synStat('guard') + diaryStat('guard')) / 100);
 // the scoreboard: three big numbers, then one small line for the rest
+function countUp(root) { const els = [...root.querySelectorAll('b')].filter(b => /^\+?\d+$/.test(b.textContent.trim())); els.forEach((b, i) => { const txt = b.textContent.trim(), plus = txt[0] === '+' ? '+' : '', n = +txt.replace('+', ''); if (!n || save.opt.calm) return; b.textContent = plus + '0'; const t0 = performance.now() + 350 + i * 420, dur = 480; let last = -1;
+    const tick = now => { const u = Math.max(0, Math.min(1, (now - t0) / dur)), v = Math.round(n * (1 - (1 - u) * (1 - u))); if (v !== last) { b.textContent = plus + v; if (u > 0 && Math.floor(u * 6) !== Math.floor(last / n * 6)) sfx('coin'); last = v; } if (u < 1 && b.isConnected) requestAnimationFrame(tick); else if (b.isConnected) { b.textContent = plus + n; b.classList.add('landed'); } }; requestAnimationFrame(tick); }); }
+function clearParty() { const cs = $('#clearStats'), best = G.comboBest || 0, pay = Math.min(120, best * 2);
+  if (best >= 5) { setWallet({ coins: save.coins + pay }); cs.querySelector('.bigstats').insertAdjacentHTML('beforeend', `<div class="know"><b>+${pay}</b><span>🔥 Combo ×${best}</span></div>`); }
+  countUp(cs); bonusCards(); $('#upClear').innerHTML = upNextH(); }
+// one of three face-down cards: small coins, bigger coins, or a few gems. One flip a clear.
+function bonusCards() { const row = $('#bonusRow'), lv = Math.round(G.lv), prizes = [{ em: '🪙', n: 30 + lv * 4, k: 'coins' }, { em: '🪙', n: 80 + lv * 8, k: 'coins' }, { em: '💎', n: 3, k: 'gems' }].sort(() => Math.random() - .5);
+  row.innerHTML = `<p class="bonush">Pick a bonus card!</p><div class="bonus">${prizes.map((_, i) => `<button class="bcard" data-b="${i}" aria-label="Bonus card ${i + 1}">?</button>`).join('')}</div>`;
+  row.querySelectorAll('.bcard').forEach(b => b.onclick = () => { if (row.dataset.done === G.stage + ':' + G.t) return; row.dataset.done = G.stage + ':' + G.t; const i = +b.dataset.b, P = prizes[i]; setWallet({ [P.k]: save[P.k] + P.n }); sfx('crit'); buzz('MEDIUM');
+    row.querySelectorAll('.bcard').forEach((c, j) => { c.disabled = true; c.classList.add(j === i ? 'won' : 'lost'); c.textContent = `${prizes[j].em} ${prizes[j].n}`; }); row.querySelector('.bonush').textContent = `${P.em} +${P.n}!`; }); row.dataset.done = ''; }
+// what is coming next, and what it will do: the next friend, the next star gift, the next place
+function nextUnlocks() { const out = [], nf = nextFriend(true), sl = nextStarLook(), w = STAGES[Math.min(save.unlocked, STAGES.length - 1)].w, nw = WORLDS[w + 1];
+  if (nf) { const C = CLASS[nf] || {}; out.push({ em: CHARS[nf].em, n: CHARS[nf].name, when: `${pagesOf(nf)}/${tierOf(nf).pages} pages`, f: Math.min(1, pagesOf(nf) / tierOf(nf).pages), what: C.role || CHARS[nf].desc }); }
+  if (sl) out.push({ em: sl.it.em || '⭐', n: sl.it.n, when: `${starTotal()}/${sl.it.st} stars`, f: Math.min(1, starTotal() / sl.it.st), what: 'A new look for the Wardrobe.' });
+  if (nw && STAGES.some(S => S.w === w + 1)) { const done = save.cleared.filter(i => STAGES[i] && STAGES[i].w === w).length; out.push({ em: nw.em, n: nw.name, when: `${done}/5 stages here`, f: done / 5, what: nw.desc }); }
+  const boss = STAGES.find(S => S.w === w && S.idx === 4); if (boss && boss.boss && MYTHS[boss.boss] && !save.cleared.includes(STAGES.indexOf(boss)) && out.length < 3) out.push({ em: MYTHS[boss.boss].em, n: MYTHS[boss.boss].name, when: 'the boss of this chapter', f: 0, what: BOSSMOVE[boss.boss] ? BOSSMOVE[boss.boss].note : '' });
+  return out.slice(0, 3); }
+const upNextH = () => { const u = nextUnlocks(); return u.length ? `<p class="uph">Coming up</p>${u.map(x => `<div class="upc" style="--f:${Math.round(x.f * 100)}%"><span class="ue">${x.em}</span><div><b>${x.n}</b><small>${x.when}</small><i>${x.what}</i></div></div>`).join('')}` : ''; };
+function upNextBtn() { const b = $('#upBtn'); if (!b) return; const u = nextUnlocks()[0]; b.hidden = !u; if (u) { b.style.setProperty('--f', Math.round(u.f * 100) + '%'); b.textContent = `Next: ${u.em} ${u.n} · ${u.when}`; } }
+function openUpNext() { pickFor = null; $('#pickTitle').textContent = '🔓 Coming up'; $('#pickSub').textContent = 'What you are working towards, and what it does.'; $('#pickUnequip').hidden = true; $('#pickList').innerHTML = `<div class="upnext">${upNextH()}</div>`; $('#pickm').hidden = false; }
 function stats(el, coins, gems) {
   el.innerHTML = `<div class="bigstats"><div><b>${G.busted}</b><span>🎈 Myths</span></div><div class="know"><b>+${coins}</b><span>🪙 Coins</span></div>${gems ? `<div class="know"><b>+${gems}</b><span>💎 Gems</span></div>` : ''}</div>`
     + `<p class="statline">📖 ${G.newFacts.length} new fact${G.newFacts.length === 1 ? '' : 's'} · Level ${G.lvl}${save.facts.length ? ` · Diary +${save.facts.length}% coins` : ''}</p>`;
@@ -5142,7 +5187,7 @@ function stageClear() { if (G.cup) { sfx('win'); collectAll(); return cupEnd(tru
   $('#joined').hidden = !joined && !pageNote && !dailyWin; if (dailyWin && !joined) $('#joined').innerHTML = nl(notes); if (joined) $('#joined').innerHTML = nl([CHARS[joined].starter ? `${CHARS[joined].em} ${CHARS[joined].name} joined the party!` : `${CHARS[joined].em} ${CHARS[joined].name}'s book is full: ${CHARS[joined].name} joined the party!`, ...(dailyWin ? [] : notes)]); else if (pageNote && !dailyWin) $('#joined').innerHTML = nl(notes);
   const last = !!G.S.last;
   $('#clearSub').textContent = last ? (G.S.book === 2 ? 'You checked every page of the Little Book of Everybody Says.' : 'You popped every page of the Big Book of Wrong.') : G.S.idx === 4 ? `${G.S.W.name} is done. Chapter ${chNum(G.S.w)} of 8, closed.` : ''; $('#clearSub').hidden = !$('#clearSub').textContent;
-  $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); danceDad();
+  $('#nextStage').hidden = last || !diffOpen(save.diff, Math.min(G.stage + 1, STAGES.length - 1)); stats($('#clearStats'), k, gems); clearParty(); danceDad();
   // the chapter's closing comic plays once, before the scoreboard
   const ck = G.S.w + ':out';
   $('#quizRow').hidden = save.facts.length < 3; G.popQuiz = false;
@@ -5983,19 +6028,98 @@ $('#retryWave').onclick = () => {
 };
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && !G.over && !G.cleared && $('#levelup').hidden) { G.paused = true; $('#pausem').hidden = false; } });
 
-// tap a myth to focus
+// The player's hands: tap a myth to focus it (or pop its weak spot, open a chest, set off a prop), swipe across myths to shove them,
+// and hold then let go to fire Dad's lens beam at that spot. A full WHY?! meter (the button) stops and shoves the whole ring.
+const SWIPE_PX = 44, HOLD_MS = 320, BEAM_CD = 2.5, SWIPE_CD = .45;
+let PTR = null;
+const fieldXY = ev => { const r = cv.getBoundingClientRect(); return [(ev.clientX - r.left) / r.width * W, (ev.clientY - r.top) / r.height * H]; };
+function playTap(x, y) {
+  if (tapChest(x, y) || tapProp(x, y)) return;
+  let best = null, bd = 48;
+  for (const e of G.enemies) { const d = Math.hypot(e.x - x, e.y - y) - e.r; if (d < bd) { bd = d; best = e; } }
+  if (best && best.spot > 0) { best.spot = 0; G.joy = Math.min(1, G.joy + .06); text(best.x, best.y - best.r - 30, 'WEAK SPOT!', '#ecb23c', 22, .9); sfx('crit'); buzz('MEDIUM'); for (let i = 0; i < 2; i++) G.orbs.push(coinOrb(best, 1));
+    G.fx.push({ k: 'atkfx', s: 'star', x: best.x, y: best.y, a: 0, t: 0, life: .3, r: best.r * 1.4, col: '#ffd76a' }); hurt(best, Math.max(12, best.maxhp * .3), 60, G.dad); return; }
+  if (best) { G.focus = best; if (!inRing(best)) { best.hurry = 3; G.dad.face = best.x < G.dad.x ? -1 : 1; text(G.dad.x, G.dad.y - 100, '"Hey, you!"', '#fff', 20, .9); text(best.x, best.y - best.r - 18, '!', '#ecb23c', 24, .8); } else text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 16, .8); }
+  else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
+}
+// a swipe shoves every myth it crosses, the way it was going: flips a Hardcover, stops a Dashing Book's wind-up, bowls them into each other
+function playSwipe(x0, y0, x1, y1) { if (G.swipeCd > 0) return false; const L = Math.hypot(x1 - x0, y1 - y0) || 1, dx = (x1 - x0) / L, dy = (y1 - y0) / L; let n = 0;
+  for (const e of [...G.enemies]) { if (e.hp <= 0 || e.kind === 'brick') continue; const t = Math.max(-.2, Math.min(1.1, ((e.x - x0) * dx + (e.y - y0) * dy) / L)), d = Math.hypot(e.x - (x0 + dx * L * t), e.y - (y0 + dy * L * t)); if (d > e.r + 22) continue;
+    n++; if (e.kind === 'dasher' && e.winding > 0) { e.winding = null; e.dashed = true; } hurt(e, 4 + G.lv, e.kind === 'boss' ? 0 : 700, { id: 'dad', x: e.x - dx * 60, y: e.y - dy * 60 }); }
+  G.swipeCd = SWIPE_CD; G.fx.push({ k: 'swipe', x: x0, y: y0, x2: x1 + dx * 30, y2: y1 + dy * 30, t: 0, life: .25 }); if (n) { sfx('hit'); buzz('LIGHT'); G.swipes = (G.swipes || 0) + 1; } return true; }
+// hold, then let go: the lens beam goes through everything on its line; the longer the hold, the bigger the beam
+function playBeam(x, y, pw) { const d = G.dad; if (G.beamCd > 0) { text(d.x, d.y - 100, 'Not yet…', '#fff', 16, .6); return; } const ang = Math.atan2(y - (d.y - 30), x - d.x), dx = Math.cos(ang), dy = Math.sin(ang), wide = 22 + pw * 16;
+  G.beamCd = BEAM_CD; d.face = dx < 0 ? -1 : 1; d.aim = ang; d.anim = { kind: 'beam', t: 0, dur: .42 }; const big = powerOn('giant') ? 1.6 : 1;
+  for (const e of [...G.enemies]) { if (e.hp <= 0) continue; const t = (e.x - d.x) * dx + (e.y - (d.y - 30)) * dy; if (t < 0) continue; if (Math.hypot(e.x - (d.x + dx * t), e.y - (d.y - 30 + dy * t)) > e.r + wide) continue; hurt(e, (16 + G.lv * 5) * (1 + pw * 2) * big, 60 + pw * 200, d); }
+  G.fx.push({ k: 'beam', x: d.x + dx * 30, y: d.y - 30 + dy * 30, a: ang, w: wide, t: 0, life: .28 }); G.shake = Math.max(G.shake, .1 + pw * .15); sfx('zap'); buzz(pw > .6 ? 'HEAVY' : 'MEDIUM'); G.beams = (G.beams || 0) + 1; }
+// the WHY?! meter fills as myths pop; the button stops the whole ring, shoves it back and takes a bite out of every myth in it
+function bigWhy() { if (!G || G.over || G.cleared || G.paused || G.joy < 1) return; G.joy = 0; const d = G.dad; G.shake = .4; G.slowmo = Math.max(G.slowmo || 0, .5); sfx('boss'); buzz('HEAVY'); text(CX, CY - 150, 'WHY?!', '#ecb23c', 46, 1.3);
+  G.fx.push({ k: 'ring', x: d.x, y: d.y, R: G.radius * 1.1, t: 0, life: .5, col: '#ecb23c' }); G.fx.push({ k: 'ring', x: d.x, y: d.y, R: G.radius * .7, t: 0, life: .4, col: '#fff' });
+  for (const e of [...G.enemies]) { if (e.hp <= 0 || !inRing(e)) continue; e.stun = Math.max(e.stun, 2.5); hurt(e, e.kind === 'boss' ? e.maxhp * .03 : Math.max(20, e.maxhp * .35), e.kind === 'boss' ? 0 : 420, d); } whyBtn(); }
+function whyBtn() { const b = $('#bigwhy'); if (!b) return; const v = G ? Math.round(G.joy * 100) : 0; if (b.dataset.v === String(v)) return; b.dataset.v = v; b.style.setProperty('--f', v + '%'); b.classList.toggle('full', v >= 100); b.hidden = !G || !!G.room; }
+// myths knocked hard carry on into the next one: it takes the shove and a bump. Every pop inside 2.2 s builds the combo.
+function playTick(dt) { if (G.comboT > 0) { G.comboT -= dt; if (G.comboT <= 0) G.combo = 0; } if (G.beamCd > 0) G.beamCd -= dt; if (G.swipeCd > 0) G.swipeCd -= dt; whyBtn(); propTick(dt); powerTick(dt);
+  for (const e of G.enemies) { if (e.spot > 0) e.spot -= dt; if (e.hp <= 0 || e.kind === 'boss' || e.bowlCd > G.t || Math.hypot(e.kx, e.ky) < 150) continue;
+    for (const o of G.enemies) { if (o === e || o.hp <= 0 || o.kind === 'boss' || o.bowlCd > G.t || dist(o, e) > e.r + o.r) continue; o.kx += e.kx * .65; o.ky += e.ky * .65; e.kx *= .45; e.ky *= .45; e.bowlCd = o.bowlCd = G.t + .35; G.bowls = (G.bowls || 0) + 1;
+      for (let i = 0; i < fxN(3); i++) G.fx.push({ k: 'puff', x: (e.x + o.x) / 2, y: (e.y + o.y) / 2, vx: rnd(-60, 60), vy: rnd(-80, -10), t: 0, life: rnd(.25, .4), col: '#fbf3df', r: rnd(3, 6) }); if (Math.random() < .4) text(o.x, o.y - o.r - 14, 'BONK', '#fff', 15, .6);
+      hurt(o, 5 + G.lv * 1.5, 0, { id: 'react', x: e.x, y: e.y }); break; } } }
+// ── one thing on every field to set off: tap it, swipe it, or knock a myth into it. It recharges, and each kind suits an element.
+const PROP_CD = 9, PROP_R = 100;
+const FPROPS = { sprinkler: { n: 'sprinkler', el: 'water', say: 'SPLASH!' }, stack: { n: 'book stack', el: 'earth', say: 'CRASH!' }, lamp: { n: 'lamp', el: 'spark', say: 'ZAP!' } };
+const propKind = w => ['sprinkler', 'stack', 'lamp'][w % 3];
+function propTick(dt) { if (G.room) return; if (!G.propsInit) { G.propsInit = true; const side = G.S.w % 2 ? 1 : -1; G.props = [{ k: propKind(G.S.w), x: CX + side * 150, y: CY + 86, cd: 3, wob: 0 }]; }
+  for (const P of G.props) { if (P.cd > 0) P.cd -= dt; if (P.wob > 0) P.wob -= dt; if (P.cd > 0) continue; for (const e of G.enemies) if (e.hp > 0 && Math.hypot(e.kx, e.ky) > 150 && Math.hypot(e.x - P.x, e.y - P.y) < e.r + 30) { fireProp(P); break; } } }
+function fireProp(P) { if (P.cd > 0) return false; P.cd = PROP_CD; P.wob = .5; const D = FPROPS[P.k], col = ELEM[D.el].col, lv = G.lv; G.propsUsed = (G.propsUsed || 0) + 1; text(P.x, P.y - 54, D.say, col, 22, .9); sfx(P.k === 'lamp' ? 'zap' : 'bonk'); buzz('MEDIUM'); G.shake = Math.max(G.shake, .12);
+  G.fx.push({ k: 'ring', x: P.x, y: P.y, R: PROP_R, t: 0, life: .45, col }); for (let i = 0; i < fxN(10); i++) G.fx.push({ k: 'puff', x: P.x, y: P.y - 20, vx: rnd(-170, 170), vy: rnd(-220, -40), t: 0, life: rnd(.4, .8), col: P.k === 'stack' ? '#fbf3df' : col, r: rnd(3, 7) });
+  for (const e of [...G.enemies]) { if (e.hp <= 0 || Math.hypot(e.x - P.x, e.y - P.y) > PROP_R + e.r) continue; const w = weakTo(e.kind, D.el) ? 2 : 1, boss = e.kind === 'boss';
+    if (P.k === 'sprinkler') { e.slow = Math.max(e.slow, 3); e.tag = { el: 'water', t: G.t }; hurt(e, (8 + lv * 2) * w, 0, { id: 'react', x: P.x, y: P.y }); }
+    else if (P.k === 'stack') { if (!boss) e.stun = Math.max(e.stun, 1.5); hurt(e, (14 + lv * 3) * w, boss ? 0 : 260, { id: 'react', x: P.x, y: P.y }); }
+    else { G.fx.push({ k: 'atkfx', s: 'zag', x: (P.x + e.x) / 2, y: (P.y - 30 + e.y) / 2, a: Math.atan2(e.y - P.y + 30, e.x - P.x), t: 0, life: .25, r: Math.hypot(e.x - P.x, e.y - P.y) / 2, col }); e.tag = { el: 'spark', t: G.t }; hurt(e, (12 + lv * 3) * w, 0, { id: 'react', x: P.x, y: P.y }); } }
+  if (!save.propSeen) { save.propSeen = true; persist(); hint(`That is the ${D.n}. Tap it, or knock a myth into it!`, 4); } return true; }
+function tapProp(x, y) { for (const P of G.props) if (Math.hypot(x - P.x, y - (P.y - 18)) < 42) { if (P.cd > 0) text(P.x, P.y - 50, 'Not yet…', '#fff', 15, .6); else fireProp(P); return true; } return false; }
+function drawProps() { for (const P of G.props) { const ready = P.cd <= 0, w = P.wob > 0 ? Math.sin(P.wob * 40) * .12 * (P.wob / .5) : 0, col = ELEM[FPROPS[P.k].el].col; ctx.save(); ctx.translate(P.x, P.y);
+    ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0, 2, 22, 7, 0, 0, 7); ctx.fill(); if (ready) { ctx.globalAlpha = .35 + Math.sin(G.t * 5) * .2; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, 2, 30, 11, 0, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
+    ctx.rotate(w); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; if (!ready) ctx.globalAlpha = .55;
+    if (P.k === 'sprinkler') { ctx.fillStyle = '#8d9aa6'; ctx.fillRect(-4, -26, 8, 26); ctx.strokeRect(-4, -26, 8, 26); ctx.fillStyle = '#4fa3e0'; ctx.beginPath(); ctx.roundRect(-14, -36, 28, 12, 5); ctx.fill(); ctx.stroke(); if (ready) { ctx.strokeStyle = '#bfe6f5'; ctx.lineWidth = 2; for (const sg of [-1, 1]) { ctx.beginPath(); ctx.arc(sg * 14, -34, 10 + Math.sin(G.t * 8) * 2, sg > 0 ? -1.3 : Math.PI - .3, sg > 0 ? .3 : Math.PI + 1.3); ctx.stroke(); } } }
+    else if (P.k === 'stack') { const cs = ['#c86a4a', '#6fb1be', '#ecb23c', '#8a7fd6']; for (let i = 0; i < 4; i++) { ctx.fillStyle = cs[i]; ctx.beginPath(); ctx.roundRect(-16 + (i % 2) * 3, -10 - i * 9, 30, 9, 2); ctx.fill(); ctx.stroke(); } }
+    else { ctx.fillStyle = '#6b5a48'; ctx.fillRect(-3, -40, 6, 40); ctx.strokeRect(-3, -40, 6, 40); ctx.fillStyle = ready ? '#ffe37a' : '#c9c2ae'; ctx.beginPath(); ctx.arc(0, -46, 11, 0, 7); ctx.fill(); ctx.stroke(); if (ready) { ctx.globalAlpha = .3; ctx.fillStyle = '#ffe37a'; ctx.beginPath(); ctx.arc(0, -46, 18 + Math.sin(G.t * 6) * 2, 0, 7); ctx.fill(); } }
+    ctx.restore(); if (!ready) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(P.x, P.y + 2, 26, -Math.PI / 2, -Math.PI / 2 + (1 - P.cd / PROP_CD) * Math.PI * 2); ctx.stroke(); ctx.restore(); } } }
+// ── the first elite of a stage leaves a chest: tap it (or wait) for a power-up that lasts POWER_T seconds
+const POWER_T = 9, POWERS = { giant: { n: 'Giant Dad', em: '🦖', say: 'Dad hits twice as hard!' }, speed: { n: 'Double speed', em: '⚡', say: 'Everyone acts twice as fast!' }, magnet: { n: 'Coin magnet', em: '🧲', say: 'Every coin flies in, and counts double!' } };
+const powerOn = k => !!(G && G.power && G.power.k === k && G.power.t > 0);
+function dropChest(e) { G.chestDone = true; G.chest = { x: Math.min(390, Math.max(50, e.x)), y: Math.min(660, Math.max(240, e.y)), t: 0 }; text(G.chest.x, G.chest.y - 46, 'A chest! Tap it!', '#ecb23c', 18, 1.6); sfx('coin'); }
+function openChest() { const C = G.chest; if (!C) return; G.chest = null; const k = pick(Object.keys(POWERS)), P = POWERS[k]; G.power = { k, t: POWER_T }; G.chests = (G.chests || 0) + 1; G.joy = Math.min(1, G.joy + .15); sfx('crit'); buzz('HEAVY'); text(CX, CY - 170, `${P.em} ${P.n}!`, '#ecb23c', 28, 1.6); hint(P.say, 3);
+  G.fx.push({ k: 'ring', x: C.x, y: C.y, R: 90, t: 0, life: .5, col: '#ecb23c' }); for (let i = 0; i < fxN(12); i++) G.fx.push({ k: 'star', x: C.x + rnd(-30, 30), y: C.y + rnd(-40, 10), t: 0, life: rnd(.4, .8), s: rnd(8, 14) }); for (let i = 0; i < 5; i++) G.orbs.push(coinOrb(C, 2)); }
+function tapChest(x, y) { const C = G.chest; if (!C || Math.hypot(x - C.x, y - (C.y - 12)) > 46) return false; openChest(); return true; }
+function powerTick(dt) { if (G.chest) { G.chest.t += dt; if (G.chest.t > 8) openChest(); } if (G.power && G.power.t > 0) { G.power.t -= dt; if (G.power.t <= 0) text(CX, CY - 170, `${POWERS[G.power.k].n} is over`, '#fff', 16, 1); } }
+function drawPower() { const C = G.chest; if (C) { const b = Math.abs(Math.sin(C.t * 5)) * 8, pop = Math.min(1, C.t / .25); ctx.save(); ctx.translate(C.x, C.y); ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(0, 4, 20, 7, 0, 0, 7); ctx.fill(); ctx.globalAlpha = .3 + Math.sin(G.t * 7) * .15; ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.arc(0, -12 - b, 30, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+    ctx.translate(0, -b); ctx.scale(pop, pop); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.fillStyle = '#a8703c'; ctx.beginPath(); ctx.roundRect(-18, -22, 36, 24, 4); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#c98a4a'; ctx.beginPath(); ctx.roundRect(-18, -30, 36, 12, [8, 8, 0, 0]); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#ecb23c'; ctx.fillRect(-4, -30, 8, 32); ctx.strokeRect(-4, -30, 8, 32); ctx.beginPath(); ctx.arc(0, -16, 4, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#000'; ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.fillText('👆', 0, -40 - Math.sin(G.t * 8) * 4); ctx.restore(); }
+  if (G.power && G.power.t > 0) { const P = POWERS[G.power.k], f = G.power.t / POWER_T; ctx.save(); ctx.translate(CX, 128); ctx.fillStyle = 'rgba(58,44,32,.85)'; ctx.beginPath(); ctx.roundRect(-80, -15, 160, 30, 15); ctx.fill(); ctx.fillStyle = '#ecb23c'; ctx.beginPath(); ctx.roundRect(-76, 8, 152 * f, 4, 2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = `700 15px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(`${P.n}`, 8, -2); ctx.fillStyle = '#000'; ctx.font = `15px ${EMOJI_FONT}`; ctx.fillText(P.em, -62, -2); ctx.restore(); } }
+// ── gear you can see: the best thing a friend wears colours their attack, and Dad's Legendary gear echoes each hit onto a second myth
+const GEAR_COL = [null, '#6fb1e8', '#b48be6', '#ecb23c'];
+const gearRar = id => { if (!G) return 0; const c = G.gr || (G.gr = {}); if (c[id] == null) c[id] = Math.max(0, ...Object.values(equipOf(id)).map(u => (save.items.find(i => i.uid === u) || {}).rar || 0)); return c[id]; };
+const coinOrb = (e, v) => ({ k: 'coin', x: e.x + rnd(-10, 10), y: e.y + rnd(-10, 10), v, z: 1, vz: rnd(170, 260), vx: rnd(-70, 70), vy: rnd(-30, 30), b: 0 });
+function drawPlay() { const d = G.dad;
+  for (const e of G.enemies) if (e.spot > 0 && e.hp > 0) { const k = .5 + Math.sin(G.t * 14) * .5; ctx.save(); ctx.globalAlpha = Math.min(1, e.spot * 3); ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(e.x, e.y - (e.z || 0), e.r * (1.15 + k * .2), 0, 7); ctx.stroke(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(e.x, e.y - (e.z || 0), e.r * (1.15 + k * .2) + 3, 0, 7); ctx.stroke(); ctx.fillStyle = '#000'; ctx.font = `18px ${EMOJI_FONT}`; ctx.textAlign = 'center'; ctx.fillText('👆', e.x, e.y - e.r - 12 - k * 5); ctx.restore(); }
+  if (PTR && !PTR.swiped && G.beamCd <= 0) { const held = performance.now() - PTR.t; if (held > HOLD_MS * .6) { const pw = Math.min(1, Math.max(0, (held - HOLD_MS) / 900)), L = d.lensAt || { x: d.x, y: d.y - 40 }; ctx.save(); ctx.globalAlpha = .35 + pw * .4; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(d.x, d.y - 30); ctx.lineTo(PTR.cx, PTR.cy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.globalAlpha = .9; ctx.fillStyle = '#ffe9a8'; ctx.beginPath(); ctx.arc(L.x, L.y, 6 + pw * 14 + Math.sin(G.t * 30) * 1.5, 0, 7); ctx.fill(); ctx.strokeStyle = '#3a2c20'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); } }
+  if (G.beamCd > 0) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(d.x, d.y + 30, 16, -Math.PI / 2, -Math.PI / 2 + (1 - G.beamCd / BEAM_CD) * Math.PI * 2); ctx.stroke(); ctx.restore(); }
+  if (G.combo >= 3) { const k = Math.max(0, 1 - (2.2 - G.comboT) / .15), sz = 22 + Math.min(14, G.combo * .5); ctx.save(); ctx.globalAlpha = Math.min(1, G.comboT * 2); ctx.translate(72, 150); ctx.rotate(-.08); ctx.scale(1 + k * .3, 1 + k * .3); ctx.font = `700 ${sz}px Fredoka, Arial`; ctx.textAlign = 'center'; ctx.lineWidth = 5; ctx.strokeStyle = '#3a2c20'; ctx.strokeText('×' + G.combo, 0, 0); ctx.fillStyle = G.combo >= 20 ? '#f08a4b' : G.combo >= 10 ? '#ecb23c' : '#fff'; ctx.fillText('×' + G.combo, 0, 0); ctx.font = '700 12px Fredoka, Arial'; ctx.strokeText('COMBO', 0, 16); ctx.fillText('COMBO', 0, 16); ctx.restore(); }
+  drawProps(); drawPower(); }
 cv.addEventListener('pointerdown', ev => {
   if (!G || G.over || G.cleared) return;
   if (G.paused) return;
   if (!$('#foe').hidden) { foeNext(); return; } /* a tap anywhere closes the new-myth card */
-  const r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width * W, y = (ev.clientY - r.top) / r.height * H;
-  let best = null, bd = 48;
-  for (const e of G.enemies) { const d = Math.hypot(e.x - x, e.y - y) - e.r; if (d < bd) { bd = d; best = e; } }
-  if (best) { G.focus = best; if (!inRing(best)) { best.hurry = 3; G.dad.face = best.x < G.dad.x ? -1 : 1; text(G.dad.x, G.dad.y - 100, '"Hey, you!"', '#fff', 20, .9); text(best.x, best.y - best.r - 18, '!', '#ecb23c', 24, .8); } else text(best.x, best.y - best.r - 18, 'Everyone, look!', '#fff', 16, .8); }
-  else if (G.breakT > 0.3) { G.breakT = .3; text(CX, CY - 150, '"Let\'s go!"', '#fff', 22, .8); }
+  const [x, y] = fieldXY(ev); PTR = { x, y, cx: x, cy: y, t: performance.now(), id: ev.pointerId, swiped: false };
 });
+cv.addEventListener('pointermove', ev => { if (!PTR || PTR.id !== ev.pointerId || !G || G.paused) return; const [x, y] = fieldXY(ev); PTR.cx = x; PTR.cy = y;
+  if (!PTR.swiped && Math.hypot(x - PTR.x, y - PTR.y) > SWIPE_PX && performance.now() - PTR.t < 450) PTR.swiped = playSwipe(PTR.x, PTR.y, x, y) || true; });
+const ptrUp = ev => { const P = PTR; if (!P || P.id !== ev.pointerId) return; PTR = null; if (!G || G.over || G.cleared || G.paused || P.swiped) return; const [x, y] = fieldXY(ev), held = performance.now() - P.t;
+  if (held > HOLD_MS && G.beamCd <= 0) playBeam(x, y, Math.min(1, (held - HOLD_MS) / 900)); else playTap(x, y); };
+cv.addEventListener('pointerup', ptrUp); cv.addEventListener('pointercancel', () => { PTR = null; });
 
-if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, foeIntro, toast, bossIds, KWEAK, weakTo, ELEM_WEAK, hasBump, atkBeat, ATK_STYLE, BOSSMOVE, bossPose, TIRED_DMG, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
+if (location.search.includes('debug')) window.dbg = { get R3D() { return R3D; }, tMax, starMax, synOn, SYNERGY, STAGES, WORLDS, MYTHS, charLevel, sheet, SHEETS, ITEMS, LEGENDS, WEAPONS, CWEAP, EVENTS, EVENT_IDS, activeEvent, evState, raidDmg, raidBoss, leagueTable, clubSettle, cupTier, baseMyths, say, clubState, cupState, startCup, openSoc, clubMates, clubTotal, CUP_ROUNDS, WARD, look, headOf, dressed, openWardrobe, TUNE, UNLOCK_AT, nextStage, step: (n, dt = 1 / 30) => { for (let i = 0; i < n; i++) { if (!G || G.paused || G.over || G.cleared) return i; update(dt); } return n; }, patrolPay, WHEEL_P, recPower, tNodes, tRank, tBr, tPickAt, tFull, tHasFin, tPicked, TREE_MAX, T_PICK_COST, T_FIN_COST, skCost, starUp, STAR_COST, catBonus, fstars, clv, claimChest, CHESTS, chestGot, WRANKS, DADRANKS, gear, equipOf, giftBranch, saveCode, readCode, openTree, tLeft, tSpent, tFx, catOf, srcOf, CATS, SND, music, SFX, sound: () => ({ state: SND.ctx && SND.ctx.state, music: musKey }), ABIL, useAbility, teamPower, powerOf, stageClear, notebook: openNotebook, dropNote, get G() { return G; }, get save() { return save; }, spawn, MYTHS, CHARS, startGame, nextUnlocks, foeIntro, toast, playTap, playSwipe, playBeam, bigWhy, fireProp, openChest, dropChest, powerOn, POWERS, FPROPS, gearRar, bossIds, KWEAK, weakTo, ELEM_WEAK, hasBump, atkBeat, ATK_STYLE, BOSSMOVE, bossPose, TIRED_DMG, FOES, foeVs, openFoes, ENTRY, hurt, ftext: text, starTotal, starGifts, picks: () => save.picks, persist, makeItem, randItem, makeMark, evolveBanner, levelUp, startRoom, askQuiz, partyLevel, buildMap, DIFF, WORLDS, STAGES, showComic, chr, clv, sk, buildParty, buildBook, giveXp, payFacts, makeArena, drawCompanionAt, drawKid, adultGate, grantIap, buildIap, IAP, sheet, drawSheet, SHEETS, dadProps, drawProp, props3, GEAR3D, petProps, handPos, mouth, DPOSE, kill, stings: () => Object.keys(STING).filter(k => STING[k]), voParts, vkey, voSet: l => { VOICES = new Set(l); }, voiceLines: () => { const L = [], add = (who, t) => t && L.push({ who, text: String(t).replace(/\s+/g, ' ').trim(), key: vkey(t, who) });
     for (const id in MYTHS) { add('d', MYTHS[id].fact); add('d', MYTHS[id].myth); }
     for (const k in FOES) add('d', `${FOES[k].n}. ${FOES[k].say} ${FOES[k].how}`);
     for (const id of bossIds()) add('d', bossSay(id));
