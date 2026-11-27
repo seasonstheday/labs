@@ -526,6 +526,43 @@ await test('pop-ups close on a tap, and speech bubbles do not pile up', async ()
   await p.evaluate(() => dbg.toast(dbg.MYTHS[Object.keys(dbg.MYTHS)[0]])); await p.waitForTimeout(100); await p.click('#toast'); await p.waitForTimeout(100);
   expect(!(await p.isVisible('#toast')), 'the fact card closes on a tap'); await close(); return errs;
 });
+await test('the player\'s moves: swipe shoves and bowls, hold fires the beam, WHY?! clears the ring, combo pays', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(6); }); await p.waitForTimeout(1000);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; dbg.step(5); for (const m of G.party) { m.muted = 999; for (const k in m.cds) m.cds[k] = 999; }
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'normal' && !dbg.EVENT_IDS.has(m)), mk = (x, y) => { const e = dbg.spawn(id); e.x = x; e.y = y; e.hp = e.maxhp = 1e5; e.spd = 0; e.dmg = 0; return e; };
+    const a = mk(120, 250), b = mk(200, 250), x0 = a.x; dbg.playSwipe(90, 250, 150, 250); const shoved = a.kx > 200 && !(b.kx > 0); dbg.step(8); const bowled = G.bowls > 0 && b.kx > 0, moved = a.x > x0 + 10;
+    const c = mk(G.dad.x + 150, G.dad.y - 30), hp0 = c.hp; dbg.playBeam(c.x, c.y, 1); const beam = c.hp < hp0 && G.beamCd > 0, hp1 = c.hp; dbg.playBeam(c.x, c.y, 1); const cdHolds = c.hp === hp1;
+    c.spot = 1; const g0 = c.hp; dbg.playTap(c.x, c.y); const spot = c.hp < g0 && c.spot === 0;
+    G.joy = 1; const n = mk(G.dad.x + 60, G.dad.y + 40), h2 = n.hp; dbg.bigWhy(); const why = n.hp < h2 && n.stun > 1 && G.joy === 0;
+    G.enemies.length = 0; const orbs0 = G.orbs.length; for (let i = 0; i < 5; i++) { const e = mk(60, 600); e.hp = 0; e.coin = 0; e.xp = 0; dbg.kill(e); } const combo = G.combo === 5 && G.orbs.length > orbs0;
+    return { shoved, moved, bowled, beam, cdHolds, spot, why, combo }; });
+  expect(r.shoved && r.moved && r.bowled, 'a swipe shoves a myth, and it bowls into the next: ' + JSON.stringify(r));
+  expect(r.beam && r.cdHolds, 'a held beam hurts what is on its line, then has to recharge: ' + JSON.stringify(r));
+  expect(r.spot && r.why && r.combo, 'weak-spot tap, the WHY?! button and the combo bonus all work: ' + JSON.stringify(r));
+  await p.evaluate(() => { const G = dbg.G; G.paused = false; G.joy = 1; dbg.step(2); }); expect(await p.evaluate(() => document.querySelector('#bigwhy').classList.contains('full') && !document.querySelector('#bigwhy').hidden), 'the WHY?! button lights up when the meter is full');
+  await close(); return errs;
+});
+await test('a prop on the field and the elite chest', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(6); }); await p.waitForTimeout(1000);
+  const r = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.toSpawn = []; G.breakT = 9999; dbg.step(5); for (const m of G.party) { m.muted = 999; for (const k in m.cds) m.cds[k] = 999; }
+    const id = Object.keys(dbg.MYTHS).find(m => dbg.MYTHS[m].kind === 'normal' && !dbg.EVENT_IDS.has(m)), P = G.props[0]; P.cd = 0; const e = dbg.spawn(id); e.x = P.x + 40; e.y = P.y; e.hp = e.maxhp = 1e5; e.spd = 0; const h = e.hp;
+    dbg.playTap(P.x, P.y - 18); const prop = e.hp < h && P.cd > 0 && !!dbg.FPROPS[P.k]; const el = dbg.spawn(id); el.elite = true; el.x = 200; el.y = 300; el.hp = 0; dbg.kill(el); const chest = !!G.chest;
+    dbg.playTap(G.chest.x, G.chest.y - 12); const power = !G.chest && G.power && G.power.t > 0 && !!dbg.POWERS[G.power.k]; const el2 = dbg.spawn(id); el2.elite = true; el2.hp = 0; dbg.kill(el2); return { prop, chest, power, once: !G.chest, k: P.k }; });
+  expect(r.prop, 'tapping the prop sets it off and it recharges: ' + JSON.stringify(r));
+  expect(r.chest && r.power && r.once, 'the first elite drops one chest, and opening it starts a power-up: ' + JSON.stringify(r)); await close(); return errs;
+});
+await test('the clear screen: a bonus card to flip, the combo pays, and what is coming up', async () => {
+  const { p, errs, close } = await open(PROGRESSED());
+  expect(await p.evaluate(() => { const u = dbg.nextUnlocks(); return u.length >= 1 && u.length <= 3 && u.every(x => x.n && x.when); }), 'there is always something coming up');
+  await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); dbg.startGame(6); }); await p.waitForTimeout(1000);
+  const c0 = await p.evaluate(() => { document.querySelectorAll('.modal').forEach(m => m.hidden = true); const G = dbg.G; G.paused = false; G.comboBest = 12; const c = dbg.save.coins; dbg.stageClear(); return { c, after: dbg.save.coins }; }); await p.waitForTimeout(600);
+  expect(await p.isVisible('#clearm') && await p.evaluate(() => document.querySelectorAll('#bonusRow .bcard').length === 3 && /Combo ×12/.test(document.querySelector('#clearStats').textContent) && !!document.querySelector('#upClear .upc')), 'three bonus cards, the combo line and the coming-up strip show');
+  const w0 = await p.evaluate(() => dbg.save.coins + dbg.save.gems * 1000); await p.click('#bonusRow .bcard'); await p.waitForTimeout(150);
+  const w1 = await p.evaluate(() => dbg.save.coins + dbg.save.gems * 1000); await p.evaluate(() => document.querySelectorAll('#bonusRow .bcard')[1].click()); const w2 = await p.evaluate(() => dbg.save.coins + dbg.save.gems * 1000);
+  expect(w1 > w0 && w2 === w1 && c0.after > c0.c, 'one flip pays once: ' + JSON.stringify({ w0, w1, w2 })); await close(); return errs;
+});
 await browser.close(); srv.close();
 const bad = results.filter(r => !r.ok);
 console.log(`\n${results.length - bad.length} of ${results.length} passed`);
